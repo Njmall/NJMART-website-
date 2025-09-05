@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NJ Mart — Products</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">NJ <span>Mart</span></div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a class="active" href="products.html">Products</a>
+      <a href="orders.html">My Orders</a>
+      <a id="loginLink" href="login.html">Login</a>
+      <a href="admin.html" class="admin-link">Admin</a>
+      <a href="cart.html" class="cart-btn">Cart</a>
+    </nav>
+  </header>
+
+  <section class="subtoolbar">
+    <input id="productSearch" placeholder="Search products..." />
+    <select id="categoryFilter">
+      <option value="">All categories</option>
+    </select>
+  </section>
+
+  <main class="container">
+    <div id="productsGrid" class="grid"></div>
+  </main>
+
+  <footer class="footer">© 2025 NJ Mart</footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
