@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login — NJ Mart</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">NJ <span>Mart</span></div>
+  </header>
+
+  <main class="container auth">
+    <h2>Login with OTP</h2>
+    <input id="phone" placeholder="+91XXXXXXXXXX" />
+    <div id="recaptcha-container"></div>
+    <button id="sendOtpBtn" class="btn">Send OTP</button>
+
+    <div class="otp-box">
+      <input id="otp" placeholder="Enter OTP" />
+      <button id="verifyOtpBtn" class="btn grad">Verify & Login</button>
+    </div>
+    <p id="authStatus" class="muted"></p>
+  </main>
+
+  <footer class="footer">Secure login with Firebase</footer>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
