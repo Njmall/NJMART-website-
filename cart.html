@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cart — NJ Mart</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">NJ <span>Mart</span></div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="orders.html">My Orders</a>
+      <a id="loginLink" href="login.html">Login</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h2>Your Cart</h2>
+    <div id="cartItems" class="list"></div>
+
+    <div class="summary card">
+      <div>Subtotal: ₹<span id="subtotal">0</span></div>
+      <div>Delivery: ₹<span id="deliveryFee">0</span></div>
+      <div>Discount: -₹<span id="discount">0</span></div>
+      <div class="total">Total: ₹<span id="total">0</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Delivery Details</h3>
+      <input id="custName" placeholder="Full name" />
+      <input id="custPhone" placeholder="+91XXXXXXXXXX" />
+      <input id="custEmail" placeholder="Email (optional)" />
+      <textarea id="custAddress" placeholder="Address / Landmark"></textarea>
+      <div>
+        <button id="locBtn" class="btn">Use my current location</button>
+        <span id="locStatus" class="muted"></span>
+      </div>
+      <input id="couponCode" placeholder="Coupon code (if any)" />
+      <button id="applyCouponBtn" class="btn">Apply Coupon</button>
+
+      <button id="placeOrderBtn" class="btn grad">Place Order</button>
+    </div>
+  </main>
+
+  <footer class="footer">© 2025 NJ Mart</footer>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
