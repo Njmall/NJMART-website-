@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NJ Mart — Premium Grocery Store</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 🔝 Topbar -->
+  <header class="topbar">
+    <div class="logo">NJ <span>Mart</span></div>
+    <div class="search-wrap">
+      <input id="globalSearch" placeholder="Search for products, vegetables, milk...">
+    </div>
+    <nav class="top-actions">
+      <button id="cartBtn" class="btn">Cart (<span id="cartCount">0</span>)</button>
+      <a class="btn outline" href="login.html">Login</a>
+    </nav>
+  </header>
+
+  <!-- 🎉 Hero Banner -->
+  <section class="hero">
+    <div class="hero-left">
+      <h1>Fresh groceries delivered fast</h1>
+      <p>Daily essentials • Fresh produce • Best prices in town</p>
+      <a class="btn big grad" href="products.html">Start Shopping</a>
+    </div>
+    <div class="hero-right">
+      <img src="assets/hero.png" alt="Groceries">
+    </div>
+  </section>
+
+  <!-- 📦 Categories -->
+  <section class="categories container">
+    <h2>Shop by Category</h2>
+    <div class="cat-grid">
+      <div class="cat">Vegetables</div>
+      <div class="cat">Fruits</div>
+      <div class="cat">Dairy</div>
+      <div class="cat">Snacks</div>
+      <div class="cat">Beverages</div>
+      <div class="cat">Household</div>
+    </div>
+  </section>
+
+  <!-- 🛒 Trending Products -->
+  <section class="products container">
+    <h2>Trending Products</h2>
+    <div id="productGrid" class="grid"></div>
+  </section>
+
+  <!-- 🛒 Cart Panel -->
+  <aside id="cartPanel" class="cart-panel">
+    <h3>Your Cart</h3>
+    <div id="cartList" class="cart-list"></div>
+    <div class="cart-summary">
+      <div>Subtotal: ₹<span id="sub">0</span></div>
+      <div>Delivery: ₹<span id="del">0</span></div>
+      <div class="total">Total: ₹<span id="totalAmt">0</span></div>
+      <button id="checkout" class="btn grad">Checkout</button>
+    </div>
+  </aside>
+
+  <!-- 🔻 Footer -->
+  <footer class="footer">© 2025 NJ Mart • Premium Grocery Store</footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
