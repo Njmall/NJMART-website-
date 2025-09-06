@@ -19,18 +19,20 @@
 
       <!-- Phone Input -->
       <label>Enter Mobile Number</label>
-      <input type="tel" id="phoneNumber" placeholder="+91 9876543210" style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
+      <input type="tel" id="phoneNumber" placeholder="+91 9876543210" 
+             style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
 
       <button id="sendOtpBtn" class="btn grad" style="width:100%;margin-top:10px;">Send OTP</button>
 
       <!-- OTP Input -->
       <div id="otpBox" style="display:none; margin-top:15px;">
         <label>Enter OTP</label>
-        <input type="text" id="otpCode" placeholder="123456" style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
+        <input type="text" id="otpCode" placeholder="123456" 
+               style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
         <button id="verifyOtpBtn" class="btn" style="width:100%;background:#27ae60;">Verify OTP</button>
       </div>
 
-      <!-- Firebase Recaptcha -->
+      <!-- Firebase reCAPTCHA -->
       <div id="recaptcha-container" style="margin-top:15px;"></div>
     </div>
   </section>
@@ -38,10 +40,12 @@
   <!-- 🔻 Footer -->
   <footer class="footer">© 2025 NJ Mart • All Rights Reserved</footer>
 
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+
   <script>
-    // ⚡ Firebase Config (replace with your keys)
+    // ⚡ Replace with your Firebase Config
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -50,34 +54,43 @@
       messagingSenderId: "YOUR_SENDER_ID",
       appId: "YOUR_APP_ID"
     };
-    firebase.initializeApp(firebaseConfig);
 
+    const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // Send OTP
+    // 🔒 Setup invisible reCAPTCHA
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+      'size': 'invisible',
+      'callback': (response) => {
+        console.log("reCAPTCHA verified ✅");
+      }
+    });
+
+    // 📩 Send OTP
     document.getElementById("sendOtpBtn").addEventListener("click", () => {
       const phone = document.getElementById("phoneNumber").value;
-      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
       const appVerifier = window.recaptchaVerifier;
+
       auth.signInWithPhoneNumber(phone, appVerifier)
         .then(confirmationResult => {
           window.confirmationResult = confirmationResult;
-          alert("OTP Sent!");
+          alert("OTP Sent ✅");
           document.getElementById("otpBox").style.display = "block";
         }).catch(error => {
-          alert(error.message);
+          alert("Error: " + error.message);
         });
     });
 
-    // Verify OTP
+    // ✅ Verify OTP
     document.getElementById("verifyOtpBtn").addEventListener("click", () => {
       const code = document.getElementById("otpCode").value;
-      window.confirmationResult.confirm(code).then(result => {
-        alert("Login Successful ✅");
-        window.location.href = "index.html";
-      }).catch(error => {
-        alert("Invalid OTP ❌");
-      });
+      window.confirmationResult.confirm(code)
+        .then(result => {
+          alert("Login Successful 🎉");
+          window.location.href = "index.html";
+        }).catch(error => {
+          alert("Invalid OTP ❌");
+        });
     });
   </script>
 </body>
