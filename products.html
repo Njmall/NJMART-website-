@@ -1,37 +1,118 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NJ Mart — Products</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NJ Mart — All Products</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- 🔝 Topbar -->
   <header class="topbar">
-    <div class="logo">NJ <span>Mart</span></div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a class="active" href="products.html">Products</a>
-      <a href="orders.html">My Orders</a>
-      <a id="loginLink" href="login.html">Login</a>
-      <a href="admin.html" class="admin-link">Admin</a>
-      <a href="cart.html" class="cart-btn">Cart</a>
+    <div class="logo"><a href="index.html">NJ <span>Mart</span></a></div>
+    <div class="search-wrap">
+      <input id="productSearch" placeholder="Search products...">
+    </div>
+    <nav class="top-actions">
+      <button id="cartBtn" class="btn">Cart (<span id="cartCount">0</span>)</button>
+      <a class="btn outline" href="login.html">Login</a>
     </nav>
   </header>
 
-  <section class="subtoolbar">
-    <input id="productSearch" placeholder="Search products..." />
-    <select id="categoryFilter">
-      <option value="">All categories</option>
-    </select>
+  <!-- 🛒 Product Listing -->
+  <section class="container">
+    <h2>All Products</h2>
+
+    <!-- 🔎 Filter Bar -->
+    <div style="margin:15px 0;">
+      <select id="categoryFilter" class="btn outline">
+        <option value="all">All Categories</option>
+        <option value="Vegetables">Vegetables</option>
+        <option value="Fruits">Fruits</option>
+        <option value="Dairy">Dairy</option>
+        <option value="Snacks">Snacks</option>
+        <option value="Beverages">Beverages</option>
+      </select>
+    </div>
+
+    <div id="allProducts" class="grid"></div>
   </section>
 
-  <main class="container">
-    <div id="productsGrid" class="grid"></div>
-  </main>
+  <!-- 🛒 Cart Panel -->
+  <aside id="cartPanel" class="cart-panel">
+    <h3>Your Cart</h3>
+    <div id="cartList" class="cart-list"></div>
+    <div class="cart-summary">
+      <div>Subtotal: ₹<span id="sub">0</span></div>
+      <div>Delivery: ₹<span id="del">0</span></div>
+      <div class="total">Total: ₹<span id="totalAmt">0</span></div>
+      <button id="checkout" class="btn grad">Checkout</button>
+    </div>
+  </aside>
 
-  <footer class="footer">© 2025 NJ Mart</footer>
+  <!-- 🔻 Footer -->
+  <footer class="footer">© 2025 NJ Mart • All Rights Reserved</footer>
 
-  <script type="module" src="app.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // Load All Products
+    function loadAllProducts() {
+      const grid = document.getElementById("allProducts");
+      grid.innerHTML = "";
+      products.forEach(p => {
+        let card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <img src="${p.img}" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <div class="price">₹${p.price}</div>
+          <button onclick="addToCart(${p.id})">Add to Cart</button>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Filter by Category
+    document.getElementById("categoryFilter").addEventListener("change", e => {
+      const val = e.target.value;
+      const grid = document.getElementById("allProducts");
+      grid.innerHTML = "";
+      products
+        .filter(p => val === "all" || p.category === val)
+        .forEach(p => {
+          let card = document.createElement("div");
+          card.className = "product-card";
+          card.innerHTML = `
+            <img src="${p.img}" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <div class="price">₹${p.price}</div>
+            <button onclick="addToCart(${p.id})">Add to Cart</button>
+          `;
+          grid.appendChild(card);
+        });
+    });
+
+    // Live Search
+    document.getElementById("productSearch").addEventListener("input", e => {
+      const val = e.target.value.toLowerCase();
+      const grid = document.getElementById("allProducts");
+      grid.innerHTML = "";
+      products
+        .filter(p => p.name.toLowerCase().includes(val))
+        .forEach(p => {
+          let card = document.createElement("div");
+          card.className = "product-card";
+          card.innerHTML = `
+            <img src="${p.img}" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <div class="price">₹${p.price}</div>
+            <button onclick="addToCart(${p.id})">Add to Cart</button>
+          `;
+          grid.appendChild(card);
+        });
+    });
+
+    loadAllProducts();
+  </script>
 </body>
 </html>
