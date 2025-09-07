@@ -1,97 +1,217 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NJ Mart – Login</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login with Google & Save Profile</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;background:#f5f7fa;margin:0;padding:20px}
+    .card{max-width:520px;margin:30px auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+    h2{margin:0 0 12px}
+    .row{margin:8px 0}
+    label{display:block;margin-bottom:6px;font-size:14px}
+    input, textarea, button{width:100%;padding:10px;border-radius:6px;border:1px solid #ddd;box-sizing:border-box}
+    button{cursor:pointer;border:0;background:#27ae60;color:#fff;font-weight:600}
+    .btnGoogle{background:#1a73e8;margin-bottom:6px}
+    .small{font-size:13px;color:#555;margin-top:8px}
+    #message{margin-top:10px;font-weight:600}
+  </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="logo"><a href="index.html">NJ <span>Mart</span></a></div>
-  </header>
 
-  <section class="container" style="max-width:400px; margin-top:40px;">
-    <h2 style="text-align:center; margin-bottom:20px;">Login with Google</h2>
+  <div class="card">
+    <h2>NJ Mart — Login</h2>
 
-    <!-- Google Sign In Button -->
-    <div style="text-align:center;">
-      <button id="googleLoginBtn" class="btn grad" style="width:100%; padding:12px;">
-        Sign in with Google
-      </button>
+    <div id="notLogged">
+      <button id="btnGoogle" class="btnGoogle">Sign in with Google</button>
+      <div class="small">Google से साइन इन करें — उसके बाद आपका profile store कर सकेंगे.</div>
     </div>
 
-    <!-- Extra Details Form (hidden before login) -->
-    <div id="detailsForm" style="display:none; margin-top:25px;">
-      <h3>Complete Your Profile</h3>
-      <label>Phone Number</label>
-      <input type="tel" id="phone" placeholder="+91 9876543210"
-        style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
-
-      <label>Address</label>
-      <textarea id="address" placeholder="Enter your address"
-        style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;"></textarea>
-
-      <button id="saveDetailsBtn" class="btn" style="width:100%; background:#27ae60;">Save</button>
+    <div id="logged" style="display:none">
+      <div class="small">Signed in as: <span id="userEmail"></span></div>
+      <div style="margin-top:12px">
+        <label>Name</label>
+        <input id="name" type="text" placeholder="Full name" />
+      </div>
+      <div class="row">
+        <label>Phone (with country code)</label>
+        <input id="phone" type="tel" placeholder="+91 9876543210" />
+      </div>
+      <div class="row">
+        <label>Address</label>
+        <textarea id="address" rows="3" placeholder="Enter address"></textarea>
+      </div>
+      <div class="row">
+        <button id="getLocation">Get Current Location</button>
+      </div>
+      <div class="row">
+        <label>Latitude</label>
+        <input id="lat" type="text" readonly />
+      </div>
+      <div class="row">
+        <label>Longitude</label>
+        <input id="lng" type="text" readonly />
+      </div>
+      <div class="row">
+        <button id="saveProfile">Save Profile</button>
+      </div>
+      <div style="margin-top:8px">
+        <button id="signOut" style="background:#e74c3c">Sign Out</button>
+      </div>
     </div>
-  </section>
 
-  <footer class="footer">© 2025 NJ Mart • All Rights Reserved</footer>
+    <div id="message"></div>
+  </div>
 
-  <!-- Firebase v8 SDK -->
+  <!-- Firebase v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <script>
-    // Firebase Config
-    var firebaseConfig = {
+    // ====== Replace with your firebase config if different ======
+    const firebaseConfig = {
       apiKey: "AIzaSyCbf19k8pLFh-9UQz8sQRim2rPYTlqaEL8",
       authDomain: "njmartonline.firebaseapp.com",
       projectId: "njmartonline",
-      storageBucket: "njmartonline.appspot.com",
+      storageBucket: "njmartonline.firebasestorage.app",
       messagingSenderId: "594505763627",
       appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
     };
     firebase.initializeApp(firebaseConfig);
-    var db = firebase.firestore();
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    // Google Login
-    document.getElementById("googleLoginBtn").addEventListener("click", function () {
-      var provider = new firebase.auth.GoogleAuthProvider();
-      firebase.auth().signInWithPopup(provider).then(function(result) {
-        var user = result.user;
-        alert("Welcome " + user.displayName + " 🎉");
-        document.getElementById("detailsForm").style.display = "block";
-      }).catch(function(error) {
-        alert("Login Failed ❌ " + error.message);
-      });
+    // UI
+    const btnGoogle = document.getElementById('btnGoogle');
+    const notLogged = document.getElementById('notLogged');
+    const logged = document.getElementById('logged');
+    const userEmail = document.getElementById('userEmail');
+    const nameEl = document.getElementById('name');
+    const phoneEl = document.getElementById('phone');
+    const addrEl = document.getElementById('address');
+    const latEl = document.getElementById('lat');
+    const lngEl = document.getElementById('lng');
+    const getLocationBtn = document.getElementById('getLocation');
+    const saveBtn = document.getElementById('saveProfile');
+    const signOutBtn = document.getElementById('signOut');
+    const messageDiv = document.getElementById('message');
+
+    // Google Sign-in
+    btnGoogle.addEventListener('click', () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(result => {
+          // signed in
+          console.log('Signed in:', result.user);
+        })
+        .catch(err => {
+          console.error('Google sign-in error', err);
+          showMessage('Google sign-in failed: ' + (err.message || err), true);
+        });
     });
 
-    // Save extra details
-    document.getElementById("saveDetailsBtn").addEventListener("click", function () {
-      var phone = document.getElementById("phone").value;
-      var address = document.getElementById("address").value;
-      var user = firebase.auth().currentUser;
+    // Auth state change
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        // show profile form
+        notLogged.style.display = 'none';
+        logged.style.display = 'block';
+        userEmail.textContent = user.email || user.phoneNumber || user.displayName || user.uid;
 
-      if (!phone) {
-        alert("Please enter phone number 📱");
+        // try prefill if customers/{uid} exists
+        const uid = user.uid;
+        db.collection('customers').doc(uid).get()
+          .then(doc => {
+            if (doc.exists) {
+              const data = doc.data();
+              if (data.name) nameEl.value = data.name;
+              if (data.phone) phoneEl.value = data.phone;
+              if (data.address) addrEl.value = data.address;
+              if (data.location) {
+                latEl.value = data.location.lat || '';
+                lngEl.value = data.location.lng || '';
+              }
+            }
+          })
+          .catch(err => {
+            console.error('prefill error', err);
+          });
+
+      } else {
+        // not signed in
+        notLogged.style.display = 'block';
+        logged.style.display = 'none';
+        userEmail.textContent = '';
+      }
+    });
+
+    // Get current location
+    getLocationBtn.addEventListener('click', () => {
+      showMessage('Getting current location...');
+      if (!navigator.geolocation) {
+        showMessage('Geolocation not supported by this browser.', true);
         return;
       }
-
-      db.collection("customers").doc(user.uid).set({
-        name: user.displayName,
-        email: user.email,
-        phone: phone,
-        address: address,
-        createdAt: new Date()
-      }).then(function () {
-        alert("Details saved ✅");
-        window.location.href = "index.html"; // redirect after save
-      }).catch(function(error) {
-        alert("Error saving: " + error.message);
-      });
+      navigator.geolocation.getCurrentPosition(pos => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        latEl.value = lat;
+        lngEl.value = lng;
+        showMessage('Location fetched.');
+      }, err => {
+        console.error('geolocation error', err);
+        showMessage('Unable to get location: ' + err.message, true);
+      }, { enableHighAccuracy: true, timeout: 15000 });
     });
+
+    // Save profile
+    saveBtn.addEventListener('click', () => {
+      const user = auth.currentUser;
+      if (!user) {
+        showMessage('Please sign in first.', true);
+        return;
+      }
+      const uid = user.uid;
+      const data = {
+        name: nameEl.value.trim(),
+        phone: phoneEl.value.trim(),
+        address: addrEl.value.trim(),
+        email: user.email || null,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      // optional location
+      const lat = latEl.value.trim();
+      const lng = lngEl.value.trim();
+      if (lat && lng) {
+        data.location = { lat: parseFloat(lat), lng: parseFloat(lng) };
+      }
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+      db.collection('customers').doc(uid).set(data, { merge: true })
+        .then(() => {
+          showMessage('Profile saved successfully ✅');
+        })
+        .catch(err => {
+          console.error('save error', err);
+          showMessage('Error saving profile: ' + (err.message || err), true);
+        })
+        .finally(() => {
+          saveBtn.disabled = false;
+          saveBtn.textContent = 'Save Profile';
+        });
+    });
+
+    // Sign out
+    signOutBtn.addEventListener('click', () => {
+      auth.signOut();
+    });
+
+    function showMessage(msg, isError = false) {
+      messageDiv.style.color = isError ? '#c0392b' : '#27ae60';
+      messageDiv.textContent = msg;
+    }
   </script>
 </body>
 </html>
