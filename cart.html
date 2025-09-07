@@ -3,131 +3,223 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NJ Mart - Cart</title>
+  <title>Cart — NJ Mart</title>
   <style>
-    body{font-family:Arial,Helvetica,sans-serif;background:#f5f7fa;margin:0;padding:20px;}
-    .cart-container{max-width:600px;margin:30px auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.08);}
-    h2{margin-top:0;}
-    .cart-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #eee;}
-    .cart-item:last-child{border-bottom:0;}
-    .total{font-size:18px;font-weight:bold;margin:15px 0;text-align:right;}
-    button{padding:10px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:600;}
-    .btn-primary{background:#27ae60;color:#fff;}
-    .btn-secondary{background:#ddd;color:#333;}
-    .actions{display:flex;justify-content:space-between;margin-top:20px;}
+    :root{
+      --bg:#f6f7fb; --card:#fff; --primary:#2fa360; --danger:#e04b3a;
+      --muted:#777; --container:1000px;
+    }
+    body{font-family:Inter,system-ui,Arial; background:var(--bg); margin:0; color:#111;}
+    .wrap{max-width:var(--container); margin:28px auto; padding:0 16px;}
+    header{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;}
+    header h1{font-size:20px; margin:0;}
+    .card{background:var(--card); border-radius:10px; box-shadow:0 6px 18px rgba(20,20,40,0.06); padding:18px;}
+    .grid{display:grid; grid-template-columns:1fr 360px; gap:16px;}
+    .cart-list{min-height:160px;}
+    .cart-item{display:flex; gap:12px; align-items:center; padding:12px; border-radius:8px; border:1px solid #eee; margin-bottom:12px;}
+    .cart-item img{width:86px; height:86px; object-fit:cover; border-radius:6px;}
+    .ci-body{flex:1;}
+    .ci-title{font-weight:600; margin:0 0 6px;}
+    .ci-meta{color:var(--muted); font-size:13px;}
+    .qty{display:flex; align-items:center; gap:8px; margin-top:8px;}
+    .btn-qty{width:30px;height:30px;border-radius:6px;border:1px solid #ddd; background:#fff; cursor:pointer;}
+    .btn-remove{background:transparent;border:none;color:var(--danger); font-weight:700; cursor:pointer;}
+    .price{font-weight:700;}
+    .summary{padding:14px; border-radius:8px;}
+    .row{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed #eee;}
+    .row.total{font-weight:700; border-bottom:none; font-size:18px;}
+    .actions{display:flex; gap:10px; margin-top:14px;}
+    .btn{padding:12px 14px;border-radius:8px;border:none; cursor:pointer; font-weight:600;}
+    .btn-primary{background:var(--primary); color:#fff;}
+    .btn-ghost{background:#fff;border:1px solid #e6e6e6;}
+    .empty{padding:36px;text-align:center;color:var(--muted);}
+    @media(max-width:880px){
+      .grid{grid-template-columns:1fr; }
+      .summary{margin-top:12px;}
+    }
   </style>
 </head>
 <body>
+  <div class="wrap">
+    <header>
+      <h1>NJ Mart — Cart</h1>
+      <div>
+        <button class="btn btn-ghost" id="continueBtn">⟵ Continue Shopping</button>
+      </div>
+    </header>
 
-  <div class="cart-container">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
-      <h2>Your Cart</h2>
-      <button class="btn-secondary" onclick="window.location.href='products.html'">✕</button>
+    <div class="card grid">
+      <div>
+        <div class="card cart-list" id="cartListWrap">
+          <h3 style="margin-top:0">Your Cart</h3>
+          <div id="cartList"></div>
+          <div id="emptyNotice" class="empty" style="display:none;">
+            Your cart is empty. <br><br>
+            <button class="btn btn-primary" id="shopNow">Start Shopping</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="card summary" id="summaryCard">
+        <h3 style="margin:0 0 8px">Order Summary</h3>
+        <div class="row"><div>Items</div><div id="summaryItems">0</div></div>
+        <div class="row"><div>Subtotal</div><div id="summarySubtotal">₹0.00</div></div>
+        <div class="row"><div>GST (5%)</div><div id="summaryTax">₹0.00</div></div>
+        <div class="row total"><div>Grand Total</div><div id="summaryTotal">₹0.00</div></div>
+
+        <div class="actions">
+          <button class="btn btn-ghost" id="clearCartBtn">Clear Cart</button>
+          <button class="btn btn-primary" id="checkoutBtn">Proceed to Checkout</button>
+        </div>
+      </aside>
     </div>
-
-    <div id="cartItems"></div>
-    <div id="cartTotal" class="total"></div>
-
-    <div class="actions">
-      <button class="btn-secondary" onclick="window.location.href='products.html'">← Continue Shopping</button>
-      <button id="confirmOrderBtn" class="btn-primary">Confirm Order</button>
-    </div>
-
-    <div id="message" style="margin-top:10px;font-weight:600;"></div>
   </div>
 
-  <!-- Firebase v8 -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
   <script>
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyCbf19k8pLFh-9UQz8sQRim2rPYTlqaEL8",
-      authDomain: "njmartonline.firebaseapp.com",
-      projectId: "njmartonline",
-      storageBucket: "njmartonline.appspot.com",
-      messagingSenderId: "594505763627",
-      appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    // ---------- Configuration ----------
+    const CART_KEY = 'nj_cart'; // change if your project uses different key
+    const CURRENCY = '₹';
 
-    const cartItemsEl = document.getElementById("cartItems");
-    const cartTotalEl = document.getElementById("cartTotal");
-    const confirmBtn = document.getElementById("confirmOrderBtn");
-    const msg = document.getElementById("message");
-
-    // Load cart from localStorage
-    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-    function renderCart() {
-      cartItemsEl.innerHTML = "";
-      let total = 0;
-      if (cart.length === 0) {
-        cartItemsEl.innerHTML = "<p>Your cart is empty 🛒</p>";
-        cartTotalEl.textContent = "";
-        confirmBtn.disabled = true;
-        return;
-      }
-      cart.forEach((item, i) => {
-        total += item.price * item.qty;
-        const div = document.createElement("div");
-        div.className = "cart-item";
-        div.innerHTML = `
-          <span>${item.name} (x${item.qty})</span>
-          <span>₹${item.price * item.qty}</span>
-        `;
-        cartItemsEl.appendChild(div);
-      });
-      cartTotalEl.textContent = "Total: ₹" + total;
-      confirmBtn.disabled = false;
+    // ---------- Helpers ----------
+    function readCart(){
+      try{
+        const raw = localStorage.getItem(CART_KEY);
+        if(!raw) return [];
+        return JSON.parse(raw) || [];
+      }catch(e){ console.error('cart read error', e); return []; }
+    }
+    function saveCart(items){
+      localStorage.setItem(CART_KEY, JSON.stringify(items));
+      renderCart();
+    }
+    function formatPrice(n){
+      return CURRENCY + (Number(n) || 0).toFixed(2);
     }
 
-    renderCart();
+    // ---------- Render ----------
+    function renderCart(){
+      const listWrap = document.getElementById('cartList');
+      const emptyNotice = document.getElementById('emptyNotice');
+      const items = readCart();
 
-    // Confirm order
-    confirmBtn.addEventListener("click", async () => {
-      const user = auth.currentUser;
-      if (!user) {
-        alert("⚠️ Please login first to confirm your order");
-        window.location.href = "/login.html";
-        return;
+      // summary values
+      let subtotal = 0;
+      items.forEach(it => subtotal += (it.price * (it.qty || 1)));
+
+      // show list
+      listWrap.innerHTML = '';
+      if(items.length === 0){
+        emptyNotice.style.display = 'block';
+        document.getElementById('summaryCard').style.opacity = '0.6';
+      } else {
+        emptyNotice.style.display = 'none';
+        document.getElementById('summaryCard').style.opacity = '1';
+        items.forEach((it, idx) => {
+          const div = document.createElement('div');
+          div.className = 'cart-item';
+          div.innerHTML = `
+            <img src="${it.image || 'https://via.placeholder.com/200'}" alt="">
+            <div class="ci-body">
+              <div style="display:flex; justify-content:space-between; align-items:center">
+                <div>
+                  <div class="ci-title">${escapeHtml(it.name || 'Product')}</div>
+                  <div class="ci-meta">${it.category || ''}</div>
+                </div>
+                <div class="price">${formatPrice(it.price)}</div>
+              </div>
+
+              <div class="qty">
+                <button class="btn-qty" data-act="dec" data-idx="${idx}">-</button>
+                <div style="min-width:36px; text-align:center">${it.qty||1}</div>
+                <button class="btn-qty" data-act="inc" data-idx="${idx}">+</button>
+
+                <div style="flex:1"></div>
+                <button class="btn-remove" data-idx="${idx}" title="Remove">× Remove</button>
+              </div>
+            </div>
+          `;
+          listWrap.appendChild(div);
+        });
       }
 
-      const profileRef = db.collection("customers").doc(user.uid);
-      const snap = await profileRef.get();
-      if (!snap.exists) {
-        alert("⚠️ Please complete your profile before confirming order");
-        window.location.href = "/profile.html";
-        return;
-      }
+      // update summary
+      const tax = subtotal * 0.05; // GST 5% example
+      const total = subtotal + tax;
+      document.getElementById('summaryItems').innerText = items.length;
+      document.getElementById('summarySubtotal').innerText = formatPrice(subtotal);
+      document.getElementById('summaryTax').innerText = formatPrice(tax);
+      document.getElementById('summaryTotal').innerText = formatPrice(total);
 
-      const orderData = {
-        items: cart,
-        total: cart.reduce((sum, i) => sum + i.price * i.qty, 0),
-        status: "pending",
-        userId: user.uid,
-        createdAt: new Date()
-      };
+      // attach listeners
+      attachListeners();
+    }
 
-      try {
-        const orderId = "order_" + Date.now();
-        await db.collection("orders").doc(orderId).set(orderData);
-        msg.style.color = "#27ae60";
-        msg.textContent = "✅ Order placed successfully!";
-        localStorage.removeItem("cart");
-        setTimeout(() => {
-          window.location.href = "/orders.html"; // redirect to orders page
-        }, 1500);
-      } catch (err) {
-        console.error(err);
-        msg.style.color = "#c0392b";
-        msg.textContent = "❌ Error placing order: " + err.message;
+    function attachListeners(){
+      document.querySelectorAll('.btn-qty').forEach(btn=>{
+        btn.onclick = (e)=>{
+          const act = btn.getAttribute('data-act');
+          const idx = Number(btn.getAttribute('data-idx'));
+          changeQty(idx, act === 'inc' ? 1 : -1);
+        };
+      });
+      document.querySelectorAll('.btn-remove').forEach(btn=>{
+        btn.onclick = ()=>{
+          const idx = Number(btn.getAttribute('data-idx'));
+          removeItem(idx);
+        };
+      });
+    }
+
+    function changeQty(idx, delta){
+      const items = readCart();
+      if(!items[idx]) return;
+      items[idx].qty = Math.max(1, (items[idx].qty || 1) + delta);
+      saveCart(items);
+    }
+    function removeItem(idx){
+      const items = readCart();
+      if(!items[idx]) return;
+      items.splice(idx,1);
+      saveCart(items);
+    }
+
+    // Clear cart
+    document.getElementById('clearCartBtn').addEventListener('click', ()=>{
+      if(confirm('Clear all items from cart?')) {
+        localStorage.removeItem(CART_KEY);
+        renderCart();
       }
     });
+
+    // Continue shopping
+    document.getElementById('continueBtn').addEventListener('click', ()=>{
+      window.location.href = 'index.html'; // change if your products page has different path
+    });
+    document.getElementById('shopNow').addEventListener('click', ()=> window.location.href = 'index.html');
+
+    // Checkout button
+    document.getElementById('checkoutBtn').addEventListener('click', ()=>{
+      const items = readCart();
+      if(items.length === 0){ alert('Cart is empty. Add products first.'); return; }
+      // Save quick snapshot for checkout page
+      localStorage.setItem('nj_checkout', JSON.stringify({items, createdAt: Date.now()}));
+      window.location.href = 'checkout.html'; // create checkout.html next
+    });
+
+    // small X remove from item area: already included
+
+    // escape for safety (tiny)
+    function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+
+    // init
+    renderCart();
+
+    // expose helper to test from console (optional)
+    window.__nj_cart = {
+      read: readCart,
+      save: saveCart,
+      clear: ()=>{ localStorage.removeItem(CART_KEY); renderCart(); }
+    };
   </script>
 </body>
 </html>
