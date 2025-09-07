@@ -5,216 +5,256 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>NJ Mart - Profile</title>
   <style>
-    body{font-family:Inter,system-ui,Arial,sans-serif;background:#f6f7f9;color:#222;margin:0}
-    header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-    header .brand{font-weight:700;color:#0b7a50;cursor:pointer}
-    nav button{margin-left:8px;padding:8px 12px;border-radius:6px;border:1px solid #ddd;background:#fff;cursor:pointer}
-    .container{max-width:880px;margin:28px auto;padding:20px;background:#fff;border-radius:10px;box-shadow:0 6px 20px rgba(12,30,50,.06)}
-    h2{margin:0 0 16px 0}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    label{display:block;font-size:13px;margin-bottom:6px;color:#333}
-    input[type="text"], textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;font-size:14px}
-    textarea{min-height:90px;resize:vertical}
-    .btn{display:inline-block;padding:10px 16px;border-radius:8px;border:none;background:#0b7a50;color:#fff;cursor:pointer}
-    .btn.warn{background:#e74c3c}
-    .btn.ghost{background:#fff;color:#0b7a50;border:1px solid #0b7a50}
-    .actions{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
-    #saveMessage{margin-top:12px;font-weight:600}
+    body{font-family:Inter,Arial,Helvetica,sans-serif;background:#f6f8fa;margin:0;padding:20px;}
+    .container{max-width:760px;margin:20px auto;background:#fff;padding:24px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.07);}
+    h2{margin:0 0 12px;color:#0b6;}
+    label{display:block;margin-top:10px;font-size:14px;color:#333}
+    input[type="text"], input[type="tel"], textarea{
+      width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;margin-top:6px;box-sizing:border-box;
+    }
+    .row{display:flex;gap:12px}
+    .row > *{flex:1}
+    button{display:inline-block;padding:10px 16px;border-radius:8px;border:0;background:#2fa84f;color:#fff;cursor:pointer;margin-top:12px}
+    .btn-danger{background:#d9534f}
     .small{font-size:13px;color:#666;margin-top:8px}
-    footer{padding:18px;text-align:center;color:#888}
-    @media(max-width:700px){.grid{grid-template-columns:1fr}}
+    .actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+    .status{margin-top:10px;padding:8px;border-radius:8px;background:#eef9f0;color:#1b7a2a;display:none}
+    .hidden{display:none}
+    nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .logo{font-weight:700;color:#0b6}
+    .link-btn{background:#0070f3;padding:8px 12px;border-radius:8px;color:white;border:0}
   </style>
 </head>
 <body>
-
-  <!-- Header / Nav -->
-  <header>
-    <div class="brand" onclick="location.href='index.html'">NJ Mart</div>
-    <nav>
-      <button onclick="location.href='index.html'">Home</button>
-      <button onclick="location.href='products.html'">Products</button>
-      <button onclick="location.href='orders.html'">My Orders</button>
-      <button id="accountBtn" onclick="location.href='profile.html'">My Account</button>
-      <button id="logoutBtn" class="warn">Logout</button>
-    </nav>
-  </header>
-
   <div class="container">
+    <nav>
+      <div class="logo">NJ Mart</div>
+      <div>
+        <button id="homeBtn" class="link-btn">Home</button>
+      </div>
+    </nav>
+
     <h2>Complete Your Profile</h2>
-    <p class="small">Login hona zaruri hai. Agar signed-in nahi ho to aapko <a href="login.html">login page</a> par bhejenge.</p>
+    <div id="signedOutNotice" class="small">Sign in with Google to continue.</div>
 
-    <div id="userInfo" style="margin-bottom:14px;"></div>
+    <div id="userCard" class="hidden">
+      <div class="small">Signed in as <span id="userEmail"></span></div>
 
-    <!-- Profile Form -->
-    <div>
-      <div class="grid">
+      <label>Full Name</label>
+      <input id="name" type="text" placeholder="Your name" />
+
+      <label>Phone Number (with country code)</label>
+      <input id="phone" type="tel" placeholder="+91 98xxxxxxx" />
+
+      <label>Address</label>
+      <textarea id="address" rows="3" placeholder="Enter address, city, landmark..."></textarea>
+
+      <div class="row">
         <div>
-          <label for="name">Name</label>
-          <input id="name" type="text" placeholder="Full name" />
+          <label>Latitude</label>
+          <input id="lat" type="text" placeholder="Latitude" />
         </div>
-
         <div>
-          <label for="phone">Phone (with country code)</label>
-          <input id="phone" type="text" placeholder="+91 9876543210" />
-        </div>
-
-        <div style="grid-column:1 / -1">
-          <label for="address">Address</label>
-          <textarea id="address" placeholder="Shop / house / locality, city"></textarea>
-        </div>
-
-        <div>
-          <label for="lat">Latitude</label>
-          <input id="lat" type="text" placeholder="eg. 26.9" />
-        </div>
-
-        <div>
-          <label for="lng">Longitude</label>
-          <input id="lng" type="text" placeholder="eg. 75.78" />
+          <label>Longitude</label>
+          <input id="lng" type="text" placeholder="Longitude" />
         </div>
       </div>
 
       <div class="actions">
-        <button id="locBtn" class="btn ghost">Get Current Location</button>
-        <button id="saveBtn" class="btn">Save Profile</button>
-        <button id="gotoProducts" class="btn" style="background:#2d9cdb">Go to Products</button>
-        <button id="signInGoogle" class="btn" style="background:#fff;color:#222;border:1px solid #ddd">Sign in with Google</button>
+        <button id="getLocationBtn">Get Current Location</button>
+        <button id="saveBtn">Save Profile</button>
+        <button id="signOutBtn" class="btn-danger">Sign Out</button>
       </div>
 
-      <div id="saveMessage"></div>
+      <div id="status" class="status">Profile saved successfully ✔</div>
+    </div>
+
+    <div style="margin-top:18px">
+      <button id="signinBtn">Sign in with Google</button>
+      <div class="small" style="margin-top:10px">After sign-in you can save profile and continue to shop.</div>
     </div>
   </div>
 
-  <footer>© 2025 NJ Mart • All Rights Reserved</footer>
-
-  <!-- Firebase SDKs (v8) -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-  <script>
-    // ---------- 1) PASTE YOUR FIREBASE CONFIG HERE ----------
-    // Replace the object below with YOUR firebaseConfig (from Firebase console -> project settings -> web app)
+  <!-- Firebase v9 (modular) SDK via CDN -->
+  <script type="module">
+    // -----------------------------
+    // IMPORTANT: replace this config object with YOUR project's config
+    // Get it from Firebase Console -> Project settings -> SDK setup and configuration -> Firebase SDK snippet (config)
+    // -----------------------------
     const firebaseConfig = {
-      // --- REPLACE WITH YOUR FIREBASE CONFIG ---
-      // example:
-      // apiKey: "AIzaSy...",
-      // authDomain: "your-project.firebaseapp.com",
-      // projectId: "your-project",
-      // storageBucket: "your-project.appspot.com",
-      // messagingSenderId: "1234567890",
-      // appId: "1:123456:web:abcd"
+      /* --- REPLACE WITH YOUR FIREBASE CONFIG --- */
+      /* Example:
+      apiKey: "AIzaSyXXXXXX",
+      authDomain: "njmartonline.firebaseapp.com",
+      projectId: "njmartonline",
+      storageBucket: "njmartonline.appspot.com",
+      messagingSenderId: "1234567890",
+      appId: "1:1234567890:web:abcdef123456"
+      */
     };
 
+    // import modular functions
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
     // init
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
 
-    // DOM refs
-    const nameEl = document.getElementById('name');
-    const phoneEl = document.getElementById('phone');
-    const addressEl = document.getElementById('address');
-    const latEl = document.getElementById('lat');
-    const lngEl = document.getElementById('lng');
-    const locBtn = document.getElementById('locBtn');
+    // UI elements
+    const signinBtn = document.getElementById('signinBtn');
+    const signOutBtn = document.getElementById('signOutBtn');
+    const userCard = document.getElementById('userCard');
+    const userEmail = document.getElementById('userEmail');
+    const nameInput = document.getElementById('name');
+    const phoneInput = document.getElementById('phone');
+    const addressInput = document.getElementById('address');
+    const latInput = document.getElementById('lat');
+    const lngInput = document.getElementById('lng');
+    const getLocationBtn = document.getElementById('getLocationBtn');
     const saveBtn = document.getElementById('saveBtn');
-    const saveMessage = document.getElementById('saveMessage');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const userInfo = document.getElementById('userInfo');
-    const gotoProducts = document.getElementById('gotoProducts');
-    const signInGoogle = document.getElementById('signInGoogle');
+    const statusBox = document.getElementById('status');
+    const signedOutNotice = document.getElementById('signedOutNotice');
+    const homeBtn = document.getElementById('homeBtn');
 
-    // helper: show message
-    function showMsg(text, color='#27ae60') {
-      saveMessage.style.color = color;
-      saveMessage.innerHTML = text;
+    // handle sign in
+    signinBtn.addEventListener('click', async () => {
+      try {
+        await signInWithPopup(auth, provider);
+        // onAuthStateChanged will handle UI
+      } catch (err) {
+        alert("Sign-in failed: " + (err.message || err));
+        console.error(err);
+      }
+    });
+
+    // handle sign out
+    signOutBtn.addEventListener('click', async () => {
+      await signOut(auth);
+    });
+
+    // listen auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        signedOutNotice.style.display = 'none';
+        userCard.classList.remove('hidden');
+        userEmail.textContent = user.email || user.phoneNumber || user.uid;
+        // load profile from firestore if exists
+        loadProfile(user.uid);
+      } else {
+        signedOutNotice.style.display = 'block';
+        userCard.classList.add('hidden');
+        userEmail.textContent = '';
+      }
+    });
+
+    // load profile
+    async function loadProfile(uid) {
+      try {
+        const d = doc(db, "customers", uid);
+        const snap = await getDoc(d);
+        if (snap.exists()) {
+          const data = snap.data();
+          nameInput.value = data.name || '';
+          phoneInput.value = data.phone || '';
+          addressInput.value = data.address || '';
+          latInput.value = data.latitude || '';
+          lngInput.value = data.longitude || '';
+        } else {
+          // empty form
+          nameInput.value = '';
+          phoneInput.value = '';
+          addressInput.value = '';
+          latInput.value = '';
+          lngInput.value = '';
+        }
+      } catch (err) {
+        console.error("Load profile error:", err);
+      }
     }
 
-    // redirect helper
-    gotoProducts.addEventListener('click', ()=> location.href = 'products.html');
-
-    // Google Sign In
-    signInGoogle.addEventListener('click', () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).catch(err => {
-        console.error(err);
-        showMsg('Google Sign-in failed: ' + err.message, '#c0392b');
-      });
-    });
-
-    // Logout
-    logoutBtn.addEventListener('click', ()=> {
-      auth.signOut().then(()=> location.href='index.html');
-    });
-
-    // Get current location
-    locBtn.addEventListener('click', ()=> {
-      if (!navigator.geolocation) { showMsg('Geolocation not supported by this browser', '#c0392b'); return; }
-      showMsg('Fetching location...', '#444');
-      navigator.geolocation.getCurrentPosition(pos => {
-        latEl.value = pos.coords.latitude;
-        lngEl.value = pos.coords.longitude;
-        showMsg('Location added ✅');
-      }, err => {
-        console.error(err);
-        showMsg('Unable to get location: ' + err.message, '#c0392b');
-      }, {enableHighAccuracy:true, timeout:10000});
-    });
-
-    // Save profile to Firestore
+    // save profile
     saveBtn.addEventListener('click', async () => {
       const user = auth.currentUser;
-      if (!user) { 
-        showMsg('Please login first (click Sign in with Google)', '#c0392b');
-        return;
-      }
+      if (!user) { alert("Please sign in first."); return; }
 
-      const profileData = {
-        name: nameEl.value.trim() || null,
-        phone: phoneEl.value.trim() || null,
-        address: addressEl.value.trim() || null,
-        latitude: latEl.value ? parseFloat(latEl.value) : null,
-        longitude: lngEl.value ? parseFloat(lngEl.value) : null,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      const payload = {
+        name: nameInput.value.trim(),
+        phone: phoneInput.value.trim(),
+        address: addressInput.value.trim(),
+        latitude: latInput.value.trim(),
+        longitude: lngInput.value.trim(),
+        updatedAt: new Date().toISOString()
       };
 
       try {
-        await db.collection('customers').doc(user.uid).set(profileData, { merge: true });
-        showMsg('Profile saved successfully ✅ — Redirecting to Products in 2s...');
-        setTimeout(()=> location.href = 'products.html', 2000);
+        await setDoc(doc(db, "customers", user.uid), payload, { merge: true });
+        showStatus("Profile saved successfully ✔");
+        // optional: redirect to home or account page after save
+        // setTimeout(() => window.location.href = "index.html", 800);
       } catch (err) {
-        console.error(err);
-        showMsg('Error saving profile: ' + err.message, '#c0392b');
+        console.error("Save failed:", err);
+        alert("Error saving profile: " + (err.message || err));
       }
     });
 
-    // Auth state listener: load profile if logged in
-    auth.onAuthStateChanged(async (user) => {
-      if (!user) {
-        userInfo.innerHTML = '<strong>Not signed in.</strong> Please sign in with Google to edit your profile.';
-        nameEl.value = phoneEl.value = addressEl.value = latEl.value = lngEl.value = '';
+    // show status
+    function showStatus(msg){
+      statusBox.textContent = msg;
+      statusBox.style.display = 'block';
+      setTimeout(()=> statusBox.style.display = 'none', 2500);
+    }
+
+    // geolocation
+    getLocationBtn.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        alert("Geolocation not supported by this browser.");
         return;
       }
-
-      userInfo.innerHTML = `<strong>Signed in as:</strong> ${user.displayName || user.email} (${user.email || ''})`;
-      // load existing profile from Firestore
-      try {
-        const doc = await db.collection('customers').doc(user.uid).get();
-        if (doc.exists) {
-          const d = doc.data();
-          if (d.name) nameEl.value = d.name;
-          if (d.phone) phoneEl.value = d.phone;
-          if (d.address) addressEl.value = d.address;
-          if (d.latitude) latEl.value = d.latitude;
-          if (d.longitude) lngEl.value = d.longitude;
-        }
-      } catch (err) {
-        console.error('load profile error', err);
-      }
+      getLocationBtn.disabled = true;
+      getLocationBtn.textContent = "Locating...";
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        latInput.value = lat;
+        lngInput.value = lng;
+        getLocationBtn.disabled = false;
+        getLocationBtn.textContent = "Get Current Location";
+        showStatus("Location filled ✔");
+      }, (err) => {
+        alert("Location error: " + err.message);
+        getLocationBtn.disabled = false;
+        getLocationBtn.textContent = "Get Current Location";
+      }, { enableHighAccuracy: true, timeout: 10000 });
     });
 
-  </script>
+    // Home button -> go to index.html (adjust if needed)
+    homeBtn.addEventListener('click', ()=> {
+      window.location.href = "index.html";
+    });
 
+    // quick keyboard save (Ctrl+S)
+    window.addEventListener('keydown', (e)=> {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        saveBtn.click();
+      }
+    });
+  </script>
 </body>
-  </html>
+</html>
