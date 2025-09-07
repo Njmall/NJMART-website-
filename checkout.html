@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Checkout — NJ Mart</title>
+  <style>
+    :root{--bg:#f6f7fb; --card:#fff; --primary:#2fa360; --muted:#707070; --danger:#e04b3a;}
+    body{font-family:Inter,system-ui,Arial; background:var(--bg); margin:0; color:#111;}
+    .wrap{max-width:980px;margin:28px auto;padding:0 16px;}
+    .card{background:var(--card); border-radius:10px; padding:18px; box-shadow:0 6px 18px rgba(20,20,40,0.06);}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    h1{font-size:20px;margin:0}
+    .grid{display:grid;grid-template-columns:1fr 320px;gap:16px;}
+    .items{max-height:520px; overflow:auto}
+    .item{display:flex;gap:12px;align-items:center;padding:12px;border-radius:8px;border:1px solid #eee;margin-bottom:10px}
+    .item img{width:70px;height:70px;object-fit:cover;border-radius:6px}
+    .price{font-weight:700}
+    .summary .row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed #eee}
+    .btn{display:inline-block;padding:12px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-ghost{background:#fff;border:1px solid #ddd}
+    .muted{color:var(--muted)}
+    .note{font-size:13px;color:#666;margin-top:8px}
+    @media(max-width:840px){ .grid{grid-template-columns:1fr} .summary{order:2} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>NJ Mart — Checkout</h1>
+      <div><button class="btn btn-ghost" id="backBtn">⟵ Back to Shop</button></div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <h3 style="margin-top:0">Delivery Details</h3>
+        <div id="userSection" class="muted">Checking login status...</div>
+
+        <div style="margin-top:14px">
+          <h3 style="margin:8px 0">Items</h3>
+          <div id="itemsWrap" class="items"></div>
+          <div id="noItems" class="muted" style="display:none">No items in checkout. Add products first.</div>
+        </div>
+
+        <div style="margin-top:14px">
+          <h3 style="margin:8px 0">Payment (demo)</h3>
+          <p class="note">This demo does not include real payment gateway integration. Place order will save order to Firestore (authenticated users).</p>
+        </div>
+
+        <div style="margin-top:14px">
+          <button id="placeOrderBtn" class="btn btn-primary" style="width:100%">Place Order</button>
+        </div>
+      </div>
+
+      <aside class="card summary">
+        <h3 style="margin-top:0">Order Summary</h3>
+        <div class="row"><div>Items</div><div id="sumItems">0</div></div>
+        <div class="row"><div>Subtotal</div><div id="sumSubtotal">₹0.00</div></div>
+        <div class="row"><div>GST (5%)</div><div id="sumTax">₹0.00</div></div>
+        <div class="row" style="font-weight:700"><div>Grand Total</div><div id="sumTotal">₹0.00</div></div>
+
+        <div style="margin-top:12px">
+          <div class="muted">Order notes</div>
+          <textarea id="orderNotes" placeholder="Any delivery instructions..." style="width:100%;min-height:80px;margin-top:8px;border-radius:8px;border:1px solid #eee;padding:10px"></textarea>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Firebase v8 CDN (compatible with your current setup) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script>
+    // ----------------- TODO: paste your firebase config here -----------------
+    const firebaseConfig = {
+      apiKey: "AIzaSyCbf19k8pLFh-9UQz8sQRim2rPYTlqaEL8",
+      authDomain: "njmartonline.firebaseapp.com",
+      projectId: "njmartonline",
+      storageBucket: "njmartonline.firebasestorage.app",
+      messagingSenderId: "594505763627",
+      appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
+    };
+    // -------------------------------------------------------------------------
+
+    // init firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // UI references
+    const itemsWrap = document.getElementById('itemsWrap');
+    const noItems = document.getElementById('noItems');
+    const userSection = document.getElementById('userSection');
+    const placeBtn = document.getElementById('placeOrderBtn');
+    const backBtn = document.getElementById('backBtn');
+
+    const sumItems = document.getElementById('sumItems');
+    const sumSubtotal = document.getElementById('sumSubtotal');
+    const sumTax = document.getElementById('sumTax');
+    const sumTotal = document.getElementById('sumTotal');
+    const orderNotes = document.getElementById('orderNotes');
+
+    // read checkout snapshot from localStorage
+    function readCheckout(){
+      try{
+        return JSON.parse(localStorage.getItem('nj_checkout')) || {items: []};
+      }catch(e){ return {items: []}; }
+    }
+
+    // render items & summary
+    function renderOrder(){
+      const data = readCheckout();
+      const items = data.items || [];
+      itemsWrap.innerHTML = '';
+      if(!items.length){
+        noItems.style.display = 'block';
+      } else {
+        noItems.style.display = 'none';
+        items.forEach(it=>{
+          const div = document.createElement('div');
+          div.className = 'item';
+          div.innerHTML = `
+            <img src="${it.image || 'https://via.placeholder.com/200'}" alt="">
+            <div style="flex:1">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div style="font-weight:700">${escapeHtml(it.name || 'Product')}</div>
+                  <div class="muted">${escapeHtml(it.category || '')}</div>
+                </div>
+                <div style="text-align:right">
+                  <div class="price">₹${Number(it.price || 0).toFixed(2)}</div>
+                  <div class="muted">Qty: ${Number(it.qty||1)}</div>
+                </div>
+              </div>
+            </div>
+          `;
+          itemsWrap.appendChild(div);
+        });
+      }
+
+      // summary calc
+      let subtotal = 0;
+      items.forEach(i=> subtotal += (Number(i.price||0) * Number(i.qty||1)));
+      const tax = subtotal * 0.05;
+      const total = subtotal + tax;
+
+      sumItems.innerText = items.length;
+      sumSubtotal.innerText = '₹' + subtotal.toFixed(2);
+      sumTax.innerText = '₹' + tax.toFixed(2);
+      sumTotal.innerText = '₹' + total.toFixed(2);
+    }
+
+    function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+
+    // show signed-in user or prompt login
+    let currentUser = null;
+    auth.onAuthStateChanged(user=>{
+      currentUser = user;
+      if(user){
+        // show user brief
+        const display = user.displayName || user.email || user.phoneNumber || 'User';
+        userSection.innerHTML = `
+          Signed in as: <strong>${escapeHtml(display)}</strong><br>
+          <div class="muted" style="margin-top:6px">Email: ${escapeHtml(user.email || '')} | UID: ${user.uid}</div>
+        `;
+      } else {
+        userSection.innerHTML = `You are not signed in. <button class="btn btn-primary" id="loginBtn">Sign in with Google</button>`;
+        document.getElementById('loginBtn').onclick = () => {
+          const provider = new firebase.auth.GoogleAuthProvider();
+          auth.signInWithPopup(provider).catch(err=> alert('Sign-in error: ' + err.message));
+        };
+      }
+    });
+
+    // place order handler
+    placeBtn.addEventListener('click', async ()=>{
+      const data = readCheckout();
+      const items = data.items || [];
+      if(!items.length){
+        alert('Your cart is empty.');
+        return;
+      }
+      if(!currentUser){
+        alert('Please sign in to place order.');
+        return;
+      }
+
+      // disable button
+      placeBtn.disabled = true;
+      placeBtn.innerText = 'Placing order...';
+
+      // prepare order object
+      const subtotal = items.reduce((s,it)=> s + (Number(it.price||0) * Number(it.qty||1)), 0);
+      const tax = +(subtotal * 0.05).toFixed(2);
+      const grandTotal = +(subtotal + tax).toFixed(2);
+
+      // optional: read saved user profile details from firestore (collection "customers") or localStorage.
+      // We'll attempt to read profile doc named by user.uid under collection "customers" (if you store it there).
+      let profile = { name: currentUser.displayName || '', email: currentUser.email || '', phone: currentUser.phoneNumber || '' };
+      try{
+        const profDoc = await db.collection('customers').doc(currentUser.uid).get();
+        if(profDoc.exists){
+          profile = Object.assign(profile, profDoc.data());
+        }
+      }catch(e){
+        // ignore if not present
+      }
+
+      const order = {
+        userId: currentUser.uid,
+        userEmail: currentUser.email || '',
+        profile,
+        items,
+        subtotal,
+        tax,
+        total: grandTotal,
+        notes: (orderNotes.value || '').trim(),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        status: 'pending' // you can change workflow: pending -> confirmed -> dispatched
+      };
+
+      try{
+        // save order
+        const ref = await db.collection('orders').add(order);
+        // you can also create a customer/orders subcollection if preferred
+        // clear checkout localStorage snapshot
+        localStorage.removeItem('nj_checkout');
+
+        // success message and redirect
+        alert('Order placed successfully. Order ID: ' + ref.id);
+        // redirect to order-confirmation page (you can create order-success.html to show details)
+        window.location.href = 'order-success.html?orderId=' + encodeURIComponent(ref.id);
+      }catch(err){
+        console.error('order save error', err);
+        alert('Order failed: ' + (err.message || err));
+        placeBtn.disabled = false;
+        placeBtn.innerText = 'Place Order';
+      }
+    });
+
+    // back to shop
+    backBtn.addEventListener('click', ()=> window.location.href = 'index.html');
+
+    // render on load
+    renderOrder();
+
+    // make sure auth state known (if already logged in)
+    auth.getRedirectResult?.().catch(()=>{}); // no-op safe
+
+  </script>
+</body>
+</html>
