@@ -3,33 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NJ Mart — Login</title>
+  <title>NJ Mart – Login</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- 🔝 Topbar -->
+  <!-- Topbar -->
   <header class="topbar">
     <div class="logo"><a href="index.html">NJ <span>Mart</span></a></div>
   </header>
 
-  <!-- 🔐 Login Box -->
+  <!-- Login Box -->
   <section class="container" style="max-width:400px; margin-top:40px;">
     <h2 style="text-align:center; margin-bottom:20px;">Login / Signup</h2>
     <div class="product-card" style="padding:25px;">
 
       <!-- Phone Input -->
       <label>Enter Mobile Number</label>
-      <input type="tel" id="phoneNumber" placeholder="+91 9876543210" 
-             style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
-
-      <button id="sendOtpBtn" class="btn grad" style="width:100%;margin-top:10px;">Send OTP</button>
+      <input type="tel" id="phoneNumber" placeholder="+91 9876543210"
+        style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
+      <button id="sendOtpBtn" class="btn grad"
+        style="width:100%;margin-top:10px;">Send OTP</button>
 
       <!-- OTP Input -->
       <div id="otpBox" style="display:none; margin-top:15px;">
         <label>Enter OTP</label>
-        <input type="text" id="otpCode" placeholder="123456" 
-               style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
-        <button id="verifyOtpBtn" class="btn" style="width:100%;background:#27ae60;">Verify OTP</button>
+        <input type="text" id="otpCode" placeholder="123456"
+          style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
+        <button id="verifyOtpBtn" class="btn"
+          style="width:100%;background:#27ae60;">Verify OTP</button>
       </div>
 
       <!-- Firebase reCAPTCHA -->
@@ -37,60 +38,56 @@
     </div>
   </section>
 
-  <!-- 🔻 Footer -->
   <footer class="footer">© 2025 NJ Mart • All Rights Reserved</footer>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase v8 SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <script>
-    // ⚡ Replace with your Firebase Config
-    const firebaseConfig = {
+    // Firebase Config
+    var firebaseConfig = {
       apiKey: "AIzaSyCbf19k8pLFh-9UQz8sQRim2rPYTlqaEL8",
-      authDomain: "njmartonline.firebaseapp.com", 
+      authDomain: "njmartonline.firebaseapp.com",
       projectId: "njmartonline",
       storageBucket: "njmartonline.appspot.com",
       messagingSenderId: "594505763627",
       appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
     };
+    firebase.initializeApp(firebaseConfig);
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    // 🔒 Setup invisible reCAPTCHA
+    // Setup reCAPTCHA
     window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
       'size': 'invisible',
-      'callback': (response) => {
+      'callback': function(response) {
         console.log("reCAPTCHA verified ✅");
       }
     });
 
-    // 📩 Send OTP
-    document.getElementById("sendOtpBtn").addEventListener("click", () => {
-      const phone = document.getElementById("phoneNumber").value;
-      const appVerifier = window.recaptchaVerifier;
+    // Send OTP
+    document.getElementById("sendOtpBtn").addEventListener("click", function () {
+      var phone = document.getElementById("phoneNumber").value;
+      var appVerifier = window.recaptchaVerifier;
 
-      auth.signInWithPhoneNumber(phone, appVerifier)
-        .then(confirmationResult => {
+      firebase.auth().signInWithPhoneNumber(phone, appVerifier)
+        .then(function (confirmationResult) {
           window.confirmationResult = confirmationResult;
           alert("OTP Sent ✅");
           document.getElementById("otpBox").style.display = "block";
-        }).catch(error => {
+        }).catch(function (error) {
           alert("Error: " + error.message);
         });
     });
 
-    // ✅ Verify OTP
-    document.getElementById("verifyOtpBtn").addEventListener("click", () => {
-      const code = document.getElementById("otpCode").value;
-      window.confirmationResult.confirm(code)
-        .then(result => {
-          alert("Login Successful 🎉");
-          window.location.href = "index.html";
-        }).catch(error => {
-          alert("Invalid OTP ❌");
-        });
+    // Verify OTP
+    document.getElementById("verifyOtpBtn").addEventListener("click", function () {
+      var code = document.getElementById("otpCode").value;
+      window.confirmationResult.confirm(code).then(function (result) {
+        var user = result.user;
+        alert("Phone verified 🎉");
+      }).catch(function (error) {
+        alert("Invalid OTP ❌");
+      });
     });
   </script>
 </body>
