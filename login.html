@@ -7,34 +7,32 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Topbar -->
   <header class="topbar">
     <div class="logo"><a href="index.html">NJ <span>Mart</span></a></div>
   </header>
 
-  <!-- Login Box -->
   <section class="container" style="max-width:400px; margin-top:40px;">
-    <h2 style="text-align:center; margin-bottom:20px;">Login / Signup</h2>
-    <div class="product-card" style="padding:25px;">
+    <h2 style="text-align:center; margin-bottom:20px;">Login with Google</h2>
 
-      <!-- Phone Input -->
-      <label>Enter Mobile Number</label>
-      <input type="tel" id="phoneNumber" placeholder="+91 9876543210"
+    <!-- Google Sign In Button -->
+    <div style="text-align:center;">
+      <button id="googleLoginBtn" class="btn grad" style="width:100%; padding:12px;">
+        Sign in with Google
+      </button>
+    </div>
+
+    <!-- Extra Details Form (hidden before login) -->
+    <div id="detailsForm" style="display:none; margin-top:25px;">
+      <h3>Complete Your Profile</h3>
+      <label>Phone Number</label>
+      <input type="tel" id="phone" placeholder="+91 9876543210"
         style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
-      <button id="sendOtpBtn" class="btn grad"
-        style="width:100%;margin-top:10px;">Send OTP</button>
 
-      <!-- OTP Input -->
-      <div id="otpBox" style="display:none; margin-top:15px;">
-        <label>Enter OTP</label>
-        <input type="text" id="otpCode" placeholder="123456"
-          style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
-        <button id="verifyOtpBtn" class="btn"
-          style="width:100%;background:#27ae60;">Verify OTP</button>
-      </div>
+      <label>Address</label>
+      <textarea id="address" placeholder="Enter your address"
+        style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;"></textarea>
 
-      <!-- Firebase reCAPTCHA -->
-      <div id="recaptcha-container" style="margin-top:15px;"></div>
+      <button id="saveDetailsBtn" class="btn" style="width:100%; background:#27ae60;">Save</button>
     </div>
   </section>
 
@@ -43,6 +41,7 @@
   <!-- Firebase v8 SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <script>
     // Firebase Config
@@ -55,38 +54,42 @@
       appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
     };
     firebase.initializeApp(firebaseConfig);
+    var db = firebase.firestore();
 
-    // Setup reCAPTCHA
-    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      'size': 'invisible',
-      'callback': function(response) {
-        console.log("reCAPTCHA verified ✅");
-      }
-    });
-
-    // Send OTP
-    document.getElementById("sendOtpBtn").addEventListener("click", function () {
-      var phone = document.getElementById("phoneNumber").value;
-      var appVerifier = window.recaptchaVerifier;
-
-      firebase.auth().signInWithPhoneNumber(phone, appVerifier)
-        .then(function (confirmationResult) {
-          window.confirmationResult = confirmationResult;
-          alert("OTP Sent ✅");
-          document.getElementById("otpBox").style.display = "block";
-        }).catch(function (error) {
-          alert("Error: " + error.message);
-        });
-    });
-
-    // Verify OTP
-    document.getElementById("verifyOtpBtn").addEventListener("click", function () {
-      var code = document.getElementById("otpCode").value;
-      window.confirmationResult.confirm(code).then(function (result) {
+    // Google Login
+    document.getElementById("googleLoginBtn").addEventListener("click", function () {
+      var provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider).then(function(result) {
         var user = result.user;
-        alert("Phone verified 🎉");
-      }).catch(function (error) {
-        alert("Invalid OTP ❌");
+        alert("Welcome " + user.displayName + " 🎉");
+        document.getElementById("detailsForm").style.display = "block";
+      }).catch(function(error) {
+        alert("Login Failed ❌ " + error.message);
+      });
+    });
+
+    // Save extra details
+    document.getElementById("saveDetailsBtn").addEventListener("click", function () {
+      var phone = document.getElementById("phone").value;
+      var address = document.getElementById("address").value;
+      var user = firebase.auth().currentUser;
+
+      if (!phone) {
+        alert("Please enter phone number 📱");
+        return;
+      }
+
+      db.collection("customers").doc(user.uid).set({
+        name: user.displayName,
+        email: user.email,
+        phone: phone,
+        address: address,
+        createdAt: new Date()
+      }).then(function () {
+        alert("Details saved ✅");
+        window.location.href = "index.html"; // redirect after save
+      }).catch(function(error) {
+        alert("Error saving: " + error.message);
       });
     });
   </script>
