@@ -1,250 +1,266 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Cart — NJ Mart</title>
-  <style>
-    :root{--bg:#f6f7fb;--card:#fff;--primary:#2fa360;--accent:#0b7dd6;--muted:#6b6f76;--danger:#e04b3a}
-    body{font-family:Inter,system-ui,Arial; background:var(--bg); margin:0; color:#111}
-    .wrap{max-width:1000px;margin:18px auto;padding:16px}
-    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-    h1{margin:0;font-size:20px}
-    .grid{display:grid;grid-template-columns:1fr 340px;gap:16px}
-    .card{background:var(--card);border-radius:10px;padding:14px;box-shadow:0 6px 18px rgba(20,20,40,0.06)}
-    .item{display:flex;gap:12px;align-items:center;padding:10px;border-radius:8px;border:1px solid #f0f0f0;margin-bottom:10px}
-    .item img{width:88px;height:88px;object-fit:cover;border-radius:8px}
-    .title{font-weight:700}
-    .muted{color:var(--muted);font-size:13px}
-    .price{font-weight:700}
-    .qty{display:flex;align-items:center;gap:8px}
-    .qty input{width:54px;padding:6px;border-radius:6px;border:1px solid #ddd;text-align:center}
-    .btn{display:inline-block;padding:10px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
-    .btn-primary{background:var(--primary);color:#fff}
-    .btn-ghost{background:#fff;border:1px solid #ddd}
-    .btn-danger{background:var(--danger);color:#fff}
-    .empty{padding:40px;text-align:center;color:var(--muted)}
-    .summary .row{display:flex;justify-content:space-between;padding:10px 0;border-top:1px dashed #eee}
-    .actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-    @media(max-width:880px){ .grid{grid-template-columns:1fr} .summary{order:2} }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NJ Mart — Cart</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--green:#2db34a;--accent:#f7f9fb;--muted:#8a8f98;--danger:#e04d4d}
+  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif}
+  body{margin:0;background:#f2f6f8;color:#222}
+  .page{max-width:960px;margin:18px auto;padding:12px}
+  .card{background:white;border-radius:14px;box-shadow:0 6px 18px rgba(12,30,40,.06);padding:14px;margin-bottom:14px}
+  header.top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  header.top h1{font-size:20px;margin:0}
+  .row{display:flex;gap:12px;align-items:flex-start}
+  .col{flex:1}
+  /* cart list */
+  .cart-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #eee}
+  .cart-item:last-child{border-bottom:0}
+  .thumb{width:90px;height:90px;border-radius:10px;background:#fff;flex:0 0 90px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .info{flex:1}
+  .info h3{margin:0 0 6px 0;font-size:16px}
+  .meta{color:var(--muted);font-size:13px;margin-bottom:8px}
+  .qty{display:flex;align-items:center;gap:8px}
+  .qty button{background:#fff;border:1px solid #ddd;padding:6px 10px;border-radius:8px;cursor:pointer}
+  .qty .count{padding:6px 8px;border-radius:6px;background:#f6f8fa}
+  .price{font-weight:600}
+  .remove{background:transparent;border:0;color:var(--danger);cursor:pointer;font-size:14px}
+
+  /* summary */
+  .summary{min-width:320px;max-width:360px}
+  .summary .rowline{display:flex;justify-content:space-between;padding:8px 0;color:#444}
+  .total{font-size:18px;font-weight:700}
+  .btn{display:block;width:100%;padding:12px;border:0;border-radius:10px;font-weight:700;color:white;cursor:pointer}
+  .btn.primary{background:var(--green);margin-top:10px}
+  .btn.ghost{background:#fff;border:1px solid #ddd;color:#333}
+  .coupon{display:flex;gap:8px;margin-top:10px}
+  .coupon input{flex:1;padding:10px;border-radius:8px;border:1px solid #ddd}
+  .small{font-size:13px;color:var(--muted);margin-top:6px}
+  .delivery-note{background:#f4fbf4;border-radius:10px;padding:10px;color:#2b7b34;margin:10px 0}
+  .footer-note{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
+  /* responsive */
+  @media(max-width:900px){
+    .row{flex-direction:column}
+    .summary{width:100%}
+  }
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top">
-      <h1>Cart</h1>
+<div class="page">
+  <header class="top">
+    <button onclick="location.href='index.html'" style="border:0;background:#fff;padding:8px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.04);cursor:pointer">←</button>
+    <h1>NJ Mart — Cart</h1>
+  </header>
+
+  <section class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
       <div>
-        <button class="btn btn-ghost" id="continueBtn">← Continue shopping</button>
-        <button class="btn btn-ghost" id="clearBtn">Clear Cart</button>
+        <strong>Order summary</strong><div class="small">Review your items and charges</div>
+      </div>
+      <div style="text-align:right">
+        <div class="small">Items: <span id="itemsCount">0</span></div>
+        <div class="small">Delivery in <strong>10 mins</strong></div>
       </div>
     </div>
+  </section>
 
-    <div class="grid">
-      <section class="card">
-        <h3 style="margin-top:0">Items in cart</h3>
-        <div id="itemsContainer"></div>
-        <div id="emptyMsg" class="empty" style="display:none">
-          Your cart is empty. <br/><br/>
-          <button class="btn btn-primary" id="shopNow">Start shopping</button>
+  <div class="row">
+    <div class="col">
+      <div id="cartList" class="card">
+        <!-- cart items inserted here -->
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:700">You might also like</div>
+          <div class="small">See all</div>
         </div>
-      </section>
-
-      <aside class="card summary">
-        <h3 style="margin-top:0">Order Summary</h3>
-        <div style="padding-top:8px">
-          <div class="row" style="display:flex;justify-content:space-between;margin-bottom:8px">
-            <div class="muted">Items</div><div id="countItems">0</div>
+        <div style="display:flex;gap:8px;overflow:auto;margin-top:10px">
+          <!-- sample suggestions -->
+          <div style="min-width:120px;background:#fff;padding:8px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.03)">
+            <img src="https://via.placeholder.com/120" style="width:100%;border-radius:8px"><div style="font-size:13px;margin-top:6px">Tata Salt</div><div style="font-weight:600">₹29</div>
           </div>
-          <div class="row" style="display:flex;justify-content:space-between">
-            <div class="muted">Subtotal</div><div id="subtotal">₹0.00</div>
+          <div style="min-width:120px;background:#fff;padding:8px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.03)">
+            <img src="https://via.placeholder.com/120" style="width:100%;border-radius:8px"><div style="font-size:13px;margin-top:6px">Mustard Oil</div><div style="font-weight:600">₹129</div>
           </div>
-          <div class="row" style="display:flex;justify-content:space-between">
-            <div class="muted">GST (5%)</div><div id="tax">₹0.00</div>
+          <div style="min-width:120px;background:#fff;padding:8px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.03)">
+            <img src="https://via.placeholder.com/120" style="width:100%;border-radius:8px"><div style="font-size:13px;margin-top:6px">Wheat Flour</div><div style="font-weight:600">₹199</div>
           </div>
-          <div style="display:flex;justify-content:space-between;padding-top:12px;font-weight:700">
-            <div>Total</div><div id="total">₹0.00</div>
-          </div>
-
-          <div class="actions">
-            <button class="btn btn-primary" id="checkoutBtn">Proceed to Checkout</button>
-            <button class="btn btn-ghost" id="continueShoppingBtn">Continue Shopping</button>
-          </div>
-
-          <p class="muted" style="margin-top:10px">You can update quantity or remove items. The cart is stored locally on your browser.</p>
         </div>
-      </aside>
+      </div>
+
     </div>
+
+    <aside class="summary">
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:8px">Price Details</div>
+        <div class="rowline"><div>Items total</div><div id="priceSubtotal">₹0</div></div>
+        <div class="rowline"><div>Delivery charge</div><div id="deliveryCharge">₹25</div></div>
+        <div class="rowline"><div>Discount</div><div id="discount">₹0</div></div>
+        <hr style="border:none;border-top:1px dashed #eee;margin:12px 0">
+        <div class="rowline total"><div>Grand total</div><div id="grandTotal">₹0</div></div>
+
+        <div class="delivery-note">Free delivery on orders above ₹499</div>
+
+        <div class="coupon">
+          <input id="couponInput" placeholder="Apply coupon code">
+          <button id="applyCouponBtn" style="background:var(--green);color:#fff;border:0;padding:10px;border-radius:8px;cursor:pointer">Apply</button>
+        </div>
+
+        <div style="margin-top:12px">
+          <button class="btn primary" id="checkoutBtn">Place Order</button>
+          <button class="btn ghost" id="continueBtn" style="color:#333;margin-top:8px">Continue shopping</button>
+        </div>
+
+        <div class="footer-note">You can change delivery instructions in checkout</div>
+      </div>
+    </aside>
   </div>
+</div>
 
-  <script>
-    // keys to check in localStorage (check common names)
-    const KEYS = ['cart','nj_cart','nj_checkout'];
+<script>
+/* cart.html — lightweight cart using localStorage key 'nj_cart' 
+   - Place order will save 'nj_checkout' and redirect to checkout.html
+*/
 
-    // get cart data from first matching key
-    function loadCart(){
-      for(const k of KEYS){
-        const raw = localStorage.getItem(k);
-        if(raw){
-          try{
-            const obj = JSON.parse(raw);
-            // if stored as {items: [...] } prefer that
-            if(Array.isArray(obj)) return {key:k, items: obj};
-            if(obj && Array.isArray(obj.items)) return {key:k, items: obj.items};
-            // fallback if object is mapping of ids
-            if(obj && typeof obj === 'object'){ // maybe {id: {...}}
-              const arr = Object.values(obj);
-              return {key:k, items:arr};
-            }
-          }catch(e){}
-        }
-      }
-      return {key:null, items: []};
-    }
+const DELIVERY_THRESHOLD = 499;
+const DELIVERY_CHARGE = 25;
 
-    function saveCart(key, items){
-      if(!key) key = 'nj_cart';
-      // try to keep same structure as before if checkout used {items:[]}
-      localStorage.setItem(key, JSON.stringify(items));
-      // also mirror to nj_checkout for checkout flow convenience
-      localStorage.setItem('nj_checkout', JSON.stringify({items}));
-    }
+// load cart from localStorage
+function loadCart(){
+  try{
+    const raw = localStorage.getItem('nj_cart');
+    if(!raw) return [];
+    return JSON.parse(raw) || [];
+  }catch(e){ return [];}
+}
+function saveCart(data){
+  localStorage.setItem('nj_cart', JSON.stringify(data));
+}
 
-    function formatCurrency(n){ return '₹' + Number(n || 0).toFixed(2); }
+// if no cart items -> create demo items for preview
+function ensureDemo(){
+  let cart = loadCart();
+  if(cart.length === 0){
+    cart = [
+      {id:'p1',name:'Aashirvaad Atta 5kg',price:394,qty:1,image:'https://via.placeholder.com/300x300?text=Atta'},
+      {id:'p2',name:'Laxmi Refined Oil 1L',price:208,qty:1,image:'https://via.placeholder.com/300x300?text=Oil'},
+      {id:'p3',name:'Tata Salt 1kg',price:29,qty:2,image:'https://via.placeholder.com/300x300?text=Salt'}
+    ];
+    saveCart(cart);
+  }
+  return cart;
+}
 
-    const itemsContainer = document.getElementById('itemsContainer');
-    const emptyMsg = document.getElementById('emptyMsg');
-    const countItems = document.getElementById('countItems');
-    const subtotalEl = document.getElementById('subtotal');
-    const taxEl = document.getElementById('tax');
-    const totalEl = document.getElementById('total');
+// render cart UI
+function renderCart(){
+  const cart = loadCart();
+  const list = document.getElementById('cartList');
+  list.innerHTML = '';
+  document.getElementById('itemsCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
 
-    // load & render
-    let CART_KEY = null;
-    let CART_ITEMS = [];
+  if(cart.length===0){
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">Your cart is empty<br><button id="shopNow" class="btn primary" style="width:auto;margin-top:12px">Continue shopping</button></div>';
+    document.getElementById('shopNow')?.addEventListener('click',()=>location.href='index.html');
+    updateSummary();
+    return;
+  }
 
-    function render(){
-      const loaded = loadCart();
-      CART_KEY = loaded.key || 'nj_cart';
-      CART_ITEMS = loaded.items || [];
-      itemsContainer.innerHTML = '';
-
-      if(!CART_ITEMS.length){
-        emptyMsg.style.display = 'block';
-      } else {
-        emptyMsg.style.display = 'none';
-        CART_ITEMS.forEach((it, idx) => {
-          const itemDiv = document.createElement('div');
-          itemDiv.className = 'item';
-          itemDiv.innerHTML = `
-            <img src="${escapeHtml(it.image || 'https://via.placeholder.com/200')}" alt="">
-            <div style="flex:1">
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <div>
-                  <div class="title">${escapeHtml(it.name || 'Product')}</div>
-                  <div class="muted">${escapeHtml(it.category || '')}</div>
-                </div>
-                <div style="text-align:right">
-                  <div class="price">${formatCurrency(it.price)}</div>
-                  <div class="muted">Unit</div>
-                </div>
-              </div>
-
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
-                <div class="qty">
-                  <button data-action="dec" data-index="${idx}" class="btn btn-ghost">−</button>
-                  <input data-index="${idx}" type="number" min="1" value="${Number(it.qty||1)}" />
-                  <button data-action="inc" data-index="${idx}" class="btn btn-ghost">+</button>
-                </div>
-                <div style="display:flex;gap:8px;align-items:center">
-                  <button data-action="remove" data-index="${idx}" class="btn btn-danger">Remove</button>
-                </div>
-              </div>
-            </div>
-          `;
-          itemsContainer.appendChild(itemDiv);
-        });
-
-        // attach events (delegation)
-        itemsContainer.querySelectorAll('[data-action]').forEach(btn=>{
-          btn.addEventListener('click', e=>{
-            const action = btn.getAttribute('data-action');
-            const index = Number(btn.getAttribute('data-index'));
-            if(action === 'inc') { updateQty(index, (CART_ITEMS[index].qty||1)+1); }
-            if(action === 'dec') { updateQty(index, Math.max(1,(CART_ITEMS[index].qty||1)-1)); }
-            if(action === 'remove') { removeItem(index); }
-          });
-        });
-        itemsContainer.querySelectorAll('input[type="number"]').forEach(inp=>{
-          inp.addEventListener('change', e=>{
-            const index = Number(inp.getAttribute('data-index'));
-            let v = Number(inp.value);
-            if(!v || v < 1) v = 1;
-            updateQty(index, v);
-          });
-        });
-      }
-
-      updateSummary();
-    }
-
-    function updateSummary(){
-      const subtotal = CART_ITEMS.reduce((s,i) => s + (Number(i.price||0) * Number(i.qty||1)), 0);
-      const tax = +(subtotal * 0.05).toFixed(2);
-      const total = +(subtotal + tax).toFixed(2);
-      countItems.innerText = CART_ITEMS.length;
-      subtotalEl.innerText = formatCurrency(subtotal);
-      taxEl.innerText = formatCurrency(tax);
-      totalEl.innerText = formatCurrency(total);
-    }
-
-    function updateQty(index, qty){
-      if(!CART_ITEMS[index]) return;
-      CART_ITEMS[index].qty = qty;
-      saveCart(CART_KEY, CART_ITEMS);
-      render();
-    }
-
-    function removeItem(index){
-      if(!CART_ITEMS[index]) return;
-      CART_ITEMS.splice(index,1);
-      saveCart(CART_KEY, CART_ITEMS);
-      render();
-    }
-
-    // clear cart
-    document.getElementById('clearBtn').addEventListener('click', ()=>{
-      if(!confirm('Clear cart?')) return;
-      CART_ITEMS = [];
-      saveCart(CART_KEY, CART_ITEMS);
-      render();
+  cart.forEach(item=>{
+    const node = document.createElement('div');
+    node.className = 'cart-item';
+    node.innerHTML = `
+      <div class="thumb"><img src="${item.image||'https://via.placeholder.com/150'}" alt=""></div>
+      <div class="info">
+        <h3>${item.name}</h3>
+        <div class="meta">Seller: NJ Mart • Category: ${item.category||'Grocery'}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="qty">
+            <button class="dec">−</button>
+            <div class="count">${item.qty}</div>
+            <button class="inc">+</button>
+          </div>
+          <div style="text-align:right">
+            <div class="price">₹${(item.price*item.qty).toFixed(0)}</div>
+            <button class="remove">Remove</button>
+          </div>
+        </div>
+      </div>
+    `;
+    // attach events
+    node.querySelector('.inc').addEventListener('click',()=>{
+      item.qty++; saveCart(cart); renderCart();
     });
-
-    // continue shopping -> index.html
-    function continueShopping(){
-      // if your products page is index.html change below accordingly
-      window.location.href = 'index.html';
-    }
-    document.getElementById('continueBtn').addEventListener('click', continueShopping);
-    document.getElementById('continueShoppingBtn').addEventListener('click', continueShopping);
-    document.getElementById('shopNow').addEventListener('click', continueShopping);
-
-    // proceed to checkout -> save a checkout snapshot and go to checkout.html
-    document.getElementById('checkoutBtn').addEventListener('click', ()=>{
-      if(!CART_ITEMS.length){
-        alert('Your cart is empty.');
-        return;
+    node.querySelector('.dec').addEventListener('click',()=>{
+      if(item.qty>1){ item.qty--; saveCart(cart); renderCart(); } else { // remove if 1 -> confirm
+        if(confirm('Remove this item?')){ const idx = cart.findIndex(x=>x.id===item.id); if(idx>-1) cart.splice(idx,1); saveCart(cart); renderCart(); }
       }
-      // Save snapshot in nj_checkout as {items: [...]} to match checkout.html expectation
-      localStorage.setItem('nj_checkout', JSON.stringify({items: CART_ITEMS, createdAt: Date.now()}));
-      // redirect to checkout page
-      window.location.href = 'checkout.html';
     });
+    node.querySelector('.remove').addEventListener('click',()=>{
+      if(confirm('Remove this item?')){ const idx = cart.findIndex(x=>x.id===item.id); if(idx>-1) cart.splice(idx,1); saveCart(cart); renderCart(); }
+    });
+    list.appendChild(node);
+  });
 
-    // util escape
-    function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+  updateSummary();
+}
 
-    // initial render
-    render();
-  </script>
+// calculate totals & update summary panel
+function updateSummary(){
+  const cart = loadCart();
+  const subtotal = cart.reduce((s,i)=>s + (i.price * i.qty), 0);
+  const delivery = subtotal>=DELIVERY_THRESHOLD || subtotal===0 ? 0 : DELIVERY_CHARGE;
+  const discount = 0; // apply coupon logic if needed
+  const grand = subtotal + delivery - discount;
+
+  document.getElementById('priceSubtotal').textContent = '₹' + subtotal.toFixed(0);
+  document.getElementById('deliveryCharge').textContent = '₹' + delivery.toFixed(0);
+  document.getElementById('discount').textContent = '₹' + discount.toFixed(0);
+  document.getElementById('grandTotal').textContent = '₹' + grand.toFixed(0);
+}
+
+// checkout flow
+document.getElementById('checkoutBtn').addEventListener('click',()=>{
+  const cart = loadCart();
+  if(cart.length===0){ alert('Your cart is empty'); return; }
+  // save checkout data and redirect
+  const checkout = {
+    items: cart,
+    subtotal: cart.reduce((s,i)=>s+i.price*i.qty,0),
+    deliveryCharge: (cart.reduce((s,i)=>s+i.price*i.qty,0) >= DELIVERY_THRESHOLD) ? 0 : DELIVERY_CHARGE,
+    createdAt: Date.now()
+  };
+  localStorage.setItem('nj_checkout', JSON.stringify(checkout));
+  // If login is required, you can check localStorage for user and redirect to login if not present.
+  // Example: if not logged -> location.href='login.html'
+  // For now redirect to checkout.html
+  location.href = 'checkout.html';
+});
+
+// continue shopping
+document.getElementById('continueBtn').addEventListener('click',()=> location.href='index.html');
+
+// coupon (simple demo)
+document.getElementById('applyCouponBtn').addEventListener('click',()=>{
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  if(!code){ alert('Enter coupon'); return; }
+  if(code==='SAVE50'){ // demo coupon
+    // save discount to localStorage (for checkout)
+    const c = {code:'SAVE50', discount:50};
+    localStorage.setItem('nj_coupon', JSON.stringify(c));
+    alert('Coupon applied: ₹50 off');
+    updateSummary();
+  } else alert('Invalid coupon');
+});
+
+// on load
+(function init(){
+  ensureDemo();
+  renderCart();
+})();
+</script>
 </body>
 </html>
