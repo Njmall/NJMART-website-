@@ -1,70 +1,296 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NJ Mart — Premium Grocery Store</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>NJ Mart — Fresh Groceries</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f3faf6; --card:#ffffff; --muted:#7b7f86; --accent:#2db34a; --accent-2:#2b7bff;
+      --radius:12px;
+    }
+    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif}
+    body{margin:0;background:var(--bg);color:#111}
+    header{background:linear-gradient(90deg,#f6fff6,#f2f9ff);padding:14px 18px;box-shadow:0 8px 30px rgba(12,30,40,.04)}
+    .nav{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:48px;height:48px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
+    .search{flex:1;max-width:560px;display:flex;gap:8px;margin-left:8px}
+    .search input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid #e6ece6}
+    .btn{padding:10px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .btn.primary{background:var(--accent);color:#fff}
+    .btn.ghost{background:#fff;border:1px solid #e6ece6}
+    .nav-right{display:flex;gap:10px;align-items:center}
+    .cart-badge{background:#ff4d4f;color:#fff;border-radius:12px;padding:4px 8px;font-weight:700}
+    main{max-width:1100px;margin:18px auto;padding:0 18px}
+    .hero{display:flex;gap:18px;align-items:center;margin-bottom:18px}
+    .hero .left{flex:1}
+    .hero .right{width:320px}
+    .banner{background:linear-gradient(180deg,#fff,#fbfff4);padding:18px;border-radius:14px;box-shadow:0 8px 24px rgba(12,30,40,.04)}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    @media(max-width:1100px){ .grid{grid-template-columns:repeat(3,1fr)} }
+    @media(max-width:800px){ .grid{grid-template-columns:repeat(2,1fr)} .hero{flex-direction:column} .nav{padding:8px} }
+    @media(max-width:480px){ .grid{grid-template-columns:1fr} .search{max-width:unset} }
+
+    .card{background:var(--card);border-radius:12px;padding:10px;box-shadow:0 8px 18px rgba(12,30,40,.04)}
+    .product-img{width:100%;height:160px;border-radius:8px;object-fit:cover;background:#f6f7f6}
+    .prod-title{font-weight:700;margin:8px 0;font-size:15px}
+    .prod-meta{color:var(--muted);font-size:13px}
+    .prod-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px}
+    .qty{display:flex;gap:8px;align-items:center}
+    .pill{background:#f1f6f3;padding:6px 8px;border-radius:9px;font-weight:600}
+
+    .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .filter{padding:8px 10px;border-radius:10px;background:#fff;border:1px solid #eef6ec;cursor:pointer}
+    .footer{max-width:1100px;margin:28px auto;padding:18px;color:var(--muted);font-size:14px;text-align:center}
+  </style>
 </head>
 <body>
-  <!-- 🔝 Topbar -->
-  <header class="topbar">
-    <div class="logo">NJ <span>Mart</span></div>
-    <div class="search-wrap">
-      <input id="globalSearch" placeholder="Search for products, vegetables, milk...">
+  <header>
+    <div class="nav">
+      <div style="display:flex;align-items:center">
+        <div class="brand">
+          <div class="logo">NJ</div>
+          <div>
+            <div style="font-weight:800">NJ Mart</div>
+            <div style="font-size:12px;color:var(--muted)">Grocery • Home delivery</div>
+          </div>
+        </div>
+        <div class="search" style="margin-left:18px">
+          <input id="search" placeholder="Search for products, e.g., atta, oil, milk...">
+          <button id="clearSearch" class="btn ghost">Clear</button>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <button id="adminBtn" class="btn ghost">Admin</button>
+        <button id="accountBtn" class="btn ghost">Account</button>
+        <button id="cartBtn" class="btn primary">Cart <span id="cartCount" class="cart-badge" style="margin-left:8px">0</span></button>
+      </div>
     </div>
-    <nav class="top-actions">
-      <button id="cartBtn" class="btn">Cart (<span id="cartCount">0</span>)</button>
-      <a class="btn outline" href="login.html">Login</a>
-    </nav>
   </header>
 
-  <!-- 🎉 Hero Banner -->
-  <section class="hero">
-    <div class="hero-left">
-      <h1>Fresh groceries delivered fast</h1>
-      <p>Daily essentials • Fresh produce • Best prices in town</p>
-      <a class="btn big grad" href="products.html">Start Shopping</a>
+  <main>
+    <section class="hero">
+      <div class="left">
+        <div class="banner card">
+          <h2 style="margin:0 0 8px">Fresh groceries delivered fast</h2>
+          <p style="margin:0;color:var(--muted)">Daily essentials, kitchen staples & fresh produce — order now and get same-day delivery.</p>
+          <div style="margin-top:12px;display:flex;gap:10px">
+            <button id="shopAll" class="btn primary">Shop Now</button>
+            <button id="viewOffers" class="btn ghost">Weekly Offers</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px" class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:700">Top picks for you</div>
+            <div class="small" id="resultsInfo">Showing all</div>
+          </div>
+
+          <div style="margin-top:12px" class="filters" id="filters">
+            <div class="filter" data-cat="all">All</div>
+            <div class="filter" data-cat="grocery">Grocery</div>
+            <div class="filter" data-cat="dairy">Dairy</div>
+            <div class="filter" data-cat="oil">Oil</div>
+            <div class="filter" data-cat="snacks">Snacks</div>
+            <div class="filter" data-cat="beverages">Beverages</div>
+          </div>
+
+          <div id="productGrid" class="grid" style="margin-top:12px">
+            <!-- products inserted here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="card" style="position:sticky;top:18px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:700">Your cart</div>
+            <div class="small" id="miniCount">0 items</div>
+          </div>
+          <div id="miniList" style="margin-top:10px"></div>
+          <div style="margin-top:12px">
+            <div style="display:flex;gap:8px">
+              <button id="goCart" class="btn primary" style="flex:1">View Cart</button>
+              <button id="checkoutNow" class="btn ghost" style="flex:1">Checkout</button>
+            </div>
+          </div>
+          <div style="margin-top:10px" class="small">Free delivery above ₹499 • ₹25 charge if below ₹1000 (demo)</div>
+        </div>
+
+        <div style="margin-top:12px" class="card">
+          <div style="font-weight:700">Store Info</div>
+          <div class="small" style="margin-top:8px">Open: 8:00 AM - 10:00 PM</div>
+          <div class="small" style="margin-top:6px">Contact: +91 7062918607</div>
+          <div style="margin-top:10px"><button id="openAdmin" class="btn ghost">Admin Panel</button></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="footer">© NJ Mart • Built for demo • Use profile to save address and checkout</div>
+
+<script>
+/* index.html — product listing + cart (localStorage)
+   Keys:
+     - nj_cart : array of {id,name,price,qty,image,category}
+     - nj_profile : profile object
+*/
+
+const SAMPLE_PRODUCTS = [
+  {id:'p1', name:'Aashirvaad Atta 5 kg', price:394, image:'https://via.placeholder.com/400x300?text=Atta', category:'grocery'},
+  {id:'p2', name:'Laxmi Refined Oil 1L', price:208, image:'https://via.placeholder.com/400x300?text=Oil', category:'oil'},
+  {id:'p3', name:'Amul Paneer 500g', price:180, image:'https://via.placeholder.com/400x300?text=Paneer', category:'dairy'},
+  {id:'p4', name:'Tata Salt 1kg', price:29, image:'https://via.placeholder.com/400x300?text=Salt', category:'grocery'},
+  {id:'p5', name:'Colgate Toothpaste 100g', price:120, image:'https://via.placeholder.com/400x300?text=Toothpaste', category:'personal'},
+  {id:'p6', name:'Parle-G Biscuits 400g', price:55, image:'https://via.placeholder.com/400x300?text=Biscuits', category:'snacks'},
+  {id:'p7', name:'Fresh Milk (1L)', price:60, image:'https://via.placeholder.com/400x300?text=Milk', category:'dairy'},
+  {id:'p8', name:'Sugar 1kg', price:46, image:'https://via.placeholder.com/400x300?text=Sugar', category:'grocery'},
+  {id:'p9', name:'Sunflower Oil 1L', price:129, image:'https://via.placeholder.com/400x300?text=Sunflower+Oil', category:'oil'},
+  {id:'p10', name:'Knorr Soup Mix', price:99, image:'https://via.placeholder.com/400x300?text=Soup', category:'beverages'}
+];
+
+const CART_KEY = 'nj_cart';
+
+function loadCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch(e){ return []; } }
+function saveCart(cart){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); updateCartUI(); }
+
+function addToCart(product){
+  const cart = loadCart();
+  const idx = cart.findIndex(c=>c.id===product.id);
+  if(idx>-1){ cart[idx].qty += 1; } else { cart.push({...product, qty:1}); }
+  saveCart(cart);
+  showToast('Added to cart: ' + product.name);
+}
+
+function updateCartUI(){
+  const cart = loadCart();
+  const count = cart.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('cartCount').textContent = count;
+  document.getElementById('miniCount').textContent = count + ' items';
+  const mini = document.getElementById('miniList');
+  mini.innerHTML = '';
+  cart.slice(0,4).forEach(i=>{
+    const node = document.createElement('div');
+    node.style.display='flex'; node.style.justifyContent='space-between'; node.style.padding='8px 0'; node.style.borderBottom='1px solid #f1f3f4';
+    node.innerHTML = `<div style="font-size:14px">${i.name} × ${i.qty}</div><div style="font-weight:700">₹${(i.price*i.qty).toFixed(0)}</div>`;
+    mini.appendChild(node);
+  });
+  if(cart.length===0) mini.innerHTML = '<div class="small" style="padding:8px 0">Your cart is empty</div>';
+}
+
+function renderProducts(list){
+  const grid = document.getElementById('productGrid');
+  grid.innerHTML = '';
+  list.forEach(p=>{
+    const card = document.createElement('div'); card.className='card';
+    card.innerHTML = `
+      <img class="product-img" src="${p.image}" alt="${p.name}">
+      <div class="prod-title">${p.name}</div>
+      <div class="prod-meta">Category: ${p.category}</div>
+      <div class="prod-bottom">
+        <div style="font-weight:700">₹${p.price.toFixed(0)}</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn ghost" data-id="${p.id}">View</button>
+          <button class="btn primary" data-add="${p.id}">Add</button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // attach events
+  document.querySelectorAll('[data-add]').forEach(b=>{
+    b.addEventListener('click', e=>{
+      const id = e.currentTarget.getAttribute('data-add');
+      const prod = SAMPLE_PRODUCTS.find(x=>x.id===id);
+      if(prod) addToCart(prod);
+    });
+  });
+  document.querySelectorAll('[data-id]').forEach(b=>{
+    b.addEventListener('click', e=>{
+      const id = e.currentTarget.getAttribute('data-id');
+      const prod = SAMPLE_PRODUCTS.find(x=>x.id===id);
+      if(prod) showProductModal(prod);
+    });
+  });
+}
+
+function showProductModal(p){
+  const div = document.createElement('div');
+  div.style.position='fixed'; div.style.left=0; div.style.top=0; div.style.right=0; div.style.bottom=0; div.style.background='rgba(0,0,0,.4)'; div.style.display='flex'; div.style.alignItems='center'; div.style.justifyContent='center'; div.style.zIndex=9999;
+  div.innerHTML = `<div style="width:calc(100% - 40px);max-width:720px;background:#fff;padding:18px;border-radius:12px">
+    <div style="display:flex;gap:14px">
+      <img src="${p.image}" style="width:220px;height:180px;object-fit:cover;border-radius:10px">
+      <div style="flex:1">
+        <h3 style="margin:0">${p.name}</h3>
+        <div class="small" style="margin-top:6px">Category: ${p.category}</div>
+        <div style="font-weight:800;margin-top:12px">₹${p.price.toFixed(0)}</div>
+        <p style="margin-top:12px;color:var(--muted)">Lorem ipsum short description for product. Replace with real product details in admin panel.</p>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button id="modalAdd" class="btn primary">Add to cart</button>
+          <button id="modalClose" class="btn ghost">Close</button>
+        </div>
+      </div>
     </div>
-    <div class="hero-right">
-      <img src="assets/hero.png" alt="Groceries">
-    </div>
-  </section>
+  </div>`;
+  document.body.appendChild(div);
+  document.getElementById('modalClose').addEventListener('click', ()=>div.remove());
+  document.getElementById('modalAdd').addEventListener('click', ()=>{ addToCart(p); div.remove(); });
+}
 
-  <!-- 📦 Categories -->
-  <section class="categories container">
-    <h2>Shop by Category</h2>
-    <div class="cat-grid">
-      <div class="cat">Vegetables</div>
-      <div class="cat">Fruits</div>
-      <div class="cat">Dairy</div>
-      <div class="cat">Snacks</div>
-      <div class="cat">Beverages</div>
-      <div class="cat">Household</div>
-    </div>
-  </section>
+function showToast(msg){
+  const t = document.createElement('div');
+  t.innerText = msg;
+  t.style.position='fixed'; t.style.left='50%'; t.style.transform='translateX(-50%)'; t.style.bottom='24px';
+  t.style.background='#111'; t.style.color='#fff'; t.style.padding='10px 16px'; t.style.borderRadius='10px'; t.style.zIndex=9999;
+  document.body.appendChild(t);
+  setTimeout(()=> t.remove(), 2000);
+}
 
-  <!-- 🛒 Trending Products -->
-  <section class="products container">
-    <h2>Trending Products</h2>
-    <div id="productGrid" class="grid"></div>
-  </section>
+/* search & filters */
+const searchInput = document.getElementById('search');
+const clearSearchBtn = document.getElementById('clearSearch');
+const filtersEl = document.getElementById('filters');
 
-  <!-- 🛒 Cart Panel -->
-  <aside id="cartPanel" class="cart-panel">
-    <h3>Your Cart</h3>
-    <div id="cartList" class="cart-list"></div>
-    <div class="cart-summary">
-      <div>Subtotal: ₹<span id="sub">0</span></div>
-      <div>Delivery: ₹<span id="del">0</span></div>
-      <div class="total">Total: ₹<span id="totalAmt">0</span></div>
-      <button id="checkout" class="btn grad">Checkout</button>
-    </div>
-  </aside>
+function applyFilters(){
+  const q = (searchInput.value || '').trim().toLowerCase();
+  const activeCat = filtersEl.querySelector('.filter.active')?.getAttribute('data-cat') || 'all';
+  let list = SAMPLE_PRODUCTS.slice();
+  if(activeCat && activeCat !== 'all') list = list.filter(p=>p.category===activeCat);
+  if(q) list = list.filter(p => (p.name + ' ' + (p.category||'')).toLowerCase().includes(q));
+  renderProducts(list);
+  document.getElementById('resultsInfo').textContent = `${list.length} items`;
+}
 
-  <!-- 🔻 Footer -->
-  <footer class="footer">© 2025 NJ Mart • Premium Grocery Store</footer>
+searchInput.addEventListener('input', ()=> applyFilters());
+clearSearchBtn.addEventListener('click', ()=> { searchInput.value=''; applyFilters(); });
 
-  <script src="app.js"></script>
+filtersEl.querySelectorAll('.filter').forEach(f=>{
+  f.addEventListener('click', ()=>{
+    filtersEl.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
+    f.classList.add('active');
+    applyFilters();
+  });
+});
+
+// page actions
+document.getElementById('cartBtn').addEventListener('click', ()=> location.href='cart.html');
+document.getElementById('goCart').addEventListener('click', ()=> location.href='cart.html');
+document.getElementById('checkoutNow').addEventListener('click', ()=> location.href='checkout.html');
+document.getElementById('shopAll').addEventListener('click', ()=> { searchInput.value=''; filtersEl.querySelectorAll('.filter').forEach(x=>x.classList.remove('active')); filtersEl.querySelector('.filter[data-cat="all"]').classList.add('active'); applyFilters(); });
+document.getElementById('adminBtn').addEventListener('click', ()=> alert('Admin panel will be provided separately.'));
+
+window.addEventListener('load', ()=>{
+  // init
+  renderProducts(SAMPLE_PRODUCTS);
+  updateCartUI();
+  // default select 'all'
+  filtersEl.querySelector('.filter[data-cat="all"]').classList.add('active');
+  applyFilters();
+});
+</script>
 </body>
 </html>
