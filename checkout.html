@@ -1,255 +1,275 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Checkout — NJ Mart</title>
-  <style>
-    :root{--bg:#f6f7fb; --card:#fff; --primary:#2fa360; --muted:#707070; --danger:#e04b3a;}
-    body{font-family:Inter,system-ui,Arial; background:var(--bg); margin:0; color:#111;}
-    .wrap{max-width:980px;margin:28px auto;padding:0 16px;}
-    .card{background:var(--card); border-radius:10px; padding:18px; box-shadow:0 6px 18px rgba(20,20,40,0.06);}
-    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-    h1{font-size:20px;margin:0}
-    .grid{display:grid;grid-template-columns:1fr 320px;gap:16px;}
-    .items{max-height:520px; overflow:auto}
-    .item{display:flex;gap:12px;align-items:center;padding:12px;border-radius:8px;border:1px solid #eee;margin-bottom:10px}
-    .item img{width:70px;height:70px;object-fit:cover;border-radius:6px}
-    .price{font-weight:700}
-    .summary .row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed #eee}
-    .btn{display:inline-block;padding:12px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
-    .btn-primary{background:var(--primary);color:#fff}
-    .btn-ghost{background:#fff;border:1px solid #ddd}
-    .muted{color:var(--muted)}
-    .note{font-size:13px;color:#666;margin-top:8px}
-    @media(max-width:840px){ .grid{grid-template-columns:1fr} .summary{order:2} }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NJ Mart — Checkout</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--green:#2db34a;--muted:#8a8f98;--accent:#f7f9fb;--danger:#e04d4d}
+  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif}
+  body{margin:0;background:#f2f6f8;color:#222}
+  .page{max-width:900px;margin:18px auto;padding:14px}
+  .card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 8px 20px rgba(10,20,30,.05);margin-bottom:14px}
+  header{display:flex;align-items:center;gap:12px}
+  header h1{margin:0;font-size:20px}
+  .grid{display:flex;gap:18px}
+  .col{flex:1}
+  .summary{min-width:320px;max-width:360px}
+  .rowline{display:flex;justify-content:space-between;padding:8px 0;color:#444}
+  .total{font-weight:700;font-size:18px}
+  label{display:block;margin:8px 0 6px 0;color:#444;font-weight:600}
+  input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ed;background:#fff}
+  .btn{display:block;width:100%;padding:12px;border:0;border-radius:10px;background:var(--green);color:#fff;font-weight:700;cursor:pointer}
+  .muted{color:var(--muted);font-size:13px}
+  .small{font-size:13px;color:var(--muted)}
+  @media(max-width:900px){ .grid{flex-direction:column} .summary{width:100%} }
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>NJ Mart — Checkout</h1>
-      <div><button class="btn btn-ghost" id="backBtn">⟵ Back to Shop</button></div>
-    </header>
+<div class="page">
+  <header>
+    <button onclick="location.href='cart.html'" style="border:0;background:#fff;padding:8px;border-radius:10px;cursor:pointer">← Back</button>
+    <h1>NJ Mart — Checkout</h1>
+  </header>
 
-    <div class="grid">
-      <div class="card">
-        <h3 style="margin-top:0">Delivery Details</h3>
-        <div id="userSection" class="muted">Checking login status...</div>
+  <div class="card" id="noticeCard" style="display:none"></div>
 
-        <div style="margin-top:14px">
-          <h3 style="margin:8px 0">Items</h3>
-          <div id="itemsWrap" class="items"></div>
-          <div id="noItems" class="muted" style="display:none">No items in checkout. Add products first.</div>
-        </div>
+  <div class="grid">
+    <div class="col card">
+      <h3 style="margin-top:0">Delivery details</h3>
+      <div class="small">Please confirm recipient, phone and address</div>
 
-        <div style="margin-top:14px">
-          <h3 style="margin:8px 0">Payment (demo)</h3>
-          <p class="note">This demo does not include real payment gateway integration. Place order will save order to Firestore (authenticated users).</p>
-        </div>
+      <label for="name">Name</label>
+      <input id="name" placeholder="Full name">
 
-        <div style="margin-top:14px">
-          <button id="placeOrderBtn" class="btn btn-primary" style="width:100%">Place Order</button>
-        </div>
+      <label for="phone">Phone (with country code)</label>
+      <input id="phone" placeholder="+91 9876543210">
+
+      <label for="address">Address</label>
+      <textarea id="address" rows="3" placeholder="Delivery address"></textarea>
+
+      <label for="notes">Delivery instructions (optional)</label>
+      <textarea id="notes" rows="2" placeholder="Leave at door / Call on arrival"></textarea>
+
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <button id="locBtn" style="flex:1;padding:10px;border-radius:8px;border:1px solid #e6e9ed;background:#fff;cursor:pointer">Get current location</button>
+        <button id="saveProfile" style="flex:1;padding:10px;border-radius:8px;background:var(--green);color:#fff;border:0;cursor:pointer">Save & use</button>
       </div>
 
-      <aside class="card summary">
-        <h3 style="margin-top:0">Order Summary</h3>
-        <div class="row"><div>Items</div><div id="sumItems">0</div></div>
-        <div class="row"><div>Subtotal</div><div id="sumSubtotal">₹0.00</div></div>
-        <div class="row"><div>GST (5%)</div><div id="sumTax">₹0.00</div></div>
-        <div class="row" style="font-weight:700"><div>Grand Total</div><div id="sumTotal">₹0.00</div></div>
+      <hr style="margin:14px 0">
 
-        <div style="margin-top:12px">
-          <div class="muted">Order notes</div>
-          <textarea id="orderNotes" placeholder="Any delivery instructions..." style="width:100%;min-height:80px;margin-top:8px;border-radius:8px;border:1px solid #eee;padding:10px"></textarea>
-        </div>
-      </aside>
+      <h3 style="margin:0 0 8px 0">Payment</h3>
+      <div class="small">(Demo) Cash on delivery is enabled. Integrate gateway for live payments.</div>
+
+      <label for="payment">Choose payment</label>
+      <select id="payment">
+        <option value="cod">Cash on delivery (COD)</option>
+        <option value="upi">UPI (demo)</option>
+        <option value="card">Card (demo)</option>
+      </select>
+
+      <div style="margin-top:12px">
+        <button class="btn" id="confirmOrder">Confirm Order</button>
+      </div>
+
+      <div class="small" style="margin-top:10px">After confirmation, your order will be saved and you'll see an order success message. This is a demo flow.</div>
     </div>
+
+    <aside class="summary card">
+      <div style="font-weight:700;margin-bottom:8px">Order Summary</div>
+      <div id="itemsList" style="max-height:300px;overflow:auto;margin-bottom:8px"></div>
+      <div class="rowline"><div>Items total</div><div id="priceSubtotal">₹0</div></div>
+      <div class="rowline"><div>Delivery charge</div><div id="deliveryCharge">₹0</div></div>
+      <div class="rowline"><div>Discount</div><div id="discount">₹0</div></div>
+      <hr style="border:none;border-top:1px dashed #eee;margin:12px 0">
+      <div class="rowline total"><div>Grand total</div><div id="grandTotal">₹0</div></div>
+      <div style="margin-top:12px">
+        <button class="btn" id="placeNow" style="background:#2b7bff">Pay / Place order</button>
+      </div>
+      <div class="small" style="margin-top:10px">You will get an order id and confirmation after placing the order.</div>
+    </aside>
   </div>
+</div>
 
-  <!-- Firebase v8 CDN (compatible with your current setup) -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script>
+/*
+checkout.html
+- reads localStorage.nj_checkout and displays
+- requires nj_user for placing; if absent, redirects to login.html?next=checkout.html
+- saves order to localStorage.nj_orders array
+*/
 
-  <script>
-    // ----------------- TODO: paste your firebase config here -----------------
-    const firebaseConfig = {
-      apiKey: "AIzaSyCbf19k8pLFh-9UQz8sQRim2rPYTlqaEL8",
-      authDomain: "njmartonline.firebaseapp.com",
-      projectId: "njmartonline",
-      storageBucket: "njmartonline.firebasestorage.app",
-      messagingSenderId: "594505763627",
-      appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
-    };
-    // -------------------------------------------------------------------------
+const CART_KEY = 'nj_cart';
+const CHECKOUT_KEY = 'nj_checkout';
+const ORDERS_KEY = 'nj_orders';
+const USER_KEY = 'nj_user';
+const COUPON_KEY = 'nj_coupon';
+const DELIVERY_THRESHOLD = 499;
+const DELIVERY_CHARGE = 25;
 
-    // init firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+function loadCheckout(){
+  try{ const r = localStorage.getItem(CHECKOUT_KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; }
+}
+function loadCart(){ try{ const r = localStorage.getItem(CART_KEY); return r ? JSON.parse(r) : []; }catch(e){return [];} }
+function loadCoupon(){ try{ const r = localStorage.getItem(COUPON_KEY); return r ? JSON.parse(r) : null; }catch(e){return null;} }
+function saveOrder(order){
+  try{
+    const prev = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
+    prev.unshift(order);
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(prev));
+  }catch(e){}
+}
 
-    // UI references
-    const itemsWrap = document.getElementById('itemsWrap');
-    const noItems = document.getElementById('noItems');
-    const userSection = document.getElementById('userSection');
-    const placeBtn = document.getElementById('placeOrderBtn');
-    const backBtn = document.getElementById('backBtn');
+function renderOrder(){
+  const checkout = loadCheckout();
+  const cart = loadCart();
+  const coupon = loadCoupon();
+  const container = document.getElementById('itemsList');
+  container.innerHTML = '';
+  if(!checkout || !cart || cart.length===0){
+    container.innerHTML = '<div class="muted">Nothing to checkout. Go to cart and add items.</div>';
+    document.getElementById('confirmOrder').disabled = true;
+    document.getElementById('placeNow').disabled = true;
+    return;
+  }
+  cart.forEach(i=>{
+    const row = document.createElement('div');
+    row.style.display='flex';
+    row.style.justifyContent='space-between';
+    row.style.padding='6px 0';
+    row.innerHTML = `<div>${i.name} × ${i.qty}</div><div>₹${(i.price*i.qty).toFixed(0)}</div>`;
+    container.appendChild(row);
+  });
 
-    const sumItems = document.getElementById('sumItems');
-    const sumSubtotal = document.getElementById('sumSubtotal');
-    const sumTax = document.getElementById('sumTax');
-    const sumTotal = document.getElementById('sumTotal');
-    const orderNotes = document.getElementById('orderNotes');
+  const subtotal = cart.reduce((s,i)=>s + (i.price*i.qty), 0);
+  const delivery = subtotal >= DELIVERY_THRESHOLD ? 0 : DELIVERY_CHARGE;
+  const discount = coupon ? (coupon.discount || 0) : 0;
+  const grand = Math.max(0, subtotal + delivery - discount);
 
-    // read checkout snapshot from localStorage
-    function readCheckout(){
-      try{
-        return JSON.parse(localStorage.getItem('nj_checkout')) || {items: []};
-      }catch(e){ return {items: []}; }
+  document.getElementById('priceSubtotal').textContent = '₹' + subtotal.toFixed(0);
+  document.getElementById('deliveryCharge').textContent = '₹' + delivery.toFixed(0);
+  document.getElementById('discount').textContent = '₹' + discount.toFixed(0);
+  document.getElementById('grandTotal').textContent = '₹' + grand.toFixed(0);
+}
+
+// prefill profile fields if saved
+function prefillProfile(){
+  try{
+    const userRaw = localStorage.getItem(USER_KEY);
+    if(userRaw){
+      const u = JSON.parse(userRaw);
+      document.getElementById('name').value = u.name || '';
+      document.getElementById('phone').value = u.phone || '';
+      document.getElementById('address').value = u.address || '';
+    } else {
+      // maybe checkout had phone/address
+      const ch = loadCheckout();
+      if(ch){
+        // if checkout stored address etc earlier
+        // no-op for now
+      }
     }
+  }catch(e){}
+}
 
-    // render items & summary
-    function renderOrder(){
-      const data = readCheckout();
-      const items = data.items || [];
-      itemsWrap.innerHTML = '';
-      if(!items.length){
-        noItems.style.display = 'block';
-      } else {
-        noItems.style.display = 'none';
-        items.forEach(it=>{
-          const div = document.createElement('div');
-          div.className = 'item';
-          div.innerHTML = `
-            <img src="${it.image || 'https://via.placeholder.com/200'}" alt="">
-            <div style="flex:1">
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <div>
-                  <div style="font-weight:700">${escapeHtml(it.name || 'Product')}</div>
-                  <div class="muted">${escapeHtml(it.category || '')}</div>
-                </div>
-                <div style="text-align:right">
-                  <div class="price">₹${Number(it.price || 0).toFixed(2)}</div>
-                  <div class="muted">Qty: ${Number(it.qty||1)}</div>
-                </div>
-              </div>
-            </div>
-          `;
-          itemsWrap.appendChild(div);
-        });
-      }
+// get location
+document.getElementById('locBtn').addEventListener('click', ()=> {
+  if(!navigator.geolocation){ alert('Geolocation not supported'); return; }
+  document.getElementById('locBtn').textContent = 'Locating...';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    document.getElementById('locBtn').textContent = 'Get current location';
+    const lat = pos.coords.latitude.toFixed(6), lon = pos.coords.longitude.toFixed(6);
+    // place as part of address
+    const addr = document.getElementById('address');
+    addr.value = (addr.value ? addr.value + '\n' : '') + `Location: ${lat}, ${lon}`;
+  }, err=>{
+    document.getElementById('locBtn').textContent = 'Get current location';
+    alert('Unable to get location: ' + (err.message||err.code));
+  }, {timeout:10000});
+});
 
-      // summary calc
-      let subtotal = 0;
-      items.forEach(i=> subtotal += (Number(i.price||0) * Number(i.qty||1)));
-      const tax = subtotal * 0.05;
-      const total = subtotal + tax;
+// save profile button
+document.getElementById('saveProfile').addEventListener('click', ()=>{
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const address = document.getElementById('address').value.trim();
+  if(!name || !phone || !address){ alert('Please enter name, phone and address'); return; }
+  const u = {name,phone,address,updatedAt:Date.now()};
+  localStorage.setItem(USER_KEY, JSON.stringify(u));
+  alert('Profile saved locally');
+});
 
-      sumItems.innerText = items.length;
-      sumSubtotal.innerText = '₹' + subtotal.toFixed(2);
-      sumTax.innerText = '₹' + tax.toFixed(2);
-      sumTotal.innerText = '₹' + total.toFixed(2);
-    }
+// place now buttons (top and bottom)
+document.getElementById('placeNow').addEventListener('click', ()=> triggerPlaceOrder());
+document.getElementById('confirmOrder').addEventListener('click', ()=> triggerPlaceOrder());
 
-    function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+// main flow
+function triggerPlaceOrder(){
+  // require user login
+  const userRaw = localStorage.getItem(USER_KEY);
+  if(!userRaw){
+    // redirect to login (pass next)
+    location.href = 'login.html?next=checkout.html';
+    return;
+  }
+  const user = JSON.parse(userRaw);
+  const cart = loadCart();
+  if(!cart || cart.length===0){ alert('Cart is empty'); return; }
 
-    // show signed-in user or prompt login
-    let currentUser = null;
-    auth.onAuthStateChanged(user=>{
-      currentUser = user;
-      if(user){
-        // show user brief
-        const display = user.displayName || user.email || user.phoneNumber || 'User';
-        userSection.innerHTML = `
-          Signed in as: <strong>${escapeHtml(display)}</strong><br>
-          <div class="muted" style="margin-top:6px">Email: ${escapeHtml(user.email || '')} | UID: ${user.uid}</div>
-        `;
-      } else {
-        userSection.innerHTML = `You are not signed in. <button class="btn btn-primary" id="loginBtn">Sign in with Google</button>`;
-        document.getElementById('loginBtn').onclick = () => {
-          const provider = new firebase.auth.GoogleAuthProvider();
-          auth.signInWithPopup(provider).catch(err=> alert('Sign-in error: ' + err.message));
-        };
-      }
-    });
+  const subtotal = cart.reduce((s,i)=>s + (i.price*i.qty), 0);
+  const coupon = loadCoupon();
+  const couponDiscount = coupon ? (coupon.discount || 0) : 0;
+  const delivery = subtotal >= DELIVERY_THRESHOLD ? 0 : DELIVERY_CHARGE;
+  const grand = Math.max(0, subtotal + delivery - couponDiscount);
 
-    // place order handler
-    placeBtn.addEventListener('click', async ()=>{
-      const data = readCheckout();
-      const items = data.items || [];
-      if(!items.length){
-        alert('Your cart is empty.');
-        return;
-      }
-      if(!currentUser){
-        alert('Please sign in to place order.');
-        return;
-      }
+  // collect address/notes/payment
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const address = document.getElementById('address').value.trim();
+  const notes = document.getElementById('notes').value.trim();
+  const payment = document.getElementById('payment').value;
 
-      // disable button
-      placeBtn.disabled = true;
-      placeBtn.innerText = 'Placing order...';
+  if(!name || !phone || !address){ alert('Please fill name / phone / address'); return; }
 
-      // prepare order object
-      const subtotal = items.reduce((s,it)=> s + (Number(it.price||0) * Number(it.qty||1)), 0);
-      const tax = +(subtotal * 0.05).toFixed(2);
-      const grandTotal = +(subtotal + tax).toFixed(2);
+  const orderId = 'ORD' + Date.now().toString(36).toUpperCase().slice(-8);
+  const order = {
+    id: orderId,
+    items: cart,
+    subtotal, delivery, coupon: coupon || null,
+    discount: couponDiscount,
+    grandTotal: grand,
+    name, phone, address, notes, payment,
+    user: user,
+    createdAt: Date.now(),
+    status: 'placed'
+  };
 
-      // optional: read saved user profile details from firestore (collection "customers") or localStorage.
-      // We'll attempt to read profile doc named by user.uid under collection "customers" (if you store it there).
-      let profile = { name: currentUser.displayName || '', email: currentUser.email || '', phone: currentUser.phoneNumber || '' };
-      try{
-        const profDoc = await db.collection('customers').doc(currentUser.uid).get();
-        if(profDoc.exists){
-          profile = Object.assign(profile, profDoc.data());
-        }
-      }catch(e){
-        // ignore if not present
-      }
+  // save to local orders
+  saveOrder(order);
 
-      const order = {
-        userId: currentUser.uid,
-        userEmail: currentUser.email || '',
-        profile,
-        items,
-        subtotal,
-        tax,
-        total: grandTotal,
-        notes: (orderNotes.value || '').trim(),
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        status: 'pending' // you can change workflow: pending -> confirmed -> dispatched
-      };
+  // clear cart & checkout object
+  localStorage.removeItem(CART_KEY);
+  localStorage.removeItem(CHECKOUT_KEY);
 
-      try{
-        // save order
-        const ref = await db.collection('orders').add(order);
-        // you can also create a customer/orders subcollection if preferred
-        // clear checkout localStorage snapshot
-        localStorage.removeItem('nj_checkout');
+  // show success
+  alert('Order placed! Your order id: ' + orderId);
+  // redirect to orders page if exists or show order summary
+  location.href = 'orders.html';
+}
 
-        // success message and redirect
-        alert('Order placed successfully. Order ID: ' + ref.id);
-        // redirect to order-confirmation page (you can create order-success.html to show details)
-        window.location.href = 'order-success.html?orderId=' + encodeURIComponent(ref.id);
-      }catch(err){
-        console.error('order save error', err);
-        alert('Order failed: ' + (err.message || err));
-        placeBtn.disabled = false;
-        placeBtn.innerText = 'Place Order';
-      }
-    });
+(function init(){
+  renderOrder();
+  prefillProfile();
 
-    // back to shop
-    backBtn.addEventListener('click', ()=> window.location.href = 'index.html');
-
-    // render on load
-    renderOrder();
-
-    // make sure auth state known (if already logged in)
-    auth.getRedirectResult?.().catch(()=>{}); // no-op safe
-
-  </script>
+  // show helpful notice if no checkout data
+  const ch = loadCheckout();
+  if(!ch){
+    const n = document.getElementById('noticeCard');
+    n.style.display = 'block';
+    n.innerHTML = '<strong>Note:</strong> This is a demo checkout. Prices & orders are saved locally on your device.';
+  }
+})();
+</script>
 </body>
 </html>
