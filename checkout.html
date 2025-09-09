@@ -1,447 +1,384 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>NJ Mart — Checkout (Full)</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NJ Mart — Checkout</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --green:#2db34a; --muted:#6f757b; --card:#ffffff; --bg:#f6fbf8; --danger:#e04d4d;
-    --radius:12px;
+    --green:#2db34a; --muted:#6f757b; --bg:#f6fbf8; --card:#fff; --danger:#e04d4d; --radius:12px;
   }
   *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif}
-  body{margin:0;background:var(--bg);color:#111}
-  .page{max-width:1100px;margin:18px auto;padding:14px}
-  .header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-  .back{background:#fff;border-radius:10px;padding:8px;border:0;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-  .title{font-size:20px;font-weight:700}
+  body{margin:0;background:var(--bg);color:#0b1220}
+  .wrap{max-width:1100px;margin:14px auto;padding:12px}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .back{background:#fff;border:0;padding:8px;border-radius:10px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+  h1{margin:0;font-size:20px}
   .grid{display:grid;grid-template-columns:1fr 380px;gap:14px}
   @media(max-width:980px){ .grid{grid-template-columns:1fr} }
-  .card{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:0 8px 30px rgba(12,30,40,.04)}
-  h2{margin:0 0 8px 0}
+  .card{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:0 8px 24px rgba(12,30,40,.04);margin-bottom:12px}
   .small{color:var(--muted);font-size:13px}
+  .addressBox{background:#fbfff7;padding:12px;border-radius:10px}
+  .addrName{font-weight:700}
   .items{margin-top:10px}
-  .item{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #f1f4f3}
+  .item{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #f1f3f4}
+  .left{display:flex;gap:12px;align-items:center}
   .thumb{width:72px;height:72px;border-radius:10px;background:#f7faf7;overflow:hidden;display:flex;align-items:center;justify-content:center}
   .thumb img{width:100%;height:100%;object-fit:cover}
   .iname{font-weight:700}
+  .meta{color:var(--muted);font-size:13px}
   .qty{display:flex;align-items:center;gap:8px}
   .qty button{padding:6px 8px;border-radius:8px;border:1px solid #e6ece6;background:#fff;cursor:pointer}
   .price{font-weight:700}
   .remove{background:transparent;border:0;color:var(--danger);cursor:pointer}
-
-  /* address */
-  .addressBox{background:#fbfff7;padding:10px;border-radius:10px}
-  .addr-line{font-weight:700}
-
-  /* summary */
   .summary .row{display:flex;justify-content:space-between;padding:8px 0}
   .summary .total{font-size:18px;font-weight:800}
-
-  /* coupon */
   .couponRow{display:flex;gap:8px;margin-top:8px}
   .couponRow input{flex:1;padding:10px;border-radius:8px;border:1px solid #e7efea}
-
-  .actions{display:flex;gap:8px;margin-top:12px}
+  select,input,textarea{font-family:Inter,system-ui,Segoe UI,Roboto}
+  textarea{min-height:80px;padding:10px;border-radius:8px;border:1px solid #e9f0eb}
   .btn{padding:12px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
   .btn.primary{background:var(--green);color:#fff}
   .btn.ghost{background:#fff;border:1px solid #e6ece6}
   .btn.warn{background:var(--danger);color:#fff}
-  .note{font-size:13px;color:var(--muted);margin-top:10px}
+  .note{font-size:13px;color:var(--muted);margin-top:8px}
+  .actions{display:flex;gap:8px;margin-top:10px}
   .link{color:var(--green);cursor:pointer;text-decoration:underline}
-  .field{margin-top:10px}
-  input[type="text"], input[type="email"], textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e9f0eb}
-  textarea{min-height:80px;resize:vertical}
-  .center{display:flex;align-items:center;gap:8px}
-  .muted{color:var(--muted)}
 </style>
 </head>
 <body>
-  <div class="page">
-    <header class="header">
-      <button class="back" onclick="location.href='cart.html'">← Back</button>
+  <div class="wrap">
+    <header>
+      <button class="back" onclick="location.href='cart.html'">← Cart</button>
       <div>
-        <div class="title">Checkout</div>
-        <div class="small">Review order, select address & place order</div>
+        <h1>Checkout</h1>
+        <div class="small">Review your order, choose address & payment</div>
       </div>
     </header>
 
     <div class="grid">
-      <!-- left column: address + items -->
+      <!-- left: address + items + instructions -->
       <div>
         <div class="card">
-          <h2>Delivery address</h2>
-          <div id="addressContainer" class="addressBox">
-            <!-- address content -->
-            <div id="addressContent" class="muted">Loading address...</div>
+          <h2 style="margin:0 0 8px 0">Delivery address</h2>
+          <div id="addressContent" class="addressBox">
+            <div class="small">Loading address...</div>
           </div>
+
           <div style="display:flex;gap:8px;margin-top:10px">
-            <button id="editProfileBtn" class="btn ghost">Edit Profile</button>
-            <button id="altAddressBtn" class="btn ghost">Enter different address</button>
-            <button id="locBtn" class="btn ghost">Use current location</button>
+            <button id="editProfile" class="btn ghost">Edit profile</button>
+            <button id="altAddress" class="btn ghost">Use different address</button>
+            <button id="useLocation" class="btn ghost">Use current location</button>
           </div>
         </div>
 
-        <div class="card" style="margin-top:12px">
-          <h2>Items</h2>
+        <div class="card">
+          <h2 style="margin:0 0 8px 0">Items</h2>
           <div id="itemsList" class="items"></div>
-          <div class="note">You can adjust quantities here before placing the order.</div>
+          <div class="note">You can change quantity or remove items before placing order.</div>
         </div>
 
-        <div class="card" style="margin-top:12px">
-          <h2>Delivery instructions</h2>
-          <textarea id="deliveryInstructions" placeholder="Example: Leave at door / Call on arrival (optional)"></textarea>
-          <div class="note">Delivery boy will see these instructions.</div>
+        <div class="card">
+          <h2 style="margin:0 0 8px 0">Delivery instructions</h2>
+          <textarea id="instructions" placeholder="Example: Leave at door / Call on arrival (optional)"></textarea>
         </div>
       </div>
 
-      <!-- right column: summary & payment -->
+      <!-- right: summary & payment -->
       <aside>
         <div class="card summary">
-          <h2>Order summary</h2>
-          <div class="row"><div class="muted">Items total</div><div id="subTotal">₹0</div></div>
-          <div class="row"><div class="muted">Delivery charge</div><div id="deliveryCharge">₹0</div></div>
-          <div class="row"><div class="muted">Discount</div><div id="discount">₹0</div></div>
+          <h2 style="margin:0 0 8px 0">Order summary</h2>
+          <div class="row"><div class="small">Items total</div><div id="subTotal">₹0</div></div>
+          <div class="row"><div class="small">Delivery charge</div><div id="deliveryCharge">₹0</div></div>
+          <div class="row"><div class="small">Discount</div><div id="discount">₹0</div></div>
           <hr style="border:none;border-top:1px dashed #eee;margin:8px 0">
           <div class="row total"><div>Grand total</div><div id="grandTotal">₹0</div></div>
 
-          <div class="field" style="margin-top:8px">
+          <div style="margin-top:10px">
             <div class="small">Apply coupon</div>
             <div class="couponRow">
-              <input id="couponInput" placeholder="Enter coupon code">
-              <button id="applyCoupon" class="btn ghost">Apply</button>
+              <input id="couponCode" placeholder="Enter coupon code e.g., SAVE50">
+              <button id="applyCouponBtn" class="btn ghost">Apply</button>
             </div>
           </div>
 
-          <div class="field" style="margin-top:10px">
+          <div style="margin-top:10px">
             <div class="small">Payment method</div>
             <select id="paymentMethod" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e9f0eb;margin-top:8px">
               <option value="upi">UPI</option>
-              <option value="cash">Cash on delivery</option>
+              <option value="cod">Cash on delivery</option>
               <option value="card">Card (placeholder)</option>
             </select>
-            <div id="upiField" style="margin-top:8px;display:none">
-              <input id="upiId" type="text" placeholder="UPI ID (example: yourupi@bank)">
-              <div class="small" style="margin-top:6px">Tip: You can update store UPI in admin settings later.</div>
+
+            <div id="upiBox" style="display:none;margin-top:10px">
+              <input id="upiId" type="text" placeholder="Store/your UPI id (example: yourupi@bank)" />
+              <div class="small" style="margin-top:6px">You can update default UPI in admin settings later.</div>
             </div>
           </div>
 
-          <div class="field">
-            <div style="display:flex;gap:8px">
-              <button id="placeOrderBtn" class="btn primary" style="flex:1">Place Order</button>
-              <button id="saveInvoiceBtn" class="btn ghost" style="flex:1">Download Invoice</button>
-            </div>
-
-            <div style="display:flex;gap:8px;margin-top:8px">
-              <button id="emailInvoiceBtn" class="btn ghost" style="flex:1">Email Invoice</button>
-              <button id="copyDeliveryLink" class="btn ghost" style="flex:1">Copy delivery link</button>
-            </div>
+          <div class="actions" style="margin-top:12px">
+            <button id="placeOrderBtn" class="btn primary" style="flex:1">Place order</button>
+            <button id="downloadInvoice" class="btn ghost" style="flex:1">Download invoice</button>
           </div>
 
-          <div id="afterPlace" style="margin-top:10px;display:none">
-            <div class="small">Order placed — you will be redirected to Orders page.</div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="emailInvoice" class="btn ghost" style="flex:1">Email invoice</button>
+            <button id="copyDelivery" class="btn ghost" style="flex:1">Copy delivery link</button>
           </div>
 
-          <div class="note" style="margin-top:8px">Delivery ₹25 if order &lt; ₹1000. Free above ₹1000.</div>
+          <div id="afterMsg" style="display:none;margin-top:10px" class="small">Order placed — redirecting to Orders...</div>
+          <div class="note" style="margin-top:8px">Delivery ₹25 if order &lt; ₹1000. Free for ₹1000 and above.</div>
         </div>
 
         <div class="card" style="margin-top:12px">
-          <h3 style="margin:0 0 8px 0">Store & Contact</h3>
+          <h3 style="margin:0 0 6px 0">Store</h3>
           <div class="small">NJ Mart • +91 7062918607</div>
-          <div class="small" style="margin-top:8px">Live orders and staff can manage from Admin panel.</div>
         </div>
       </aside>
     </div>
   </div>
 
 <script>
-/*
-  Extended checkout.html
-  - Reads cart from 'nj_cart'
-  - Reads profile from 'nj_profile'
-  - Calculates delivery according to threshold (1000 or as below?)
-  - Applies coupon from local demo list (SAVE50, FREEDEL)
-  - Saves order to 'nj_orders' array and 'nj_latest_order'
-  - Provides invoice download and mailto link
-  - Copies delivery link (order id param)
+/* Full checkout page (copy-paste ready)
+   Keys used:
+    - nj_cart (array of items)
+    - nj_profile (object)
+    - nj_orders (array)
+    - nj_latest_order (object)
+    - nj_coupon (object)
+    - nj_settings (object)
 */
 
-// CONFIG
-const DELIVERY_THRESHOLD = 1000;   // free delivery >= this
-const DELIVERY_CHARGE = 25;        // charge if below threshold
 const CART_KEY = 'nj_cart';
 const PROFILE_KEY = 'nj_profile';
 const ORDERS_KEY = 'nj_orders';
-const SETTINGS_KEY = 'nj_settings';
+const LATEST_KEY = 'nj_latest_order';
 const COUPON_KEY = 'nj_coupon';
+const SETTINGS_KEY = 'nj_settings';
 
-// helper - load/save json
+const DELIVERY_THRESHOLD = 1000;
+const DELIVERY_CHARGE = 25;
+
+// helpers
 function load(key){ try{ return JSON.parse(localStorage.getItem(key)); }catch(e){ return null; } }
-function save(key,val){ localStorage.setItem(key, JSON.stringify(val)); }
-
-// escape HTML
+function save(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+function safeGet(key, fallback){ const v = load(key); return v == null ? fallback : v; }
+function el(id){ return document.getElementById(id); }
 function esc(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
 // UI refs
-const addrContent = document.getElementById('addressContent');
-const itemsList = document.getElementById('itemsList');
-const subEl = document.getElementById('subTotal');
-const deliveryEl = document.getElementById('deliveryCharge');
-const discountEl = document.getElementById('discount');
-const grandEl = document.getElementById('grandTotal');
+const addressContent = el('addressContent');
+const itemsList = el('itemsList');
+const subTotalEl = el('subTotal');
+const deliveryEl = el('deliveryCharge');
+const discountEl = el('discount');
+const grandEl = el('grandTotal');
+const couponInput = el('couponCode');
+const applyCouponBtn = el('applyCouponBtn');
+const paymentMethod = el('paymentMethod');
+const upiBox = el('upiBox');
+const upiId = el('upiId');
+const placeOrderBtn = el('placeOrderBtn');
+const downloadInvoiceBtn = el('downloadInvoice');
+const emailInvoiceBtn = el('emailInvoice');
+const copyDeliveryBtn = el('copyDelivery');
+const afterMsg = el('afterMsg');
 
-const editProfileBtn = document.getElementById('editProfileBtn');
-const altAddressBtn = document.getElementById('altAddressBtn');
-const locBtn = document.getElementById('locBtn');
-
-const couponInput = document.getElementById('couponInput');
-const applyCoupon = document.getElementById('applyCoupon');
-
-const paymentMethod = document.getElementById('paymentMethod');
-const upiField = document.getElementById('upiField');
-const upiIdInput = document.getElementById('upiId');
-
-const placeOrderBtn = document.getElementById('placeOrderBtn');
-const saveInvoiceBtn = document.getElementById('saveInvoiceBtn');
-const emailInvoiceBtn = document.getElementById('emailInvoiceBtn');
-const copyDeliveryLinkBtn = document.getElementById('copyDeliveryLink');
-const afterPlace = document.getElementById('afterPlace');
-
-let activeCart = []; // items
+let cart = safeGet(CART_KEY, []);
 let appliedCoupon = load(COUPON_KEY) || null;
 
-// initial load
+// init
 function init(){
-  activeCart = load(CART_KEY) || [];
-  // if cart empty, create demo so UI not blank (only if you want)
-  if(!activeCart || activeCart.length===0){
-    // don't force demo if user intentionally empty - but for convenience, add sample if needed
-    // activeCart = [];
-    // save(CART_KEY, activeCart);
-  }
+  cart = safeGet(CART_KEY, []);
+  if(!Array.isArray(cart)) cart = [];
   renderAddress();
   renderItems();
   updateSummary();
-  // populate UPI from settings if any
-  const s = load(SETTINGS_KEY) || {};
-  if(s.storeUpi) upiIdInput.value = s.storeUpi;
-  // coupon field if existing
-  if(appliedCoupon) couponInput.value = appliedCoupon.code || '';
+  // populate coupon box if existing
+  if(appliedCoupon && appliedCoupon.code) couponInput.value = appliedCoupon.code;
+  // show upi if settings exist
+  const settings = load(SETTINGS_KEY) || {};
+  if(settings.storeUpi) upiId.value = settings.storeUpi;
 }
-
-// render profile/address
 function renderAddress(){
   const p = load(PROFILE_KEY);
   if(!p || (!p.name && !p.address)){
-    addrContent.innerHTML = '<div class="muted">No profile address saved. <a class="link" id="gotoProfile">Save profile</a> to autofill address.</div>';
-    document.getElementById('gotoProfile')?.addEventListener('click', ()=> location.href = 'profile.html?next=checkout');
+    addressContent.innerHTML = `<div class="small">No profile address saved. <a class="link" id="goProfile">Save profile</a> to autofill delivery address.</div>`;
+    const go = document.getElementById('goProfile');
+    if(go) go.addEventListener('click', ()=> location.href = 'profile.html?next=checkout');
     return;
   }
-  addrContent.innerHTML = `<div class="addr-line">${esc(p.name)}</div>
-    <div class="small">Phone: ${esc(p.phone||'')}</div>
-    <div style="margin-top:8px">${esc(p.address).replace(/\n/g,'<br>')}</div>`;
+  addressContent.innerHTML = `<div class="addrName">${esc(p.name)}</div>
+    <div class="small">Phone: ${esc(p.phone || '')}</div>
+    <div style="margin-top:8px">${esc(p.address || '').replace(/\n/g,'<br>')}</div>`;
 }
-
-// render items list with qty controls
 function renderItems(){
   itemsList.innerHTML = '';
-  const cart = activeCart || [];
-  if(!cart.length){ itemsList.innerHTML = '<div class="muted">Your cart is empty.</div>'; return; }
+  if(!cart.length){ itemsList.innerHTML = '<div class="small">Your cart is empty</div>'; return; }
   cart.forEach((it, idx)=>{
-    const div = document.createElement('div');
-    div.className = 'item';
-    div.innerHTML = `
-      <div style="display:flex;gap:12px;align-items:center">
-        <div class="thumb"><img src="${esc(it.image||'https://via.placeholder.com/150')}" alt=""></div>
+    const wrapper = document.createElement('div');
+    wrapper.className = 'item';
+    wrapper.innerHTML = `
+      <div class="left">
+        <div class="thumb"><img src="${esc(it.image || 'https://via.placeholder.com/150')}" alt=""></div>
         <div>
           <div class="iname">${esc(it.name)}</div>
-          <div class="small">Category: ${esc(it.category||'')}</div>
+          <div class="meta">${esc(it.category || '')}</div>
         </div>
       </div>
       <div style="text-align:right">
         <div class="qty">
           <button class="dec" data-idx="${idx}">−</button>
-          <div class="count">${it.qty||1}</div>
+          <div class="small" style="display:inline-block;padding:6px 8px;border-radius:6px;background:#f6f8fa">${it.qty||1}</div>
           <button class="inc" data-idx="${idx}">+</button>
         </div>
         <div class="price">₹${(it.price*(it.qty||1)).toFixed(0)}</div>
-        <div><button class="remove" data-idx="${idx}">Remove</button></div>
+        <div><button class="remove" data-idx="${idx}" style="background:transparent;border:0;color:var(--danger);cursor:pointer">Remove</button></div>
       </div>
     `;
-    itemsList.appendChild(div);
+    itemsList.appendChild(wrapper);
   });
-
   // attach events
-  itemsList.querySelectorAll('.inc').forEach(b=>{
-    b.addEventListener('click', e=>{
-      const i = Number(e.currentTarget.getAttribute('data-idx'));
-      activeCart[i].qty = (activeCart[i].qty||1) + 1;
-      save(CART_KEY, activeCart); renderItems(); updateSummary();
-    });
-  });
-  itemsList.querySelectorAll('.dec').forEach(b=>{
-    b.addEventListener('click', e=>{
-      const i = Number(e.currentTarget.getAttribute('data-idx'));
-      if((activeCart[i].qty||1) > 1){ activeCart[i].qty -= 1; save(CART_KEY, activeCart); renderItems(); updateSummary(); }
-      else { if(confirm('Remove this item?')){ activeCart.splice(i,1); save(CART_KEY, activeCart); renderItems(); updateSummary(); } }
-    });
-  });
-  itemsList.querySelectorAll('.remove').forEach(b=>{
-    b.addEventListener('click', e=>{
-      const i = Number(e.currentTarget.getAttribute('data-idx'));
-      if(confirm('Remove this item?')){ activeCart.splice(i,1); save(CART_KEY, activeCart); renderItems(); updateSummary(); }
-    });
-  });
+  itemsList.querySelectorAll('.inc').forEach(btn => btn.addEventListener('click', onInc));
+  itemsList.querySelectorAll('.dec').forEach(btn => btn.addEventListener('click', onDec));
+  itemsList.querySelectorAll('.remove').forEach(btn => btn.addEventListener('click', onRemove));
 }
+function onInc(e){ const i = Number(e.currentTarget.dataset.idx); cart[i].qty = (cart[i].qty||1)+1; save(CART_KEY, cart); renderItems(); updateSummary(); }
+function onDec(e){ const i = Number(e.currentTarget.dataset.idx); if((cart[i].qty||1) > 1){ cart[i].qty -= 1; save(CART_KEY, cart); renderItems(); updateSummary(); } else { if(confirm('Remove this item?')){ cart.splice(i,1); save(CART_KEY, cart); renderItems(); updateSummary(); } } }
+function onRemove(e){ const i = Number(e.currentTarget.dataset.idx); if(confirm('Remove this item?')){ cart.splice(i,1); save(CART_KEY, cart); renderItems(); updateSummary(); } }
 
-// summary calc
-function updateSummary(){
-  const cart = activeCart || [];
-  const subtotal = cart.reduce((s,i)=>s + (i.price*(i.qty||1)), 0);
+function calcTotals(){
+  const subtotal = cart.reduce((s,i)=> s + (i.price * (i.qty||1)), 0);
   const delivery = subtotal >= DELIVERY_THRESHOLD || subtotal === 0 ? 0 : DELIVERY_CHARGE;
-  let discount = 0;
-  if(appliedCoupon && appliedCoupon.discount) discount = appliedCoupon.discount;
-  // if coupon type is 'PERCENT' handle accordingly — demo only uses flat
+  const discount = appliedCoupon && appliedCoupon.discount ? appliedCoupon.discount : 0;
   const grand = Math.max(0, subtotal + delivery - discount);
-  subEl.innerText = '₹' + subtotal.toFixed(0);
-  deliveryEl.innerText = '₹' + delivery.toFixed(0);
-  discountEl.innerText = '₹' + discount.toFixed(0);
-  grandEl.innerText = '₹' + grand.toFixed(0);
+  return { subtotal, delivery, discount, grand };
+}
+function updateSummary(){
+  const t = calcTotals();
+  subTotalEl.textContent = '₹' + t.subtotal.toFixed(0);
+  deliveryEl.textContent = '₹' + t.delivery.toFixed(0);
+  discountEl.textContent = '₹' + t.discount.toFixed(0);
+  grandEl.textContent = '₹' + t.grand.toFixed(0);
 }
 
 // coupon apply
-applyCoupon.addEventListener('click', ()=>{
+applyCouponBtn.addEventListener('click', ()=>{
   const code = (couponInput.value || '').trim().toUpperCase();
   if(!code){ alert('Enter coupon code'); return; }
   // demo coupons
-  if(code === 'SAVE50'){ appliedCoupon = { code:'SAVE50', discount:50 }; save(COUPON_KEY, appliedCoupon); alert('Coupon applied: ₹50 off'); }
-  else if(code === 'FREEDEL'){ appliedCoupon = { code:'FREEDEL', discount: DELIVERY_CHARGE }; save(COUPON_KEY, appliedCoupon); alert('Coupon applied: Free delivery'); }
+  if(code === 'SAVE50'){ appliedCoupon = { code:'SAVE50', discount:50 }; save(COUPON_KEY, appliedCoupon); alert('Applied: ₹50 off'); }
+  else if(code === 'FREEDEL'){ appliedCoupon = { code:'FREEDEL', discount: DELIVERY_CHARGE }; save(COUPON_KEY, appliedCoupon); alert('Applied: Free delivery'); }
   else { alert('Invalid coupon'); return; }
   updateSummary();
 });
 
-// payment method show/hide upi
+// payment method show/hide UPI
 paymentMethod.addEventListener('change', ()=>{
-  if(paymentMethod.value === 'upi'){ upiField.style.display = 'block'; } else upiField.style.display = 'none';
+  if(paymentMethod.value === 'upi') upiBox.style.display = 'block'; else upiBox.style.display = 'none';
 });
 
-// edit profile / alt address
-editProfileBtn.addEventListener('click', ()=> location.href = 'profile.html?next=checkout');
-altAddressBtn.addEventListener('click', ()=>{
-  const alt = prompt('Enter alternative delivery address (this will be used for this order only):');
+// edit profile / alt address / location
+el('editProfile').addEventListener('click', ()=> location.href = 'profile.html?next=checkout');
+el('altAddress').addEventListener('click', ()=>{
+  const alt = prompt('Enter alternate delivery address (temporary for this order):');
   if(!alt) return;
-  // show alt address immediately
-  addrContent.innerHTML = `<div class="addr-line">Alternative address</div><div style="margin-top:6px">${esc(alt).replace(/\n/g,'<br>')}</div>`;
+  addressContent.innerHTML = `<div class="addrName">Alternate address</div><div style="margin-top:6px">${esc(alt).replace(/\n/g,'<br>')}</div>`;
 });
-
-// get current location
-locBtn.addEventListener('click', ()=>{
+el('useLocation').addEventListener('click', ()=>{
   if(!navigator.geolocation){ alert('Geolocation not supported'); return; }
-  locBtn.disabled = true; locBtn.innerText = 'Locating…';
+  el('useLocation').disabled = true; el('useLocation').textContent = 'Locating…';
   navigator.geolocation.getCurrentPosition(pos=>{
     const lat = pos.coords.latitude.toFixed(6); const lng = pos.coords.longitude.toFixed(6);
-    const altText = `Current location (lat: ${lat}, lng: ${lng})`;
-    addrContent.innerHTML = `<div class="addr-line">${esc(altText)}</div><div class="small">You can save address in Profile later.</div>`;
-    locBtn.disabled = false; locBtn.innerText = 'Use current location';
+    addressContent.innerHTML = `<div class="addrName">Current location</div><div class="small">Lat: ${lat}, Lng: ${lng}</div>`;
+    el('useLocation').disabled = false; el('useLocation').textContent = 'Use current location';
   }, err=>{
-    locBtn.disabled = false; locBtn.innerText = 'Use current location';
-    alert('Failed to get location: ' + (err.message||err));
+    el('useLocation').disabled = false; el('useLocation').textContent = 'Use current location';
+    alert('Failed to get location: ' + (err.message || err));
   }, { enableHighAccuracy:true, timeout:10000 });
 });
 
 // place order
 placeOrderBtn.addEventListener('click', ()=>{
-  const cart = activeCart || [];
-  if(!cart.length){ alert('Cart empty'); return; }
-  // build profile/order info
-  let profile = load(PROFILE_KEY);
-  // If user entered alternative address (we replaced addressContent), try detect
-  const addrHtml = addrContent.innerHTML;
-  let addressText = '';
-  if(!profile || !profile.address){
-    // if full address not present, ask confirm
-    if(!confirm('No saved profile address found. Continue placing order with current address shown?')) return;
+  if(!cart.length){ alert('Your cart is empty'); return; }
+  // read profile
+  const profile = load(PROFILE_KEY) || null;
+  if(!profile || (!profile.name && !profile.address)){
+    if(!confirm('No profile saved. Continue with checkout?')) return;
   }
-  // compute totals
-  const subtotal = cart.reduce((s,i)=>s + (i.price*(i.qty||1)), 0);
-  const delivery = subtotal >= DELIVERY_THRESHOLD ? 0 : DELIVERY_CHARGE;
-  const discount = (appliedCoupon && appliedCoupon.discount) ? appliedCoupon.discount : 0;
-  const total = Math.max(0, subtotal + delivery - discount);
-
-  // read payment info
+  const totals = calcTotals();
   const payment = paymentMethod.value;
-  const upi = upiIdInput.value.trim() || null;
-
+  const upi = upiId.value.trim() || null;
   const order = {
-    id: 'ORD' + Date.now().toString(36),
+    id: 'ORD' + Date.now().toString(36).toUpperCase(),
     createdAt: Date.now(),
     items: cart,
-    profile: profile || null,
-    subtotal, delivery, discount, total,
-    payment: { method: payment, upi },
-    instructions: document.getElementById('deliveryInstructions').value || '',
+    profile: profile,
+    subtotal: totals.subtotal,
+    delivery: totals.delivery,
+    discount: totals.discount,
+    total: totals.grand,
+    payment: { method: payment, upi: upi },
+    instructions: el('instructions').value || '',
     status: 'placed'
   };
-
-  // save to orders
+  // save
   const orders = load(ORDERS_KEY) || [];
   orders.unshift(order);
   save(ORDERS_KEY, orders);
-  save('nj_latest_order', order);
-
-  // clear cart and coupon
+  save(LATEST_KEY, order);
+  // clear cart & coupon
   localStorage.removeItem(CART_KEY);
   localStorage.removeItem(COUPON_KEY);
-
-  // visual feedback
-  afterPlace.style.display = 'block';
+  // feedback
+  afterMsg.style.display = 'block';
   placeOrderBtn.disabled = true;
-
-  // offer invoice prepare & redirect after short delay
-  setTimeout(()=>{ location.href = 'orders.html'; }, 1000);
+  // redirect to orders
+  setTimeout(()=> location.href = 'orders.html', 900);
 });
 
 // invoice download
-saveInvoiceBtn.addEventListener('click', ()=>{
-  const order = load('nj_latest_order') || buildPreviewOrder();
-  if(!order){ alert('No order to download. Place order first.'); return; }
-  const txt = buildInvoiceText(order);
+downloadInvoiceBtn.addEventListener('click', ()=>{
+  const order = load(LATEST_KEY) || buildPreviewOrder();
+  if(!order){ alert('No recent order. Place order first.'); return; }
+  const txt = invoiceText(order);
   const blob = new Blob([txt], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = `${order.id}_invoice.txt`;
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
+  const a = document.createElement('a'); a.href = url; a.download = `${order.id}_invoice.txt`;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
 });
 
-// email invoice via mailto
+// email invoice
 emailInvoiceBtn.addEventListener('click', ()=>{
-  const order = load('nj_latest_order') || buildPreviewOrder();
-  if(!order){ alert('No order to email. Place order first.'); return; }
+  const order = load(LATEST_KEY) || buildPreviewOrder();
+  if(!order){ alert('No recent order. Place order first.'); return; }
   const profile = load(PROFILE_KEY) || {};
-  const to = profile.email || prompt('Enter email to send invoice to (demo uses mailto):');
+  let to = profile.email || '';
+  if(!to) to = prompt('Enter email to send invoice (this opens mail client):');
   if(!to) return;
   const subject = encodeURIComponent(`Invoice ${order.id} — NJ Mart`);
-  const body = encodeURIComponent(buildInvoiceText(order));
-  // mailto may be long; mail client will open - user must send
-  window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+  const body = encodeURIComponent(invoiceText(order));
+  window.location.href = `mailto:${encodeURIComponent(to)}?subject=${subject}&body=${body}`;
 });
 
 // copy delivery link
-copyDeliveryLinkBtn.addEventListener('click', ()=>{
-  const last = load('nj_latest_order');
-  if(!last){ alert('No recent order to create delivery link. Place order first.'); return; }
-  const url = `${location.origin}${location.pathname.replace(/\/[^\/]*$/, '/') }delivery.html?order=${encodeURIComponent(last.id)}`;
-  // copy to clipboard
-  navigator.clipboard?.writeText(url).then(()=> alert('Delivery link copied. Paste to delivery boy / WhatsApp.'), ()=> prompt('Copy this link', url));
+copyDeliveryBtn.addEventListener('click', ()=>{
+  const last = load(LATEST_KEY);
+  if(!last){ alert('No recent order to make delivery link. Place order first.'); return; }
+  const base = location.origin + location.pathname.replace(/\/[^\/]*$/, '/');
+  const url = base + 'delivery.html?order=' + encodeURIComponent(last.id);
+  // fallback if clipboard not available
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(()=> alert('Delivery link copied to clipboard'), ()=> prompt('Copy this delivery link', url));
+  } else { prompt('Copy this delivery link', url); }
 });
 
-// helper build invoice text
-function buildInvoiceText(order){
+// helpers: build invoice text
+function invoiceText(order){
   let out = `NJ Mart — Invoice\nOrder ID: ${order.id}\nDate: ${new Date(order.createdAt).toLocaleString()}\n\n`;
   if(order.profile){
-    out += `Customer: ${order.profile.name || ''}\nPhone: ${order.profile.phone || ''}\nAddress: ${(order.profile.address || '').replace(/\n/g,' ')}\n\n`;
+    out += `Customer: ${order.profile.name || '-'}\nPhone: ${order.profile.phone || '-'}\nAddress: ${(order.profile.address||'').replace(/\n/g,' ')}\n\n`;
   }
   out += `Items:\n`;
   order.items.forEach(it=>{
@@ -450,7 +387,24 @@ function buildInvoiceText(order){
   out += `\nSubtotal: ₹${order.subtotal}\nDelivery: ₹${order.delivery}\nDiscount: ₹${order.discount}\nGrand total: ₹${order.total}\n\nPayment: ${order.payment.method}${order.payment.upi ? ' (UPI: '+order.payment.upi+')' : ''}\nInstructions: ${order.instructions || '-'}\n\nThank you for shopping with NJ Mart!\n`;
   return out;
 }
-
-// build preview order if needed
 function buildPreviewOrder(){
-  const cart = lo
+  return {
+    id: 'PREVIEW',
+    createdAt: Date.now(),
+    items: cart,
+    profile: load(PROFILE_KEY) || null,
+    subtotal: calcTotals().subtotal,
+    delivery: calcTotals().delivery,
+    discount: calcTotals().discount,
+    total: calcTotals().grand,
+    payment: { method: paymentMethod.value || 'NA' },
+    instructions: el('instructions').value || '',
+    status: 'preview'
+  };
+}
+
+// initialize UI
+init();
+</script>
+</body>
+</html>
