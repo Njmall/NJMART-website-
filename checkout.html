@@ -1,149 +1,181 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>NJ Mart — Checkout</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--green:#2db34a;--muted:#7b7f86;--card:#fff;--bg:#f3faf6}
-  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif}
-  body{margin:0;background:var(--bg);color:#111}
-  .page{max-width:960px;margin:20px auto;padding:14px}
-  .card{background:var(--card);border-radius:12px;box-shadow:0 8px 24px rgba(12,30,40,.06);padding:14px;margin-bottom:14px}
-  .row{display:flex;gap:12px}
-  @media(max-width:900px){ .row{flex-direction:column} }
-  .col{flex:1}
-  .small{color:var(--muted);font-size:13px}
-  .item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f2f4f5}
-  .total{font-weight:700;font-size:18px}
-  .btn{border:0;border-radius:10px;padding:12px;font-weight:700;cursor:pointer}
-  .btn.primary{background:var(--green);color:#fff;width:100%}
-  .btn.ghost{background:#fff;border:1px solid #e6eaec;color:#333;width:100%}
+  :root{--green:#2db34a;--muted:#7c8086;--card:#fff;--bg:#f4f7f8}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,Roboto,Segoe UI, sans-serif;background:var(--bg);color:#0b1220}
+  .page{max-width:920px;margin:12px auto;padding:12px}
+  .card{background:var(--card);border-radius:14px;box-shadow:0 6px 20px rgba(12,30,40,.06);padding:16px;margin-bottom:12px}
+  header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  h1{margin:0;font-size:20px}
+  .address-line{font-weight:700}
+  .muted{color:var(--muted);font-size:13px}
+  .items-list{margin-top:12px}
+  .item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eee}
+  .summary{margin-top:12px;padding-top:8px;border-top:1px dashed #eee}
+  .row{display:flex;justify-content:space-between;align-items:center}
+  .btn{display:block;width:100%;padding:12px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+  .btn.primary{background:var(--green);color:#fff}
+  .btn.ghost{background:#fff;border:1px solid #e6e9eb}
+  .note{font-size:13px;color:var(--muted);margin-top:10px}
+  @media(min-width:720px){.page{padding:20px}}
 </style>
 </head>
 <body>
   <div class="page">
-    <div class="card">
+    <header>
+      <button onclick="location.href='index.html'" style="border:0;background:#fff;padding:8px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.04);cursor:pointer">←</button>
       <h1>Checkout</h1>
-      <div class="small">Review order, select delivery address and place your order</div>
-    </div>
+    </header>
 
-    <div class="row">
-      <div class="col">
-        <div class="card">
-          <h3>Delivery address</h3>
-          <div id="addrBlock" style="margin-top:8px"></div>
-          <div style="margin-top:10px;display:flex;gap:8px">
-            <button id="editProfile" class="btn ghost">Edit Profile</button>
-            <button id="useOther" class="btn ghost">Use different address</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Items</h3>
-          <div id="itemsList" style="margin-top:8px"></div>
-        </div>
+    <section id="addressCard" class="card">
+      <div class="muted">Delivery address</div>
+      <div id="addrName" class="address-line">—</div>
+      <div id="addrPhone" class="muted">—</div>
+      <div id="addrText" style="margin-top:8px;color:#333">No address saved</div>
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <button id="editProfile" class="btn ghost" style="flex:1">Edit Profile</button>
+        <button id="useDiff" class="btn ghost" style="flex:1">Use different address</button>
       </div>
+    </section>
 
-      <aside style="width:320px">
-        <div class="card">
-          <h3>Order summary</h3>
-          <div id="summaryBox" style="margin-top:8px"></div>
-          <div style="margin-top:12px">
-            <button id="placeOrder" class="btn primary">Place Order</button>
-          </div>
-          <div style="margin-top:10px" class="small">Orders in this demo are saved locally (browser).</div>
-        </div>
-      </aside>
-    </div>
+    <section id="itemsCard" class="card">
+      <div style="font-weight:700">Items</div>
+      <div id="itemsList" class="items-list"></div>
+
+      <div class="summary">
+        <div class="row"><div>Items total</div><div id="itemsTotal">₹0</div></div>
+        <div class="row"><div>Delivery</div><div id="itemsDelivery">₹0</div></div>
+        <div class="row" style="margin-top:8px;font-weight:700"><div>Grand total</div><div id="itemsGrand">₹0</div></div>
+
+        <button id="placeOrder" class="btn primary" style="margin-top:12px">Place Order</button>
+        <div id="orderMsg" class="note"></div>
+      </div>
+    </section>
   </div>
 
 <script>
-  // checkout.js (localStorage-based)
-  const DELIVERY_THRESHOLD = 499;
-  const DELIVERY_CHARGE = 25;
+/*
+ checkout.html
+ - Reads 'nj_checkout' and 'nj_profile' from localStorage.
+ - If profile missing shows message and offers Edit Profile redirect.
+ - Place Order saves order to 'nj_orders' (array) and clears nj_cart & nj_checkout.
+*/
 
-  function loadCart(){ try{ return JSON.parse(localStorage.getItem('nj_cart')||'[]'); }catch(e){ return []; } }
-  function saveOrders(o){ const arr = JSON.parse(localStorage.getItem('nj_orders')||'[]'); arr.unshift(o); localStorage.setItem('nj_orders', JSON.stringify(arr)); }
+function currency(v){ return '₹' + (Number(v)||0).toFixed(0); }
+const checkoutRaw = localStorage.getItem('nj_checkout');
+const profileRaw = localStorage.getItem('nj_profile');
 
-  function renderItems(){
-    const cart = loadCart();
-    const el = document.getElementById('itemsList');
-    if(cart.length===0){ el.innerHTML = '<div class="small">Your cart is empty.</div>'; return; }
-    el.innerHTML = '';
-    cart.forEach(i=>{
-      const div = document.createElement('div');
-      div.className = 'item';
-      div.innerHTML = `<div><div style="font-weight:700">${i.name}</div><div class="small">Qty: ${i.qty}</div></div><div style="text-align:right"><div style="font-weight:700">₹${(i.price*i.qty).toFixed(0)}</div></div>`;
-      el.appendChild(div);
-    });
+const addrName = document.getElementById('addrName');
+const addrPhone = document.getElementById('addrPhone');
+const addrText = document.getElementById('addrText');
+const itemsList = document.getElementById('itemsList');
+const itemsTotalEl = document.getElementById('itemsTotal');
+const itemsDeliveryEl = document.getElementById('itemsDelivery');
+const itemsGrandEl = document.getElementById('itemsGrand');
+const placeOrderBtn = document.getElementById('placeOrder');
+const orderMsg = document.getElementById('orderMsg');
+const editProfileBtn = document.getElementById('editProfile');
+
+function showProfile(){
+  if(!profileRaw){
+    addrName.textContent = '—';
+    addrPhone.textContent = '—';
+    addrText.textContent = 'No profile saved. Please add your profile before checkout.';
+    return false;
   }
+  try{
+    const p = JSON.parse(profileRaw);
+    addrName.textContent = p.name || '—';
+    addrPhone.textContent = p.phone || '—';
+    addrText.textContent = p.address || '—';
+    return true;
+  }catch(e){
+    return false;
+  }
+}
 
-  function getProfile(){ try{ return JSON.parse(localStorage.getItem('nj_profile')||'{}'); }catch(e){ return {}; } }
-  function renderAddress(){
-    const p = getProfile();
-    const el = document.getElementById('addrBlock');
-    if(!p || (!p.name && !p.address)){
-      el.innerHTML = `<div class="small">No profile address saved. <a id="goProfile" class="link">Save profile</a></div>`;
-      document.getElementById('goProfile').addEventListener('click', ()=> location.href='profile.html');
+function renderCheckout(){
+  if(!checkoutRaw){
+    itemsList.innerHTML = '<div class="muted">No items to checkout — go to cart</div>';
+    placeOrderBtn.disabled = true;
+    return;
+  }
+  try{
+    const ch = JSON.parse(checkoutRaw);
+    const items = ch.items || [];
+    if(!items.length){
+      itemsList.innerHTML = '<div class="muted">No items in checkout</div>';
+      placeOrderBtn.disabled = true;
       return;
     }
-    el.innerHTML = `<div><strong>${p.name||'—'}</strong></div>
-      <div class="small" style="margin-top:6px">Phone: ${p.phone||'—'}</div>
-      <div style="margin-top:8px">${(p.address||'—').replace(/\n/g,'<br>')}</div>`;
+    itemsList.innerHTML = '';
+    items.forEach(i=>{
+      const node = document.createElement('div');
+      node.className = 'item';
+      node.innerHTML = `<div><div style="font-weight:700">${i.name}</div><div class="muted">Qty: ${i.qty}</div></div><div style="text-align:right"><div style="font-weight:700">${currency(i.price*i.qty)}</div></div>`;
+      itemsList.appendChild(node);
+    });
+    itemsTotalEl.textContent = currency(ch.subtotal);
+    itemsDeliveryEl.textContent = currency(ch.deliveryCharge || 0);
+    itemsGrandEl.textContent = currency((ch.subtotal || 0) + (ch.deliveryCharge || 0));
+    placeOrderBtn.disabled = false;
+  }catch(e){
+    itemsList.innerHTML = '<div class="muted">Invalid checkout data</div>';
+    placeOrderBtn.disabled = true;
   }
+}
 
-  function renderSummary(){
-    const cart = loadCart();
-    const subtotal = cart.reduce((s,i)=>s + i.price*i.qty, 0);
-    const delivery = subtotal >= DELIVERY_THRESHOLD || subtotal===0 ? 0 : DELIVERY_CHARGE;
-    const grand = subtotal + delivery;
-    const box = document.getElementById('summaryBox');
-    box.innerHTML = `
-      <div class="small">Items total</div><div style="text-align:right;font-weight:700">₹${subtotal.toFixed(0)}</div>
-      <div style="height:8px"></div>
-      <div class="small">Delivery</div><div style="text-align:right">₹${delivery.toFixed(0)}</div>
-      <hr style="margin:12px 0;border:none;border-top:1px solid #f1f3f4">
-      <div style="display:flex;justify-content:space-between" class="total"><div>Grand total</div><div>₹${grand.toFixed(0)}</div></div>
-    `;
+editProfileBtn.addEventListener('click', ()=> location.href = 'profile.html?next=checkout');
+
+// place order
+placeOrderBtn.addEventListener('click', ()=>{
+  if(!profileRaw){
+    if(!confirm('No profile saved. Continue with checkout?')) return;
   }
+  // load checkout & profile
+  const checkout = JSON.parse(localStorage.getItem('nj_checkout')||'{}');
+  const profile = JSON.parse(localStorage.getItem('nj_profile')||'{}');
 
-  document.getElementById('editProfile').addEventListener('click', ()=> location.href='profile.html');
-  document.getElementById('useOther').addEventListener('click', ()=>{
-    const other = prompt('Enter alternative address (will not be saved):');
-    if(other){ document.getElementById('addrBlock').innerHTML = `<div style="white-space:pre-wrap">${other}</div>`; }
-  });
+  const order = {
+    id: 'ord_' + Date.now().toString(36),
+    createdAt: Date.now(),
+    profile: profile || null,
+    items: checkout.items || [],
+    subtotal: checkout.subtotal || 0,
+    deliveryCharge: checkout.deliveryCharge || 0,
+    total: (checkout.subtotal || 0) + (checkout.deliveryCharge || 0),
+    status: 'placed'
+  };
 
-  document.getElementById('placeOrder').addEventListener('click', ()=>{
-    const cart = loadCart();
-    if(cart.length===0){ alert('Cart empty'); return; }
-    const profile = getProfile();
-    if(!profile || !profile.name || !profile.address){ if(!confirm('No profile saved. Continue with checkout?')) return; }
-    const subtotal = cart.reduce((s,i)=>s + i.price*i.qty, 0);
-    const delivery = subtotal >= DELIVERY_THRESHOLD ? 0 : DELIVERY_CHARGE;
-    const order = {
-      id: 'ORD' + Date.now(),
-      items: cart,
-      subtotal,
-      delivery,
-      total: subtotal + delivery,
-      profile: profile,
-      createdAt: Date.now(),
-      status: 'placed'
-    };
-    saveOrders(order);
-    // clear cart and checkout info
+  // save to orders array
+  try{
+    const rawOrders = localStorage.getItem('nj_orders') || '[]';
+    const arr = JSON.parse(rawOrders);
+    arr.unshift(order);
+    localStorage.setItem('nj_orders', JSON.stringify(arr));
+    // clear cart & checkout
     localStorage.removeItem('nj_cart');
-    localStorage.setItem('nj_last_order', JSON.stringify(order));
-    alert('Order placed — ID: ' + order.id);
-    location.href = 'orders.html';
-  });
+    localStorage.removeItem('nj_checkout');
+    orderMsg.textContent = 'Order placed successfully! Order ID: ' + order.id;
+    placeOrderBtn.disabled = true;
+    // redirect to orders page after short delay (if you have orders.html)
+    setTimeout(()=> location.href = 'orders.html', 1200);
+  }catch(e){
+    alert('Failed to save order: ' + (e.message || e));
+  }
+});
 
-  // init
-  renderItems();
-  renderAddress();
-  renderSummary();
+// init
+(function init(){
+  showProfile();
+  renderCheckout();
+})();
 </script>
 </body>
 </html>
