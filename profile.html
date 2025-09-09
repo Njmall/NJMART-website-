@@ -1,154 +1,280 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>NJ Mart — Profile</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--green:#2db34a;--muted:#7b7f86;--card:#fff;--bg:#f3faf6;--danger:#e04d4d}
-  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif}
-  body{margin:0;background:var(--bg);color:#111}
-  .wrap{max-width:920px;margin:24px auto;padding:16px;display:grid;grid-template-columns:1fr 360px;gap:18px}
-  @media(max-width:980px){.wrap{grid-template-columns:1fr;padding:12px}}
-  .card{background:var(--card);border-radius:12px;box-shadow:0 10px 30px rgba(12,30,40,.06);padding:16px}
-  h1{margin:0 0 8px}
-  .small{color:var(--muted);font-size:13px}
-  input,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e7eef0;margin-top:8px;font-size:14px}
-  .btn{border:0;border-radius:10px;padding:12px;font-weight:700;cursor:pointer}
-  .btn.primary{background:var(--green);color:white;width:100%}
-  .btn.ghost{background:#fff;border:1px solid #e6eaec;color:#333;width:100%}
-  .row{display:flex;gap:12px}
-  .meta{font-size:13px;color:var(--muted);margin-top:8px}
-  .link{color:var(--green);cursor:pointer;text-decoration:underline}
+  :root{
+    --green:#2db34a;
+    --muted:#7c8086;
+    --bg:#f4f7f8;
+    --card:#ffffff;
+    --danger:#e04d4d;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif;
+    background:var(--bg);
+    color:#0b1220;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* container */
+  .page{max-width:920px;margin:14px auto;padding:14px}
+  .card{background:var(--card);border-radius:14px;box-shadow:0 6px 20px rgba(12,30,40,.06);padding:18px;margin-bottom:14px}
+
+  /* header */
+  header.top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .backbtn{background:#fff;border:0;padding:8px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.04);cursor:pointer}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand h1{font-size:18px;margin:0}
+  .search-wrap{margin-left:auto;display:flex;align-items:center;gap:8px}
+  .search{display:flex;align-items:center;background:#fff;padding:6px 8px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.04);min-width:140px}
+  .search input{border:0;outline:none;width:120px}
+  .iconbtn{background:transparent;border:0;padding:6px 8px;border-radius:8px;cursor:pointer}
+
+  /* profile form */
+  .profile-title{font-size:20px;margin:0 0 8px 0}
+  label{display:block;font-size:13px;color:var(--muted);margin-top:12px;margin-bottom:6px}
+  input[type="text"], textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #e6e9eb;background:#fff;outline:none;font-size:15px}
+  textarea{min-height:90px;resize:vertical}
+  .btn-row{display:flex;gap:10px;margin-top:14px}
+  .btn{flex:1;padding:12px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+  .btn.primary{background:var(--green);color:#fff}
+  .btn.ghost{background:#fff;border:1px solid #e6e9eb;color:#222}
+  .btn.danger{background:var(--danger);color:#fff}
+  .small{font-size:13px;color:var(--muted);margin-top:8px}
+
+  /* info box */
+  .info{background:#f8fff9;border-radius:10px;padding:10px;color:#175f2d;margin-top:12px}
+
+  @media(min-width:720px){
+    .search input{width:240px}
+    .page{padding:20px}
+  }
+
+  @media(max-width:420px){
+    .search input{display:none}
+    .search{min-width:40px;padding:6px}
+  }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <main class="card">
-      <h1>My Profile</h1>
-      <div class="small">Update your name, phone, address and delivery location</div>
-
-      <div style="margin-top:14px">
-        <label class="small">Name</label>
-        <input id="name" type="text" placeholder="Your full name">
+  <div class="page">
+    <header class="top">
+      <button class="backbtn" onclick="location.href='index.html'">←</button>
+      <div class="brand">
+        <h1>NJ Mart — Profile</h1>
       </div>
 
-      <div style="margin-top:12px">
-        <label class="small">Phone (with country code)</label>
-        <input id="phone" type="tel" placeholder="+91 9876543210">
+      <div class="search-wrap" aria-hidden="true">
+        <div class="search" title="Search (mobile)">
+          <svg width="16" height="16" viewBox="0 0 24 24" style="margin-right:6px" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 21l-4.35-4.35" stroke="#8b9096" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="11" cy="11" r="6" stroke="#8b9096" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></circle></svg>
+          <input type="text" placeholder="Search products" aria-label="search">
+        </div>
+        <button class="iconbtn" title="Cart" onclick="location.href='cart.html'">
+          🛒
+        </button>
+        <button class="iconbtn" title="Admin" onclick="location.href='admin.html'">👤</button>
       </div>
+    </header>
 
-      <div style="margin-top:12px">
-        <label class="small">Address</label>
-        <textarea id="address" rows="4" placeholder="House, street, area"></textarea>
-      </div>
+    <section class="card" id="profileCard">
+      <h2 class="profile-title">Complete Your Profile</h2>
+      <div class="small">Signed in as: <span id="userEmail">Not signed in</span></div>
+
+      <label for="name">Name</label>
+      <input id="name" type="text" placeholder="Full name">
+
+      <label for="phone">Phone (with country code)</label>
+      <input id="phone" type="text" placeholder="+91 7062908607">
+
+      <label for="address">Address</label>
+      <textarea id="address" placeholder="House no, street area, city, pincode"></textarea>
 
       <div style="display:flex;gap:10px;margin-top:12px">
-        <button id="getLocation" class="btn ghost" style="flex:1">Get Current Location</button>
-        <button id="saveProfile" class="btn primary" style="flex:1">Save Profile</button>
+        <button class="btn primary" id="locBtn">Get Current Location</button>
+        <button class="btn ghost" id="clearLoc">Clear Location</button>
       </div>
 
-      <div class="meta" style="margin-top:10px">Latitude: <span id="lat">—</span> Longitude: <span id="lng">—</span></div>
+      <label for="lat">Latitude</label>
+      <input id="lat" type="text" placeholder="Lat (auto)" readonly>
 
-      <div style="margin-top:16px;display:flex;gap:10px">
-        <button id="goHome" class="btn ghost" style="flex:1">Back to Shop</button>
-        <button id="goCart" class="btn ghost" style="flex:1">Go to Cart</button>
+      <label for="lng">Longitude</label>
+      <input id="lng" type="text" placeholder="Lng (auto)" readonly>
+
+      <div class="btn-row">
+        <button class="btn primary" id="saveBtn">Save Profile & Continue</button>
+        <button class="btn ghost" id="saveStay">Save & Stay</button>
+        <button class="btn danger" id="clearBtn">Clear Profile</button>
       </div>
 
-      <div class="meta" style="margin-top:10px">Profile data is stored locally on this device (demo).</div>
-    </main>
+      <div id="infoBox" class="info" style="display:none"></div>
+    </section>
 
-    <aside class="card">
-      <h2 style="margin:0">Profile Preview</h2>
-      <div class="small" style="margin-top:8px">Your saved details appear here</div>
-
-      <div style="margin-top:12px">
-        <div><strong>Name:</strong> <span id="p_name">—</span></div>
-        <div style="margin-top:6px"><strong>Phone:</strong> <span id="p_phone">—</span></div>
-        <div style="margin-top:6px"><strong>Address:</strong> <div id="p_address" style="margin-top:6px">—</div></div>
-        <div style="margin-top:6px" class="small">Lat: <span id="p_lat">—</span> • Lng: <span id="p_lng">—</span></div>
-      </div>
-
-      <hr style="margin:12px 0;border:none;border-top:1px solid #f1f3f4">
-
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <button id="clearProfile" class="btn ghost">Clear Profile</button>
-        <button id="ordersBtn" class="btn primary">My Orders</button>
-      </div>
-    </aside>
+    <section class="card">
+      <h3 style="margin:0 0 8px 0">Why add profile?</h3>
+      <div class="small">Saved profile speeds up checkout, provides address for delivery and stores contact details locally for demo orders.</div>
+    </section>
   </div>
 
 <script>
-  // Profile page logic — stores to localStorage key 'nj_profile'
-  const elName = document.getElementById('name');
-  const elPhone = document.getElementById('phone');
-  const elAddress = document.getElementById('address');
-  const elLat = document.getElementById('lat');
-  const elLng = document.getElementById('lng');
+/*
+ profile.html
+ - saves profile to localStorage key 'nj_profile'
+ - supports ?next=checkout to redirect to checkout.html after save
+ - mobile responsive header + smaller search area
+*/
 
-  const pName = document.getElementById('p_name');
-  const pPhone = document.getElementById('p_phone');
-  const pAddress = document.getElementById('p_address');
-  const pLat = document.getElementById('p_lat');
-  const pLng = document.getElementById('p_lng');
+const KEY = 'nj_profile';
+const userEmailEl = document.getElementById('userEmail');
+const nameEl = document.getElementById('name');
+const phoneEl = document.getElementById('phone');
+const addressEl = document.getElementById('address');
+const latEl = document.getElementById('lat');
+const lngEl = document.getElementById('lng');
+const locBtn = document.getElementById('locBtn');
+const clearLoc = document.getElementById('clearLoc');
+const saveBtn = document.getElementById('saveBtn');
+const saveStay = document.getElementById('saveStay');
+const clearBtn = document.getElementById('clearBtn');
+const infoBox = document.getElementById('infoBox');
 
-  function loadProfile(){
-    const saved = JSON.parse(localStorage.getItem('nj_profile') || '{}');
-    elName.value = saved.name || '';
-    elPhone.value = saved.phone || '';
-    elAddress.value = saved.address || '';
-    elLat.innerText = saved.lat || '—';
-    elLng.innerText = saved.lng || '—';
+function showInfo(msg, ok=true){
+  infoBox.style.display = 'block';
+  infoBox.style.background = ok ? '#f3fff4' : '#fff6f6';
+  infoBox.style.color = ok ? '#155724' : '#7b1a1a';
+  infoBox.textContent = msg;
+  setTimeout(()=>{ infoBox.style.display = 'none'; }, 4500);
+}
 
-    pName.innerText = saved.name || '—';
-    pPhone.innerText = saved.phone || '—';
-    pAddress.innerText = saved.address || '—';
-    pLat.innerText = saved.lat || '—';
-    pLng.innerText = saved.lng || '—';
+// read next param (?next=checkout)
+function getNextParam(){
+  const params = new URLSearchParams(location.search);
+  return params.get('next') || '';
+}
+
+// load profile from localStorage
+function loadProfile(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){ return null; }
+}
+
+// populate form
+function populate(){
+  const p = loadProfile();
+  if(p){
+    nameEl.value = p.name || '';
+    phoneEl.value = p.phone || '';
+    addressEl.value = p.address || '';
+    latEl.value = p.lat || '';
+    lngEl.value = p.lng || '';
+    showInfo('Profile loaded from local storage ✅', true);
+  }
+  // show signed-in email if present (many demos store 'nj_user' or firebase user in localStorage)
+  const userRaw = localStorage.getItem('nj_user') || localStorage.getItem('nj_auth_user');
+  if(userRaw){
+    try{
+      const u = JSON.parse(userRaw);
+      userEmailEl.textContent = u.email || (typeof u === 'string' ? u : 'Signed in');
+    }catch(e){
+      userEmailEl.textContent = userRaw;
+    }
+  } else {
+    // fallback check firebase-like user stored as 'nj_firebase_user'?
+    const fu = localStorage.getItem('nj_firebase_user');
+    if(fu){
+      try{ userEmailEl.textContent = JSON.parse(fu).email || 'Signed in'; }catch(e){ userEmailEl.textContent = 'Signed in'; }
+    } else userEmailEl.textContent = 'Not signed in';
+  }
+}
+
+// validate and save
+function saveProfile(redirect=false){
+  const name = nameEl.value.trim();
+  const phone = phoneEl.value.trim();
+  const address = addressEl.value.trim();
+  const lat = latEl.value.trim();
+  const lng = lngEl.value.trim();
+
+  if(!name){ alert('Enter your name'); nameEl.focus(); return; }
+  if(!phone){ alert('Enter phone number'); phoneEl.focus(); return; }
+  if(!address){ alert('Enter address'); addressEl.focus(); return; }
+
+  const profile = { name, phone, address, lat, lng, updatedAt: Date.now() };
+  try{
+    localStorage.setItem(KEY, JSON.stringify(profile));
+    showInfo('Profile saved successfully ✅', true);
+  }catch(e){
+    alert('Unable to save profile in local storage.');
+    return;
   }
 
-  document.getElementById('saveProfile').addEventListener('click', ()=>{
-    const data = {
-      name: elName.value.trim(),
-      phone: elPhone.value.trim(),
-      address: elAddress.value.trim(),
-      lat: elLat.innerText === '—' ? '' : elLat.innerText,
-      lng: elLng.innerText === '—' ? '' : elLng.innerText,
-      savedAt: Date.now()
-    };
-    localStorage.setItem('nj_profile', JSON.stringify(data));
-    loadProfile();
-    alert('Profile saved locally');
-  });
+  if(redirect){
+    const next = getNextParam();
+    if(next === 'checkout'){
+      // go to checkout page
+      location.href = 'checkout.html';
+    } else {
+      // default go to index
+      location.href = 'index.html';
+    }
+  }
+}
 
-  document.getElementById('getLocation').addEventListener('click', ()=>{
-    if(!navigator.geolocation){ alert('Geolocation not supported'); return; }
-    const btn = document.getElementById('getLocation');
-    btn.innerText = 'Getting...';
-    navigator.geolocation.getCurrentPosition(pos=>{
-      const lat = pos.coords.latitude.toFixed(7);
-      const lng = pos.coords.longitude.toFixed(7);
-      elLat.innerText = lat; elLng.innerText = lng;
-      btn.innerText = 'Get Current Location';
-    }, err=>{
-      alert('Unable to get location: ' + (err.message||err));
-      btn.innerText = 'Get Current Location';
-    }, {enableHighAccuracy:true, timeout:10000});
-  });
+// get current location
+locBtn.addEventListener('click', ()=>{
+  if(!navigator.geolocation){ alert('Geolocation not supported'); return; }
+  locBtn.disabled = true;
+  locBtn.textContent = 'Locating…';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat = pos.coords.latitude.toFixed(6);
+    const lng = pos.coords.longitude.toFixed(6);
+    latEl.value = lat;
+    lngEl.value = lng;
+    locBtn.disabled = false;
+    locBtn.textContent = 'Get Current Location';
+    showInfo('Location captured ✅', true);
+  }, err=>{
+    locBtn.disabled = false;
+    locBtn.textContent = 'Get Current Location';
+    alert('Location access denied or failed. Please allow location permission.');
+  }, { enableHighAccuracy:true, timeout:10000 });
+});
 
-  document.getElementById('clearProfile').addEventListener('click', ()=>{
-    if(!confirm('Clear saved profile data?')) return;
-    localStorage.removeItem('nj_profile');
-    loadProfile();
-  });
+clearLoc.addEventListener('click', ()=>{
+  latEl.value = '';
+  lngEl.value = '';
+  showInfo('Location cleared', true);
+});
 
-  document.getElementById('goHome').addEventListener('click', ()=> location.href='index.html');
-  document.getElementById('goCart').addEventListener('click', ()=> location.href='cart.html');
-  document.getElementById('ordersBtn').addEventListener('click', ()=> location.href='orders.html');
+// Save & Continue
+saveBtn.addEventListener('click', ()=> saveProfile(true) );
+// Save & Stay
+saveStay.addEventListener('click', ()=> saveProfile(false) );
 
-  // load on start
-  loadProfile();
+// Clear profile
+clearBtn.addEventListener('click', ()=>{
+  if(confirm('Clear saved profile from this browser?')){
+    localStorage.removeItem(KEY);
+    nameEl.value = phoneEl.value = addressEl.value = latEl.value = lngEl.value = '';
+    showInfo('Profile removed ✅', true);
+    userEmailEl.textContent = 'Not signed in';
+  }
+});
+
+// init
+(function init(){
+  populate();
+})();
 </script>
 </body>
 </html>
