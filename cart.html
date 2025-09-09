@@ -8,29 +8,32 @@
 <style>
   :root{--green:#2db34a;--accent:#f7f9fb;--muted:#8a8f98;--danger:#e04d4d}
   *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif}
-  body{margin:0;background:#f2f6f8;color:#222}
-  .page{max-width:960px;margin:18px auto;padding:12px}
+  html,body{height:100%}
+  body{margin:0;background:#f2f6f8;color:#222;-webkit-font-smoothing:antialiased}
+  .page{max-width:1100px;margin:18px auto;padding:14px}
   .card{background:white;border-radius:14px;box-shadow:0 6px 18px rgba(12,30,40,.06);padding:14px;margin-bottom:14px}
-  header.top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  header.top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
   header.top h1{font-size:20px;margin:0}
-  .row{display:flex;gap:12px;align-items:flex-start}
+  .row{display:flex;gap:18px;align-items:flex-start}
   .col{flex:1}
   /* cart list */
-  .cart-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #eee}
+  .cart-item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid #f0f2f4}
   .cart-item:last-child{border-bottom:0}
-  .thumb{width:90px;height:90px;border-radius:10px;background:#fff;flex:0 0 90px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .thumb{width:96px;height:96px;border-radius:12px;background:#fff;flex:0 0 96px;overflow:hidden;display:flex;align-items:center;justify-content:center}
   .thumb img{width:100%;height:100%;object-fit:cover}
   .info{flex:1}
   .info h3{margin:0 0 6px 0;font-size:16px}
   .meta{color:var(--muted);font-size:13px;margin-bottom:8px}
   .qty{display:flex;align-items:center;gap:8px}
-  .qty button{background:#fff;border:1px solid #ddd;padding:6px 10px;border-radius:8px;cursor:pointer}
-  .qty .count{padding:6px 8px;border-radius:6px;background:#f6f8fa}
-  .price{font-weight:600}
+  .qty button{background:#fff;border:1px solid #e6e9ed;padding:6px 10px;border-radius:8px;cursor:pointer;min-width:36px}
+  .qty .count{padding:6px 8px;border-radius:6px;background:#f6f8fa;min-width:34px;text-align:center}
+  .price{font-weight:700}
   .remove{background:transparent;border:0;color:var(--danger);cursor:pointer;font-size:14px}
+  .product-actions{display:flex;gap:8px;align-items:center;margin-top:8px}
+  .tag{background:#f4f6f8;padding:4px 8px;border-radius:8px;font-size:13px;color:#666}
 
   /* summary */
-  .summary{min-width:320px;max-width:360px}
+  .summary{min-width:340px;max-width:380px}
   .summary .rowline{display:flex;justify-content:space-between;padding:8px 0;color:#444}
   .total{font-size:18px;font-weight:700}
   .btn{display:block;width:100%;padding:12px;border:0;border-radius:10px;font-weight:700;color:white;cursor:pointer}
@@ -41,18 +44,28 @@
   .small{font-size:13px;color:var(--muted);margin-top:6px}
   .delivery-note{background:#f4fbf4;border-radius:10px;padding:10px;color:#2b7b34;margin:10px 0}
   .footer-note{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
+
+  /* sticky footer on mobile for place order */
+  .sticky-footer{display:none;position:fixed;left:0;right:0;bottom:0;padding:12px;background:rgba(255,255,255,0.98);box-shadow:0 -6px 18px rgba(12,30,40,.06);z-index:90;border-top:1px solid #eee}
+  .sticky-footer .mini{display:flex;justify-content:space-between;align-items:center;gap:12px}
+
   /* responsive */
   @media(max-width:900px){
     .row{flex-direction:column}
     .summary{width:100%}
+    .thumb{width:78px;height:78px;flex:0 0 78px}
+    .sticky-footer{display:block}
   }
 </style>
 </head>
 <body>
 <div class="page">
   <header class="top">
-    <button onclick="location.href='index.html'" style="border:0;background:#fff;padding:8px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.04);cursor:pointer">←</button>
+    <button id="backBtn" style="border:0;background:#fff;padding:8px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.04);cursor:pointer">←</button>
     <h1>NJ Mart — Cart</h1>
+    <div style="margin-left:auto">
+      <button id="clearCart" style="background:transparent;border:1px solid #eee;padding:8px;border-radius:10px;cursor:pointer">Clear cart</button>
+    </div>
   </header>
 
   <section class="card">
@@ -76,18 +89,18 @@
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <div style="font-weight:700">You might also like</div>
-          <div class="small">See all</div>
+          <div class="small" style="cursor:pointer" id="seeAll">See all</div>
         </div>
-        <div style="display:flex;gap:8px;overflow:auto;margin-top:10px">
+        <div style="display:flex;gap:8px;overflow:auto;margin-top:10px;padding-bottom:6px">
           <!-- sample suggestions -->
-          <div style="min-width:120px;background:#fff;padding:8px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.03)">
-            <img src="https://via.placeholder.com/120" style="width:100%;border-radius:8px"><div style="font-size:13px;margin-top:6px">Tata Salt</div><div style="font-weight:600">₹29</div>
+          <div style="min-width:120px;background:#fff;padding:10px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.03)">
+            <img src="https://via.placeholder.com/120" style="width:100%;border-radius:8px"><div style="font-size:13px;margin-top:8px">Tata Salt</div><div style="font-weight:600">₹29</div>
           </div>
-          <div style="min-width:120px;background:#fff;padding:8px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.03)">
-            <img src="https://via.placeholder.com/120" style="width:100%;border-radius:8px"><div style="font-size:13px;margin-top:6px">Mustard Oil</div><div style="font-weight:600">₹129</div>
+          <div style="min-width:120px;background:#fff;padding:10px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.03)">
+            <img src="https://via.placeholder.com/120" style="width:100%;border-radius:8px"><div style="font-size:13px;margin-top:8px">Mustard Oil</div><div style="font-weight:600">₹129</div>
           </div>
-          <div style="min-width:120px;background:#fff;padding:8px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.03)">
-            <img src="https://via.placeholder.com/120" style="width:100%;border-radius:8px"><div style="font-size:13px;margin-top:6px">Wheat Flour</div><div style="font-weight:600">₹199</div>
+          <div style="min-width:120px;background:#fff;padding:10px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.03)">
+            <img src="https://via.placeholder.com/120" style="width:100%;border-radius:8px"><div style="font-size:13px;margin-top:8px">Wheat Flour</div><div style="font-weight:600">₹199</div>
           </div>
         </div>
       </div>
@@ -121,30 +134,45 @@
   </div>
 </div>
 
+<!-- sticky footer for mobile quick actions -->
+<div class="sticky-footer">
+  <div class="mini">
+    <div style="display:flex;gap:8px;align-items:center">
+      <div style="font-weight:700"><span id="mobileTotal">₹0</span></div>
+      <div class="small" style="color:var(--muted);margin-left:6px">incl. delivery</div>
+    </div>
+    <div style="display:flex;gap:8px;width:52%">
+      <button id="mobileContinue" class="btn ghost" style="padding:10px;border-radius:8px;background:#fff;color:#333;border:1px solid #e6e9ed">Continue</button>
+      <button id="mobileCheckout" class="btn primary" style="padding:10px;border-radius:8px">Place Order</button>
+    </div>
+  </div>
+</div>
+
 <script>
-/* cart.html — lightweight cart using localStorage key 'nj_cart' 
-   - Place order will save 'nj_checkout' and redirect to checkout.html
+/* final cart.html — improved version
+   - Uses localStorage 'nj_cart' and 'nj_user' (for login check)
+   - checkout redirects to login if not logged in
 */
 
+// configuration
 const DELIVERY_THRESHOLD = 499;
 const DELIVERY_CHARGE = 25;
+const CART_KEY = 'nj_cart';
+const COUPON_KEY = 'nj_coupon';
+const USER_KEY = 'nj_user'; // if you store logged user JSON here
 
-// load cart from localStorage
+// helpers
 function loadCart(){
-  try{
-    const raw = localStorage.getItem('nj_cart');
-    if(!raw) return [];
-    return JSON.parse(raw) || [];
-  }catch(e){ return [];}
+  try{ const raw = localStorage.getItem(CART_KEY); return raw ? JSON.parse(raw) : []; } catch(e){ return []; }
 }
-function saveCart(data){
-  localStorage.setItem('nj_cart', JSON.stringify(data));
-}
+function saveCart(data){ localStorage.setItem(CART_KEY, JSON.stringify(data)); }
+function loadCoupon(){ try{ const r = localStorage.getItem(COUPON_KEY); return r ? JSON.parse(r) : null; }catch(e){return null;} }
+function saveCoupon(c){ localStorage.setItem(COUPON_KEY, JSON.stringify(c)); }
 
-// if no cart items -> create demo items for preview
+// demo fallback
 function ensureDemo(){
   let cart = loadCart();
-  if(cart.length === 0){
+  if(!cart || cart.length===0){
     cart = [
       {id:'p1',name:'Aashirvaad Atta 5kg',price:394,qty:1,image:'https://via.placeholder.com/300x300?text=Atta'},
       {id:'p2',name:'Laxmi Refined Oil 1L',price:208,qty:1,image:'https://via.placeholder.com/300x300?text=Oil'},
@@ -155,12 +183,14 @@ function ensureDemo(){
   return cart;
 }
 
-// render cart UI
+// render
 function renderCart(){
   const cart = loadCart();
   const list = document.getElementById('cartList');
   list.innerHTML = '';
   document.getElementById('itemsCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
+  // mobile total
+  document.getElementById('mobileTotal').textContent = '₹' + cart.reduce((s,i)=>s+i.qty*i.price,0).toFixed(0);
 
   if(cart.length===0){
     list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">Your cart is empty<br><button id="shopNow" class="btn primary" style="width:auto;margin-top:12px">Continue shopping</button></div>';
@@ -177,25 +207,24 @@ function renderCart(){
       <div class="info">
         <h3>${item.name}</h3>
         <div class="meta">Seller: NJ Mart • Category: ${item.category||'Grocery'}</div>
-        <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="product-actions">
           <div class="qty">
             <button class="dec">−</button>
             <div class="count">${item.qty}</div>
             <button class="inc">+</button>
           </div>
-          <div style="text-align:right">
+          <div style="margin-left:auto;text-align:right">
             <div class="price">₹${(item.price*item.qty).toFixed(0)}</div>
             <button class="remove">Remove</button>
           </div>
         </div>
       </div>
     `;
-    // attach events
     node.querySelector('.inc').addEventListener('click',()=>{
       item.qty++; saveCart(cart); renderCart();
     });
     node.querySelector('.dec').addEventListener('click',()=>{
-      if(item.qty>1){ item.qty--; saveCart(cart); renderCart(); } else { // remove if 1 -> confirm
+      if(item.qty>1){ item.qty--; saveCart(cart); renderCart(); } else {
         if(confirm('Remove this item?')){ const idx = cart.findIndex(x=>x.id===item.id); if(idx>-1) cart.splice(idx,1); saveCart(cart); renderCart(); }
       }
     });
@@ -208,60 +237,100 @@ function renderCart(){
   updateSummary();
 }
 
-// calculate totals & update summary panel
 function updateSummary(){
   const cart = loadCart();
   const subtotal = cart.reduce((s,i)=>s + (i.price * i.qty), 0);
+  const coupon = loadCoupon();
+  const couponDiscount = coupon ? (coupon.discount || 0) : 0;
   const delivery = subtotal>=DELIVERY_THRESHOLD || subtotal===0 ? 0 : DELIVERY_CHARGE;
-  const discount = 0; // apply coupon logic if needed
-  const grand = subtotal + delivery - discount;
+  const grand = Math.max(0, subtotal + delivery - couponDiscount);
 
   document.getElementById('priceSubtotal').textContent = '₹' + subtotal.toFixed(0);
   document.getElementById('deliveryCharge').textContent = '₹' + delivery.toFixed(0);
-  document.getElementById('discount').textContent = '₹' + discount.toFixed(0);
+  document.getElementById('discount').textContent = '₹' + couponDiscount.toFixed(0);
   document.getElementById('grandTotal').textContent = '₹' + grand.toFixed(0);
+  document.getElementById('mobileTotal').textContent = '₹' + grand.toFixed(0);
+}
+
+// events
+document.getElementById('checkoutBtn').addEventListener('click',()=> doCheckout());
+document.getElementById('mobileCheckout').addEventListener('click',()=> doCheckout());
+document.getElementById('continueBtn').addEventListener('click',()=> location.href='index.html');
+document.getElementById('mobileContinue').addEventListener('click',()=> location.href='index.html');
+document.getElementById('applyCouponBtn').addEventListener('click',applyCoupon);
+document.getElementById('seeAll').addEventListener('click',()=> location.href='products.html');
+document.getElementById('backBtn').addEventListener('click',()=> location.href='index.html');
+document.getElementById('clearCart').addEventListener('click',()=> {
+  if(confirm('Clear cart?')){ localStorage.removeItem(CART_KEY); renderCart(); }
+});
+
+// coupon apply
+function applyCoupon(){
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  if(!code){ alert('Enter coupon code'); return; }
+  // demo codes
+  if(code === 'SAVE50'){
+    saveCoupon({code:'SAVE50',discount:50});
+    alert('Coupon applied: ₹50 off');
+    updateSummary();
+  } else if(code === 'FREESHIP'){
+    saveCoupon({code:'FREESHIP',discount:25});
+    alert('Coupon applied: Free delivery');
+    updateSummary();
+  } else {
+    alert('Invalid coupon');
+  }
 }
 
 // checkout flow
-document.getElementById('checkoutBtn').addEventListener('click',()=>{
+function doCheckout(){
   const cart = loadCart();
   if(cart.length===0){ alert('Your cart is empty'); return; }
-  // save checkout data and redirect
+  const subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const coupon = loadCoupon();
+  const couponDiscount = coupon ? (coupon.discount || 0) : 0;
+  const deliveryCharge = subtotal >= DELIVERY_THRESHOLD ? 0 : DELIVERY_CHARGE;
   const checkout = {
     items: cart,
-    subtotal: cart.reduce((s,i)=>s+i.price*i.qty,0),
-    deliveryCharge: (cart.reduce((s,i)=>s+i.price*i.qty,0) >= DELIVERY_THRESHOLD) ? 0 : DELIVERY_CHARGE,
+    subtotal,
+    deliveryCharge,
+    coupon: coupon || null,
+    discount: couponDiscount,
+    grandTotal: Math.max(0, subtotal + deliveryCharge - couponDiscount),
     createdAt: Date.now()
   };
   localStorage.setItem('nj_checkout', JSON.stringify(checkout));
-  // If login is required, you can check localStorage for user and redirect to login if not present.
-  // Example: if not logged -> location.href='login.html'
-  // For now redirect to checkout.html
+
+  // login check
+  const user = localStorage.getItem(USER_KEY);
+  if(!user){
+    // not logged -> go to login
+    // pass a return url so user returns to checkout after login
+    location.href = 'login.html?next=checkout.html';
+    return;
+  }
+  // go to checkout
   location.href = 'checkout.html';
-});
+}
 
-// continue shopping
-document.getElementById('continueBtn').addEventListener('click',()=> location.href='index.html');
-
-// coupon (simple demo)
-document.getElementById('applyCouponBtn').addEventListener('click',()=>{
-  const code = document.getElementById('couponInput').value.trim().toUpperCase();
-  if(!code){ alert('Enter coupon'); return; }
-  if(code==='SAVE50'){ // demo coupon
-    // save discount to localStorage (for checkout)
-    const c = {code:'SAVE50', discount:50};
-    localStorage.setItem('nj_coupon', JSON.stringify(c));
-    alert('Coupon applied: ₹50 off');
-    updateSummary();
-  } else alert('Invalid coupon');
-});
-
-// on load
+// init
 (function init(){
   ensureDemo();
   renderCart();
+
+  // force-refresh on open? (useful on dev) - commented out
+  // if(location.search.indexOf('v=')<0) history.replaceState(null,'',location.pathname+'?v=1');
+
+  // keyboard shortcut for dev to clear cache-friendly: press 'r' to reload
+  document.addEventListener('keydown', (e)=> {
+    if(e.key === 'r' && (e.ctrlKey || e.metaKey)) {
+      // ctrl/cmd + r -> force
+      location.reload(true);
+    }
+  });
 })();
 </script>
 </body>
 </html>
-<!-- cache-bust: 20250908 -->
+
+<!-- cache-bust: 20250908-final -->
