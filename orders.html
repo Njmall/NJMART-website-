@@ -1,28 +1,87 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>My Orders — NJ Mart</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NJ Mart — Orders</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--green:#2db34a;--muted:#7b7f86;--card:#fff;--bg:#f3faf6}
+  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif}
+  body{margin:0;background:var(--bg);color:#111}
+  .page{max-width:920px;margin:20px auto;padding:14px}
+  .card{background:var(--card);border-radius:12px;box-shadow:0 8px 24px rgba(12,30,40,.06);padding:14px;margin-bottom:14px}
+  .order{border-bottom:1px solid #f2f4f5;padding:12px 0}
+  .small{color:var(--muted);font-size:13px}
+  .btn{border:0;border-radius:10px;padding:10px 12px;font-weight:700;cursor:pointer}
+  .btn.ghost{background:#fff;border:1px solid #e6eaec;color:#333}
+</style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="logo">NJ <span>Mart</span></div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="products.html">Products</a>
-      <a class="active" href="orders.html">My Orders</a>
-      <a id="loginLink" href="login.html">Login</a>
-    </nav>
-  </header>
+  <div class="page">
+    <div class="card">
+      <h1>My Orders</h1>
+      <div class="small">Recent orders created on this device</div>
+    </div>
 
-  <main class="container">
-    <h2>My Orders</h2>
-    <div id="ordersList" class="list"></div>
-  </main>
+    <div id="ordersList" class="card">
+      <!-- orders inserted here -->
+    </div>
 
-  <footer class="footer">© 2025 NJ Mart</footer>
-  <script type="module" src="app.js"></script>
+    <div style="text-align:center;margin-top:8px">
+      <button id="backShop" class="btn ghost">Back to Shop</button>
+      <button id="clearOrders" class="btn ghost">Clear Orders</button>
+    </div>
+  </div>
+
+<script>
+  function loadOrders(){ try{ return JSON.parse(localStorage.getItem('nj_orders')||'[]'); }catch(e){ return []; } }
+  function renderOrders(){
+    const out = document.getElementById('ordersList');
+    const orders = loadOrders();
+    if(orders.length===0){ out.innerHTML = '<div class="small">No orders yet.</div>'; return; }
+    out.innerHTML = '';
+    orders.forEach(o=>{
+      const div = document.createElement('div');
+      div.className = 'order';
+      const date = new Date(o.createdAt).toLocaleString();
+      let html = `<div style="display:flex;justify-content:space-between;align-items:center"><div><strong>Order ${o.id}</strong></div><div class="small">${date}</div></div>`;
+      html += `<div class="small" style="margin-top:8px">Status: <strong>${o.status}</strong></div>`;
+      html += `<div style="margin-top:10px">`;
+      o.items.forEach(it=>{
+        html += `<div style="display:flex;justify-content:space-between;padding:6px 0">${it.name} x ${it.qty} <span>₹${(it.price*it.qty).toFixed(0)}</span></div>`;
+      });
+      html += `</div>`;
+      html += `<div style="margin-top:8px;display:flex;justify-content:space-between"><div class="small">Delivery</div><div class="small">₹${o.delivery.toFixed(0)}</div></div>`;
+      html += `<div style="margin-top:8px;display:flex;justify-content:space-between;font-weight:700"><div>Total</div><div>₹${o.total.toFixed(0)}</div></div>`;
+      if(o.profile && o.profile.address){
+        html += `<div style="margin-top:8px"><strong>Deliver to:</strong><div class="small">${o.profile.name || ''} • ${o.profile.phone || ''}</div><div style="margin-top:6px">${(o.profile.address||'').replace(/\n/g,'<br>')}</div></div>`;
+      }
+      html += `<div style="margin-top:8px"><button class="btn ghost" onclick="reorder('${o.id}')">Reorder</button></div>`;
+      div.innerHTML = html;
+      out.appendChild(div);
+    });
+  }
+
+  function reorder(orderId){
+    const orders = loadOrders();
+    const o = orders.find(x=>x.id===orderId);
+    if(!o) return alert('Order not found');
+    // Put items back to cart
+    localStorage.setItem('nj_cart', JSON.stringify(o.items));
+    alert('Items added to cart');
+    location.href = 'cart.html';
+  }
+
+  document.getElementById('backShop').addEventListener('click', ()=> location.href='index.html');
+  document.getElementById('clearOrders').addEventListener('click', ()=>{
+    if(!confirm('Clear all saved orders?')) return;
+    localStorage.removeItem('nj_orders');
+    renderOrders();
+  });
+
+  // init
+  renderOrders();
+</script>
 </body>
 </html>
