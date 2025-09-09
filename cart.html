@@ -1,210 +1,113 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>NJ Mart — Cart</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{--green:#2db34a;--muted:#7b7f86;--card:#fff;--bg:#f3faf6}
-    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif}
-    body{margin:0;background:var(--bg);color:#111}
-    .page{max-width:960px;margin:22px auto;padding:12px}
-    .card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 8px 24px rgba(12,30,40,.05);margin-bottom:12px}
-    header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-    header h1{margin:0;font-size:20px}
-    .row{display:flex;gap:12px;align-items:flex-start}
-    .col{flex:1}
-    .cart-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f1f3f4}
-    .thumb{width:90px;height:90px;border-radius:10px;background:#fff;flex:0 0 90px;overflow:hidden;display:flex;align-items:center;justify-content:center}
-    .thumb img{width:100%;height:100%;object-fit:cover}
-    .info h3{margin:0 0 6px 0;font-size:16px}
-    .meta{color:var(--muted);font-size:13px;margin-bottom:8px}
-    .qty{display:flex;align-items:center;gap:8px}
-    .qty button{background:#fff;border:1px solid #eee;padding:6px 10px;border-radius:8px;cursor:pointer}
-    .qty .count{padding:6px 8px;border-radius:6px;background:#f6f8fa}
-    .price{font-weight:700}
-    .remove{background:transparent;border:0;color:#e04d4d;cursor:pointer}
-    .summary{min-width:320px;max-width:360px}
-    .rowline{display:flex;justify-content:space-between;padding:8px 0;color:#444}
-    .total{font-size:18px;font-weight:800}
-    .btn{display:block;width:100%;padding:12px;border:0;border-radius:10px;font-weight:700;color:white;cursor:pointer}
-    .btn.primary{background:var(--green);margin-top:10px}
-    .btn.ghost{background:#fff;border:1px solid #e6eaec;color:#333}
-    .coupon{display:flex;gap:8px;margin-top:10px}
-    .coupon input{flex:1;padding:10px;border-radius:8px;border:1px solid #eee}
-    .small{font-size:13px;color:var(--muted);margin-top:6px}
-    @media(max-width:900px){ .row{flex-direction:column} .summary{width:100%} }
-  </style>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NJ Mart - Cart</title>
+<style>
+:root{--accent:#2db34a;--muted:#6f7580}
+*{box-sizing:border-box;font-family:Inter,system-ui,Roboto,Arial}
+body{margin:0;background:#f5f8f7;color:#111}
+.container{max-width:920px;margin:12px auto;padding:12px}
+.header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.btn{padding:10px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+.btn.ghost{background:#fff;border:1px solid #e8eef0}
+.btn.primary{background:var(--accent);color:#fff}
+.card{background:#fff;padding:12px;border-radius:12px;box-shadow:0 8px 24px rgba(12,30,40,.04);margin-bottom:12px}
+.item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f1f3f3}
+.small{font-size:13px;color:var(--muted)}
+.center{display:flex;justify-content:center;align-items:center}
+</style>
 </head>
 <body>
-  <div class="page">
-    <header>
-      <button onclick="location.href='index.html'" style="border:0;background:#fff;padding:8px;border-radius:10px;cursor:pointer">←</button>
-      <h1>NJ Mart — Your Cart</h1>
-    </header>
-
-    <section class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div><strong>Review your items</strong><div class="small">Make sure quantities & address are correct</div></div>
-        <div class="small">Items: <span id="itemsCount">0</span></div>
-      </div>
-    </section>
-
-    <div class="row">
-      <div class="col">
-        <div id="cartList" class="card">
-          <!-- items -->
-        </div>
-
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div style="font-weight:700">Recommended for you</div>
-            <div class="small">Based on your cart</div>
-          </div>
-          <div style="display:flex;gap:8px;overflow:auto;margin-top:10px">
-            <div style="min-width:120px;background:#fff;padding:8px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.03)"><img src="https://via.placeholder.com/120" style="width:100%;border-radius:8px"><div style="font-size:13px;margin-top:6px">Tata Salt</div><div style="font-weight:600">₹29</div></div>
-            <div style="min-width:120px;background:#fff;padding:8px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.03)"><img src="https://via.placeholder.com/120" style="width:100%;border-radius:8px"><div style="font-size:13px;margin-top:6px">Mustard Oil</div><div style="font-weight:600">₹129</div></div>
-          </div>
-        </div>
-      </div>
-
-      <aside class="summary card">
-        <div style="font-weight:700;margin-bottom:8px">Price Details</div>
-        <div class="rowline"><div>Items total</div><div id="priceSubtotal">₹0</div></div>
-        <div class="rowline"><div>Delivery charge</div><div id="deliveryCharge">₹0</div></div>
-        <div class="rowline"><div>Discount</div><div id="discount">₹0</div></div>
-        <hr style="border:none;border-top:1px dashed #eee;margin:12px 0">
-        <div class="rowline total"><div>Grand total</div><div id="grandTotal">₹0</div></div>
-
-        <div style="margin-top:10px" class="small">Delivery charge ₹25 on orders below ₹1000. Free above ₹1000.</div>
-
-        <div class="coupon">
-          <input id="couponInput" placeholder="Apply coupon code">
-          <button id="applyCouponBtn" class="btn ghost" style="padding:10px 12px">Apply</button>
-        </div>
-
-        <div style="margin-top:12px">
-          <button id="checkoutBtn" class="btn primary">Proceed to Checkout</button>
-          <button id="continueBtn" class="btn ghost" style="color:#333;margin-top:8px">Continue Shopping</button>
-        </div>
-      </aside>
-    </div>
+<div class="container">
+  <div class="header">
+    <button class="btn ghost" onclick="location.href='index.html'">← Back</button>
+    <h2 style="margin:0">Your Cart</h2>
   </div>
 
+  <div id="cartRoot"></div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="small">Subtotal</div>
+      <div id="subtotal">₹0</div>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px">
+      <button id="checkoutBtn" class="btn primary" style="flex:1">Checkout</button>
+      <button id="continueBtn" class="btn ghost" style="flex:1">Continue shopping</button>
+    </div>
+  </div>
+</div>
+
 <script>
-/* cart.html — localStorage cart (keys: nj_cart, nj_coupon)
-   Delivery charge: ₹25 if subtotal < 1000
-*/
+// Helpers
+function load(key){ try{ return JSON.parse(localStorage.getItem(key)); }catch(e){return null;} }
+function save(key,val){ localStorage.setItem(key, JSON.stringify(val)); }
 
-const DELIVERY_THRESHOLD = 1000;
-const DELIVERY_CHARGE = 25;
+function getCart(){ return load('nj_cart') || []; }
+function setCart(c){ save('nj_cart', c); render(); }
 
-function loadCart(){ try{ return JSON.parse(localStorage.getItem('nj_cart') || '[]'); }catch(e){ return []; } }
-function saveCart(c){ localStorage.setItem('nj_cart', JSON.stringify(c)); renderCart(); updateSummary(); }
-
-function ensureDemo(){
-  const cart = loadCart();
+function render(){
+  const root = document.getElementById('cartRoot');
+  const cart = getCart();
+  root.innerHTML = '';
   if(cart.length===0){
-    const demo = [
-      {id:'p1',name:'Aashirvaad Atta 5kg',price:394,qty:1,image:'https://via.placeholder.com/300x300?text=Atta',category:'grocery'},
-      {id:'p2',name:'Laxmi Refined Oil 1L',price:208,qty:1,image:'https://via.placeholder.com/300x300?text=Oil',category:'oil'},
-      {id:'p3',name:'Tata Salt 1kg',price:29,qty:2,image:'https://via.placeholder.com/300x300?text=Salt',category:'grocery'}
-    ];
-    localStorage.setItem('nj_cart', JSON.stringify(demo));
-  }
-}
-
-function renderCart(){
-  const cart = loadCart();
-  const list = document.getElementById('cartList');
-  list.innerHTML = '';
-  document.getElementById('itemsCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
-
-  if(cart.length===0){
-    list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">Your cart is empty<br><button id="shopNow" class="btn primary" style="width:auto;margin-top:12px;padding:10px 14px">Continue shopping</button></div>';
-    setTimeout(()=>{ document.getElementById('shopNow')?.addEventListener('click', ()=> location.href='index.html'); },200);
-    updateSummary();
+    root.innerHTML = '<div class="card center">Your cart is empty<br><button class="btn primary" onclick="location.href=\'index.html\'" style="margin-top:10px">Shop now</button></div>';
+    document.getElementById('subtotal').textContent = '₹0';
     return;
   }
-
-  cart.forEach(item=>{
-    const node = document.createElement('div');
-    node.className = 'cart-item';
-    node.innerHTML = `
-      <div class="thumb"><img src="${item.image||'https://via.placeholder.com/150'}" alt=""></div>
-      <div class="info">
-        <h3>${item.name}</h3>
-        <div class="meta">Category: ${item.category||'Grocery'}</div>
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-          <div class="qty">
-            <button class="dec">−</button>
-            <div class="count">${item.qty}</div>
-            <button class="inc">+</button>
-          </div>
-          <div style="text-align:right">
-            <div class="price">₹${(item.price*item.qty).toFixed(0)}</div>
-            <button class="remove">Remove</button>
-          </div>
+  cart.forEach((it, idx)=>{
+    const el = document.createElement('div'); el.className='card item';
+    el.innerHTML = `
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="width:72px;height:72px;border-radius:8px;overflow:hidden;background:#f2f4f6">
+          <img src="${it.img||'https://via.placeholder.com/150'}" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div>
+          <div style="font-weight:700">${it.name}</div>
+          <div class="small">Qty: <span id="q-${it.id}">${it.qty}</span></div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-weight:700">₹${(it.price*it.qty).toFixed(0)}</div>
+        <div style="margin-top:8px;display:flex;gap:6px;justify-content:flex-end">
+          <button class="btn ghost" data-action="dec" data-idx="${idx}">−</button>
+          <button class="btn ghost" data-action="inc" data-idx="${idx}">+</button>
+          <button class="btn ghost" data-action="rm" data-idx="${idx}">Remove</button>
         </div>
       </div>
     `;
-    // attach events
-    node.querySelector('.inc').addEventListener('click',()=>{
-      item.qty++; saveCart(cart);
-    });
-    node.querySelector('.dec').addEventListener('click',()=>{
-      if(item.qty>1){ item.qty--; saveCart(cart); } else { if(confirm('Remove this item?')){ const idx=cart.findIndex(x=>x.id===item.id); if(idx>-1) cart.splice(idx,1); saveCart(cart); } }
-    });
-    node.querySelector('.remove').addEventListener('click',()=>{
-      if(confirm('Remove this item?')){ const idx=cart.findIndex(x=>x.id===item.id); if(idx>-1) cart.splice(idx,1); saveCart(cart); }
-    });
-    list.appendChild(node);
+    root.appendChild(el);
   });
 
-  updateSummary();
+  // attach events
+  root.querySelectorAll('button[data-action]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      const action = btn.dataset.action; const idx = Number(btn.dataset.idx);
+      const cart = getCart();
+      if(action==='inc'){ cart[idx].qty++; }
+      else if(action==='dec'){ cart[idx].qty = Math.max(1, cart[idx].qty-1); }
+      else if(action==='rm'){ if(confirm('Remove this item?')) cart.splice(idx,1); }
+      setCart(cart);
+    });
+  });
+
+  // subtotal
+  const subtotal = cart.reduce((s,i)=>s + i.price*i.qty, 0);
+  document.getElementById('subtotal').textContent = '₹' + subtotal.toFixed(0);
 }
 
-function updateSummary(){
-  const cart = loadCart();
-  const subtotal = cart.reduce((s,i)=>s + (i.price * i.qty), 0);
-  const delivery = (subtotal >= DELIVERY_THRESHOLD || subtotal === 0) ? 0 : DELIVERY_CHARGE;
-  const coupon = JSON.parse(localStorage.getItem('nj_coupon') || 'null') || null;
-  const discount = coupon ? (coupon.discount || 0) : 0;
-  const grand = Math.max(0, subtotal + delivery - discount);
-
-  document.getElementById('priceSubtotal').textContent = '₹' + subtotal.toFixed(0);
-  document.getElementById('deliveryCharge').textContent = '₹' + delivery.toFixed(0);
-  document.getElementById('discount').textContent = '₹' + discount.toFixed(0);
-  document.getElementById('grandTotal').textContent = '₹' + grand.toFixed(0);
-}
-
+document.getElementById('continueBtn').addEventListener('click', ()=> location.href='index.html');
 document.getElementById('checkoutBtn').addEventListener('click', ()=>{
-  const cart = loadCart();
-  if(cart.length===0){ alert('Your cart is empty'); return; }
-  // Save checkout snapshot
-  const checkout = {items:cart, subtotal:cart.reduce((s,i)=>s+i.price*i.qty,0), createdAt: Date.now()};
-  localStorage.setItem('nj_checkout', JSON.stringify(checkout));
-  // require login/profile? redirect to login if not signed
-  const signed = JSON.parse(localStorage.getItem('nj_signed') || 'null');
-  if(!signed){ location.href = 'login.html?next=checkout.html'; return; }
+  const cart = getCart();
+  if(cart.length===0){ alert('Cart is empty'); return; }
+  // save checkout snapshot
+  const checkout = { items: cart, subtotal: cart.reduce((s,i)=>s + i.price*i.qty,0), createdAt: Date.now() };
+  save('nj_checkout', checkout);
   location.href = 'checkout.html';
 });
 
-document.getElementById('continueBtn').addEventListener('click', ()=> location.href='index.html');
-
-document.getElementById('applyCouponBtn').addEventListener('click', ()=>{
-  const code = document.getElementById('couponInput').value.trim().toUpperCase();
-  if(!code){ alert('Enter coupon'); return; }
-  // simple demo coupons
-  if(code === 'SAVE20'){ localStorage.setItem('nj_coupon', JSON.stringify({code:'SAVE20',discount:20})); alert('Coupon applied: ₹20 off'); updateSummary(); }
-  else if(code === 'FREEDEL'){ localStorage.setItem('nj_coupon', JSON.stringify({code:'FREEDEL',discount:25})); alert('Coupon applied: Free delivery'); updateSummary(); }
-  else alert('Invalid coupon');
-});
-
-(function init(){
-  ensureDemo();
-  renderCart();
-})();
+render();
 </script>
 </body>
 </html>
