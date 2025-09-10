@@ -1,452 +1,407 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>NJ Mart — Home</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-  /* ===== COLORS & BASE ===== */
-  :root{
-    --bg:#f4f7f8;
-    --card:#ffffff;
-    --muted:#7b8590;
-    --accent:#2db34a;
-    --accent-700:#239032;
-    --danger:#e04545;
-    --shadow: 0 8px 24px rgba(11,24,36,.06);
-    --radius:14px;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif;
-    background:var(--bg);
-    color:#17202a;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-  }
-  .wrap{max-width:980px;margin:0 auto;padding:14px}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NJ Mart — Your neighbourhood grocery (Full Expanded)</title>
 
-  /* ===== HEADER ===== */
-  header.site{
-    display:flex;
-    gap:10px;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:14px;
-  }
-  .brand{display:flex;gap:8px;align-items:center}
-  .logo{
-    width:44px;height:44px;background:linear-gradient(135deg,var(--accent),#38c36a);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;box-shadow:var(--shadow)
-  }
-  .brand h1{font-size:18px;margin:0}
-  .actions{display:flex;gap:8px;align-items:center}
+  <!-- Google font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-  /* search */
-  .search-wrap{flex:1;margin:0 10px}
-  .search{
-    display:flex;align-items:center;background:var(--card);padding:8px;border-radius:12px;box-shadow:var(--shadow);
-    gap:8px;border:1px solid rgba(0,0,0,.03)
-  }
-  .search input{border:0;outline:0;font-size:14px;width:100%;background:transparent}
-  .icon-btn{background:var(--card);border:0;padding:8px;border-radius:10px;cursor:pointer;box-shadow:var(--shadow)}
+  <!-- ======= Styles (mobile-first, expanded) ======= -->
+  <style>
+    :root{
+      --bg: #f5f8f7;
+      --card: #ffffff;
+      --accent: #2db34a;
+      --accent-700: #239032;
+      --muted: #6f777d;
+      --danger: #e04545;
+      --shadow: 0 10px 30px rgba(12,30,40,.06);
+      --radius: 12px;
+      --delivery-threshold: 1000;
+      --delivery-charge: 20;
+      --maxWidth: 980px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Roboto,-apple-system,"Segoe UI",Arial;background:var(--bg);color:#111}
+    a{color:inherit}
+    /* container */
+    .wrap{max-width:var(--maxWidth);margin:0 auto;padding:12px}
 
-  /* hero */
-  .hero{
-    background:linear-gradient(180deg,#17b24b,#1fb764);color:#fff;padding:22px;border-radius:16px;margin-bottom:18px;box-shadow:var(--shadow);
-    display:flex;gap:12px;align-items:center;
-  }
-  .hero .left{flex:1}
-  .hero h2{margin:0 0 6px 0;font-size:20px}
-  .hero p{margin:0 0 12px 0;opacity:.95}
-  .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.25);padding:10px 14px;border-radius:10px;color:#fff;cursor:pointer;font-weight:600}
+    /* ---------- Header / Navbar ---------- */
+    header.site {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      justify-content:space-between;
+      padding:10px 12px;
+      background:var(--card);
+      border-radius:12px;
+      box-shadow:var(--shadow);
+      margin-bottom:12px;
+      position:sticky; top:8px; z-index:1000;
+    }
+    .brand {display:flex;align-items:center;gap:10px}
+    .logo {
+      width:50px;height:50px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#38c36a);
+      color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;box-shadow:0 6px 18px rgba(0,0,0,.06)
+    }
+    .brand h1{font-size:18px;margin:0}
+    .search-area{flex:1;margin-left:8px;margin-right:8px}
+    .search {
+      display:flex;align-items:center;gap:8px;padding:8px;border-radius:999px;background:#fff;border:1px solid #eef6ee;
+    }
+    .search input{border:0;outline:0;padding:8px;font-size:14px;width:100%;background:transparent}
+    .nav-actions{display:flex;align-items:center;gap:8px}
+    .btn {padding:8px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .btn.ghost{background:#fff;border:1px solid #eef6ee}
+    .btn.primary{background:var(--accent);color:#fff}
+    .icon-btn{background:#fff;border-radius:10px;border:1px solid #eef6ee;padding:8px;cursor:pointer}
 
-  /* categories */
-  .categories{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
-  .cat{background:var(--card);padding:12px;border-radius:12px;text-align:center;box-shadow:var(--shadow);cursor:pointer}
-  .cat img{width:44px;height:44px;object-fit:cover;border-radius:8px;margin-bottom:8px}
+    /* ---------- Hero ---------- */
+    .hero{background:linear-gradient(180deg,#1fb764,#18a84c);color:#fff;padding:22px;border-radius:14px;margin-bottom:12px;box-shadow:var(--shadow);display:flex;gap:16px;align-items:center}
+    .hero .text{flex:1}
+    .hero h2{margin:0 0 8px 0;font-size:20px}
+    .hero p{margin:0 0 12px 0;color:rgba(255,255,255,.95)}
+    .hero .cta{display:flex;gap:8px}
+    .cta .btn {background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);color:#fff}
+    .hero img{width:120px;height:120px;border-radius:12px;object-fit:cover}
 
-  /* products */
-  .section-title{display:flex;justify-content:space-between;align-items:center;margin:6px 0 12px 0}
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  .product{
-    background:var(--card);padding:12px;border-radius:12px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px;
-  }
-  .product .img{height:120px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}
-  .product img{width:100%;height:100%;object-fit:cover}
-  .pname{font-weight:700;font-size:15px;margin:0}
-  .price-row{display:flex;justify-content:space-between;align-items:center}
-  .price{font-weight:700}
-  .add-btn{background:var(--accent);color:#fff;border:0;padding:8px;border-radius:10px;cursor:pointer;font-weight:700}
+    /* ---------- Sections layout ---------- */
+    .section{margin:12px 0}
+    .section .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .section .header h3{margin:0;font-size:16px}
+    .section .header .more{color:var(--muted);font-size:13px}
 
-  /* floating cart badge */
-  .cart-badge{
-    position:fixed;right:14px;bottom:18px;background:var(--accent);color:#fff;padding:10px 14px;border-radius:28px;box-shadow:0 10px 30px rgba(35,144,50,.18);cursor:pointer;z-index:60;
-    display:flex;align-items:center;gap:8px;font-weight:700
-  }
+    /* ---------- Categories ---------- */
+    .categories{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+    .cat{background:var(--card);padding:12px;border-radius:12px;text-align:center;box-shadow:0 8px 20px rgba(12,30,40,.03);cursor:pointer}
+    .cat img{width:56px;height:56px;border-radius:10px;object-fit:cover;display:block;margin:0 auto 8px}
 
-  /* cart side panel */
-  .cart-panel{
-    position:fixed;right:0;top:0;height:100vh;width:100%;max-width:420px;background:rgba(0,0,0,.2);display:none;align-items:flex-end;z-index:100;
-  }
-  .cart-panel.open{display:flex}
-  .cart-sheet{
-    width:100%;max-width:420px;background:var(--card);height:100vh;padding:14px;border-radius:16px 0 0 16px;box-shadow:0 30px 60px rgba(0,0,0,.3);overflow:auto;
-  }
-  .cart-sheet h3{margin:6px 0 12px 0}
-  .cart-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px dashed #eee}
-  .cart-thumb{width:72px;height:72px;border-radius:10px;overflow:hidden;flex:0 0 72px}
-  .cart-thumb img{width:100%;height:100%;object-fit:cover}
-  .cart-info{flex:1}
-  .cart-row{display:flex;justify-content:space-between;align-items:center;font-weight:700}
-  .qty-controls{display:flex;gap:6px;align-items:center}
-  .small-btn{background:#f4f6f7;border:0;padding:6px 8px;border-radius:8px;cursor:pointer}
-  .checkout-btn{background:var(--accent);color:#fff;border:0;padding:12px;border-radius:10px;width:100%;font-weight:800;margin-top:12px}
+    /* ---------- Products grid ---------- */
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+    .product{background:var(--card);border-radius:12px;padding:12px;box-shadow:0 8px 20px rgba(12,30,40,.04);display:flex;flex-direction:column;gap:8px}
+    .product .thumb{width:100%;height:140px;border-radius:10px;overflow:hidden;background:#f2f4f5}
+    .product .thumb img{width:100%;height:100%;object-fit:cover}
+    .product .title{font-weight:700;font-size:14px}
+    .product .meta{font-size:13px;color:var(--muted)}
+    .product .row{display:flex;justify-content:space-between;align-items:center}
+    .product .price{font-weight:800;color:var(--accent)}
+    .product button{border:0;padding:8px;border-radius:8px;cursor:pointer;background:var(--accent);color:#fff;font-weight:700}
 
-  /* footer */
-  footer.site{margin:28px 0 60px 0;text-align:center;color:var(--muted);font-size:13px}
+    /* ---------- Suggestions carousel (horizontal) ---------- */
+    .carousel{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
+    .carousel .card{min-width:140px;background:var(--card);padding:10px;border-radius:12px;box-shadow:0 8px 18px rgba(12,30,40,.03);text-align:center}
 
-  /* responsive adjustments */
-  @media(max-width:640px){
-    .grid{grid-template-columns:repeat(2,1fr)}
-    .categories{grid-template-columns:repeat(4,1fr)}
-    .hero h2{font-size:18px}
-    .hero p{font-size:13px}
-    .search{padding:6px}
-    .logo{width:40px;height:40px;font-size:16px}
-    .cart-sheet{max-width:100%;border-radius:16px 16px 0 0;height:70vh}
-    .cart-panel{align-items:flex-end}
-    header.site{gap:8px}
-    .search-wrap{margin:0 8px}
-  }
-</style>
+    /* ---------- Floating cart / cart panel ---------- */
+    .floating-cart{
+      position:fixed;right:16px;bottom:18px;background:var(--accent);color:#fff;padding:12px 16px;border-radius:999px;box-shadow:0 16px 50px rgba(16,66,20,.18);z-index:2000;cursor:pointer;display:flex;gap:10px;align-items:center;font-weight:800
+    }
+    .floating-cart .count{background:rgba(255,255,255,.12);padding:6px 10px;border-radius:999px}
+    /* cart panel overlay */
+    .cart-overlay{position:fixed;right:0;top:0;height:100vh;width:100%;display:none;align-items:flex-end;justify-content:flex-end;z-index:2500}
+    .cart-overlay.open{display:flex}
+    .cart-sheet{width:100%;max-width:420px;background:var(--card);height:100vh;border-radius:12px 0 0 12px;box-shadow:0 30px 70px rgba(0,0,0,.35);padding:14px;overflow:auto}
+    .cart-sheet h4{margin:0 0 8px 0}
+    .cart-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+    .cart-item{display:flex;gap:10px;align-items:center;padding:8px;border-radius:10px;border:1px solid #f2f6f3}
+    .cart-item img{width:72px;height:72px;border-radius:8px;object-fit:cover}
+    .cart-item .info{flex:1}
+    .qty-controls{display:flex;gap:6px;align-items:center}
+
+    /* ---------- footer ---------- */
+    footer.site{margin:18px 0 40px 0;text-align:center;color:var(--muted);font-size:13px}
+
+    /* ---------- responsive tweaks ---------- */
+    @media (max-width:900px){
+      .hero{flex-direction:column;align-items:flex-start}
+      .product .thumb{height:120px}
+      header.site{flex-wrap:wrap;gap:8px}
+      .search-area{order:3;width:100%}
+    }
+    @media (max-width:520px){
+      .products-grid{grid-template-columns:repeat(2,1fr)}
+      .categories{grid-template-columns:repeat(3,1fr)}
+      .logo{width:44px;height:44px}
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <!-- HEADER -->
-  <header class="site" role="banner">
-    <div class="brand" aria-hidden="true">
-      <div class="logo">NJ</div>
-      <div>
-        <h1>NJ Mart</h1>
-        <div style="font-size:12px;color:var(--muted)">Fresh groceries • Fast delivery</div>
-      </div>
-    </div>
+  <div class="wrap">
 
-    <div class="search-wrap" style="margin-left:10px;margin-right:10px">
-      <div class="search" role="search">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.35-4.35" stroke="#9aa6b2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="#9aa6b2" stroke-width="1.6"/></svg>
-        <input id="searchInput" placeholder="Search for products, vegetables, milk..." aria-label="Search">
-        <button class="icon-btn" id="searchBtn" title="Search" aria-label="Search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.35-4.35" stroke="#374151" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="#374151" stroke-width="1.6"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <div class="actions">
-      <button class="icon-btn" id="btnLogin" title="Login / Account">Login</button>
-      <button class="icon-btn" id="btnCartTop" aria-label="Open cart">🛒 <span id="topCount" style="margin-left:6px;font-weight:700">0</span></button>
-    </div>
-  </header>
-
-  <!-- HERO -->
-  <section class="hero" role="region" aria-label="Hero">
-    <div class="left">
-      <h2>Fresh groceries delivered fast</h2>
-      <p>Daily essentials • Fresh produce • Best prices in town</p>
-      <div style="display:flex;gap:8px;">
-        <button class="btn-ghost" onclick="scrollToSection('products')">Start Shopping</button>
-        <button class="btn-ghost" onclick="location.href='products.html'">All categories</button>
-      </div>
-    </div>
-    <div class="right" style="width:120px;text-align:center">
-      <img src="https://via.placeholder.com/120x120?text=Groceries" alt="Groceries" style="width:100%;border-radius:12px">
-    </div>
-  </section>
-
-  <!-- CATEGORIES -->
-  <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0">
-    <div style="font-weight:800">Shop by Category</div>
-    <div style="color:var(--muted);font-size:13px">See all</div>
-  </div>
-  <div class="categories" aria-label="Categories">
-    <div class="cat" onclick="filterBy('Vegetables')"><img src="https://via.placeholder.com/80?text=V" alt=""><div>Vegetables</div></div>
-    <div class="cat" onclick="filterBy('Fruits')"><img src="https://via.placeholder.com/80?text=F" alt=""><div>Fruits</div></div>
-    <div class="cat" onclick="filterBy('Dairy')"><img src="https://via.placeholder.com/80?text=D" alt=""><div>Dairy</div></div>
-    <div class="cat" onclick="filterBy('Snacks')"><img src="https://via.placeholder.com/80?text=S" alt=""><div>Snacks</div></div>
-    <div class="cat" onclick="filterBy('Beverages')"><img src="https://via.placeholder.com/80?text=B" alt=""><div>Beverages</div></div>
-    <div class="cat" onclick="filterBy('Household')"><img src="https://via.placeholder.com/80?text=H" alt=""><div>Household</div></div>
-  </div>
-
-  <!-- Trending Products -->
-  <div style="margin-top:14px">
-    <div class="section-title">
-      <div style="font-weight:800">Trending Products</div>
-      <div style="color:var(--muted);font-size:13px">Popular this week</div>
-    </div>
-
-    <div id="products" class="grid" aria-live="polite">
-      <!-- JS will inject products here -->
-    </div>
-  </div>
-
-  <footer class="site" role="contentinfo">
-    © 2025 NJ Mart — Local demo • <a href="#" style="color:var(--muted);text-decoration:underline">Terms</a> • <a href="#" style="color:var(--muted);text-decoration:underline">Privacy</a>
-  </footer>
-</div>
-
-<!-- CART FLOAT BUTTON -->
-<button id="cartFloat" class="cart-badge" aria-label="Open cart">
-  <span id="cartTotal">₹0</span>
-  <span id="cartCount" style="background:rgba(255,255,255,.12);padding:6px 8px;border-radius:999px;font-weight:700">0</span>
-</button>
-
-<!-- CART PANEL -->
-<div id="cartPanel" class="cart-panel" aria-hidden="true">
-  <div class="cart-sheet" role="dialog" aria-modal="true" aria-label="Cart">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <h3>Your Cart</h3>
-      <div>
-        <button id="closeCart" class="small-btn">Close</button>
-      </div>
-    </div>
-
-    <div id="cartItems" style="margin-top:12px">
-      <!-- cart items -->
-    </div>
-
-    <div style="margin-top:14px">
-      <div style="display:flex;justify-content:space-between;align-items:center;font-weight:700">
-        <div>Subtotal</div>
-        <div id="subtotal">₹0</div>
-      </div>
-      <div style="font-size:13px;color:var(--muted);margin-top:6px">Delivery & taxes calculated at checkout</div>
-      <button id="gotoCheckout" class="checkout-btn">Checkout</button>
-      <button id="clearCart" class="small-btn" style="margin-top:8px">Clear cart</button>
-    </div>
-  </div>
-</div>
-
-<script>
-/* ============================
-   NJ MART — index.html logic
-   - products list (demo)
-   - cart stored in localStorage: 'nj_cart'
-   - simple search + filter + cart panel
-   ============================ */
-
-const DEMO_PRODUCTS = [
-  {id:'p1', name:'Fresh Tomatoes', price:40, category:'Vegetables', img:'https://via.placeholder.com/400x300?text=Tomatoes'},
-  {id:'p2', name:'Milk (1L)', price:55, category:'Dairy', img:'https://via.placeholder.com/400x300?text=Milk'},
-  {id:'p3', name:'Aashirvaad Atta 5kg', price:394, category:'Household', img:'https://via.placeholder.com/400x300?text=Atta'},
-  {id:'p4', name:'Laxmi Refined Oil 1L', price:208, category:'Household', img:'https://via.placeholder.com/400x300?text=Oil'},
-  {id:'p5', name:'Tata Salt 1kg', price:29, category:'Household', img:'https://via.placeholder.com/400x300?text=Salt'},
-  {id:'p6', name:'Maggi Noodles', price:12, category:'Snacks', img:'https://via.placeholder.com/400x300?text=Maggi'},
-  {id:'p7', name:'Amul Paneer 500g', price:180, category:'Dairy', img:'https://via.placeholder.com/400x300?text=Paneer'},
-  {id:'p8', name:'Apple (1kg)', price:160, category:'Fruits', img:'https://via.placeholder.com/400x300?text=Apple'}
-];
-
-// ---------- localStorage helpers ----------
-function loadCart(){
-  try{
-    const raw = localStorage.getItem('nj_cart');
-    if(!raw) return [];
-    return JSON.parse(raw) || [];
-  }catch(e){ return [];}
-}
-function saveCart(cart){
-  localStorage.setItem('nj_cart', JSON.stringify(cart));
-}
-function addToCart(productId, qty=1){
-  const cart = loadCart();
-  const item = cart.find(i=>i.id===productId);
-  const p = DEMO_PRODUCTS.find(dp=>dp.id===productId);
-  if(!p) return;
-  if(item){
-    item.qty += qty;
-  }else{
-    cart.push({id:productId, name:p.name, price:p.price, qty:qty, img:p.img});
-  }
-  saveCart(cart);
-  renderCartSummary();
-  showToast('Added to cart');
-}
-function setQty(productId, qty){
-  const cart = loadCart();
-  const idx = cart.findIndex(i=>i.id===productId);
-  if(idx===-1) return;
-  if(qty<=0){
-    cart.splice(idx,1);
-  } else {
-    cart[idx].qty = qty;
-  }
-  saveCart(cart);
-  renderCartPanel();
-  renderCartSummary();
-}
-function clearCart(){
-  localStorage.removeItem('nj_cart');
-  renderCartPanel();
-  renderCartSummary();
-}
-
-/* ---------- render products ---------- */
-const productsEl = document.getElementById('products');
-
-function renderProducts(list){
-  productsEl.innerHTML = '';
-  list.forEach(p=>{
-    const card = document.createElement('div'); card.className='product';
-    card.innerHTML = `
-      <div class="img"><img src="${p.img}" alt="${escapeHtml(p.name)}"></div>
-      <div style="flex:1">
-        <div class="pname">${escapeHtml(p.name)}</div>
-        <div class="price-row" style="margin-top:8px">
-          <div>
-            <div style="color:var(--muted);font-size:13px">${p.category}</div>
-            <div class="price">₹${p.price}</div>
-          </div>
-          <div>
-            <button class="add-btn" data-id="${p.id}">Add to Cart</button>
-          </div>
+    <!-- ================= Header ================= -->
+    <header class="site" role="banner">
+      <div class="brand" aria-hidden="true">
+        <div class="logo">NJ</div>
+        <div>
+          <h1>NJ Mart</h1>
+          <div style="font-size:12px;color:var(--muted)">Grocery • Home Delivery</div>
         </div>
       </div>
-    `;
-    productsEl.appendChild(card);
-  });
 
-  // attach add handlers
-  Array.from(document.querySelectorAll('.add-btn')).forEach(btn=>{
-    btn.addEventListener('click',()=> addToCart(btn.dataset.id, 1));
-  });
-}
+      <!-- Search area -->
+      <div class="search-area" role="search">
+        <div class="search" aria-label="Site search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="opacity:.7"><path d="M21 21l-4.35-4.35" stroke="#5b6b6b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="#5b6b6b" stroke-width="1.6"/></svg>
+          <input id="searchInput" placeholder="Search products, categories, brands..." aria-label="Search products">
+          <button id="searchBtn" class="icon-btn" title="Search">Search</button>
+        </div>
+      </div>
 
-/* ---------- search / filter ---------- */
-function filterBy(category){
-  const filtered = DEMO_PRODUCTS.filter(p=>p.category.toLowerCase()===category.toLowerCase());
-  renderProducts(filtered);
-  window.scrollTo({top: 300, behavior: 'smooth'});
-}
-document.getElementById('searchBtn').addEventListener('click', doSearch);
-document.getElementById('searchInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') doSearch(); });
+      <!-- Right actions -->
+      <div class="nav-actions" role="navigation">
+        <button id="btnLogin" class="btn ghost" title="Login / Profile">Login</button>
+        <div id="btnCartTop" class="icon-btn" title="Open cart">🛒 <span id="topCartCount" style="margin-left:6px;font-weight:800">0</span></div>
+      </div>
+    </header>
 
-function doSearch(){
-  const q = document.getElementById('searchInput').value.trim().toLowerCase();
-  if(!q){ renderProducts(DEMO_PRODUCTS); return; }
-  const found = DEMO_PRODUCTS.filter(p=> p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) );
-  renderProducts(found);
-}
+    <!-- ================= Hero ================= -->
+    <section class="hero" role="region" aria-label="Get fresh groceries">
+      <div class="text">
+        <h2>Fresh groceries delivered to your door</h2>
+        <p>Daily essentials • Fresh produce • Pantry staples — fast delivery and simple checkout.</p>
+        <div class="cta">
+          <button class="btn primary" onclick="scrollToSection('productsSection')">Start shopping</button>
+          <button class="btn ghost" onclick="scrollToSection('categoriesSection')">Shop categories</button>
+        </div>
+      </div>
+      <div>
+        <img src="https://via.placeholder.com/160x160?text=Fresh" alt="Fresh groceries">
+      </div>
+    </section>
 
-/* ---------- cart summary (float badge) ---------- */
-function renderCartSummary(){
-  const cart = loadCart();
-  const count = cart.reduce((s,i)=>s+i.qty,0);
-  const total = cart.reduce((s,i)=>s + i.price * i.qty, 0);
-  document.getElementById('cartCount').textContent = count;
-  document.getElementById('cartTotal').textContent = '₹' + total.toFixed(0);
-  document.getElementById('topCount').textContent = count;
-}
-renderCartSummary();
+    <!-- ================= Categories ================= -->
+    <section id="categoriesSection" class="section" aria-labelledby="categoriesHeading">
+      <div class="header">
+        <h3 id="categoriesHeading">Shop by category</h3>
+        <div class="more"><a href="products.html">See all</a></div>
+      </div>
+      <div class="categories" id="categoryGrid">
+        <!-- categories rendered by JS -->
+      </div>
+    </section>
 
-/* ---------- cart panel ---------- */
-const cartPanel = document.getElementById('cartPanel');
-document.getElementById('cartFloat').addEventListener('click', openCart);
-document.getElementById('btnCartTop').addEventListener('click', openCart);
-document.getElementById('closeCart').addEventListener('click', closeCart);
-document.getElementById('cartPanel').addEventListener('click', (e)=>{ if(e.target === cartPanel) closeCart(); });
+    <!-- ================= Top Deals (example) ================= -->
+    <section class="section" aria-labelledby="dealsHeading">
+      <div class="header">
+        <h3 id="dealsHeading">Top deals</h3>
+        <div class="more small">Limited time</div>
+      </div>
+      <div class="products-grid" id="dealsGrid">
+        <!-- deals rendered by JS -->
+      </div>
+    </section>
 
-function openCart(){ renderCartPanel(); cartPanel.classList.add('open'); cartPanel.setAttribute('aria-hidden','false'); }
-function closeCart(){ cartPanel.classList.remove('open'); cartPanel.setAttribute('aria-hidden','true'); }
+    <!-- ================= Products list ================= -->
+    <section id="productsSection" class="section" aria-labelledby="productsHeading">
+      <div class="header">
+        <h3 id="productsHeading">Trending & Best sellers</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <label class="small" for="sortSelect">Sort</label>
+          <select id="sortSelect" style="padding:6px;border-radius:8px;border:1px solid #eef6ee">
+            <option value="popular">Most popular</option>
+            <option value="price_asc">Price — low to high</option>
+            <option value="price_desc">Price — high to low</option>
+          </select>
+        </div>
+      </div>
 
-function renderCartPanel(){
-  const wrap = document.getElementById('cartItems');
-  const cart = loadCart();
-  if(cart.length===0){
-    wrap.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">Your cart is empty<br><button class="add-btn" style="margin-top:10px" onclick="closeCart();scrollToSection(\\'products\\')">Continue shopping</button></div>';
-    document.getElementById('subtotal').textContent = '₹0';
-    return;
-  }
-  wrap.innerHTML = '';
-  cart.forEach(item=>{
-    const node = document.createElement('div'); node.className='cart-item';
-    node.innerHTML = `
-      <div class="cart-thumb"><img src="${item.img}" alt="${escapeHtml(item.name)}"></div>
-      <div class="cart-info">
+      <div class="products-grid" id="productGrid">
+        <!-- products rendered by JS -->
+      </div>
+    </section>
+
+    <!-- ================= Suggestions / Carousel ================= -->
+    <section class="section" aria-labelledby="suggestHeading">
+      <div class="header">
+        <h3 id="suggestHeading">You might also like</h3>
+        <div class="more small">Personalized picks</div>
+      </div>
+      <div class="carousel" id="suggestions">
+        <!-- suggestion cards by JS -->
+      </div>
+    </section>
+
+    <!-- ================= Footer ================= -->
+    <footer class="site">
+      <div class="small">© 2025 NJ Mart — demo. For production, integrate Firebase and payment gateway.</div>
+    </footer>
+
+  </div> <!-- /wrap -->
+
+  <!-- ================= Floating Cart Button ================= -->
+  <div id="floatingCart" class="floating-cart" role="button" aria-label="Open cart">
+    <div>🛒</div>
+    <div>
+      <div style="font-size:13px">Cart</div>
+      <div style="font-size:14px" id="floatingTotal">₹0</div>
+    </div>
+    <div class="count" id="floatingCount">0</div>
+  </div>
+
+  <!-- ================= Cart Overlay (slide panel) ================= -->
+  <div id="cartOverlay" class="cart-overlay" aria-hidden="true">
+    <div class="cart-sheet" role="dialog" aria-label="Your cart">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h4>Your cart</h4>
+        <div>
+          <button id="closeCart" class="btn ghost">Close</button>
+        </div>
+      </div>
+
+      <div id="cartList" class="cart-list" style="margin-top:12px">
+        <!-- cart items inserted here -->
+      </div>
+
+      <div style="margin-top:12px">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <div style="font-weight:700">${escapeHtml(item.name)}</div>
-          <div style="font-weight:700">₹${(item.price*item.qty).toFixed(0)}</div>
+          <div class="small">Items total</div><div id="cartSubtotal">₹0</div>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-          <div class="qty-controls">
-            <button class="small-btn dec" data-id="${item.id}">−</button>
-            <div style="padding:6px 8px;border-radius:8px;background:#f4f6f7">${item.qty}</div>
-            <button class="small-btn inc" data-id="${item.id}">+</button>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center">
-            <button class="small-btn remove" data-id="${item.id}">Remove</button>
-          </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+          <div class="small">Delivery</div><div id="cartDelivery">₹0</div>
         </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+          <div class="small">Discount</div><div id="cartDiscount">₹0</div>
+        </div>
+        <hr style="margin:10px 0;border:none;border-top:1px dashed #eee">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-weight:800">
+          <div>Total</div><div id="cartGrand">₹0</div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button id="checkoutBtn" class="btn primary" style="flex:1">Checkout</button>
+          <button id="clearCartBtn" class="btn ghost" style="flex:1">Clear</button>
+        </div>
+
+        <div style="margin-top:10px" class="small">Orders below ₹1000 carry ₹20 delivery. Coupons can be applied at checkout.</div>
       </div>
-    `;
-    wrap.appendChild(node);
-  });
+    </div>
+  </div>
 
-  // attach events (inc,dec,remove)
-  Array.from(document.querySelectorAll('.inc')).forEach(b=>b.addEventListener('click', ()=> {
-    const id = b.dataset.id; const cart = loadCart(); const it = cart.find(x=>x.id===id); if(it){ it.qty++; saveCart(cart); renderCartPanel(); renderCartSummary(); }
-  }));
-  Array.from(document.querySelectorAll('.dec')).forEach(b=>b.addEventListener('click', ()=> {
-    const id = b.dataset.id; const cart = loadCart(); const it = cart.find(x=>x.id===id); if(it){
-      if(it.qty>1){ it.qty--; saveCart(cart); renderCartPanel(); renderCartSummary(); } else {
-        if(confirm('Remove this item from cart?')){ const idx = cart.findIndex(x=>x.id===id); cart.splice(idx,1); saveCart(cart); renderCartPanel(); renderCartSummary(); }
-      }
+  <!-- ================= JS: functionality (expanded) ================= -->
+  <script>
+    /* =========================
+       NJ MART — index.html main script
+       - Full expanded front-end that stores cart & profile in localStorage
+       - Keys:
+         nj_cart      -> cart array [{id,name,price,qty,img,category}]
+         nj_user      -> profile {name,phone,address,email}
+         nj_coupon    -> applied coupon object
+         nj_checkout  -> snapshot before redirect to checkout.html
+    ========================= */
+
+    /* ---------- Configuration & demo data (you can replace these with real data) ---------- */
+    const DELIVERY_THRESHOLD = 1000; // free delivery if subtotal >= 1000
+    const DELIVERY_CHARGE = 20; // ₹20 if below threshold
+
+    // A larger list of real-feel demo products (you can replace images & details)
+    const ALL_PRODUCTS = [
+      { id:'p001', name:'Fresh Tomatoes (1kg)', price:40, img:'https://via.placeholder.com/400x300?text=Tomato', category:'Vegetables', popular: 98 },
+      { id:'p002', name:'Milk — 1L (Toned)', price:55, img:'https://via.placeholder.com/400x300?text=Milk', category:'Dairy', popular: 120 },
+      { id:'p003', name:'Potatoes (1kg)', price:25, img:'https://via.placeholder.com/400x300?text=Potato', category:'Vegetables', popular: 75 },
+      { id:'p004', name:'Onions (1kg)', price:30, img:'https://via.placeholder.com/400x300?text=Onion', category:'Vegetables', popular: 89 },
+      { id:'p005', name:'Aashirvaad Atta (5kg)', price:394, img:'https://via.placeholder.com/400x300?text=Atta', category:'Grocery', popular: 60 },
+      { id:'p006', name:'Laxmi Refined Oil (1L)', price:208, img:'https://via.placeholder.com/400x300?text=Oil', category:'Grocery', popular: 45 },
+      { id:'p007', name:'Tata Salt (1kg)', price:29, img:'https://via.placeholder.com/400x300?text=Salt', category:'Grocery', popular: 140 },
+      { id:'p008', name:'Maggi Noodles (2-min)', price:12, img:'https://via.placeholder.com/400x300?text=Maggi', category:'Snacks', popular: 200 },
+      { id:'p009', name:'Amul Paneer (500g)', price:180, img:'https://via.placeholder.com/400x300?text=Paneer', category:'Dairy', popular: 75 },
+      { id:'p010', name:'Apple (1kg)', price:160, img:'https://via.placeholder.com/400x300?text=Apple', category:'Fruits', popular: 55 },
+      { id:'p011', name:'Banana (1 dozen)', price:55, img:'https://via.placeholder.com/400x300?text=Banana', category:'Fruits', popular: 130 },
+      { id:'p012', name:'Brown Bread (400g)', price:45, img:'https://via.placeholder.com/400x300?text=Bread', category:'Bakery', popular: 40 }
+    ];
+
+    const CATEGORIES = ['Vegetables','Fruits','Dairy','Snacks','Beverages','Grocery','Bakery','Household'];
+
+    // Demo coupons (admin can change by setting localStorage 'nj_settings')
+    const DEFAULT_COUPONS = [
+      { code:'SAVE50', type:'FLAT', value:50, description:'Flat ₹50 off' },
+      { code:'FREEDEL', type:'DELIVERY', value:DELIVERY_CHARGE, description:'Free delivery' },
+      { code:'PERC10', type:'PERCENT', value:10, description:'10% off' }
+    ];
+
+    /* ---------- localStorage helpers ---------- */
+    function load(key){ try{ return JSON.parse(localStorage.getItem(key)); }catch(e){ return null; } }
+    function save(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+    function remove(key){ localStorage.removeItem(key); }
+
+    /* ---------- cart helpers ---------- */
+    function loadCart(){ return load('nj_cart') || []; }
+    function saveCart(cart){ save('nj_cart', cart); updateFloatingCart(); }
+    function clearCart(){ remove('nj_cart'); renderCartPanel(); updateFloatingCart(); }
+
+    /* ---------- profile helpers ---------- */
+    function getProfile(){ return load('nj_user') || null; }
+
+    /* ---------- coupon helpers ---------- */
+    function findCoupon(code){
+      if(!code) return null;
+      code = code.trim().toUpperCase();
+      const settings = load('nj_settings') || {};
+      const adminCoupons = (settings.coupons || []).concat(DEFAULT_COUPONS);
+      return adminCoupons.find(c => (c.code || '').toUpperCase() === code) || null;
     }
-  }));
-  Array.from(document.querySelectorAll('.remove')).forEach(b=>b.addEventListener('click', ()=> {
-    const id = b.dataset.id; if(confirm('Remove this item?')){ const cart = loadCart(); const idx = cart.findIndex(x=>x.id===id); if(idx>-1){ cart.splice(idx,1); saveCart(cart); renderCartPanel(); renderCartSummary(); } }
-  }));
 
-  const subtotal = cart.reduce((s,i)=>s + i.qty * i.price, 0);
-  document.getElementById('subtotal').textContent = '₹' + subtotal.toFixed(0);
-}
+    /* ---------- UI selectors ---------- */
+    const categoryGrid = document.getElementById('categoryGrid');
+    const dealsGrid = document.getElementById('dealsGrid');
+    const productGrid = document.getElementById('productGrid');
+    const suggestionsEl = document.getElementById('suggestions');
 
-/* checkout */
-document.getElementById('gotoCheckout').addEventListener('click', ()=> {
-  const cart = loadCart();
-  if(cart.length===0){ alert('Your cart is empty'); return; }
-  // Save checkout info so checkout.html can read it
-  const checkout = {
-    items: cart,
-    subtotal: cart.reduce((s,i)=>s + i.price * i.qty, 0),
-    createdAt: Date.now()
-  };
-  localStorage.setItem('nj_checkout', JSON.stringify(checkout));
-  // navigate to checkout page (should exist in your site)
-  location.href = 'checkout.html';
-});
-document.getElementById('clearCart').addEventListener('click', ()=> {
-  if(confirm('Clear all items from cart?')){ clearCart(); }
-});
+    const floatingCart = document.getElementById('floatingCart');
+    const floatingCount = document.getElementById('floatingCount');
+    const floatingTotal = document.getElementById('floatingTotal');
+    const topCartCount = document.getElementById('topCartCount');
 
-/* login button */
-document.getElementById('btnLogin').addEventListener('click', ()=> {
-  // redirect to login page (you must have login.html)
-  location.href = 'login.html';
-});
+    const cartOverlay = document.getElementById('cartOverlay');
+    const cartListEl = document.getElementById('cartList');
+    const cartSubtotalEl = document.getElementById('cartSubtotal');
+    const cartDeliveryEl = document.getElementById('cartDelivery');
+    const cartDiscountEl = document.getElementById('cartDiscount');
+    const cartGrandEl = document.getElementById('cartGrand');
 
-/* utility: escape html */
-function escapeHtml(s){ return String(s).replace(/[&<>"']/g, (m)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+    const btnCartTop = document.getElementById('btnCartTop');
+    const btnLogin = document.getElementById('btnLogin');
+    const closeCartBtn = document.getElementById('closeCart');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const clearCartBtn = document.getElementById('clearCartBtn');
 
-/* tiny toast */
-function showToast(msg, time=1200){
-  const t = document.createElement('div'); t.textContent = msg;
-  t.style.position='fixed'; t.style.left='50%'; t.style.transform='translateX(-50%)'; t.style.bottom='110px'; t.style.background='#111'; t.style.color='#fff'; t.style.padding='10px 14px'; t.style.borderRadius='999px'; t.style.zIndex=9999; t.style.opacity='0'; t.style.transition='opacity .2s';
-  document.body.appendChild(t);
-  requestAnimationFrame(()=> t.style.opacity='1');
-  setTimeout(()=> { t.style.opacity='0'; setTimeout(()=> t.remove(),200); }, time);
-}
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const sortSelect = document.getElementById('sortSelect');
 
-/* scroll helper */
-function scrollToSec
+    /* ---------- Initialization: render categories, products, suggestions ---------- */
+    function init(){
+      renderCategories();
+      renderTopDeals();
+      renderProducts(ALL_PRODUCTS);
+      renderSuggestions();
+      attachEventHandlers();
+      updateFloatingCart();
+    }
+
+    function renderCategories(){
+      categoryGrid.innerHTML = '';
+      CATEGORIES.forEach(cat=>{
+        const node = document.createElement('div');
+        node.className = 'cat';
+        node.innerHTML = `<img src="https://via.placeholder.com/80?text=${encodeURIComponent(cat[0])}" alt="${cat}"><div style="font-weight:700;margin-top:6px">${cat}</div>`;
+        node.addEventListener('click', ()=> filterByCategory(cat));
+        categoryGrid.appendChild(node);
+      });
+    }
+
+    function renderTopDeals(){
+      dealsGrid.innerHTML = '';
+      // show first 4 high-popular products as deals
+      const deals = ALL_PRODUCTS.slice().sort((a,b)=>b.popular-a.popular).slice(0,4);
+      deals.forEach(p => {
+        const node = document.createElement('div');
+        node.className = 'product';
+        node.innerHTML = `
+          <div class="thumb"><img src="${p.img}" alt="${p.name}"></div>
+          <div>
+            <div class="title">${p.name}</div>
+            <div class="meta small">${p.category}</div>
+            <div style="margin-top:8px" class="row">
+              <div class="price">₹${p.price}
