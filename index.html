@@ -3,292 +3,462 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NJ Mart — Home</title>
+  <title>NJ Mart — Fresh groceries, fast delivery</title>
+
+  <!-- Fonts + icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Main styles (expanded, readable) -->
   <style>
     :root{
-      --accent:#2db34a; --accent-dark:#239032; --muted:#6b7280; --card:#fff; --bg:#f4f8f7; --radius:12px;
-      --shadow: 0 14px 40px rgba(12,30,40,.06);
+      --bg:#f6fbf8;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent:#2db34a;
+      --accent-dark:#1f8a34;
+      --danger:#ef4444;
+      --shadow: 0 10px 30px rgba(12,30,40,0.06);
+      --max-width:1100px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,Roboto;background:var(--bg);color:#0b1220}
-    .wrap{max-width:1100px;margin:12px auto;padding:12px}
-    header.site{display:flex;gap:12px;align-items:center;justify-content:space-between;background:var(--card);padding:14px;border-radius:12px;box-shadow:var(--shadow)}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#38c36a);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
-    .brand h1{font-size:18px;margin:0}
-    .search{flex:1;margin:0 12px}
-    .search input{width:100%;padding:12px;border-radius:999px;border:1px solid #eef6f2}
-    .nav-actions{display:flex;gap:8px;align-items:center}
-    .btn{padding:10px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
-    .btn.primary{background:var(--accent);color:white}
-    .btn.ghost{background:#fff;border:1px solid #eef6f2}
-    .cart-ind{display:flex;gap:8px;align-items:center}
-    .cart-badge{background:#e04545;color:#fff;padding:4px 8px;border-radius:999px;font-weight:800}
-    main{margin-top:14px}
-    .hero{display:flex;gap:16px;align-items:center;background:linear-gradient(180deg,var(--accent),#18a84c);color:#fff;padding:18px;border-radius:12px;box-shadow:var(--shadow)}
-    .hero h2{margin:0;font-size:20px}
-    .grid{display:grid;grid-template-columns:1fr 320px;gap:14px;margin-top:14px}
-    @media(max-width:980px){ .grid{grid-template-columns:1fr} .hero{flex-direction:column;align-items:flex-start} }
-    .left .section{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 12px 30px rgba(12,30,40,.04);margin-bottom:12px}
-    .categories{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
-    .cat{background:#fff;padding:12px;border-radius:10px;text-align:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.03)}
-    .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-    .product{background:#fff;border-radius:12px;padding:12px;box-shadow:0 6px 18px rgba(0,0,0,.04);display:flex;flex-direction:column;gap:8px}
-    .product .thumb{height:160px;border-radius:10px;overflow:hidden;background:#f5f7f6}
-    .product img{width:100%;height:100%;object-fit:cover}
-    .product h3{margin:0;font-size:15px}
-    .product .meta{color:var(--muted);font-size:13px}
-    .product .row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px}
-    .product .price{font-weight:800;color:var(--accent)}
-    .sticky-cart{position:fixed;right:18px;bottom:18px;background:var(--accent);color:white;padding:12px 16px;border-radius:999px;box-shadow:0 12px 40px rgba(12,30,40,.2);cursor:pointer;z-index:999}
-    footer{margin-top:20px;text-align:center;color:var(--muted);font-size:13px;padding:12px}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:#111;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+
+    /* container */
+    .wrap{max-width:var(--max-width);margin:18px auto;padding:12px}
+
+    /* Header */
+    header.site-header{
+      background:var(--card);
+      border-radius:12px;
+      box-shadow:var(--shadow);
+      padding:10px 14px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      position:sticky;
+      top:12px;
+      z-index:50;
+    }
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand .logo{
+      width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+      display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;box-shadow:0 4px 12px rgba(16,185,129,0.12)
+    }
+    .brand h1{font-size:20px;margin:0}
+    .search-box{flex:1;display:flex;align-items:center;gap:8px}
+    .search-box input{
+      width:100%;padding:10px 12px;border-radius:10px;border:1px solid #e9f0ec;background:#fff;font-size:15px;
+    }
+    .actions{display:flex;gap:8px;align-items:center}
+    .btn{border:0;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer}
+    .btn.primary{background:var(--accent);color:#fff}
+    .btn.ghost{background:#fff;border:1px solid #e6eef0}
+    .cart-badge{background:#fff;border-radius:999px;padding:2px 8px;margin-left:6px;font-weight:700;color:#111}
+
+    /* layout grid */
+    .main-grid{display:grid;grid-template-columns:260px 1fr;gap:16px;margin-top:16px}
+    @media(max-width:980px){
+      .main-grid{grid-template-columns:1fr}
+    }
+
+    /* left sidebar */
+    .sidebar{background:var(--card);padding:12px;border-radius:12px;box-shadow:var(--shadow)}
+    .sidebar h3{margin:0 0 8px 0;font-size:16px}
+    .category-list{display:flex;flex-direction:column;gap:8px}
+    .category-item{padding:10px;border-radius:8px;cursor:pointer;border:1px dashed transparent}
+    .category-item.active{background:#f3fff6;border:1px solid rgba(45,179,74,0.12)}
+    .filter-group{margin-top:12px}
+
+    /* main content area */
+    .content-area{display:flex;flex-direction:column;gap:12px}
+    .hero{background:linear-gradient(90deg,var(--accent),var(--accent-dark));color:white;padding:22px;border-radius:12px;display:flex;align-items:center;gap:18px}
+    .hero .text h2{margin:0;font-size:22px}
+    .hero .text p{margin:6px 0 0 0;opacity:0.95}
+    .hero .cta{margin-top:8px}
+
+    /* offers / banners */
+    .offers{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    .offer-card{background:linear-gradient(90deg,#fff,#f9fff4);padding:14px;border-radius:12px;box-shadow:0 6px 16px rgba(12,30,40,0.04);display:flex;gap:10px;align-items:center}
+
+    /* product list */
+    .product-topbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:12px}
+    .product{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(12,30,40,0.04);display:flex;flex-direction:column;justify-content:space-between}
+    .product .thumb{height:150px;background:#f4f7f6;border-radius:10px;overflow:hidden;margin-bottom:10px;display:flex;align-items:center;justify-content:center}
+    .product .thumb img{width:100%;height:100%;object-fit:cover}
+    .product h4{font-size:15px;margin:0 0 6px 0}
+    .meta{font-size:13px;color:var(--muted);margin-bottom:8px}
+    .product .price{font-weight:800;color:var(--accent);font-size:16px}
+    .product .row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:8px}
+    .product button{padding:8px 10px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
+
+    /* cart drawer */
+    .cart-drawer{position:fixed;right:18px;bottom:18px;z-index:80}
+    .cart-fab{background:var(--accent);color:#fff;padding:12px 16px;border-radius:14px;box-shadow:0 8px 30px rgba(16,185,129,0.18);cursor:pointer;display:flex;gap:8px;align-items:center}
+    .cart-panel{position:fixed;right:18px;bottom:80px;width:360px;max-width:calc(100% - 32px);background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:12px;display:none}
+    .cart-item{display:flex;gap:8px;align-items:center;padding:8px;border-bottom:1px solid #f1f3f4}
+    .cart-item img{width:72px;height:64px;object-fit:cover;border-radius:8px}
+    .cart-summary{padding:10px;border-top:1px solid #f1f3f4}
+
+    /* testimonials & extras */
+    .testimonials{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+    .testimonial{background:white;padding:14px;border-radius:12px;box-shadow:0 6px 18px rgba(12,30,40,0.04)}
+
+    /* footer */
+    footer.site-footer{margin-top:20px;background:var(--card);padding:16px;border-radius:12px;box-shadow:var(--shadow);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    footer .col{min-width:180px}
+
+    /* small screens */
+    @media(max-width:720px){
+      header.site-header{flex-direction:column;gap:8px;align-items:stretch}
+      .hero{flex-direction:column;align-items:flex-start}
+      .main-grid{grid-template-columns:1fr}
+      .cart-panel{right:12px;left:12px}
+    }
+    /* small helper classes */
+    .muted{color:var(--muted)}
+    .hidden{display:none}
   </style>
+
+  <!-- include script-config helper (must be in repo) -->
+  <script src="./script-config.js"></script>
 </head>
 <body>
+
   <div class="wrap">
-    <header class="site">
+
+    <!-- HEADER -->
+    <header class="site-header" role="banner">
       <div class="brand">
         <div class="logo">NJ</div>
         <div>
           <h1>NJ Mart</h1>
-          <div style="font-size:13px;color:var(--muted)">Grocery • Home delivery</div>
+          <div class="muted" style="font-size:13px">Grocery & home delivery</div>
         </div>
       </div>
 
-      <div class="search">
-        <input id="searchInput" placeholder="Search products, e.g., milk, atta, oil">
+      <div class="search-box" role="search">
+        <input id="globalSearch" type="search" placeholder="Search for products, brands, categories..." aria-label="Search products">
       </div>
 
-      <div class="nav-actions">
-        <div id="userBadge">Guest</div>
-        <div class="cart-ind">
-          <button class="btn ghost" onclick="location.href='cart.html'">Cart</button>
-          <div class="cart-badge" id="cartCountBadge">0</div>
-        </div>
-        <button id="loginBtn" class="btn primary">Login</button>
+      <div class="actions">
+        <button id="btnAccount" class="btn ghost"><i class="fa fa-user"></i> <span id="accountLabel">Login</span></button>
+        <button id="btnCart" class="btn">
+          <i class="fa fa-shopping-cart"></i> Cart
+          <span class="cart-badge" id="headerCartCount">0</span>
+        </button>
       </div>
     </header>
 
-    <main>
-      <div class="hero">
-        <div style="flex:1">
-          <h2>Fresh groceries delivered to your door</h2>
-          <p style="margin:6px 0;color:rgba(255,255,255,.95)">Daily essentials • Fresh produce • Fast delivery • Secure payments</p>
-          <div style="margin-top:8px">
-            <button class="btn" onclick="scrollToProducts()">Start shopping</button>
-            <button class="btn ghost" onclick="location.href='products.html'">All products</button>
-          </div>
+    <!-- LAYOUT GRID: SIDEBAR + CONTENT -->
+    <div class="main-grid" role="main">
+      <!-- SIDEBAR -->
+      <aside class="sidebar" aria-label="Filters">
+        <h3>Categories</h3>
+        <div class="category-list" id="categoryList">
+          <!-- list filled by JS -->
         </div>
-        <div style="width:160px"><img src="https://via.placeholder.com/160x120?text=Fresh" style="width:100%;border-radius:10px"></div>
-      </div>
 
-      <div class="grid">
-        <div class="left">
-          <div class="section">
-            <h3>Categories</h3>
-            <div class="categories" id="categoryGrid"></div>
+        <div class="filter-group">
+          <h3>Filters</h3>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+            <input id="minPrice" type="number" placeholder="Min ₹" style="flex:1;padding:8px;border-radius:8px;border:1px solid #e6eef0">
+            <input id="maxPrice" type="number" placeholder="Max ₹" style="flex:1;padding:8px;border-radius:8px;border:1px solid #e6eef0">
           </div>
-
-          <div class="section">
-            <h3>Trending Products</h3>
-            <div class="products" id="productGrid"></div>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <button id="applyFilters" class="btn primary">Apply</button>
+            <button id="clearFilters" class="btn ghost">Clear</button>
           </div>
         </div>
 
-        <aside>
-          <div class="section">
-            <h3>Your Cart</h3>
-            <div id="smallCartSummary" style="margin-top:10px">No items yet</div>
-            <div style="margin-top:10px">
-              <button class="btn primary" onclick="location.href='cart.html'">Open cart</button>
-              <button class="btn ghost" onclick="location.href='orders.html'">My orders</button>
-            </div>
-          </div>
+        <div class="filter-group" style="margin-top:14px">
+          <h3>Sort</h3>
+          <select id="sortSelect" style="width:100%;padding:8px;border-radius:8px;border:1px solid #e6eef0">
+            <option value="">Default</option>
+            <option value="price_asc">Price low → high</option>
+            <option value="price_desc">Price high → low</option>
+          </select>
+        </div>
+      </aside>
 
-          <div class="section" id="accountBox">
-            <h3>Account</h3>
-            <div id="accountInfo" style="margin-top:8px">Not signed in</div>
-            <div style="margin-top:8px">
-              <button class="btn ghost" id="profileBtn">Profile</button>
+      <!-- CONTENT AREA -->
+      <section class="content-area">
+
+        <!-- HERO -->
+        <div class="hero" role="banner">
+          <div style="flex:1" class="text">
+            <h2>Fresh groceries delivered to your door</h2>
+            <p>Shop from local favourites, daily essentials and fresh produce. Fast delivery & transparent pricing.</p>
+            <div class="cta" style="margin-top:10px">
+              <button id="shopNow" class="btn primary">Shop now</button>
+              <button id="viewOffers" class="btn ghost">View offers</button>
             </div>
           </div>
-        </aside>
+          <div style="width:260px;text-align:center">
+            <img src="https://via.placeholder.com/240x140?text=Fresh+Box" alt="Fresh box" style="border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.08)">
+          </div>
+        </div>
+
+        <!-- OFFERS -->
+        <div>
+          <h3 style="margin:6px 0 8px 0">Special offers</h3>
+          <div class="offers" id="offersArea">
+            <div class="offer-card">
+              <div style="flex:1">
+                <div style="font-weight:800">Flat ₹50 off</div>
+                <div class="muted" style="font-size:13px">On orders above ₹1000 — use code BIGSAVE</div>
+              </div>
+              <div style="font-weight:900;color:var(--accent);font-size:20px">SAVE50</div>
+            </div>
+            <div class="offer-card">
+              <div style="flex:1">
+                <div style="font-weight:800">Free Delivery</div>
+                <div class="muted" style="font-size:13px">On orders above ₹499</div>
+              </div>
+              <div style="font-weight:900;color:var(--accent);font-size:20px">FREE499</div>
+            </div>
+            <div class="offer-card">
+              <div style="flex:1">
+                <div style="font-weight:800">Cashback</div>
+                <div class="muted" style="font-size:13px">Get up to ₹30 cashback on UPI</div>
+              </div>
+              <div style="font-weight:900;color:var(--accent);font-size:20px">UPI30</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRODUCTS TOP BAR -->
+        <div class="product-topbar" style="margin-top:12px">
+          <div>
+            <h3 style="margin:0">Trending products</h3>
+            <div class="muted" style="font-size:13px;margin-top:4px">Browse and add to cart — we deliver fast</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="quickSearch" placeholder="Quick search within results" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
+            <select id="perPage" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
+              <option value="12">12 / page</option>
+              <option value="24">24 / page</option>
+              <option value="48">48 / page</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- PRODUCT GRID -->
+        <div id="productGrid" class="product-grid" aria-live="polite">
+          <!-- filled by JS -->
+          <div style="grid-column:1/-1;color:var(--muted);padding:30px;border-radius:10px;background:#fff">Loading products…</div>
+        </div>
+
+        <!-- PAGINATION (simple) -->
+        <div style="display:flex;justify-content:center;margin-top:12px">
+          <button id="prevPage" class="btn ghost">Prev</button>
+          <div style="padding:8px 12px" id="pageInfo">Page 1</div>
+          <button id="nextPage" class="btn ghost">Next</button>
+        </div>
+
+        <!-- TESTIMONIALS -->
+        <div style="margin-top:18px">
+          <h3>What customers say</h3>
+          <div class="testimonials" id="testimonialsArea">
+            <div class="testimonial">
+              <div style="font-weight:700">Asha K.</div>
+              <div class="muted" style="font-size:13px">"Fresh vegetables every time. Delivery is quick and helpful."</div>
+            </div>
+            <div class="testimonial">
+              <div style="font-weight:700">Ravi P.</div>
+              <div class="muted" style="font-size:13px">"Great prices and accurate billing. Highly recommended."</div>
+            </div>
+            <div class="testimonial">
+              <div style="font-weight:700">Neha S.</div>
+              <div class="muted" style="font-size:13px">"Easy to order, and the delivery boy called before arriving — love it!"</div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- CART FAB + PANEL -->
+    <div class="cart-drawer" aria-live="polite">
+      <div class="cart-fab" id="openCart">
+        <i class="fa fa-shopping-basket"></i>
+        <div>View cart</div>
+        <div class="cart-badge" id="fabCount">0</div>
       </div>
-    </main>
 
-    <footer>© 2025 NJ Mart — Local demo • Terms • Privacy</footer>
-  </div>
+      <div class="cart-panel" id="cartPanel" role="dialog" aria-label="Cart panel">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:800">Your cart</div>
+          <button id="closeCart" class="btn ghost">Close</button>
+        </div>
 
-  <div class="sticky-cart" id="stickyCartBtn" onclick="location.href='cart.html'">
-    🛒 <span id="stickyTotal">₹0</span> • <span id="stickyItems">0</span>
-  </div>
+        <div id="cartItems" style="margin-top:10px;max-height:320px;overflow:auto">
+          <!-- cart items injected here -->
+          <div class="muted" style="padding:18px">Cart is empty</div>
+        </div>
 
-  <script type="module">
-    import { auth, db, onAuth, loadProductsOnce } from './firebase-config.js';
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        <div class="cart-summary" style="margin-top:8px">
+          <div style="display:flex;justify-content:space-between"><div class="muted">Subtotal</div><div id="cartSubtotal">₹0</div></div>
+          <div style="display:flex;justify-content:space-between;margin-top:6px"><div class="muted">Delivery</div><div id="cartDelivery">₹25</div></div>
+          <hr style="border:none;border-top:1px dashed #eee;margin:10px 0">
+          <div style="display:flex;justify-content:space-between;font-weight:800"><div>Total</div><div id="cartTotal">₹0</div></div>
+          <div style="margin-top:10px;display:flex;gap:8px">
+            <button id="checkoutBtn" class="btn primary" style="flex:1">Checkout</button>
+            <button id="clearCartBtn" class="btn ghost">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    // STORAGE KEYS
-    const CART_KEY = 'nj_cart';
-    const CHECKOUT_KEY = 'nj_checkout';
-    const COUPON_KEY = 'nj_coupon';
+    <!-- FOOTER -->
+    <footer class="site-footer" role="contentinfo">
+      <div class="col">
+        <div style="font-weight:800;font-size:16px">NJ Mart</div>
+        <div class="muted" style="margin-top:6px">Fresh groceries & household essentials with quick delivery.</div>
+      </div>
+      <div class="col">
+        <div style="font-weight:700">Links</div>
+        <div style="margin-top:6px" class="muted">
+          <div><a href="index.html">Home</a></div>
+          <div><a href="admin.html">Admin</a></div>
+          <div><a href="contact.html">Contact</a></div>
+        </div>
+      </div>
+      <div class="col">
+        <div style="font-weight:700">Support</div>
+        <div class="muted" style="margin-top:6px">Phone: <a href="tel:+917062918607" class="link">+91 70629 18607</a></div>
+        <div class="muted">Email: support@njmart.example</div>
+      </div>
+    </footer>
 
-    // DOM
-    const productGrid = document.getElementById('productGrid');
-    const categoryGrid = document.getElementById('categoryGrid');
-    const cartCountBadge = document.getElementById('cartCountBadge');
-    const stickyTotal = document.getElementById('stickyTotal');
-    const stickyItems = document.getElementById('stickyItems');
-    const smallCartSummary = document.getElementById('smallCartSummary');
-    const userBadge = document.getElementById('userBadge');
-    const loginBtn = document.getElementById('loginBtn');
-    const profileBtn = document.getElementById('profileBtn');
+  </div> <!-- wrap -->
 
-    // helper localStorage functions
-    function loadCart(){ try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch(e){ return []; } }
-    function saveCart(cart){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); updateCartUI(); }
-    function clearCartLocal(){ localStorage.removeItem(CART_KEY); updateCartUI(); }
+  <!-- ========== SCRIPT: product load, cart logic, filters, pagination ========== -->
+  <script>
+  // ---------- Config & state ----------
+  const DELIVERY_THRESHOLD = 499;
+  const DELIVERY_CHARGE = 25;
 
-    function updateCartUI(){
-      const cart = loadCart();
-      const count = cart.reduce((s,i)=>s + (i.qty||0), 0);
-      const total = cart.reduce((s,i)=>s + (i.qty||0) * (i.price||0), 0);
-      cartCountBadge.textContent = count;
-      stickyItems.textContent = count;
-      stickyTotal.textContent = '₹' + total.toFixed(0);
-      smallCartSummary.textContent = count === 0 ? 'No items yet' : `${count} items • ${'₹'+total.toFixed(0)}`;
-    }
+  let PRODUCTS = [];        // full product list from backend
+  let FILTERED = [];        // filtered subset
+  let CATEGORIES = [];      // category list
+  let currentPage = 1;
+  let perPage = 12;
 
-    function addToCart(product, qty=1){
-      const cart = loadCart();
-      const idx = cart.findIndex(p=>p.id === product.id);
-      if(idx > -1) cart[idx].qty += qty;
-      else cart.push({ id: product.id, name: product.name, price: product.price, qty: qty, img: product.image || '', category: product.category || '' });
+  // ---------- localStorage cart helpers ----------
+  function loadCart(){
+    try { return JSON.parse(localStorage.getItem('nj_cart')||'[]'); } catch(e){ return []; }
+  }
+  function saveCart(cart){ localStorage.setItem('nj_cart', JSON.stringify(cart)); }
+  function clearCart(){
+    localStorage.removeItem('nj_cart');
+    renderCart();
+  }
+
+  // update header & fab counts
+  function updateCartCounts(){
+    const cart = loadCart();
+    const count = cart.reduce((s,i)=>s+i.qty,0);
+    document.getElementById('headerCartCount').textContent = count;
+    document.getElementById('fabCount').textContent = count;
+  }
+
+  // add item to cart
+  function addToCart(item){
+    const cart = loadCart();
+    const idx = cart.findIndex(x=>x.id === item.id);
+    if(idx > -1) cart[idx].qty += 1;
+    else cart.push({ id: item.id, name: item.name, price: Number(item.price||0), qty: 1, image: item.image || '' });
+    saveCart(cart);
+    updateCartCounts();
+    showToast(`${item.name} added to cart`);
+  }
+
+  // remove item from cart
+  function removeFromCart(id){
+    let cart = loadCart();
+    cart = cart.filter(i=>i.id !== id);
+    saveCart(cart);
+    renderCart();
+    updateCartCounts();
+  }
+
+  // change qty
+  function changeQty(id, delta){
+    const cart = loadCart();
+    const idx = cart.findIndex(x=>x.id === id);
+    if(idx>-1){
+      cart[idx].qty = Math.max(1, cart[idx].qty + delta);
       saveCart(cart);
-      showToast(`${product.name} added to cart`);
+      renderCart();
+      updateCartCounts();
     }
+  }
 
-    function showToast(msg, t=1400){
-      const el = document.createElement('div');
-      el.textContent = msg;
-      el.style.position = 'fixed'; el.style.left='50%'; el.style.transform='translateX(-50%)';
-      el.style.bottom='110px'; el.style.background='#111'; el.style.color='#fff'; el.style.padding='8px 12px';
-      el.style.borderRadius='999px'; el.style.zIndex='9999'; el.style.opacity='0'; el.style.transition='opacity .12s';
-      document.body.appendChild(el);
-      requestAnimationFrame(()=> el.style.opacity='1');
-      setTimeout(()=> { el.style.opacity='0'; setTimeout(()=> el.remove(),200); }, t);
-    }
+  // calculate totals
+  function calcTotals(){
+    const cart = loadCart();
+    const subtotal = cart.reduce((s,i)=>s + (Number(i.price||0) * Number(i.qty||1)), 0);
+    const delivery = (subtotal === 0 || subtotal >= DELIVERY_THRESHOLD) ? 0 : DELIVERY_CHARGE;
+    const total = subtotal + delivery;
+    return { subtotal, delivery, total };
+  }
 
-    // render products from Firestore
-    async function loadAndRenderProducts(){
-      try{
-        // prefer helper loadProductsOnce from firebase-config; fallback to direct getDocs
-        let products = [];
-        try { products = await loadProductsOnce(200); } catch(e){}
-        if(!products || products.length === 0){
-          const col = collection(db, 'products');
-          const snap = await getDocs(col);
-          products = [];
-          snap.forEach(d => products.push({ id: d.id, ...d.data() }));
-        }
-        renderProductGrid(products);
-        populateCategories(products);
-      }catch(err){
-        console.error('Products load error', err);
-        productGrid.innerHTML = '<div style="color:var(--muted)">Error loading products.</div>';
-      }
-    }
-
-    function renderProductGrid(list){
-      productGrid.innerHTML = '';
-      list.forEach(p => {
+  // render cart panel
+  function renderCart(){
+    const panel = document.getElementById('cartPanel');
+    const container = document.getElementById('cartItems');
+    const totals = calcTotals();
+    container.innerHTML = '';
+    const cart = loadCart();
+    if(cart.length === 0){
+      container.innerHTML = '<div class="muted" style="padding:18px">Your cart is empty</div>';
+    } else {
+      cart.forEach(i=>{
         const node = document.createElement('div');
-        node.className = 'product';
+        node.className = 'cart-item';
         node.innerHTML = `
-          <div class="thumb"><img src="${p.image||'https://via.placeholder.com/400x300?text=Product'}" alt="${escapeHtml(p.name)}"></div>
-          <h3>${escapeHtml(p.name)}</h3>
-          <div class="meta">${escapeHtml(p.category||'')}</div>
-          <div class="row">
-            <div class="price">₹${p.price}</div>
-            <div><button class="btn primary">Add</button></div>
+          <img src="${i.image || 'https://via.placeholder.com/120'}" alt="">
+          <div style="flex:1">
+            <div style="font-weight:700">${i.name}</div>
+            <div class="muted" style="font-size:13px">₹${i.price} × ${i.qty} = ₹${(i.price * i.qty).toFixed(0)}</div>
+            <div style="margin-top:8px;display:flex;gap:8px">
+              <button class="btn ghost small" data-act="dec" data-id="${i.id}">−</button>
+              <button class="btn ghost small" data-act="inc" data-id="${i.id}">+</button>
+              <button class="btn ghost small" data-act="rm" data-id="${i.id}">Remove</button>
+            </div>
           </div>
         `;
-        node.querySelector('button').addEventListener('click', ()=> addToCart(p));
-        productGrid.appendChild(node);
+        container.appendChild(node);
       });
     }
+    document.getElementById('cartSubtotal').textContent = '₹' + totals.subtotal.toFixed(0);
+    document.getElementById('cartDelivery').textContent = '₹' + totals.delivery.toFixed(0);
+    document.getElementById('cartTotal').textContent = '₹' + totals.total.toFixed(0);
+  }
 
-    function populateCategories(products){
-      const cats = Array.from(new Set(products.map(p => p.category || 'General'))).slice(0,12);
-      categoryGrid.innerHTML = '';
-      cats.forEach(cat=>{
-        const c = document.createElement('div');
-        c.className = 'cat';
-        c.innerHTML = `<div style="font-weight:700">${escapeHtml(cat)}</div>`;
-        c.addEventListener('click', ()=> {
-          const filtered = (window._nj_products || []).filter(x=>x.category === cat);
-          renderProductGrid(filtered);
-        });
-        categoryGrid.appendChild(c);
-      });
-      // store available products globally for filter
-      window._nj_products = window._nj_products || [];
-      // if not loaded, set later after render
-    }
+  // cart panel event delegation
+  document.getElementById('cartItems').addEventListener('click', (e)=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    const act = btn.dataset.act;
+    const id = btn.dataset.id;
+    if(act === 'dec') changeQty(id, -1);
+    if(act === 'inc') changeQty(id, +1);
+    if(act === 'rm') removeFromCart(id);
+  });
 
-    // search
-    document.getElementById('searchInput').addEventListener('keydown', (e)=>{
-      if(e.key === 'Enter') doSearch();
-    });
-    function doSearch(){
-      const q = (document.getElementById('searchInput').value||'').trim().toLowerCase();
-      if(!q) return loadAndRenderProducts();
-      const list = (window._nj_products || []).filter(p => (p.name||'').toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q));
-      renderProductGrid(list);
-    }
-
-    // small helper to escape html
-    function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-
-    // auth state and profile
-    onAuth((user) => {
-      if(user){
-        userBadge.textContent = user.phone || (user.displayName || 'User');
-        loginBtn.textContent = 'Logout';
-        profileBtn.style.display = 'inline-block';
-        // optional: fetch and show saved customer address
-      } else {
-        userBadge.textContent = 'Guest';
-        loginBtn.textContent = 'Login';
-        profileBtn.style.display = 'none';
-      }
-    });
-
-    // login button behavior
-    loginBtn.addEventListener('click', ()=> {
-      if(loginBtn.textContent === 'Login') location.href = 'login.html';
-      else {
-        // sign out
-        import('./firebase-config.js').then(mod => {
-          mod.signOutUser().then(()=> {
-            showToast('Signed out');
-            location.reload();
-          }).catch(e=> alert('Sign out: ' + e.message));
-        });
-      }
-    });
-
-    profileBtn.addEventListener('click', ()=> location.href = 'profile.html');
-
-    // initial load
-    (async function init(){
-      updateCartUI();
-      await loadAndRenderProducts();
-      // once loaded, store globally
-      try { window._nj_products = await loadProductsOnce(500); } catch(e){ /* ignore */ }
-    })();
-
-  </script>
-</body>
-</html>
+  // ---------- toast helper ----------
+  function showToast(text, ms=1200){
+    const t = document.createElement('div');
+    t.textContent = text;
+    t.style.position='fixed';
+    t.style.left='50%';
+    t.style.top='18px';
+    t.style.transform='translateX(-50%)';
+    t.style.background='rgba(0,0,0,0.8)';
+    t.style.color='white';
+    t
