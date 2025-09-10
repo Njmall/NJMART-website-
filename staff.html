@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NJ Mart — Staff Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #2db34a;
+      --danger: #e04d4d;
+      --muted: #888;
+    }
+    * { box-sizing: border-box; font-family: Inter, system-ui, sans-serif; }
+    body { margin: 0; background: #f7f9fb; color: #222; }
+    header { background: var(--green); color: white; padding: 14px; font-size: 20px; font-weight: 600; }
+    .container { max-width: 900px; margin: 20px auto; padding: 15px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+    h2 { margin-top: 0; }
+    form { display: grid; gap: 12px; margin-bottom: 20px; }
+    input, select { padding: 10px; border-radius: 8px; border: 1px solid #ddd; }
+    button { padding: 10px 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn-primary { background: var(--green); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+    th { background: #f2f2f2; }
+    .actions button { margin-right: 6px; }
+  </style>
+</head>
+<body>
+  <header>👨‍💼 NJ Mart — Staff Management</header>
+  <div class="container">
+    <h2>Add New Staff</h2>
+    <form id="staffForm">
+      <input type="text" id="name" placeholder="Full Name" required>
+      <input type="text" id="phone" placeholder="Phone Number" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <select id="role" required>
+        <option value="">Select Role</option>
+        <option value="Delivery">Delivery</option>
+        <option value="Cashier">Cashier</option>
+        <option value="Manager">Manager</option>
+        <option value="Admin">Admin</option>
+      </select>
+      <button type="submit" class="btn-primary">Add Staff</button>
+    </form>
+
+    <h2>Staff List</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="staffTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/PASTE_YOUR_SCRIPT_URL_HERE/exec";
+
+    // Load staff list
+    async function loadStaff() {
+      const res = await fetch(API_URL + "?action=getStaff");
+      const data = await res.json();
+      const tbody = document.getElementById("staffTable");
+      tbody.innerHTML = "";
+      if (data && data.length > 0) {
+        data.forEach(staff => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${staff.name}</td>
+            <td>${staff.phone}</td>
+            <td>${staff.email}</td>
+            <td>${staff.role}</td>
+            <td class="actions">
+              <button class="btn-danger" onclick="deleteStaff('${staff.id}')">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } else {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--muted)">No staff found</td></tr>`;
+      }
+    }
+
+    // Add staff
+    document.getElementById("staffForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const staff = {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        role: document.getElementById("role").value
+      };
+      await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "addStaff", ...staff })
+      });
+      alert("Staff added successfully!");
+      e.target.reset();
+      loadStaff();
+    });
+
+    // Delete staff
+    async function deleteStaff(id) {
+      if (!confirm("Are you sure you want to delete this staff?")) return;
+      await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "deleteStaff", id })
+      });
+      alert("Staff deleted!");
+      loadStaff();
+    }
+
+    // On page load
+    loadStaff();
+  </script>
+</body>
+</html>
