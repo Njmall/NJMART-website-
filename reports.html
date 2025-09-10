@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NJ Mart — Reports</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --green: #2db34a;
+      --muted: #777;
+      --card-bg: #fff;
+    }
+    * { box-sizing: border-box; font-family: Inter, system-ui, sans-serif; }
+    body { margin: 0; background: #f7f9fb; color: #222; }
+    header { background: var(--green); color: #fff; padding: 14px; font-size: 20px; font-weight: 600; }
+    .container { max-width: 1000px; margin: 20px auto; padding: 20px; }
+    h2 { margin-top: 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .card { background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+    .stat { font-size: 26px; font-weight: 700; margin-top: 10px; }
+    canvas { max-width: 100%; }
+    footer { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>📊 NJ Mart — Reports & Analytics</header>
+  <div class="container">
+    <div class="grid">
+      <div class="card">
+        <h2>Total Orders</h2>
+        <div id="totalOrders" class="stat">0</div>
+      </div>
+      <div class="card">
+        <h2>Total Revenue</h2>
+        <div id="totalRevenue" class="stat">₹0</div>
+      </div>
+      <div class="card">
+        <h2>Active Customers</h2>
+        <div id="totalCustomers" class="stat">0</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h2>Sales Trend (Last 7 Days)</h2>
+      <canvas id="salesChart"></canvas>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h2>Top Products</h2>
+      <canvas id="productsChart"></canvas>
+    </div>
+  </div>
+
+  <footer>
+    NJ Mart © 2025 • Auto-generated reports from Google Sheet
+  </footer>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/PASTE_YOUR_SCRIPT_URL_HERE/exec";
+
+    async function loadReports() {
+      const res = await fetch(API_URL + "?action=getReports");
+      const data = await res.json();
+
+      // Stats
+      document.getElementById("totalOrders").textContent = data.totalOrders || 0;
+      document.getElementById("totalRevenue").textContent = "₹" + (data.totalRevenue || 0);
+      document.getElementById("totalCustomers").textContent = data.totalCustomers || 0;
+
+      // Sales Trend Chart
+      const ctx1 = document.getElementById("salesChart").getContext("2d");
+      new Chart(ctx1, {
+        type: "line",
+        data: {
+          labels: data.salesTrend.map(x => x.date),
+          datasets: [{
+            label: "Revenue",
+            data: data.salesTrend.map(x => x.amount),
+            backgroundColor: "rgba(45,179,74,0.2)",
+            borderColor: "#2db34a",
+            borderWidth: 2,
+            fill: true,
+            tension: 0.3
+          }]
+        }
+      });
+
+      // Top Products Chart
+      const ctx2 = document.getElementById("productsChart").getContext("2d");
+      new Chart(ctx2, {
+        type: "bar",
+        data: {
+          labels: data.topProducts.map(x => x.name),
+          datasets: [{
+            label: "Sales",
+            data: data.topProducts.map(x => x.qty),
+            backgroundColor: "#2db34a"
+          }]
+        }
+      });
+    }
+
+    loadReports();
+  </script>
+</body>
+</html>
