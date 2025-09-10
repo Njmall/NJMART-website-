@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NJ Mart — Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #2db34a;
+      --danger: #e04d4d;
+      --muted: #888;
+    }
+    * { box-sizing: border-box; font-family: Inter, system-ui, sans-serif; }
+    body { margin: 0; background: #f7f9fb; color: #222; }
+    header { background: var(--green); color: white; padding: 14px; font-size: 20px; font-weight: 600; }
+    .container { max-width: 700px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+    h2 { margin-top: 0; }
+    form { display: grid; gap: 14px; }
+    label { font-weight: 600; }
+    input { padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 100%; }
+    button { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn-primary { background: var(--green); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    .note { font-size: 13px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>⚙️ NJ Mart — Settings</header>
+  <div class="container">
+    <h2>Update Store Settings</h2>
+    <form id="settingsForm">
+      <div>
+        <label>Store Name</label>
+        <input type="text" id="storeName" required>
+      </div>
+      <div>
+        <label>Store Contact</label>
+        <input type="text" id="storeContact" required>
+      </div>
+      <div>
+        <label>Minimum Order Amount (₹)</label>
+        <input type="number" id="minOrder" required>
+      </div>
+      <div>
+        <label>Delivery Charge (₹)</label>
+        <input type="number" id="deliveryCharge" required>
+      </div>
+      <div>
+        <label>Free Delivery Above (₹)</label>
+        <input type="number" id="freeDelivery" required>
+      </div>
+      <div>
+        <label>GST %</label>
+        <input type="number" id="gst" required>
+      </div>
+      <div>
+        <label>Default Discount %</label>
+        <input type="number" id="discount" required>
+      </div>
+      <button type="submit" class="btn-primary">💾 Save Settings</button>
+    </form>
+    <p class="note">⚡ Saved settings apply automatically to checkout and order calculations.</p>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/PASTE_YOUR_SCRIPT_URL_HERE/exec";
+
+    // Load settings
+    async function loadSettings() {
+      const res = await fetch(API_URL + "?action=getSettings");
+      const data = await res.json();
+      if (data) {
+        document.getElementById("storeName").value = data.storeName || "";
+        document.getElementById("storeContact").value = data.storeContact || "";
+        document.getElementById("minOrder").value = data.minOrder || 0;
+        document.getElementById("deliveryCharge").value = data.deliveryCharge || 0;
+        document.getElementById("freeDelivery").value = data.freeDelivery || 0;
+        document.getElementById("gst").value = data.gst || 0;
+        document.getElementById("discount").value = data.discount || 0;
+      }
+    }
+
+    // Save settings
+    document.getElementById("settingsForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const settings = {
+        action: "saveSettings",
+        storeName: document.getElementById("storeName").value,
+        storeContact: document.getElementById("storeContact").value,
+        minOrder: document.getElementById("minOrder").value,
+        deliveryCharge: document.getElementById("deliveryCharge").value,
+        freeDelivery: document.getElementById("freeDelivery").value,
+        gst: document.getElementById("gst").value,
+        discount: document.getElementById("discount").value
+      };
+      await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(settings)
+      });
+      alert("✅ Settings updated successfully!");
+    });
+
+    // On page load
+    loadSettings();
+  </script>
+</body>
+</html>
