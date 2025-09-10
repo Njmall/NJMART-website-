@@ -1,113 +1,200 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>NJ Mart - Cart</title>
-<style>
-:root{--accent:#2db34a;--muted:#6f7580}
-*{box-sizing:border-box;font-family:Inter,system-ui,Roboto,Arial}
-body{margin:0;background:#f5f8f7;color:#111}
-.container{max-width:920px;margin:12px auto;padding:12px}
-.header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.btn{padding:10px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
-.btn.ghost{background:#fff;border:1px solid #e8eef0}
-.btn.primary{background:var(--accent);color:#fff}
-.card{background:#fff;padding:12px;border-radius:12px;box-shadow:0 8px 24px rgba(12,30,40,.04);margin-bottom:12px}
-.item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f1f3f3}
-.small{font-size:13px;color:var(--muted)}
-.center{display:flex;justify-content:center;align-items:center}
-</style>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>NJ Mart — Cart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--accent:#2db34a;--muted:#6b7280;--card:#fff;--bg:#f6fbf8;--radius:12px}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui;background:var(--bg)}
+    .wrap{max-width:980px;margin:12px auto;padding:12px}
+    header{display:flex;align-items:center;justify-content:space-between;background:var(--card);padding:12px;border-radius:12px;box-shadow:0 12px 30px rgba(12,30,40,.06)}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:12px;margin-top:12px}
+    @media(max-width:980px){ .grid{grid-template-columns:1fr} }
+    .card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 8px 30px rgba(12,30,40,.04)}
+    .cart-item{display:flex;gap:12px;padding:12px;border-radius:10px;border:1px solid #f1f6f2;align-items:center}
+    .thumb{width:92px;height:92px;border-radius:8px;overflow:hidden}
+    .thumb img{width:100%;height:100%;object-fit:cover}
+    .qty-controls{display:flex;gap:8px;align-items:center}
+    .btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
+    .btn.primary{background:var(--accent);color:#fff}
+    .small{font-size:13px;color:var(--muted)}
+  </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <button class="btn ghost" onclick="location.href='index.html'">← Back</button>
-    <h2 style="margin:0">Your Cart</h2>
-  </div>
+  <div class="wrap">
+    <header><div style="font-weight:800">NJ Mart — Cart</div><div><button onclick="location.href='index.html'">← Continue shopping</button></div></header>
 
-  <div id="cartRoot"></div>
-
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div class="small">Subtotal</div>
-      <div id="subtotal">₹0</div>
-    </div>
-    <div style="margin-top:10px;display:flex;gap:8px">
-      <button id="checkoutBtn" class="btn primary" style="flex:1">Checkout</button>
-      <button id="continueBtn" class="btn ghost" style="flex:1">Continue shopping</button>
-    </div>
-  </div>
-</div>
-
-<script>
-// Helpers
-function load(key){ try{ return JSON.parse(localStorage.getItem(key)); }catch(e){return null;} }
-function save(key,val){ localStorage.setItem(key, JSON.stringify(val)); }
-
-function getCart(){ return load('nj_cart') || []; }
-function setCart(c){ save('nj_cart', c); render(); }
-
-function render(){
-  const root = document.getElementById('cartRoot');
-  const cart = getCart();
-  root.innerHTML = '';
-  if(cart.length===0){
-    root.innerHTML = '<div class="card center">Your cart is empty<br><button class="btn primary" onclick="location.href=\'index.html\'" style="margin-top:10px">Shop now</button></div>';
-    document.getElementById('subtotal').textContent = '₹0';
-    return;
-  }
-  cart.forEach((it, idx)=>{
-    const el = document.createElement('div'); el.className='card item';
-    el.innerHTML = `
-      <div style="display:flex;gap:12px;align-items:center">
-        <div style="width:72px;height:72px;border-radius:8px;overflow:hidden;background:#f2f4f6">
-          <img src="${it.img||'https://via.placeholder.com/150'}" style="width:100%;height:100%;object-fit:cover">
-        </div>
-        <div>
-          <div style="font-weight:700">${it.name}</div>
-          <div class="small">Qty: <span id="q-${it.id}">${it.qty}</span></div>
+    <div class="grid">
+      <div>
+        <div class="card" id="cartListContainer">
+          <h3>Items in your cart</h3>
+          <div id="cartList"></div>
         </div>
       </div>
-      <div style="text-align:right">
-        <div style="font-weight:700">₹${(it.price*it.qty).toFixed(0)}</div>
-        <div style="margin-top:8px;display:flex;gap:6px;justify-content:flex-end">
-          <button class="btn ghost" data-action="dec" data-idx="${idx}">−</button>
-          <button class="btn ghost" data-action="inc" data-idx="${idx}">+</button>
-          <button class="btn ghost" data-action="rm" data-idx="${idx}">Remove</button>
-        </div>
-      </div>
-    `;
-    root.appendChild(el);
-  });
 
-  // attach events
-  root.querySelectorAll('button[data-action]').forEach(btn=>{
-    btn.addEventListener('click', (e)=>{
-      const action = btn.dataset.action; const idx = Number(btn.dataset.idx);
-      const cart = getCart();
-      if(action==='inc'){ cart[idx].qty++; }
-      else if(action==='dec'){ cart[idx].qty = Math.max(1, cart[idx].qty-1); }
-      else if(action==='rm'){ if(confirm('Remove this item?')) cart.splice(idx,1); }
-      setCart(cart);
+      <aside>
+        <div class="card">
+          <h3>Order Summary</h3>
+          <div style="margin-top:8px">
+            <div style="display:flex;justify-content:space-between"><div>Subtotal</div><div id="subtotal">₹0</div></div>
+            <div style="display:flex;justify-content:space-between"><div>Delivery</div><div id="delivery">₹0</div></div>
+            <div style="display:flex;justify-content:space-between"><div>Discount</div><div id="discount">₹0</div></div>
+            <hr style="margin:10px 0">
+            <div style="display:flex;justify-content:space-between;font-weight:800"><div>Total</div><div id="grand">₹0</div></div>
+
+            <div style="margin-top:10px"><input id="couponInput" placeholder="Coupon code e.g., SAVE50" style="width:100%;padding:10px;border-radius:8px;border:1px solid #eef6f2"></div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button id="applyCoupon" class="btn">Apply</button>
+              <button id="clearCoupon" class="btn">Clear</button>
+            </div>
+
+            <div style="margin-top:12px">
+              <button id="checkoutBtn" class="btn primary" style="width:100%">Proceed to Checkout</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const CART_KEY = 'nj_cart';
+    const COUPON_KEY = 'nj_coupon';
+    const CHECKOUT_KEY = 'nj_checkout';
+    const DELIVERY_THRESHOLD = 1000;
+    const DELIVERY_CHARGE = 20;
+
+    function loadCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY)) || []; }catch(e){ return []; } }
+    function saveCart(c){ localStorage.setItem(CART_KEY, JSON.stringify(c)); renderCart(); }
+    function loadCoupon(){ try{ return JSON.parse(localStorage.getItem(COUPON_KEY)); }catch(e){ return null; } }
+    function saveCoupon(c){ localStorage.setItem(COUPON_KEY, JSON.stringify(c)); renderTotals(); }
+
+    function formatINR(n){ return '₹' + Number(n||0).toFixed(0); }
+
+    // default demo coupons (admin can expand via admin.html)
+    const DEFAULT_COUPONS = [
+      { code:'SAVE50', type:'FLAT', value:50 },
+      { code:'FREEDEL', type:'DELIVERY', value:DELIVERY_CHARGE },
+      { code:'PERC10', type:'PERCENT', value:10 }
+    ];
+
+    function findCoupon(code){
+      if(!code) return null;
+      code = code.trim().toUpperCase();
+      // admin settings override
+      const admin = JSON.parse(localStorage.getItem('nj_settings') || '{}');
+      const adminCoupons = (admin.coupons || []);
+      const combined = adminCoupons.concat(DEFAULT_COUPONS);
+      return combined.find(c => c.code === code) || null;
+    }
+
+    function renderCart(){
+      const cart = loadCart();
+      const container = document.getElementById('cartList');
+      container.innerHTML = '';
+      if(!cart || cart.length === 0){
+        container.innerHTML = '<div style="padding:20px;text-align:center;color:#6b7280">Your cart is empty<br><button onclick="location.href=\\'index.html\\'">Start shopping</button></div>';
+        renderTotals();
+        return;
+      }
+      cart.forEach((it, idx) => {
+        const el = document.createElement('div');
+        el.className = 'cart-item';
+        el.style.marginBottom = '8px';
+        el.innerHTML = `
+          <div class="thumb"><img src="${it.img || 'https://via.placeholder.com/200'}" style="width:100%;height:100%;object-fit:cover"></div>
+          <div style="flex:1;padding-left:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:800">${it.name}</div>
+              <div style="font-weight:800">${formatINR(it.price * it.qty)}</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+              <div class="qty-controls">
+                <button onclick="changeQty(${idx}, -1)">−</button>
+                <span style="padding:6px 10px;border-radius:6px;background:#f6faf8;margin:0 6px">${it.qty}</span>
+                <button onclick="changeQty(${idx}, 1)">+</button>
+              </div>
+              <button style="background:transparent;border:0;color:#e04545;cursor:pointer" onclick="removeItem(${idx})">Remove</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(el);
+      });
+      renderTotals();
+    }
+
+    function changeQty(idx, delta){
+      const cart = loadCart();
+      if(!cart[idx]) return;
+      const newQty = (cart[idx].qty||0) + delta;
+      if(newQty <= 0){
+        if(confirm('Remove item from cart?')) { cart.splice(idx,1); }
+      } else cart[idx].qty = newQty;
+      saveCart(cart);
+    }
+
+    function removeItem(idx){
+      const cart = loadCart();
+      if(!cart[idx]) return;
+      if(confirm('Remove item?')) { cart.splice(idx,1); saveCart(cart); }
+    }
+
+    function computeTotals(){
+      const cart = loadCart();
+      const subtotal = cart.reduce((s,i)=>s + (i.qty||0) * (i.price||0), 0);
+      const delivery = (subtotal === 0 || subtotal >= DELIVERY_THRESHOLD) ? 0 : DELIVERY_CHARGE;
+      let discount = 0;
+      const applied = loadCoupon();
+      if(applied){
+        if(applied.type === 'FLAT') discount = applied.value;
+        else if(applied.type === 'PERCENT') discount = Math.round(subtotal * (applied.value/100));
+        else if(applied.type === 'DELIVERY') discount = applied.value;
+      }
+      const grand = Math.max(0, subtotal + delivery - discount);
+      return { subtotal, delivery, discount, grand, applied };
+    }
+
+    function renderTotals(){
+      const t = computeTotals();
+      document.getElementById('subtotal').textContent = formatINR(t.subtotal);
+      document.getElementById('delivery').textContent = formatINR(t.delivery);
+      document.getElementById('discount').textContent = formatINR(t.discount);
+      document.getElementById('grand').textContent = formatINR(t.grand);
+    }
+
+    // apply coupon button
+    document.getElementById('applyCoupon').addEventListener('click', ()=>{
+      const code = document.getElementById('couponInput').value.trim();
+      if(!code){ alert('Enter coupon'); return; }
+      const c = findCoupon(code);
+      if(!c){ alert('Invalid coupon'); return; }
+      saveCoupon(c);
+      alert('Coupon applied: ' + c.code);
+      renderTotals();
     });
-  });
 
-  // subtotal
-  const subtotal = cart.reduce((s,i)=>s + i.price*i.qty, 0);
-  document.getElementById('subtotal').textContent = '₹' + subtotal.toFixed(0);
-}
+    document.getElementById('clearCoupon').addEventListener('click', ()=> {
+      localStorage.removeItem(COUPON_KEY);
+      renderTotals();
+      alert('Coupon cleared');
+    });
 
-document.getElementById('continueBtn').addEventListener('click', ()=> location.href='index.html');
-document.getElementById('checkoutBtn').addEventListener('click', ()=>{
-  const cart = getCart();
-  if(cart.length===0){ alert('Cart is empty'); return; }
-  // save checkout snapshot
-  const checkout = { items: cart, subtotal: cart.reduce((s,i)=>s + i.price*i.qty,0), createdAt: Date.now() };
-  save('nj_checkout', checkout);
-  location.href = 'checkout.html';
-});
+    // proceed to checkout
+    document.getElementById('checkoutBtn').addEventListener('click', ()=>{
+      const cart = loadCart();
+      if(!cart || cart.length === 0){ alert('Cart is empty'); return; }
+      const totals = computeTotals();
+      const snapshot = { items: cart, totals, coupon: loadCoupon() || null, createdAt: Date.now() };
+      localStorage.setItem(CHECKOUT_KEY, JSON.stringify(snapshot));
+      location.href = 'checkout.html';
+    });
 
-render();
-</script>
+    // load on page ready
+    (function init(){
+      renderCart();
+    })();
+  </script>
 </body>
 </html>
