@@ -121,9 +121,11 @@
     /* small helper classes */
     .muted{color:var(--muted)}
     .hidden{display:none}
+    .small{font-size:13px}
+    .center{display:flex;align-items:center;gap:8px}
   </style>
 
-  <!-- include script-config helper (must be in repo) -->
+  <!-- include script-config helper (if you have it) -->
   <script src="./script-config.js"></script>
 </head>
 <body>
@@ -338,10 +340,16 @@
 
   <!-- ========== SCRIPT: product load, cart logic, filters, pagination ========== -->
   <script>
+  /*  Final index.js embedded
+      - Uses global SCRIPT_URL if provided by script-config.js
+      - Functions: loadProducts, renderProducts, addToCart, cart panel, filters, pagination
+  */
+
   // ---------- Config & state ----------
   const DELIVERY_THRESHOLD = 499;
   const DELIVERY_CHARGE = 25;
 
+  const API = (typeof SCRIPT_URL !== 'undefined') ? SCRIPT_URL : ''; // script-config.js should set SCRIPT_URL
   let PRODUCTS = [];        // full product list from backend
   let FILTERED = [];        // filtered subset
   let CATEGORIES = [];      // category list
@@ -353,28 +361,30 @@
     try { return JSON.parse(localStorage.getItem('nj_cart')||'[]'); } catch(e){ return []; }
   }
   function saveCart(cart){ localStorage.setItem('nj_cart', JSON.stringify(cart)); }
-  function clearCart(){
+  function clearCartLocal(){
     localStorage.removeItem('nj_cart');
     renderCart();
+    updateCounts();
   }
 
   // update header & fab counts
-  function updateCartCounts(){
+  function updateCounts(){
     const cart = loadCart();
     const count = cart.reduce((s,i)=>s+i.qty,0);
     document.getElementById('headerCartCount').textContent = count;
     document.getElementById('fabCount').textContent = count;
   }
 
-  // add item to cart
-  function addToCart(item){
+  // add item to cart (item = {id,name,price,image})
+  function addToCartObj(item){
     const cart = loadCart();
     const idx = cart.findIndex(x=>x.id === item.id);
     if(idx > -1) cart[idx].qty += 1;
     else cart.push({ id: item.id, name: item.name, price: Number(item.price||0), qty: 1, image: item.image || '' });
     saveCart(cart);
-    updateCartCounts();
-    showToast(`${item.name} added to cart`);
+    updateCounts();
+    renderCart();
+    showToast(item.name + ' added to cart');
   }
 
   // remove item from cart
@@ -383,7 +393,7 @@
     cart = cart.filter(i=>i.id !== id);
     saveCart(cart);
     renderCart();
-    updateCartCounts();
+    updateCounts();
   }
 
   // change qty
@@ -394,7 +404,7 @@
       cart[idx].qty = Math.max(1, cart[idx].qty + delta);
       saveCart(cart);
       renderCart();
-      updateCartCounts();
+      updateCounts();
     }
   }
 
@@ -424,7 +434,7 @@
           <img src="${i.image || 'https://via.placeholder.com/120'}" alt="">
           <div style="flex:1">
             <div style="font-weight:700">${i.name}</div>
-            <div class="muted" style="font-size:13px">₹${i.price} × ${i.qty} = ₹${(i.price * i.qty).toFixed(0)}</div>
+            <div class="muted small" style="font-size:13px">₹${i.price} × ${i.qty} = ₹${(i.price * i.qty).toFixed(0)}</div>
             <div style="margin-top:8px;display:flex;gap:8px">
               <button class="btn ghost small" data-act="dec" data-id="${i.id}">−</button>
               <button class="btn ghost small" data-act="inc" data-id="${i.id}">+</button>
@@ -441,24 +451,8 @@
   }
 
   // cart panel event delegation
-  document.getElementById('cartItems').addEventListener('click', (e)=>{
-    const btn = e.target.closest('button');
-    if(!btn) return;
-    const act = btn.dataset.act;
-    const id = btn.dataset.id;
-    if(act === 'dec') changeQty(id, -1);
-    if(act === 'inc') changeQty(id, +1);
-    if(act === 'rm') removeFromCart(id);
-  });
-
-  // ---------- toast helper ----------
-  function showToast(text, ms=1200){
-    const t = document.createElement('div');
-    t.textContent = text;
-    t.style.position='fixed';
-    t.style.left='50%';
-    t.style.top='18px';
-    t.style.transform='translateX(-50%)';
-    t.style.background='rgba(0,0,0,0.8)';
-    t.style.color='white';
-    t
+  document.addEventListener('click', (e)=>{
+    // delegation for cart item buttons
+    const btn = e.target.closest('button[data-act]');
+    if(btn && btn.dataset.id){
+      const act = btn.dataset.act; const id = btn.datase
