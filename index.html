@@ -3,405 +3,292 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NJ Mart — Your neighbourhood grocery (Full Expanded)</title>
-
-  <!-- Google font -->
+  <title>NJ Mart — Home</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-  <!-- ======= Styles (mobile-first, expanded) ======= -->
   <style>
     :root{
-      --bg: #f5f8f7;
-      --card: #ffffff;
-      --accent: #2db34a;
-      --accent-700: #239032;
-      --muted: #6f777d;
-      --danger: #e04545;
-      --shadow: 0 10px 30px rgba(12,30,40,.06);
-      --radius: 12px;
-      --delivery-threshold: 1000;
-      --delivery-charge: 20;
-      --maxWidth: 980px;
+      --accent:#2db34a; --accent-dark:#239032; --muted:#6b7280; --card:#fff; --bg:#f4f8f7; --radius:12px;
+      --shadow: 0 14px 40px rgba(12,30,40,.06);
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Roboto,-apple-system,"Segoe UI",Arial;background:var(--bg);color:#111}
-    a{color:inherit}
-    /* container */
-    .wrap{max-width:var(--maxWidth);margin:0 auto;padding:12px}
-
-    /* ---------- Header / Navbar ---------- */
-    header.site {
-      display:flex;
-      align-items:center;
-      gap:12px;
-      justify-content:space-between;
-      padding:10px 12px;
-      background:var(--card);
-      border-radius:12px;
-      box-shadow:var(--shadow);
-      margin-bottom:12px;
-      position:sticky; top:8px; z-index:1000;
-    }
-    .brand {display:flex;align-items:center;gap:10px}
-    .logo {
-      width:50px;height:50px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#38c36a);
-      color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;box-shadow:0 6px 18px rgba(0,0,0,.06)
-    }
+    body{margin:0;font-family:Inter,system-ui,Roboto;background:var(--bg);color:#0b1220}
+    .wrap{max-width:1100px;margin:12px auto;padding:12px}
+    header.site{display:flex;gap:12px;align-items:center;justify-content:space-between;background:var(--card);padding:14px;border-radius:12px;box-shadow:var(--shadow)}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#38c36a);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
     .brand h1{font-size:18px;margin:0}
-    .search-area{flex:1;margin-left:8px;margin-right:8px}
-    .search {
-      display:flex;align-items:center;gap:8px;padding:8px;border-radius:999px;background:#fff;border:1px solid #eef6ee;
-    }
-    .search input{border:0;outline:0;padding:8px;font-size:14px;width:100%;background:transparent}
-    .nav-actions{display:flex;align-items:center;gap:8px}
-    .btn {padding:8px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
-    .btn.ghost{background:#fff;border:1px solid #eef6ee}
-    .btn.primary{background:var(--accent);color:#fff}
-    .icon-btn{background:#fff;border-radius:10px;border:1px solid #eef6ee;padding:8px;cursor:pointer}
-
-    /* ---------- Hero ---------- */
-    .hero{background:linear-gradient(180deg,#1fb764,#18a84c);color:#fff;padding:22px;border-radius:14px;margin-bottom:12px;box-shadow:var(--shadow);display:flex;gap:16px;align-items:center}
-    .hero .text{flex:1}
-    .hero h2{margin:0 0 8px 0;font-size:20px}
-    .hero p{margin:0 0 12px 0;color:rgba(255,255,255,.95)}
-    .hero .cta{display:flex;gap:8px}
-    .cta .btn {background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);color:#fff}
-    .hero img{width:120px;height:120px;border-radius:12px;object-fit:cover}
-
-    /* ---------- Sections layout ---------- */
-    .section{margin:12px 0}
-    .section .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-    .section .header h3{margin:0;font-size:16px}
-    .section .header .more{color:var(--muted);font-size:13px}
-
-    /* ---------- Categories ---------- */
+    .search{flex:1;margin:0 12px}
+    .search input{width:100%;padding:12px;border-radius:999px;border:1px solid #eef6f2}
+    .nav-actions{display:flex;gap:8px;align-items:center}
+    .btn{padding:10px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .btn.primary{background:var(--accent);color:white}
+    .btn.ghost{background:#fff;border:1px solid #eef6f2}
+    .cart-ind{display:flex;gap:8px;align-items:center}
+    .cart-badge{background:#e04545;color:#fff;padding:4px 8px;border-radius:999px;font-weight:800}
+    main{margin-top:14px}
+    .hero{display:flex;gap:16px;align-items:center;background:linear-gradient(180deg,var(--accent),#18a84c);color:#fff;padding:18px;border-radius:12px;box-shadow:var(--shadow)}
+    .hero h2{margin:0;font-size:20px}
+    .grid{display:grid;grid-template-columns:1fr 320px;gap:14px;margin-top:14px}
+    @media(max-width:980px){ .grid{grid-template-columns:1fr} .hero{flex-direction:column;align-items:flex-start} }
+    .left .section{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 12px 30px rgba(12,30,40,.04);margin-bottom:12px}
     .categories{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
-    .cat{background:var(--card);padding:12px;border-radius:12px;text-align:center;box-shadow:0 8px 20px rgba(12,30,40,.03);cursor:pointer}
-    .cat img{width:56px;height:56px;border-radius:10px;object-fit:cover;display:block;margin:0 auto 8px}
-
-    /* ---------- Products grid ---------- */
-    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
-    .product{background:var(--card);border-radius:12px;padding:12px;box-shadow:0 8px 20px rgba(12,30,40,.04);display:flex;flex-direction:column;gap:8px}
-    .product .thumb{width:100%;height:140px;border-radius:10px;overflow:hidden;background:#f2f4f5}
-    .product .thumb img{width:100%;height:100%;object-fit:cover}
-    .product .title{font-weight:700;font-size:14px}
-    .product .meta{font-size:13px;color:var(--muted)}
-    .product .row{display:flex;justify-content:space-between;align-items:center}
+    .cat{background:#fff;padding:12px;border-radius:10px;text-align:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.03)}
+    .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+    .product{background:#fff;border-radius:12px;padding:12px;box-shadow:0 6px 18px rgba(0,0,0,.04);display:flex;flex-direction:column;gap:8px}
+    .product .thumb{height:160px;border-radius:10px;overflow:hidden;background:#f5f7f6}
+    .product img{width:100%;height:100%;object-fit:cover}
+    .product h3{margin:0;font-size:15px}
+    .product .meta{color:var(--muted);font-size:13px}
+    .product .row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px}
     .product .price{font-weight:800;color:var(--accent)}
-    .product button{border:0;padding:8px;border-radius:8px;cursor:pointer;background:var(--accent);color:#fff;font-weight:700}
-
-    /* ---------- Suggestions carousel (horizontal) ---------- */
-    .carousel{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
-    .carousel .card{min-width:140px;background:var(--card);padding:10px;border-radius:12px;box-shadow:0 8px 18px rgba(12,30,40,.03);text-align:center}
-
-    /* ---------- Floating cart / cart panel ---------- */
-    .floating-cart{
-      position:fixed;right:16px;bottom:18px;background:var(--accent);color:#fff;padding:12px 16px;border-radius:999px;box-shadow:0 16px 50px rgba(16,66,20,.18);z-index:2000;cursor:pointer;display:flex;gap:10px;align-items:center;font-weight:800
-    }
-    .floating-cart .count{background:rgba(255,255,255,.12);padding:6px 10px;border-radius:999px}
-    /* cart panel overlay */
-    .cart-overlay{position:fixed;right:0;top:0;height:100vh;width:100%;display:none;align-items:flex-end;justify-content:flex-end;z-index:2500}
-    .cart-overlay.open{display:flex}
-    .cart-sheet{width:100%;max-width:420px;background:var(--card);height:100vh;border-radius:12px 0 0 12px;box-shadow:0 30px 70px rgba(0,0,0,.35);padding:14px;overflow:auto}
-    .cart-sheet h4{margin:0 0 8px 0}
-    .cart-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-    .cart-item{display:flex;gap:10px;align-items:center;padding:8px;border-radius:10px;border:1px solid #f2f6f3}
-    .cart-item img{width:72px;height:72px;border-radius:8px;object-fit:cover}
-    .cart-item .info{flex:1}
-    .qty-controls{display:flex;gap:6px;align-items:center}
-
-    /* ---------- footer ---------- */
-    footer.site{margin:18px 0 40px 0;text-align:center;color:var(--muted);font-size:13px}
-
-    /* ---------- responsive tweaks ---------- */
-    @media (max-width:900px){
-      .hero{flex-direction:column;align-items:flex-start}
-      .product .thumb{height:120px}
-      header.site{flex-wrap:wrap;gap:8px}
-      .search-area{order:3;width:100%}
-    }
-    @media (max-width:520px){
-      .products-grid{grid-template-columns:repeat(2,1fr)}
-      .categories{grid-template-columns:repeat(3,1fr)}
-      .logo{width:44px;height:44px}
-    }
+    .sticky-cart{position:fixed;right:18px;bottom:18px;background:var(--accent);color:white;padding:12px 16px;border-radius:999px;box-shadow:0 12px 40px rgba(12,30,40,.2);cursor:pointer;z-index:999}
+    footer{margin-top:20px;text-align:center;color:var(--muted);font-size:13px;padding:12px}
   </style>
 </head>
 <body>
   <div class="wrap">
-
-    <!-- ================= Header ================= -->
-    <header class="site" role="banner">
-      <div class="brand" aria-hidden="true">
+    <header class="site">
+      <div class="brand">
         <div class="logo">NJ</div>
         <div>
           <h1>NJ Mart</h1>
-          <div style="font-size:12px;color:var(--muted)">Grocery • Home Delivery</div>
+          <div style="font-size:13px;color:var(--muted)">Grocery • Home delivery</div>
         </div>
       </div>
 
-      <!-- Search area -->
-      <div class="search-area" role="search">
-        <div class="search" aria-label="Site search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="opacity:.7"><path d="M21 21l-4.35-4.35" stroke="#5b6b6b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="#5b6b6b" stroke-width="1.6"/></svg>
-          <input id="searchInput" placeholder="Search products, categories, brands..." aria-label="Search products">
-          <button id="searchBtn" class="icon-btn" title="Search">Search</button>
-        </div>
+      <div class="search">
+        <input id="searchInput" placeholder="Search products, e.g., milk, atta, oil">
       </div>
 
-      <!-- Right actions -->
-      <div class="nav-actions" role="navigation">
-        <button id="btnLogin" class="btn ghost" title="Login / Profile">Login</button>
-        <div id="btnCartTop" class="icon-btn" title="Open cart">🛒 <span id="topCartCount" style="margin-left:6px;font-weight:800">0</span></div>
+      <div class="nav-actions">
+        <div id="userBadge">Guest</div>
+        <div class="cart-ind">
+          <button class="btn ghost" onclick="location.href='cart.html'">Cart</button>
+          <div class="cart-badge" id="cartCountBadge">0</div>
+        </div>
+        <button id="loginBtn" class="btn primary">Login</button>
       </div>
     </header>
 
-    <!-- ================= Hero ================= -->
-    <section class="hero" role="region" aria-label="Get fresh groceries">
-      <div class="text">
-        <h2>Fresh groceries delivered to your door</h2>
-        <p>Daily essentials • Fresh produce • Pantry staples — fast delivery and simple checkout.</p>
-        <div class="cta">
-          <button class="btn primary" onclick="scrollToSection('productsSection')">Start shopping</button>
-          <button class="btn ghost" onclick="scrollToSection('categoriesSection')">Shop categories</button>
+    <main>
+      <div class="hero">
+        <div style="flex:1">
+          <h2>Fresh groceries delivered to your door</h2>
+          <p style="margin:6px 0;color:rgba(255,255,255,.95)">Daily essentials • Fresh produce • Fast delivery • Secure payments</p>
+          <div style="margin-top:8px">
+            <button class="btn" onclick="scrollToProducts()">Start shopping</button>
+            <button class="btn ghost" onclick="location.href='products.html'">All products</button>
+          </div>
         </div>
+        <div style="width:160px"><img src="https://via.placeholder.com/160x120?text=Fresh" style="width:100%;border-radius:10px"></div>
       </div>
-      <div>
-        <img src="https://via.placeholder.com/160x160?text=Fresh" alt="Fresh groceries">
-      </div>
-    </section>
 
-    <!-- ================= Categories ================= -->
-    <section id="categoriesSection" class="section" aria-labelledby="categoriesHeading">
-      <div class="header">
-        <h3 id="categoriesHeading">Shop by category</h3>
-        <div class="more"><a href="products.html">See all</a></div>
-      </div>
-      <div class="categories" id="categoryGrid">
-        <!-- categories rendered by JS -->
-      </div>
-    </section>
+      <div class="grid">
+        <div class="left">
+          <div class="section">
+            <h3>Categories</h3>
+            <div class="categories" id="categoryGrid"></div>
+          </div>
 
-    <!-- ================= Top Deals (example) ================= -->
-    <section class="section" aria-labelledby="dealsHeading">
-      <div class="header">
-        <h3 id="dealsHeading">Top deals</h3>
-        <div class="more small">Limited time</div>
-      </div>
-      <div class="products-grid" id="dealsGrid">
-        <!-- deals rendered by JS -->
-      </div>
-    </section>
-
-    <!-- ================= Products list ================= -->
-    <section id="productsSection" class="section" aria-labelledby="productsHeading">
-      <div class="header">
-        <h3 id="productsHeading">Trending & Best sellers</h3>
-        <div style="display:flex;gap:8px;align-items:center">
-          <label class="small" for="sortSelect">Sort</label>
-          <select id="sortSelect" style="padding:6px;border-radius:8px;border:1px solid #eef6ee">
-            <option value="popular">Most popular</option>
-            <option value="price_asc">Price — low to high</option>
-            <option value="price_desc">Price — high to low</option>
-          </select>
+          <div class="section">
+            <h3>Trending Products</h3>
+            <div class="products" id="productGrid"></div>
+          </div>
         </div>
+
+        <aside>
+          <div class="section">
+            <h3>Your Cart</h3>
+            <div id="smallCartSummary" style="margin-top:10px">No items yet</div>
+            <div style="margin-top:10px">
+              <button class="btn primary" onclick="location.href='cart.html'">Open cart</button>
+              <button class="btn ghost" onclick="location.href='orders.html'">My orders</button>
+            </div>
+          </div>
+
+          <div class="section" id="accountBox">
+            <h3>Account</h3>
+            <div id="accountInfo" style="margin-top:8px">Not signed in</div>
+            <div style="margin-top:8px">
+              <button class="btn ghost" id="profileBtn">Profile</button>
+            </div>
+          </div>
+        </aside>
       </div>
+    </main>
 
-      <div class="products-grid" id="productGrid">
-        <!-- products rendered by JS -->
-      </div>
-    </section>
-
-    <!-- ================= Suggestions / Carousel ================= -->
-    <section class="section" aria-labelledby="suggestHeading">
-      <div class="header">
-        <h3 id="suggestHeading">You might also like</h3>
-        <div class="more small">Personalized picks</div>
-      </div>
-      <div class="carousel" id="suggestions">
-        <!-- suggestion cards by JS -->
-      </div>
-    </section>
-
-    <!-- ================= Footer ================= -->
-    <footer class="site">
-      <div class="small">© 2025 NJ Mart — demo. For production, integrate Firebase and payment gateway.</div>
-    </footer>
-
-  </div> <!-- /wrap -->
-
-  <!-- ================= Floating Cart Button ================= -->
-  <div id="floatingCart" class="floating-cart" role="button" aria-label="Open cart">
-    <div>🛒</div>
-    <div>
-      <div style="font-size:13px">Cart</div>
-      <div style="font-size:14px" id="floatingTotal">₹0</div>
-    </div>
-    <div class="count" id="floatingCount">0</div>
+    <footer>© 2025 NJ Mart — Local demo • Terms • Privacy</footer>
   </div>
 
-  <!-- ================= Cart Overlay (slide panel) ================= -->
-  <div id="cartOverlay" class="cart-overlay" aria-hidden="true">
-    <div class="cart-sheet" role="dialog" aria-label="Your cart">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h4>Your cart</h4>
-        <div>
-          <button id="closeCart" class="btn ghost">Close</button>
-        </div>
-      </div>
-
-      <div id="cartList" class="cart-list" style="margin-top:12px">
-        <!-- cart items inserted here -->
-      </div>
-
-      <div style="margin-top:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div class="small">Items total</div><div id="cartSubtotal">₹0</div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
-          <div class="small">Delivery</div><div id="cartDelivery">₹0</div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
-          <div class="small">Discount</div><div id="cartDiscount">₹0</div>
-        </div>
-        <hr style="margin:10px 0;border:none;border-top:1px dashed #eee">
-        <div style="display:flex;justify-content:space-between;align-items:center;font-weight:800">
-          <div>Total</div><div id="cartGrand">₹0</div>
-        </div>
-
-        <div style="margin-top:12px;display:flex;gap:8px">
-          <button id="checkoutBtn" class="btn primary" style="flex:1">Checkout</button>
-          <button id="clearCartBtn" class="btn ghost" style="flex:1">Clear</button>
-        </div>
-
-        <div style="margin-top:10px" class="small">Orders below ₹1000 carry ₹20 delivery. Coupons can be applied at checkout.</div>
-      </div>
-    </div>
+  <div class="sticky-cart" id="stickyCartBtn" onclick="location.href='cart.html'">
+    🛒 <span id="stickyTotal">₹0</span> • <span id="stickyItems">0</span>
   </div>
 
-  <!-- ================= JS: functionality (expanded) ================= -->
-  <script>
-    /* =========================
-       NJ MART — index.html main script
-       - Full expanded front-end that stores cart & profile in localStorage
-       - Keys:
-         nj_cart      -> cart array [{id,name,price,qty,img,category}]
-         nj_user      -> profile {name,phone,address,email}
-         nj_coupon    -> applied coupon object
-         nj_checkout  -> snapshot before redirect to checkout.html
-    ========================= */
+  <script type="module">
+    import { auth, db, onAuth, loadProductsOnce } from './firebase-config.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-    /* ---------- Configuration & demo data (you can replace these with real data) ---------- */
-    const DELIVERY_THRESHOLD = 1000; // free delivery if subtotal >= 1000
-    const DELIVERY_CHARGE = 20; // ₹20 if below threshold
+    // STORAGE KEYS
+    const CART_KEY = 'nj_cart';
+    const CHECKOUT_KEY = 'nj_checkout';
+    const COUPON_KEY = 'nj_coupon';
 
-    // A larger list of real-feel demo products (you can replace images & details)
-    const ALL_PRODUCTS = [
-      { id:'p001', name:'Fresh Tomatoes (1kg)', price:40, img:'https://via.placeholder.com/400x300?text=Tomato', category:'Vegetables', popular: 98 },
-      { id:'p002', name:'Milk — 1L (Toned)', price:55, img:'https://via.placeholder.com/400x300?text=Milk', category:'Dairy', popular: 120 },
-      { id:'p003', name:'Potatoes (1kg)', price:25, img:'https://via.placeholder.com/400x300?text=Potato', category:'Vegetables', popular: 75 },
-      { id:'p004', name:'Onions (1kg)', price:30, img:'https://via.placeholder.com/400x300?text=Onion', category:'Vegetables', popular: 89 },
-      { id:'p005', name:'Aashirvaad Atta (5kg)', price:394, img:'https://via.placeholder.com/400x300?text=Atta', category:'Grocery', popular: 60 },
-      { id:'p006', name:'Laxmi Refined Oil (1L)', price:208, img:'https://via.placeholder.com/400x300?text=Oil', category:'Grocery', popular: 45 },
-      { id:'p007', name:'Tata Salt (1kg)', price:29, img:'https://via.placeholder.com/400x300?text=Salt', category:'Grocery', popular: 140 },
-      { id:'p008', name:'Maggi Noodles (2-min)', price:12, img:'https://via.placeholder.com/400x300?text=Maggi', category:'Snacks', popular: 200 },
-      { id:'p009', name:'Amul Paneer (500g)', price:180, img:'https://via.placeholder.com/400x300?text=Paneer', category:'Dairy', popular: 75 },
-      { id:'p010', name:'Apple (1kg)', price:160, img:'https://via.placeholder.com/400x300?text=Apple', category:'Fruits', popular: 55 },
-      { id:'p011', name:'Banana (1 dozen)', price:55, img:'https://via.placeholder.com/400x300?text=Banana', category:'Fruits', popular: 130 },
-      { id:'p012', name:'Brown Bread (400g)', price:45, img:'https://via.placeholder.com/400x300?text=Bread', category:'Bakery', popular: 40 }
-    ];
-
-    const CATEGORIES = ['Vegetables','Fruits','Dairy','Snacks','Beverages','Grocery','Bakery','Household'];
-
-    // Demo coupons (admin can change by setting localStorage 'nj_settings')
-    const DEFAULT_COUPONS = [
-      { code:'SAVE50', type:'FLAT', value:50, description:'Flat ₹50 off' },
-      { code:'FREEDEL', type:'DELIVERY', value:DELIVERY_CHARGE, description:'Free delivery' },
-      { code:'PERC10', type:'PERCENT', value:10, description:'10% off' }
-    ];
-
-    /* ---------- localStorage helpers ---------- */
-    function load(key){ try{ return JSON.parse(localStorage.getItem(key)); }catch(e){ return null; } }
-    function save(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
-    function remove(key){ localStorage.removeItem(key); }
-
-    /* ---------- cart helpers ---------- */
-    function loadCart(){ return load('nj_cart') || []; }
-    function saveCart(cart){ save('nj_cart', cart); updateFloatingCart(); }
-    function clearCart(){ remove('nj_cart'); renderCartPanel(); updateFloatingCart(); }
-
-    /* ---------- profile helpers ---------- */
-    function getProfile(){ return load('nj_user') || null; }
-
-    /* ---------- coupon helpers ---------- */
-    function findCoupon(code){
-      if(!code) return null;
-      code = code.trim().toUpperCase();
-      const settings = load('nj_settings') || {};
-      const adminCoupons = (settings.coupons || []).concat(DEFAULT_COUPONS);
-      return adminCoupons.find(c => (c.code || '').toUpperCase() === code) || null;
-    }
-
-    /* ---------- UI selectors ---------- */
-    const categoryGrid = document.getElementById('categoryGrid');
-    const dealsGrid = document.getElementById('dealsGrid');
+    // DOM
     const productGrid = document.getElementById('productGrid');
-    const suggestionsEl = document.getElementById('suggestions');
+    const categoryGrid = document.getElementById('categoryGrid');
+    const cartCountBadge = document.getElementById('cartCountBadge');
+    const stickyTotal = document.getElementById('stickyTotal');
+    const stickyItems = document.getElementById('stickyItems');
+    const smallCartSummary = document.getElementById('smallCartSummary');
+    const userBadge = document.getElementById('userBadge');
+    const loginBtn = document.getElementById('loginBtn');
+    const profileBtn = document.getElementById('profileBtn');
 
-    const floatingCart = document.getElementById('floatingCart');
-    const floatingCount = document.getElementById('floatingCount');
-    const floatingTotal = document.getElementById('floatingTotal');
-    const topCartCount = document.getElementById('topCartCount');
+    // helper localStorage functions
+    function loadCart(){ try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch(e){ return []; } }
+    function saveCart(cart){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); updateCartUI(); }
+    function clearCartLocal(){ localStorage.removeItem(CART_KEY); updateCartUI(); }
 
-    const cartOverlay = document.getElementById('cartOverlay');
-    const cartListEl = document.getElementById('cartList');
-    const cartSubtotalEl = document.getElementById('cartSubtotal');
-    const cartDeliveryEl = document.getElementById('cartDelivery');
-    const cartDiscountEl = document.getElementById('cartDiscount');
-    const cartGrandEl = document.getElementById('cartGrand');
-
-    const btnCartTop = document.getElementById('btnCartTop');
-    const btnLogin = document.getElementById('btnLogin');
-    const closeCartBtn = document.getElementById('closeCart');
-    const checkoutBtn = document.getElementById('checkoutBtn');
-    const clearCartBtn = document.getElementById('clearCartBtn');
-
-    const searchInput = document.getElementById('searchInput');
-    const searchBtn = document.getElementById('searchBtn');
-    const sortSelect = document.getElementById('sortSelect');
-
-    /* ---------- Initialization: render categories, products, suggestions ---------- */
-    function init(){
-      renderCategories();
-      renderTopDeals();
-      renderProducts(ALL_PRODUCTS);
-      renderSuggestions();
-      attachEventHandlers();
-      updateFloatingCart();
+    function updateCartUI(){
+      const cart = loadCart();
+      const count = cart.reduce((s,i)=>s + (i.qty||0), 0);
+      const total = cart.reduce((s,i)=>s + (i.qty||0) * (i.price||0), 0);
+      cartCountBadge.textContent = count;
+      stickyItems.textContent = count;
+      stickyTotal.textContent = '₹' + total.toFixed(0);
+      smallCartSummary.textContent = count === 0 ? 'No items yet' : `${count} items • ${'₹'+total.toFixed(0)}`;
     }
 
-    function renderCategories(){
-      categoryGrid.innerHTML = '';
-      CATEGORIES.forEach(cat=>{
-        const node = document.createElement('div');
-        node.className = 'cat';
-        node.innerHTML = `<img src="https://via.placeholder.com/80?text=${encodeURIComponent(cat[0])}" alt="${cat}"><div style="font-weight:700;margin-top:6px">${cat}</div>`;
-        node.addEventListener('click', ()=> filterByCategory(cat));
-        categoryGrid.appendChild(node);
-      });
+    function addToCart(product, qty=1){
+      const cart = loadCart();
+      const idx = cart.findIndex(p=>p.id === product.id);
+      if(idx > -1) cart[idx].qty += qty;
+      else cart.push({ id: product.id, name: product.name, price: product.price, qty: qty, img: product.image || '', category: product.category || '' });
+      saveCart(cart);
+      showToast(`${product.name} added to cart`);
     }
 
-    function renderTopDeals(){
-      dealsGrid.innerHTML = '';
-      // show first 4 high-popular products as deals
-      const deals = ALL_PRODUCTS.slice().sort((a,b)=>b.popular-a.popular).slice(0,4);
-      deals.forEach(p => {
+    function showToast(msg, t=1400){
+      const el = document.createElement('div');
+      el.textContent = msg;
+      el.style.position = 'fixed'; el.style.left='50%'; el.style.transform='translateX(-50%)';
+      el.style.bottom='110px'; el.style.background='#111'; el.style.color='#fff'; el.style.padding='8px 12px';
+      el.style.borderRadius='999px'; el.style.zIndex='9999'; el.style.opacity='0'; el.style.transition='opacity .12s';
+      document.body.appendChild(el);
+      requestAnimationFrame(()=> el.style.opacity='1');
+      setTimeout(()=> { el.style.opacity='0'; setTimeout(()=> el.remove(),200); }, t);
+    }
+
+    // render products from Firestore
+    async function loadAndRenderProducts(){
+      try{
+        // prefer helper loadProductsOnce from firebase-config; fallback to direct getDocs
+        let products = [];
+        try { products = await loadProductsOnce(200); } catch(e){}
+        if(!products || products.length === 0){
+          const col = collection(db, 'products');
+          const snap = await getDocs(col);
+          products = [];
+          snap.forEach(d => products.push({ id: d.id, ...d.data() }));
+        }
+        renderProductGrid(products);
+        populateCategories(products);
+      }catch(err){
+        console.error('Products load error', err);
+        productGrid.innerHTML = '<div style="color:var(--muted)">Error loading products.</div>';
+      }
+    }
+
+    function renderProductGrid(list){
+      productGrid.innerHTML = '';
+      list.forEach(p => {
         const node = document.createElement('div');
         node.className = 'product';
         node.innerHTML = `
-          <div class="thumb"><img src="${p.img}" alt="${p.name}"></div>
-          <div>
-            <div class="title">${p.name}</div>
-            <div class="meta small">${p.category}</div>
-            <div style="margin-top:8px" class="row">
-              <div class="price">₹${p.price}
+          <div class="thumb"><img src="${p.image||'https://via.placeholder.com/400x300?text=Product'}" alt="${escapeHtml(p.name)}"></div>
+          <h3>${escapeHtml(p.name)}</h3>
+          <div class="meta">${escapeHtml(p.category||'')}</div>
+          <div class="row">
+            <div class="price">₹${p.price}</div>
+            <div><button class="btn primary">Add</button></div>
+          </div>
+        `;
+        node.querySelector('button').addEventListener('click', ()=> addToCart(p));
+        productGrid.appendChild(node);
+      });
+    }
+
+    function populateCategories(products){
+      const cats = Array.from(new Set(products.map(p => p.category || 'General'))).slice(0,12);
+      categoryGrid.innerHTML = '';
+      cats.forEach(cat=>{
+        const c = document.createElement('div');
+        c.className = 'cat';
+        c.innerHTML = `<div style="font-weight:700">${escapeHtml(cat)}</div>`;
+        c.addEventListener('click', ()=> {
+          const filtered = (window._nj_products || []).filter(x=>x.category === cat);
+          renderProductGrid(filtered);
+        });
+        categoryGrid.appendChild(c);
+      });
+      // store available products globally for filter
+      window._nj_products = window._nj_products || [];
+      // if not loaded, set later after render
+    }
+
+    // search
+    document.getElementById('searchInput').addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter') doSearch();
+    });
+    function doSearch(){
+      const q = (document.getElementById('searchInput').value||'').trim().toLowerCase();
+      if(!q) return loadAndRenderProducts();
+      const list = (window._nj_products || []).filter(p => (p.name||'').toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q));
+      renderProductGrid(list);
+    }
+
+    // small helper to escape html
+    function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+    // auth state and profile
+    onAuth((user) => {
+      if(user){
+        userBadge.textContent = user.phone || (user.displayName || 'User');
+        loginBtn.textContent = 'Logout';
+        profileBtn.style.display = 'inline-block';
+        // optional: fetch and show saved customer address
+      } else {
+        userBadge.textContent = 'Guest';
+        loginBtn.textContent = 'Login';
+        profileBtn.style.display = 'none';
+      }
+    });
+
+    // login button behavior
+    loginBtn.addEventListener('click', ()=> {
+      if(loginBtn.textContent === 'Login') location.href = 'login.html';
+      else {
+        // sign out
+        import('./firebase-config.js').then(mod => {
+          mod.signOutUser().then(()=> {
+            showToast('Signed out');
+            location.reload();
+          }).catch(e=> alert('Sign out: ' + e.message));
+        });
+      }
+    });
+
+    profileBtn.addEventListener('click', ()=> location.href = 'profile.html');
+
+    // initial load
+    (async function init(){
+      updateCartUI();
+      await loadAndRenderProducts();
+      // once loaded, store globally
+      try { window._nj_products = await loadProductsOnce(500); } catch(e){ /* ignore */ }
+    })();
+
+  </script>
+</body>
+</html>
