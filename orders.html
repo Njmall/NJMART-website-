@@ -1,87 +1,248 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>NJ Mart — Orders</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{--green:#2db34a;--muted:#7b7f86;--card:#fff;--bg:#f3faf6}
-  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif}
-  body{margin:0;background:var(--bg);color:#111}
-  .page{max-width:920px;margin:20px auto;padding:14px}
-  .card{background:var(--card);border-radius:12px;box-shadow:0 8px 24px rgba(12,30,40,.06);padding:14px;margin-bottom:14px}
-  .order{border-bottom:1px solid #f2f4f5;padding:12px 0}
-  .small{color:var(--muted);font-size:13px}
-  .btn{border:0;border-radius:10px;padding:10px 12px;font-weight:700;cursor:pointer}
-  .btn.ghost{background:#fff;border:1px solid #e6eaec;color:#333}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NJ Mart — My Orders</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root{
+      --bg:#f6fbf8;
+      --card:#fff;
+      --muted:#6b7280;
+      --accent:#2db34a;
+      --accent-dark:#1f8a34;
+      --danger:#ef4444;
+      --radius:12px;
+      --shadow:0 8px 24px rgba(12,30,40,0.06);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto;background:var(--bg);color:#111}
+    .container{max-width:960px;margin:18px auto;padding:14px}
+
+    header.top{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    header.top h1{margin:0;font-size:22px;font-weight:800}
+
+    /* card */
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;margin-bottom:14px}
+
+    /* order list */
+    .order{border:1px solid #eef2ef;border-radius:10px;padding:12px;margin-bottom:12px}
+    .order-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+    .order-id{font-weight:800;font-size:15px}
+    .order-status{padding:6px 12px;border-radius:20px;font-size:13px;font-weight:700}
+    .status-placed{background:#e0f7ec;color:var(--accent-dark)}
+    .status-processing{background:#fff4e0;color:#d97706}
+    .status-delivery{background:#e0f0ff;color:#2563eb}
+    .status-delivered{background:#e6fbe0;color:#15803d}
+    .status-cancelled{background:#ffe6e6;color:var(--danger)}
+
+    .order-body{margin-top:10px}
+    .items{display:flex;flex-direction:column;gap:10px}
+    .item{display:flex;gap:12px;align-items:center}
+    .item img{width:60px;height:60px;border-radius:8px;object-fit:cover}
+    .item-info{flex:1}
+    .item-info h4{margin:0;font-size:15px}
+    .muted{color:var(--muted);font-size:13px}
+
+    .order-footer{margin-top:10px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center}
+    .total{font-weight:800;font-size:16px}
+    .btn{padding:8px 14px;border-radius:8px;border:0;font-weight:700;cursor:pointer}
+    .btn.primary{background:var(--accent);color:#fff}
+    .btn.ghost{background:#fff;border:1px solid #ddd}
+    .btn.danger{background:var(--danger);color:#fff}
+
+    .details{margin-top:10px;display:none}
+    .details p{margin:4px 0;font-size:14px}
+    .toggle-details{cursor:pointer;color:var(--accent);font-size:13px;text-decoration:underline}
+
+    footer{text-align:center;margin-top:20px;font-size:13px;color:var(--muted)}
+  </style>
 </head>
 <body>
-  <div class="page">
-    <div class="card">
-      <h1>My Orders</h1>
-      <div class="small">Recent orders created on this device</div>
-    </div>
 
-    <div id="ordersList" class="card">
-      <!-- orders inserted here -->
-    </div>
+<div class="container">
+  <!-- HEADER -->
+  <header class="top">
+    <button onclick="location.href='index.html'" class="btn ghost"><i class="fa fa-arrow-left"></i></button>
+    <h1>My Orders</h1>
+  </header>
 
-    <div style="text-align:center;margin-top:8px">
-      <button id="backShop" class="btn ghost">Back to Shop</button>
-      <button id="clearOrders" class="btn ghost">Clear Orders</button>
-    </div>
+  <!-- Orders list -->
+  <div id="ordersList">
+    <!-- JS will populate -->
+    <div class="muted">Loading your orders…</div>
   </div>
 
+  <footer>
+    NJ Mart © 2025 • Fast delivery, fresh groceries
+  </footer>
+</div>
+
 <script>
-  function loadOrders(){ try{ return JSON.parse(localStorage.getItem('nj_orders')||'[]'); }catch(e){ return []; } }
-  function renderOrders(){
-    const out = document.getElementById('ordersList');
-    const orders = loadOrders();
-    if(orders.length===0){ out.innerHTML = '<div class="small">No orders yet.</div>'; return; }
-    out.innerHTML = '';
-    orders.forEach(o=>{
-      const div = document.createElement('div');
-      div.className = 'order';
-      const date = new Date(o.createdAt).toLocaleString();
-      let html = `<div style="display:flex;justify-content:space-between;align-items:center"><div><strong>Order ${o.id}</strong></div><div class="small">${date}</div></div>`;
-      html += `<div class="small" style="margin-top:8px">Status: <strong>${o.status}</strong></div>`;
-      html += `<div style="margin-top:10px">`;
-      o.items.forEach(it=>{
-        html += `<div style="display:flex;justify-content:space-between;padding:6px 0">${it.name} x ${it.qty} <span>₹${(it.price*it.qty).toFixed(0)}</span></div>`;
-      });
-      html += `</div>`;
-      html += `<div style="margin-top:8px;display:flex;justify-content:space-between"><div class="small">Delivery</div><div class="small">₹${o.delivery.toFixed(0)}</div></div>`;
-      html += `<div style="margin-top:8px;display:flex;justify-content:space-between;font-weight:700"><div>Total</div><div>₹${o.total.toFixed(0)}</div></div>`;
-      if(o.profile && o.profile.address){
-        html += `<div style="margin-top:8px"><strong>Deliver to:</strong><div class="small">${o.profile.name || ''} • ${o.profile.phone || ''}</div><div style="margin-top:6px">${(o.profile.address||'').replace(/\n/g,'<br>')}</div></div>`;
-      }
-      html += `<div style="margin-top:8px"><button class="btn ghost" onclick="reorder('${o.id}')">Reorder</button></div>`;
-      div.innerHTML = html;
-      out.appendChild(div);
-    });
+/* ============================================================
+   Orders Page Script
+   - loads past orders from localStorage or backend
+   - renders UI
+   - allow expand/collapse details
+   - demo actions: track, cancel
+   ============================================================ */
+
+// helpers
+function loadOrders(){
+  try {
+    // prefer backend call if available
+    if(typeof fetchOrders === 'function'){
+      return fetchOrders(); // should return Promise
+    }
+    return Promise.resolve(JSON.parse(localStorage.getItem('nj_orders')||'[]'));
+  } catch(e){ return Promise.resolve([]) }
+}
+
+function saveOrders(list){
+  localStorage.setItem('nj_orders', JSON.stringify(list));
+}
+
+// render orders
+function renderOrders(orders){
+  const box = document.getElementById('ordersList');
+  box.innerHTML = '';
+  if(!orders || orders.length === 0){
+    box.innerHTML = '<div class="card muted">No orders found. Start shopping!</div>';
+    return;
   }
 
-  function reorder(orderId){
-    const orders = loadOrders();
-    const o = orders.find(x=>x.id===orderId);
-    if(!o) return alert('Order not found');
-    // Put items back to cart
-    localStorage.setItem('nj_cart', JSON.stringify(o.items));
-    alert('Items added to cart');
-    location.href = 'cart.html';
-  }
+  orders.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
 
-  document.getElementById('backShop').addEventListener('click', ()=> location.href='index.html');
-  document.getElementById('clearOrders').addEventListener('click', ()=>{
-    if(!confirm('Clear all saved orders?')) return;
-    localStorage.removeItem('nj_orders');
-    renderOrders();
+  orders.forEach(order=>{
+    const card = document.createElement('div');
+    card.className = 'order card';
+    card.innerHTML = `
+      <div class="order-header">
+        <div>
+          <div class="order-id">Order #${order.id}</div>
+          <div class="muted">Placed on ${new Date(order.createdAt).toLocaleString()}</div>
+        </div>
+        <div class="order-status ${statusClass(order.status)}">${capitalize(order.status)}</div>
+      </div>
+      <div class="order-body">
+        <div class="items">
+          ${order.items.map(i=>`
+            <div class="item">
+              <img src="${i.image||'https://via.placeholder.com/100'}" alt="">
+              <div class="item-info">
+                <h4>${i.name}</h4>
+                <div class="muted">₹${i.price} × ${i.qty} = ₹${i.price*i.qty}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div class="order-footer">
+        <div class="total">Total: ₹${order.total}</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn ghost toggle-details">Details</button>
+          <button class="btn primary">Track</button>
+          ${order.status==='placed'||order.status==='processing' ? `<button class="btn danger cancel-btn">Cancel</button>` : ''}
+        </div>
+      </div>
+      <div class="details">
+        <p><strong>Payment:</strong> ${order.paymentMethod}</p>
+        <p><strong>Address:</strong> ${order.customerAddress}</p>
+        <p><strong>Phone:</strong> ${order.customerPhone}</p>
+        <p><strong>Delivery Slot:</strong> ${order.slot||'—'}</p>
+        <p><strong>Note:</strong> ${order.deliveryNote||'—'}</p>
+        <p><strong>Status:</strong> ${order.status}</p>
+      </div>
+    `;
+    box.appendChild(card);
   });
 
-  // init
-  renderOrders();
+  // attach toggle events
+  document.querySelectorAll('.toggle-details').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const det = btn.closest('.order').querySelector('.details');
+      det.style.display = det.style.display==='block'?'none':'block';
+    });
+  });
+
+  // cancel btns
+  document.querySelectorAll('.cancel-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(confirm('Cancel this order?')){
+        const id = btn.closest('.order').querySelector('.order-id').textContent.replace('Order #','');
+        cancelOrder(id);
+      }
+    });
+  });
+}
+
+function statusClass(status){
+  switch(status){
+    case 'placed': return 'status-placed';
+    case 'processing': return 'status-processing';
+    case 'out for delivery': return 'status-delivery';
+    case 'delivered': return 'status-delivered';
+    case 'cancelled': return 'status-cancelled';
+    default: return 'status-placed';
+  }
+}
+function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1) }
+
+// cancel order
+function cancelOrder(id){
+  let orders = JSON.parse(localStorage.getItem('nj_orders')||'[]');
+  const idx = orders.findIndex(o=>o.id==id);
+  if(idx>-1){
+    orders[idx].status = 'cancelled';
+    saveOrders(orders);
+    renderOrders(orders);
+    alert('Order cancelled');
+  }
+}
+
+// init
+async function initOrders(){
+  const orders = await loadOrders();
+  renderOrders(orders);
+}
+
+// demo populate if no orders
+(function seedDemo(){
+  if(!localStorage.getItem('nj_orders')){
+    const demo = [
+      {
+        id:'ORD12345',
+        createdAt:new Date().toISOString(),
+        status:'placed',
+        items:[
+          {id:'p1',name:'Atta 5kg',price:300,qty:1,image:'https://via.placeholder.com/100?text=Atta'},
+          {id:'p2',name:'Salt 1kg',price:20,qty:2,image:'https://via.placeholder.com/100?text=Salt'}
+        ],
+        subtotal:340,
+        deliveryCharge:20,
+        discount:0,
+        tax:18,
+        total:378,
+        paymentMethod:'COD',
+        customerName:'Demo User',
+        customerPhone:'9876543210',
+        customerAddress:'123 Street, City',
+        slot:'Tomorrow 10am-12pm',
+        deliveryNote:'Ring bell'
+      }
+    ];
+    saveOrders(demo);
+  }
+})();
+
+// run
+initOrders();
+
 </script>
 </body>
 </html>
