@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NJ Mart — Coupons</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: Arial, sans-serif; background:#f7f9fc; margin:0; }
+    header { background:#2db34a; color:#fff; padding:12px; text-align:center; }
+    .page { max-width:960px; margin:20px auto; background:#fff; border-radius:10px; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,.08); }
+    h1 { margin:0 0 15px; }
+    table { width:100%; border-collapse:collapse; margin-top:15px; }
+    th, td { border:1px solid #ddd; padding:10px; text-align:left; }
+    th { background:#f1f1f1; }
+    .btn { padding:8px 14px; border:none; border-radius:6px; cursor:pointer; }
+    .btn-add { background:#2db34a; color:#fff; }
+    .btn-del { background:#e04d4d; color:#fff; }
+    .form-inline { display:flex; gap:10px; flex-wrap:wrap; margin-top:15px; }
+    .form-inline input { padding:8px; border:1px solid #ddd; border-radius:6px; flex:1; }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Coupon Management</h2>
+  </header>
+
+  <div class="page">
+    <h1>Available Coupons</h1>
+
+    <div class="form-inline">
+      <input type="text" id="code" placeholder="Coupon Code">
+      <input type="number" id="discount" placeholder="Discount Amount (₹)">
+      <input type="date" id="expiry" placeholder="Expiry Date">
+      <button class="btn btn-add" onclick="addCoupon()">Add Coupon</button>
+    </div>
+
+    <table id="couponTable">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Discount</th>
+          <th>Expiry</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+
+    async function loadCoupons(){
+      const res = await fetch(API_URL+"?type=coupons");
+      const data = await res.json();
+      const tbody = document.querySelector("#couponTable tbody");
+      tbody.innerHTML = "";
+      data.forEach(c=>{
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${c.code}</td>
+          <td>₹${c.discount}</td>
+          <td>${c.expiry}</td>
+          <td><button class="btn btn-del" onclick="deleteCoupon('${c.code}')">Delete</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    async function addCoupon(){
+      const code = document.getElementById("code").value.trim();
+      const discount = document.getElementById("discount").value.trim();
+      const expiry = document.getElementById("expiry").value;
+      if(!code || !discount){ alert("Enter all fields"); return; }
+
+      await fetch(API_URL,{
+        method:"POST",
+        body:JSON.stringify({type:"addCoupon", code, discount, expiry})
+      });
+      loadCoupons();
+    }
+
+    async function deleteCoupon(code){
+      if(!confirm("Delete coupon "+code+" ?")) return;
+      await fetch(API_URL,{
+        method:"POST",
+        body:JSON.stringify({type:"deleteCoupon", code})
+      });
+      loadCoupons();
+    }
+
+    loadCoupons();
+  </script>
+</body>
+</html>
