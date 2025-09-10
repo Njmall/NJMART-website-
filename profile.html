@@ -1,280 +1,500 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>NJ Mart — Profile</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --green:#2db34a;
-    --muted:#7c8086;
-    --bg:#f4f7f8;
-    --card:#ffffff;
-    --danger:#e04d4d;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif;
-    background:var(--bg);
-    color:#0b1220;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NJ Mart — Profile</title>
 
-  /* container */
-  .page{max-width:920px;margin:14px auto;padding:14px}
-  .card{background:var(--card);border-radius:14px;box-shadow:0 6px 20px rgba(12,30,40,.06);padding:18px;margin-bottom:14px}
+  <!-- Fonts & icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  /* header */
-  header.top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-  .backbtn{background:#fff;border:0;padding:8px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.04);cursor:pointer}
-  .brand{display:flex;align-items:center;gap:10px}
-  .brand h1{font-size:18px;margin:0}
-  .search-wrap{margin-left:auto;display:flex;align-items:center;gap:8px}
-  .search{display:flex;align-items:center;background:#fff;padding:6px 8px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.04);min-width:140px}
-  .search input{border:0;outline:none;width:120px}
-  .iconbtn{background:transparent;border:0;padding:6px 8px;border-radius:8px;cursor:pointer}
+  <style>
+    :root{
+      --max-width:980px;
+      --bg:#f6fbf8;
+      --card:#fff;
+      --muted:#6b7280;
+      --accent:#2db34a;
+      --accent-dark:#1f8a34;
+      --danger:#ef4444;
+      --shadow: 0 10px 30px rgba(12,30,40,0.06);
+      --radius:12px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto;background:var(--bg);color:#111;-webkit-font-smoothing:antialiased}
+    .wrap{max-width:var(--max-width);margin:18px auto;padding:12px}
 
-  /* profile form */
-  .profile-title{font-size:20px;margin:0 0 8px 0}
-  label{display:block;font-size:13px;color:var(--muted);margin-top:12px;margin-bottom:6px}
-  input[type="text"], textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #e6e9eb;background:#fff;outline:none;font-size:15px}
-  textarea{min-height:90px;resize:vertical}
-  .btn-row{display:flex;gap:10px;margin-top:14px}
-  .btn{flex:1;padding:12px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
-  .btn.primary{background:var(--green);color:#fff}
-  .btn.ghost{background:#fff;border:1px solid #e6e9eb;color:#222}
-  .btn.danger{background:var(--danger);color:#fff}
-  .small{font-size:13px;color:var(--muted);margin-top:8px}
+    header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:800}
+    h1{font-size:20px;margin:0}
+    .muted{color:var(--muted);font-size:13px}
 
-  /* info box */
-  .info{background:#f8fff9;border-radius:10px;padding:10px;color:#175f2d;margin-top:12px}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;margin-bottom:12px}
 
-  @media(min-width:720px){
-    .search input{width:240px}
-    .page{padding:20px}
-  }
+    form .row{display:flex;gap:12px;flex-wrap:wrap}
+    .col{flex:1;min-width:180px}
+    label{display:block;font-weight:700;margin:8px 0 6px}
+    input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #e8f0ec;font-size:15px;background:#fff}
+    textarea{min-height:90px;resize:vertical}
 
-  @media(max-width:420px){
-    .search input{display:none}
-    .search{min-width:40px;padding:6px}
-  }
-</style>
+    .actions{display:flex;gap:10px;margin-top:12px}
+    .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .btn.primary{background:var(--accent);color:#fff}
+    .btn.ghost{background:#fff;border:1px solid #e6eef0}
+    .btn.warn{background:var(--danger);color:#fff}
+
+    .small{font-size:13px;color:var(--muted)}
+    .info{background:#f8fff9;border-radius:8px;padding:10px;border:1px solid #eef8ee;margin-top:8px}
+
+    .center{display:flex;align-items:center;gap:8px}
+    .hidden{display:none}
+
+    @media(max-width:720px){
+      .row{flex-direction:column}
+      .col{min-width:unset}
+    }
+  </style>
+
+  <!-- script-config provides callScriptAPI, getLocalUser, setLocalUser etc. -->
+  <script src="./script-config.js"></script>
+  <!-- firebase-config may exist for signOut, optional -->
+  <script type="module" src="./firebase-config.js"></script>
 </head>
 <body>
-  <div class="page">
+  <div class="wrap">
     <header class="top">
-      <button class="backbtn" onclick="location.href='index.html'">←</button>
       <div class="brand">
-        <h1>NJ Mart — Profile</h1>
+        <div class="logo">NJ</div>
+        <div>
+          <h1>My Profile</h1>
+          <div class="muted">Manage your contact, address & preferences</div>
+        </div>
       </div>
 
-      <div class="search-wrap" aria-hidden="true">
-        <div class="search" title="Search (mobile)">
-          <svg width="16" height="16" viewBox="0 0 24 24" style="margin-right:6px" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 21l-4.35-4.35" stroke="#8b9096" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="11" cy="11" r="6" stroke="#8b9096" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></circle></svg>
-          <input type="text" placeholder="Search products" aria-label="search">
-        </div>
-        <button class="iconbtn" title="Cart" onclick="location.href='cart.html'">
-          🛒
-        </button>
-        <button class="iconbtn" title="Admin" onclick="location.href='admin.html'">👤</button>
+      <div class="center">
+        <div id="userPhone" class="small muted">Not signed in</div>
+        <button id="btnLogout" class="btn ghost hidden"><i class="fa fa-sign-out-alt"></i> Logout</button>
       </div>
     </header>
 
-    <section class="card" id="profileCard">
-      <h2 class="profile-title">Complete Your Profile</h2>
-      <div class="small">Signed in as: <span id="userEmail">Not signed in</span></div>
-
-      <label for="name">Name</label>
-      <input id="name" type="text" placeholder="Full name">
-
-      <label for="phone">Phone (with country code)</label>
-      <input id="phone" type="text" placeholder="+91 7062908607">
-
-      <label for="address">Address</label>
-      <textarea id="address" placeholder="House no, street area, city, pincode"></textarea>
-
-      <div style="display:flex;gap:10px;margin-top:12px">
-        <button class="btn primary" id="locBtn">Get Current Location</button>
-        <button class="btn ghost" id="clearLoc">Clear Location</button>
+    <!-- Profile card -->
+    <section class="card" aria-labelledby="profileTitle">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h2 id="profileTitle" style="margin:0">Account details</h2>
+          <div class="small muted">Your basic profile info (editable)</div>
+        </div>
+        <div id="statusNote" class="small muted">Autosave to Google Sheet</div>
       </div>
 
-      <label for="lat">Latitude</label>
-      <input id="lat" type="text" placeholder="Lat (auto)" readonly>
+      <form id="profileForm" style="margin-top:12px">
+        <div class="row">
+          <div class="col">
+            <label for="fullName">Full name</label>
+            <input id="fullName" name="fullName" placeholder="e.g. Nitin Kumar">
+          </div>
+          <div class="col">
+            <label for="email">Email (optional)</label>
+            <input id="email" name="email" placeholder="you@example.com" type="email">
+          </div>
+        </div>
 
-      <label for="lng">Longitude</label>
-      <input id="lng" type="text" placeholder="Lng (auto)" readonly>
+        <div class="row" style="margin-top:8px">
+          <div class="col">
+            <label for="phone">Phone (required)</label>
+            <input id="phone" name="phone" placeholder="+91 9XXXXXXXXX" required>
+          </div>
+          <div class="col">
+            <label for="pincode">Pincode</label>
+            <input id="pincode" name="pincode" placeholder="e.g. 110001">
+          </div>
+        </div>
 
-      <div class="btn-row">
-        <button class="btn primary" id="saveBtn">Save Profile & Continue</button>
-        <button class="btn ghost" id="saveStay">Save & Stay</button>
-        <button class="btn danger" id="clearBtn">Clear Profile</button>
-      </div>
+        <div style="margin-top:10px">
+          <label for="address">Full address</label>
+          <textarea id="address" name="address" placeholder="House no, street, area, city, state"></textarea>
+        </div>
 
-      <div id="infoBox" class="info" style="display:none"></div>
+        <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+          <button id="btnLocation" type="button" class="btn ghost"><i class="fa fa-location-dot"></i> Use current location</button>
+          <button id="btnSave" type="button" class="btn primary"><i class="fa fa-save"></i> Save profile</button>
+          <div id="saveMsg" class="small muted" style="margin-left:8px">Not saved</div>
+        </div>
+
+        <div class="info" style="margin-top:12px">
+          <div style="font-weight:700">How this works</div>
+          <div class="small muted" style="margin-top:6px">
+            When you save, the profile is stored in your Google Sheet (admin panel). Admin can edit it later.
+            Billing and orders will use the phone number you save here.
+          </div>
+        </div>
+      </form>
     </section>
 
+    <!-- Saved addresses (readable) -->
+    <section id="addressesCard" class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h2 style="margin:0">Saved addresses</h2>
+          <div class="small muted">Manage your delivery addresses (stored in sheet)</div>
+        </div>
+        <div>
+          <button id="btnAddAddress" class="btn primary">Add address</button>
+        </div>
+      </div>
+
+      <div id="addressesList" style="margin-top:12px">
+        <!-- addresses will be injected here -->
+        <div class="small muted">Loading saved addresses…</div>
+      </div>
+    </section>
+
+    <!-- Address modal-like area (simple inline form) -->
+    <section id="addressEditor" class="card hidden">
+      <h3 style="margin:0 0 8px 0">Add / Edit address</h3>
+      <form id="addrForm">
+        <div class="row">
+          <div class="col">
+            <label for="addrName">Name</label>
+            <input id="addrName" placeholder="Name for this address">
+          </div>
+          <div class="col">
+            <label for="addrPhone">Phone</label>
+            <input id="addrPhone" placeholder="Phone">
+          </div>
+        </div>
+        <div style="margin-top:8px">
+          <label for="addrLine">Address line</label>
+          <input id="addrLine" placeholder="House no, building, street">
+        </div>
+        <div class="row" style="margin-top:8px">
+          <div class="col">
+            <label for="addrCity">City</label>
+            <input id="addrCity" placeholder="City">
+          </div>
+          <div class="col">
+            <label for="addrPin">Pincode</label>
+            <input id="addrPin" placeholder="Pincode">
+          </div>
+        </div>
+
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button id="addrSaveBtn" type="button" class="btn primary">Save address</button>
+          <button id="addrCancelBtn" type="button" class="btn ghost">Cancel</button>
+          <button id="addrUseLoc" type="button" class="btn ghost">Use current location</button>
+          <div id="addrMsg" class="small muted" style="margin-left:8px"></div>
+        </div>
+      </form>
+    </section>
+
+    <!-- Orders quick link -->
     <section class="card">
-      <h3 style="margin:0 0 8px 0">Why add profile?</h3>
-      <div class="small">Saved profile speeds up checkout, provides address for delivery and stores contact details locally for demo orders.</div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h2 style="margin:0">Your Orders</h2>
+          <div class="small muted">View or track past orders</div>
+        </div>
+        <div><button id="viewOrdersBtn" class="btn ghost">My Orders</button></div>
+      </div>
     </section>
+
+    <footer style="text-align:center;margin-top:10px" class="small muted">NJ Mart © 2025 — Your data stored in Google Sheet (admins can edit)</footer>
   </div>
 
-<script>
-/*
- profile.html
- - saves profile to localStorage key 'nj_profile'
- - supports ?next=checkout to redirect to checkout.html after save
- - mobile responsive header + smaller search area
-*/
+  <!-- ================ SCRIPT ================ -->
+  <script>
+  /************************************************************************
+   * profile.html
+   *
+   * This script:
+   *  - checks if user is logged in (getLocalUser or localStorage)
+   *  - fetches profile from Google Sheet via callScriptAPI
+   *  - allows save/update to sheet (payload types: addCustomer / updateCustomer)
+   *  - manages address list stored in Sheet (add/edit/delete)
+   *
+   * Requirements:
+   *  - script-config.js must be present and expose callScriptAPI(), getLocalUser(), setLocalUser()
+   *  - Apps Script WebApp should accept payload types:
+   *       { type: "getCustomer", userId }           -> returns { ok:true, data: { ... } }  (preferred)
+   *       { type: "getCustomers" }                  -> returns list of customers
+   *       { type: "addCustomer", customer }         -> add a customer
+   *       { type: "updateCustomer", customer }      -> update by id
+   *       { type: "getAddresses", userId }          -> optional: get addresses for user
+   *       { type: "addAddress", address }           -> optional: add address row
+   *       { type: "updateAddress", address }        -> optional
+   *       { type: "deleteAddress", addressId }      -> optional
+   *
+   * If your Apps Script uses different keys, change the payload types below.
+   ************************************************************************/
 
-const KEY = 'nj_profile';
-const userEmailEl = document.getElementById('userEmail');
-const nameEl = document.getElementById('name');
-const phoneEl = document.getElementById('phone');
-const addressEl = document.getElementById('address');
-const latEl = document.getElementById('lat');
-const lngEl = document.getElementById('lng');
-const locBtn = document.getElementById('locBtn');
-const clearLoc = document.getElementById('clearLoc');
-const saveBtn = document.getElementById('saveBtn');
-const saveStay = document.getElementById('saveStay');
-const clearBtn = document.getElementById('clearBtn');
-const infoBox = document.getElementById('infoBox');
+  // small helpers that use script-config wrappers if available
+  const callAPI = (typeof callScriptAPI === 'function') ? callScriptAPI : null;
+  const getLocal = (typeof getLocalUser === 'function') ? getLocalUser : (() => JSON.parse(localStorage.getItem('nj_user')||'null'));
+  const saveLocal = (typeof setLocalUser === 'function') ? setLocalUser : ((u)=> localStorage.setItem('nj_user', JSON.stringify(u)));
 
-function showInfo(msg, ok=true){
-  infoBox.style.display = 'block';
-  infoBox.style.background = ok ? '#f3fff4' : '#fff6f6';
-  infoBox.style.color = ok ? '#155724' : '#7b1a1a';
-  infoBox.textContent = msg;
-  setTimeout(()=>{ infoBox.style.display = 'none'; }, 4500);
-}
+  // DOM elements
+  const fullNameEl = document.getElementById('fullName');
+  const emailEl = document.getElementById('email');
+  const phoneEl = document.getElementById('phone');
+  const pincodeEl = document.getElementById('pincode');
+  const addressEl = document.getElementById('address');
+  const saveBtn = document.getElementById('btnSave');
+  const saveMsg = document.getElementById('saveMsg');
+  const userPhoneBadge = document.getElementById('userPhone');
+  const logoutBtn = document.getElementById('btnLogout');
 
-// read next param (?next=checkout)
-function getNextParam(){
-  const params = new URLSearchParams(location.search);
-  return params.get('next') || '';
-}
+  // address editor elements
+  const addressListEl = document.getElementById('addressesList');
+  const addrEditor = document.getElementById('addressEditor');
+  const addrForm = document.getElementById('addrForm');
+  const addrName = document.getElementById('addrName');
+  const addrPhone = document.getElementById('addrPhone');
+  const addrLine = document.getElementById('addrLine');
+  const addrCity = document.getElementById('addrCity');
+  const addrPin = document.getElementById('addrPin');
+  const addrSaveBtn = document.getElementById('addrSaveBtn');
+  const addrCancelBtn = document.getElementById('addrCancelBtn');
+  const addrUseLoc = document.getElementById('addrUseLoc');
+  const addrMsg = document.getElementById('addrMsg');
+  const addAddressBtn = document.getElementById('btnAddAddress');
 
-// load profile from localStorage
-function loadProfile(){
-  try{
-    const raw = localStorage.getItem(KEY);
-    if(!raw) return null;
-    return JSON.parse(raw);
-  }catch(e){ return null; }
-}
+  // orders button
+  const viewOrdersBtn = document.getElementById('viewOrdersBtn');
 
-// populate form
-function populate(){
-  const p = loadProfile();
-  if(p){
-    nameEl.value = p.name || '';
-    phoneEl.value = p.phone || '';
-    addressEl.value = p.address || '';
-    latEl.value = p.lat || '';
-    lngEl.value = p.lng || '';
-    showInfo('Profile loaded from local storage ✅', true);
-  }
-  // show signed-in email if present (many demos store 'nj_user' or firebase user in localStorage)
-  const userRaw = localStorage.getItem('nj_user') || localStorage.getItem('nj_auth_user');
-  if(userRaw){
-    try{
-      const u = JSON.parse(userRaw);
-      userEmailEl.textContent = u.email || (typeof u === 'string' ? u : 'Signed in');
-    }catch(e){
-      userEmailEl.textContent = userRaw;
-    }
-  } else {
-    // fallback check firebase-like user stored as 'nj_firebase_user'?
-    const fu = localStorage.getItem('nj_firebase_user');
-    if(fu){
-      try{ userEmailEl.textContent = JSON.parse(fu).email || 'Signed in'; }catch(e){ userEmailEl.textContent = 'Signed in'; }
-    } else userEmailEl.textContent = 'Not signed in';
-  }
-}
+  // state
+  let CURRENT_USER = null;      // object -> { id, uid, name, phone, email, address, ... }
+  let ADDRESSES = [];           // list of addresses from sheet or localStorage
+  let EDITING_ADDRESS_INDEX = -1;
 
-// validate and save
-function saveProfile(redirect=false){
-  const name = nameEl.value.trim();
-  const phone = phoneEl.value.trim();
-  const address = addressEl.value.trim();
-  const lat = latEl.value.trim();
-  const lng = lngEl.value.trim();
-
-  if(!name){ alert('Enter your name'); nameEl.focus(); return; }
-  if(!phone){ alert('Enter phone number'); phoneEl.focus(); return; }
-  if(!address){ alert('Enter address'); addressEl.focus(); return; }
-
-  const profile = { name, phone, address, lat, lng, updatedAt: Date.now() };
-  try{
-    localStorage.setItem(KEY, JSON.stringify(profile));
-    showInfo('Profile saved successfully ✅', true);
-  }catch(e){
-    alert('Unable to save profile in local storage.');
-    return;
-  }
-
-  if(redirect){
-    const next = getNextParam();
-    if(next === 'checkout'){
-      // go to checkout page
-      location.href = 'checkout.html';
+  /***********************
+   * Init on load
+   ***********************/
+  (async function init(){
+    // 1) check local user (from login)
+    CURRENT_USER = getLocal();
+    if(!CURRENT_USER){
+      // not logged in, show message and redirect to login optionally
+      userPhoneBadge.textContent = 'Not signed in';
+      // If you want to force login:
+      // if(confirm('You are not signed in. Login now?')) location.href='login.html';
     } else {
-      // default go to index
-      location.href = 'index.html';
+      // show phone/email in header
+      userPhoneBadge.textContent = CURRENT_USER.phone || (CURRENT_USER.email || 'Signed in');
+      logoutBtn.classList.remove('hidden');
+    }
+
+    // 2) load profile from backend (if available), otherwise use local user
+    await loadProfile();
+
+    // 3) load addresses
+    await loadAddresses();
+
+    // 4) wire up events
+    setupEvents();
+
+    // 5) nice UX: focus name field if empty
+    if(!fullNameEl.value) fullNameEl.focus();
+  })();
+
+  /***********************
+   * LOAD PROFILE
+   ***********************/
+  async function loadProfile(){
+    // If we have logged-in user ID, try to fetch record from sheet
+    const userId = CURRENT_USER ? (CURRENT_USER.id || CURRENT_USER.uid || CURRENT_USER.email) : null;
+
+    // first, fill from local if exists
+    if(CURRENT_USER){
+      fullNameEl.value = CURRENT_USER.name || '';
+      emailEl.value = CURRENT_USER.email || '';
+      phoneEl.value = CURRENT_USER.phone || '';
+      addressEl.value = CURRENT_USER.address || '';
+      pincodeEl.value = CURRENT_USER.pincode || '';
+      saveMsg.textContent = 'Loaded from local';
+    }
+
+    if(!callAPI || !userId){
+      // No backend or no user => we stop here
+      return;
+    }
+
+    // try preferred API: getCustomer by userId
+    try {
+      const r = await callAPI({ type: 'getCustomer', userId });
+      if(r && r.ok && r.data){
+        // expected r.data to be a single object
+        CURRENT_USER = r.data;
+        // update local copy
+        try { saveLocal(CURRENT_USER); } catch(e){}
+        // populate fields
+        fullNameEl.value = CURRENT_USER.name || '';
+        emailEl.value = CURRENT_USER.email || '';
+        phoneEl.value = CURRENT_USER.phone || '';
+        addressEl.value = CURRENT_USER.address || '';
+        pincodeEl.value = CURRENT_USER.pincode || '';
+        saveMsg.textContent = 'Loaded from sheet';
+        userPhoneBadge.textContent = CURRENT_USER.phone || CURRENT_USER.email || 'Signed in';
+        logoutBtn.classList.remove('hidden');
+        return;
+      }
+    } catch (err) {
+      console.warn('getCustomer API error', err);
+    }
+
+    // fallback: get all customers and find by phone/email
+    try {
+      const resAll = await callAPI({ type: 'getCustomers' });
+      if(resAll && resAll.ok && Array.isArray(resAll.data)){
+        const found = resAll.data.find(c => (CURRENT_USER && (c.phone === CURRENT_USER.phone || c.email === CURRENT_USER.email)));
+        if(found){
+          CURRENT_USER = found;
+          try { saveLocal(CURRENT_USER); } catch(e){}
+          fullNameEl.value = CURRENT_USER.name || '';
+          emailEl.value = CURRENT_USER.email || '';
+          phoneEl.value = CURRENT_USER.phone || '';
+          addressEl.value = CURRENT_USER.address || '';
+          pincodeEl.value = CURRENT_USER.pincode || '';
+          saveMsg.textContent = 'Loaded from sheet';
+          userPhoneBadge.textContent = CURRENT_USER.phone || CURRENT_USER.email || 'Signed in';
+          logoutBtn.classList.remove('hidden');
+          return;
+        }
+      }
+    } catch (err){
+      console.warn('getCustomers fallback error', err);
+    }
+
+    // if we reach here, profile not found on sheet — keep local
+    saveMsg.textContent = 'Profile not found on sheet (local only)';
+  }
+
+  /***********************
+   * SAVE / UPDATE PROFILE
+   ***********************/
+  saveBtn.addEventListener('click', async ()=>{
+    // validate phone
+    const name = fullNameEl.value.trim();
+    const email = emailEl.value.trim();
+    const phone = phoneEl.value.trim();
+    const address = addressEl.value.trim();
+    const pincode = pincodeEl.value.trim();
+
+    if(!phone){
+      alert('Phone is required');
+      phoneEl.focus();
+      return;
+    }
+
+    // create payload
+    const customer = {
+      id: CURRENT_USER && (CURRENT_USER.id || CURRENT_USER.uid) ? (CURRENT_USER.id || CURRENT_USER.uid) : ('c_' + Date.now()),
+      name, email, phone, address, pincode
+    };
+
+    // optimistic local save
+    try { saveLocal(customer); CURRENT_USER = customer; } catch(e){ console.warn(e); }
+
+    // UI feedback
+    saveMsg.textContent = 'Saving...';
+
+    // if we have backend, call add/update
+    if(callAPI){
+      try {
+        // prefer updateCustomer if exists
+        const useType = (CURRENT_USER && CURRENT_USER.id) ? 'updateCustomer' : 'addCustomer';
+        const r = await callAPI({ type: useType, customer });
+        if(r && r.ok){
+          saveMsg.textContent = 'Saved';
+          // update CURRENT_USER with returned data if any
+          if(r.data) { CURRENT_USER = r.data; try{ saveLocal(CURRENT_USER); }catch(e){} }
+          // refresh addresses
+          await loadAddresses();
+          return;
+        } else {
+          saveMsg.textContent = 'Saved locally (sheet returned error)';
+          console.warn('sheet save error', r);
+        }
+      } catch (err) {
+        saveMsg.textContent = 'Saved locally (sheet error)';
+        console.warn('callAPI error', err);
+      }
+    } else {
+      saveMsg.textContent = 'Saved locally (no backend)';
+    }
+  });
+
+  /***********************
+   * LOGOUT
+   ***********************/
+  logoutBtn.addEventListener('click', async ()=>{
+    // clear local user
+    try {
+      // if firebase-config exports signOutUser
+      if(typeof signOutUser === 'function'){
+        await signOutUser();
+      }
+    } catch(e){ console.warn('firebase sign out', e) }
+
+    // clear local storage values related to auth/profile
+    try {
+      localStorage.removeItem('nj_user');
+    } catch(e){/* ignore */}
+    CURRENT_USER = null;
+    userPhoneBadge.textContent = 'Not signed in';
+    logoutBtn.classList.add('hidden');
+    alert('Logged out');
+    // optionally redirect to login
+    // location.href = 'login.html';
+  });
+
+  /***********************
+   * ADDRESSES: load / render / add / update / delete
+   ***********************/
+  async function loadAddresses(){
+    // prefer backend call if available
+    if(callAPI && CURRENT_USER && (CURRENT_USER.id || CURRENT_USER.phone || CURRENT_USER.email)){
+      try {
+        const userId = CURRENT_USER.id || CURRENT_USER.uid || CURRENT_USER.email || CURRENT_USER.phone;
+        const r = await callAPI({ type: 'getAddresses', userId });
+        if(r && r.ok && Array.isArray(r.data)){
+          ADDRESSES = r.data;
+          renderAddresses();
+          return;
+        }
+      } catch(err){
+        console.warn('getAddresses error', err);
+      }
+    }
+
+    // fallback to localStorage stored addresses
+    try {
+      ADDRESSES = JSON.parse(localStorage.getItem('nj_addresses_' + (CURRENT_USER ? (CURRENT_USER.id || CURRENT_USER.phone || 'guest') : 'guest')) || '[]');
+      renderAddresses();
+    } catch(e){
+      ADDRESSES = [];
+      renderAddresses();
     }
   }
-}
 
-// get current location
-locBtn.addEventListener('click', ()=>{
-  if(!navigator.geolocation){ alert('Geolocation not supported'); return; }
-  locBtn.disabled = true;
-  locBtn.textContent = 'Locating…';
-  navigator.geolocation.getCurrentPosition(pos=>{
-    const lat = pos.coords.latitude.toFixed(6);
-    const lng = pos.coords.longitude.toFixed(6);
-    latEl.value = lat;
-    lngEl.value = lng;
-    locBtn.disabled = false;
-    locBtn.textContent = 'Get Current Location';
-    showInfo('Location captured ✅', true);
-  }, err=>{
-    locBtn.disabled = false;
-    locBtn.textContent = 'Get Current Location';
-    alert('Location access denied or failed. Please allow location permission.');
-  }, { enableHighAccuracy:true, timeout:10000 });
-});
-
-clearLoc.addEventListener('click', ()=>{
-  latEl.value = '';
-  lngEl.value = '';
-  showInfo('Location cleared', true);
-});
-
-// Save & Continue
-saveBtn.addEventListener('click', ()=> saveProfile(true) );
-// Save & Stay
-saveStay.addEventListener('click', ()=> saveProfile(false) );
-
-// Clear profile
-clearBtn.addEventListener('click', ()=>{
-  if(confirm('Clear saved profile from this browser?')){
-    localStorage.removeItem(KEY);
-    nameEl.value = phoneEl.value = addressEl.value = latEl.value = lngEl.value = '';
-    showInfo('Profile removed ✅', true);
-    userEmailEl.textContent = 'Not signed in';
-  }
-});
-
-// init
-(function init(){
-  populate();
-})();
-</script>
-</body>
-</html>
+  function renderAddresses(){
+    addressListEl.innerHTML = '';
+    if(!ADDRESSES || ADDRESSES.length === 0){
+      addressListEl.innerHTML = '<div class="small muted">No saved addresses</div>';
+      return;
+    }
+    ADDRESSES.forEach((a, idx)=>{
+      const node = document.createElement('div');
+      node.className = 'card';
+      node.style.marginBottom = '10px';
+      node.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+          <div>
+            <div style="font-weight:800">${a.name} <span class="small muted">(${a.phone})</span></div>
+            <div class="small muted" style="margin-top:6px">${a.line}, ${a.city} - ${a.pin}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="btn ghost" data-act="select" data-idx="${idx}">Deliver here</button>
+            <button class="btn ghost" data-act="edit" data-idx="${idx}">Edit</button>
+            <button class="btn ghost" data-act="delete" data-idx
