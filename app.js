@@ -1,103 +1,142 @@
-// 🛒 Sample Products (later replace with Firestore fetch)
-const products = [
-  { id: 1, name: "Fresh Tomatoes", price: 40, img: "assets/tomato.jpg", category: "Vegetables" },
-  { id: 2, name: "Milk (1L)", price: 55, img: "assets/milk.jpg", category: "Dairy" },
-  { id: 3, name: "Apples (1kg)", price: 120, img: "assets/apple.jpg", category: "Fruits" },
-  { id: 4, name: "Cold Drink", price: 35, img: "assets/coke.jpg", category: "Beverages" },
-  { id: 5, name: "Chips", price: 20, img: "assets/chips.jpg", category: "Snacks" }
-];
+/* app.js — NJ Mart full app logic */
 
-let cart = [];
+/* ---------------- GLOBAL CONFIG ---------------- */
+const API_URL = typeof SCRIPT_URL !== "undefined" ? SCRIPT_URL : "";
 
-// 📦 Load Products
-function loadProducts() {
-  const grid = document.getElementById("productGrid");
-  if (!grid) return;
-  grid.innerHTML = "";
+/* ---------------- UTILITIES ---------------- */
+function loadCart() {
+  try {
+    return JSON.parse(localStorage.getItem("nj_cart")) || [];
+  } catch {
+    return [];
+  }
+}
+function saveCart(cart) {
+  localStorage.setItem("nj_cart", JSON.stringify(cart));
+  updateCartCount();
+}
+function updateCartCount() {
+  const cart = loadCart();
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  const el = document.getElementById("cartCount");
+  if (el) el.textContent = count;
+}
+
+/* ---------------- PRODUCTS ---------------- */
+async function loadProducts() {
+  if (!API_URL) {
+    console.warn("⚠️ API_URL missing");
+    return;
+  }
+  try {
+    const res = await fetch(API_URL + "?action=getProducts");
+    const data = await res.json();
+    renderProducts(data);
+  } catch (err) {
+    console.error("Error loading products:", err);
+  }
+}
+
+function renderProducts(products) {
+  const container = document.getElementById("productList");
+  if (!container) return;
+  container.innerHTML = "";
+  if (!products || products.length === 0) {
+    container.innerHTML = `<p style="text-align:center;color:#777;">No products found</p>`;
+    return;
+  }
+
   products.forEach(p => {
-    let card = document.createElement("div");
+    const card = document.createElement("div");
     card.className = "product-card";
     card.innerHTML = `
-      <img src="${p.img}" alt="${p.name}">
+      <img src="${p.image}" alt="${p.name}">
       <h3>${p.name}</h3>
-      <div class="price">₹${p.price}</div>
-      <button onclick="addToCart(${p.id})">Add to Cart</button>
+      <p>₹${p.price}</p>
+      <button onclick="addToCart('${p.id}','${p.name}',${p.price},'${p.image}')">Add to Cart</button>
     `;
-    grid.appendChild(card);
+    container.appendChild(card);
   });
 }
 
-// 🛒 Add to Cart
-function addToCart(id) {
-  const item = products.find(p => p.id === id);
-  const existing = cart.find(p => p.id === id);
-  if (existing) {
-    existing.qty += 1;
+/* ---------------- CART ---------------- */
+function addToCart(id, name, price, image) {
+  const cart = loadCart();
+  const idx = cart.findIndex(x => x.id === id);
+  if (idx > -1) {
+    cart[idx].qty++;
   } else {
-    cart.push({ ...item, qty: 1 });
+    cart.push({ id, name, price, qty: 1, image });
   }
-  updateCart();
+  saveCart(cart);
+  alert("🛒 " + name + " added to cart");
 }
 
-// 🛒 Update Cart UI
-function updateCart() {
-  document.getElementById("cartCount").innerText = cart.reduce((a,c)=>a+c.qty,0);
-  const list = document.getElementById("cartList");
-  list.innerHTML = "";
-  let subtotal = 0;
-  cart.forEach(item => {
-    subtotal += item.price * item.qty;
-    let row = document.createElement("div");
-    row.innerHTML = `
-      ${item.name} x ${item.qty} = ₹${item.price * item.qty}
-      <button onclick="removeFromCart(${item.id})">❌</button>
-    `;
-    list.appendChild(row);
-  });
-
-  let delivery = subtotal < 1000 && subtotal > 0 ? 20 : 0;
-  document.getElementById("sub").innerText = subtotal;
-  document.getElementById("del").innerText = delivery;
-  document.getElementById("totalAmt").innerText = subtotal + delivery;
+function clearCart() {
+  if (confirm("Clear all items from cart?")) {
+    localStorage.removeItem("nj_cart");
+    updateCartCount();
+  }
 }
 
-// ❌ Remove from Cart
-function removeFromCart(id) {
-  cart = cart.filter(p => p.id !== id);
-  updateCart();
+/* ---------------- LOGIN ---------------- */
+function goLogin() {
+  location.href = "login.html";
 }
 
-// 🔍 Global Search
-const search = document.getElementById("globalSearch");
-if (search) {
-  search.addEventListener("input", e => {
-    const val = e.target.value.toLowerCase();
-    const grid = document.getElementById("productGrid");
-    grid.innerHTML = "";
-    products
-      .filter(p => p.name.toLowerCase().includes(val))
-      .forEach(p => {
-        let card = document.createElement("div");
-        card.className = "product-card";
-        card.innerHTML = `
-          <img src="${p.img}" alt="${p.name}">
-          <h3>${p.name}</h3>
-          <div class="price">₹${p.price}</div>
-          <button onclick="addToCart(${p.id})">Add to Cart</button>
-        `;
-        grid.appendChild(card);
+function logout() {
+  localStorage.removeItem("nj_user");
+  updateUserUI();
+  location.href = "index.html";
+}
+
+function updateUserUI() {
+  const user = JSON.parse(localStorage.getItem("nj_user") || "null");
+  const loginBtn = document.getElementById("loginBtn");
+  const profileLink = document.getElementById("profileLink");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  if (user) {
+    if (loginBtn) loginBtn.style.display = "none";
+    if (profileLink) profileLink.style.display = "inline-block";
+    if (logoutBtn) logoutBtn.style.display = "inline-block";
+  } else {
+    if (loginBtn) loginBtn.style.display = "inline-block";
+    if (profileLink) profileLink.style.display = "none";
+    if (logoutBtn) logoutBtn.style.display = "none";
+  }
+}
+
+/* ---------------- CHECKOUT ---------------- */
+function goCheckout() {
+  const cart = loadCart();
+  if (cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+  localStorage.setItem("nj_checkout", JSON.stringify(cart));
+  location.href = "checkout.html";
+}
+
+/* ---------------- ON LOAD ---------------- */
+document.addEventListener("DOMContentLoaded", () => {
+  updateCartCount();
+  updateUserUI();
+
+  // Auto-load products if productList container exists
+  if (document.getElementById("productList")) {
+    loadProducts();
+  }
+
+  // Search filter
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      const term = searchInput.value.toLowerCase();
+      document.querySelectorAll("#productList .product-card").forEach(card => {
+        const name = card.querySelector("h3").textContent.toLowerCase();
+        card.style.display = name.includes(term) ? "" : "none";
       });
-  });
-}
-
-// 🛒 Cart Panel Toggle
-const cartBtn = document.getElementById("cartBtn");
-const cartPanel = document.getElementById("cartPanel");
-if (cartBtn && cartPanel) {
-  cartBtn.addEventListener("click", () => {
-    cartPanel.classList.toggle("active");
-  });
-}
-
-// 🚀 Init
-loadProducts();
+    });
+  }
+});
