@@ -3,246 +3,445 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NJ Mart — My Orders</title>
+  <title>NJ Mart — Order Details</title>
 
   <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+  <!-- Styles (expanded, production-ready) -->
   <style>
     :root{
       --bg:#f6fbf8;
-      --card:#fff;
+      --card:#ffffff;
       --muted:#6b7280;
       --accent:#2db34a;
       --accent-dark:#1f8a34;
       --danger:#ef4444;
+      --shadow: 0 12px 30px rgba(12,30,40,0.06);
       --radius:12px;
-      --shadow:0 8px 24px rgba(12,30,40,0.06);
+      --max-width:1100px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto;background:var(--bg);color:#111}
-    .container{max-width:960px;margin:18px auto;padding:14px}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background:var(--bg);
+      color:#111;
+      -webkit-font-smoothing:antialiased;
+    }
+    img{max-width:100%;display:block}
+    a{color:inherit;text-decoration:none}
 
-    header.top{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-    header.top h1{margin:0;font-size:22px;font-weight:800}
+    .wrap{max-width:var(--max-width);margin:18px auto;padding:12px}
 
-    /* card */
-    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;margin-bottom:14px}
-
-    /* order list */
-    .order{border:1px solid #eef2ef;border-radius:10px;padding:12px;margin-bottom:12px}
-    .order-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-    .order-id{font-weight:800;font-size:15px}
-    .order-status{padding:6px 12px;border-radius:20px;font-size:13px;font-weight:700}
-    .status-placed{background:#e0f7ec;color:var(--accent-dark)}
-    .status-processing{background:#fff4e0;color:#d97706}
-    .status-delivery{background:#e0f0ff;color:#2563eb}
-    .status-delivered{background:#e6fbe0;color:#15803d}
-    .status-cancelled{background:#ffe6e6;color:var(--danger)}
-
-    .order-body{margin-top:10px}
-    .items{display:flex;flex-direction:column;gap:10px}
-    .item{display:flex;gap:12px;align-items:center}
-    .item img{width:60px;height:60px;border-radius:8px;object-fit:cover}
-    .item-info{flex:1}
-    .item-info h4{margin:0;font-size:15px}
-    .muted{color:var(--muted);font-size:13px}
-
-    .order-footer{margin-top:10px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center}
-    .total{font-weight:800;font-size:16px}
-    .btn{padding:8px 14px;border-radius:8px;border:0;font-weight:700;cursor:pointer}
+    header.top{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      background:var(--card);padding:12px;border-radius:var(--radius);box-shadow:var(--shadow);
+      position:sticky;top:12px;z-index:60;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
+    header.top h1{font-size:18px;margin:0}
+    .small{font-size:13px;color:var(--muted)}
+    .btn{padding:10px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
     .btn.primary{background:var(--accent);color:#fff}
-    .btn.ghost{background:#fff;border:1px solid #ddd}
-    .btn.danger{background:var(--danger);color:#fff}
+    .btn.ghost{background:#fff;border:1px solid #e6eef0}
 
-    .details{margin-top:10px;display:none}
-    .details p{margin:4px 0;font-size:14px}
-    .toggle-details{cursor:pointer;color:var(--accent);font-size:13px;text-decoration:underline}
+    /* layout */
+    .page{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:16px}
+    @media(max-width:980px){ .page{grid-template-columns:1fr} }
 
-    footer{text-align:center;margin-top:20px;font-size:13px;color:var(--muted)}
+    .card{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:14px}
+
+    /* order area */
+    .order-header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .order-info{display:flex;gap:12px;align-items:center}
+    .badge{padding:6px 10px;border-radius:999px;background:#f3f7f2;color:var(--accent);font-weight:700}
+
+    .section{margin-top:12px}
+    .section h3{margin:0 0 8px 0}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:720px){ .grid-2{grid-template-columns:1fr} }
+
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid #f1f3f4;text-align:left}
+    th{background:#fafafa;font-weight:700}
+    .right{text-align:right}
+
+    .invoice{background:linear-gradient(180deg,#fff,#fbfff7);padding:14px;border-radius:10px;box-shadow:0 8px 30px rgba(16,185,129,0.06)}
+    .meta-row{display:flex;justify-content:space-between;gap:8px;align-items:center}
+
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .muted{color:var(--muted)}
+
+    /* order status */
+    .status-pill{padding:8px 12px;border-radius:999px;font-weight:800}
+    .status-placed{background:#fff8e6;color:#a66d00}
+    .status-dispatched{background:#e8fbee;color:#176f2b}
+    .status-delivered{background:#eef7ff;color:#0b5ea6}
+    .status-cancelled{background:#ffe9e9;color:#b31d1d}
+
+    /* footer */
+    footer.site-footer{margin-top:20px;background:var(--card);padding:12px;border-radius:12px;box-shadow:var(--shadow);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    footer .col{min-width:180px}
+
+    /* print helpers */
+    @media print {
+      header.top, .actions, footer.site-footer { display: none !important; }
+      body { background: #fff; }
+      .wrap { margin:0; max-width:none; padding:0; }
+    }
   </style>
+
+  <!-- script-config.js must be present in same folder (final version) -->
+  <script src="./script-config.js"></script>
 </head>
 <body>
+  <div class="wrap">
 
-<div class="container">
-  <!-- HEADER -->
-  <header class="top">
-    <button onclick="location.href='index.html'" class="btn ghost"><i class="fa fa-arrow-left"></i></button>
-    <h1>My Orders</h1>
-  </header>
+    <!-- top header -->
+    <header class="top">
+      <div class="brand">
+        <div class="logo">NJ</div>
+        <div>
+          <h1>NJ Mart</h1>
+          <div class="small">Order & Invoice</div>
+        </div>
+      </div>
 
-  <!-- Orders list -->
-  <div id="ordersList">
-    <!-- JS will populate -->
-    <div class="muted">Loading your orders…</div>
-  </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn ghost" onclick="location.href='index.html'"><i class="fa fa-arrow-left"></i> Back to shop</button>
+        <button id="printBtn" class="btn primary"><i class="fa fa-print"></i> Print invoice</button>
+      </div>
+    </header>
 
-  <footer>
-    NJ Mart © 2025 • Fast delivery, fresh groceries
-  </footer>
-</div>
+    <main class="page">
 
-<script>
-/* ============================================================
-   Orders Page Script
-   - loads past orders from localStorage or backend
-   - renders UI
-   - allow expand/collapse details
-   - demo actions: track, cancel
-   ============================================================ */
+      <!-- left: order details -->
+      <section class="card" id="orderArea" aria-live="polite">
+        <div id="orderContent">
+          <!-- content injected by JS -->
+          <div style="padding:18px;text-align:center;color:var(--muted)">Loading order details…</div>
+        </div>
+      </section>
 
-// helpers
-function loadOrders(){
-  try {
-    // prefer backend call if available
-    if(typeof fetchOrders === 'function'){
-      return fetchOrders(); // should return Promise
-    }
-    return Promise.resolve(JSON.parse(localStorage.getItem('nj_orders')||'[]'));
-  } catch(e){ return Promise.resolve([]) }
-}
+      <!-- right: actions & quick summary -->
+      <aside class="card">
+        <div class="invoice">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:800">Invoice</div>
+            <div id="orderShortStatus" class="badge">—</div>
+          </div>
+          <div style="margin-top:8px" id="invoiceSummary">
+            <!-- subtotal, delivery, discount, total -->
+            <div class="meta-row" style="margin-top:8px"><div class="muted">Order ID</div><div id="shortOrderId">—</div></div>
+            <div class="meta-row"><div class="muted">Date</div><div id="shortOrderDate">—</div></div>
+            <div class="meta-row"><div class="muted">Customer</div><div id="shortCustomer">—</div></div>
+            <div class="meta-row"><div class="muted">Phone</div><div id="shortPhone">—</div></div>
+          </div>
 
-function saveOrders(list){
-  localStorage.setItem('nj_orders', JSON.stringify(list));
-}
+          <div style="margin-top:12px">
+            <div style="display:flex;gap:8px">
+              <button id="downloadInvoiceBtn" class="btn ghost" style="flex:1"><i class="fa fa-download"></i> Download</button>
+              <button id="sendEmailBtn" class="btn ghost" style="flex:1"><i class="fa fa-envelope"></i> Email</button>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button id="sendSmsBtn" class="btn ghost" style="flex:1"><i class="fa fa-sms"></i> SMS</button>
+              <button id="copyInvoiceBtn" class="btn ghost" style="flex:1"><i class="fa fa-copy"></i> Copy</button>
+            </div>
+          </div>
 
-// render orders
-function renderOrders(orders){
-  const box = document.getElementById('ordersList');
-  box.innerHTML = '';
-  if(!orders || orders.length === 0){
-    box.innerHTML = '<div class="card muted">No orders found. Start shopping!</div>';
-    return;
+          <div style="margin-top:10px" class="small muted">Use Print to generate a PDF invoice for sharing or for records.</div>
+        </div>
+
+        <div class="section" style="margin-top:16px">
+          <h3 style="margin:0 0 8px 0">Quick actions</h3>
+          <div class="actions">
+            <button id="markDelivered" class="btn primary">Mark Delivered</button>
+            <button id="markDispatched" class="btn">Mark Dispatched</button>
+            <button id="markCancelled" class="btn" style="background:#fff;border:1px solid #f4c4c4;color:var(--danger)">Cancel</button>
+          </div>
+          <div class="small muted" style="margin-top:8px">Order status change will update your records locally. For sheet update, use admin panel.</div>
+        </div>
+
+      </aside>
+    </main>
+
+    <footer class="site-footer">
+      <div class="col">
+        <div style="font-weight:800">NJ Mart</div>
+        <div class="muted">Fresh groceries & home delivery</div>
+      </div>
+      <div class="col">
+        <div style="font-weight:700">Support</div>
+        <div class="muted" style="margin-top:6px"><a href="tel:+917062918607">+91 70629 18607</a></div>
+      </div>
+    </footer>
+
+  </div> <!-- wrap -->
+
+  <!-- Scripts: order fetch, render, print, share -->
+  <script>
+  /************************************************************************
+   * order.html — Final expanded production version
+   * Dependencies: script-config.js functions (if present):
+   *  - fetchOrders() : returns array or {ok:true, orders:[]}
+   *  - fetchCustomers(), fetchProducts()
+   *  - addOrder() for resubmitting/edits (optional)
+   *  If backend function names differ, this file has safe fallbacks.
+   ************************************************************************/
+
+  // safe function helper
+  function safe(fn, fallback){
+    return (typeof window[fn] === 'function') ? window[fn] : fallback;
   }
 
-  orders.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+  // wrappers
+  const _fetchOrders = safe('fetchOrders', async ()=>{ return []; });
+  const _fetchCustomers = safe('fetchCustomers', async ()=>{ return []; });
+  const _fetchProducts = safe('fetchProducts', async ()=>{ return []; });
 
-  orders.forEach(order=>{
-    const card = document.createElement('div');
-    card.className = 'order card';
-    card.innerHTML = `
+  // API base (if script-config exposes BACKEND_URL)
+  const BACKEND_URL = (typeof BACKEND_URL !== 'undefined') ? BACKEND_URL : null;
+
+  // DOM refs
+  const orderArea = document.getElementById('orderContent');
+  const printBtn = document.getElementById('printBtn');
+  const downloadInvoiceBtn = document.getElementById('downloadInvoiceBtn');
+  const sendEmailBtn = document.getElementById('sendEmailBtn');
+  const sendSmsBtn = document.getElementById('sendSmsBtn');
+  const copyInvoiceBtn = document.getElementById('copyInvoiceBtn');
+
+  const markDeliveredBtn = document.getElementById('markDelivered');
+  const markDispatchedBtn = document.getElementById('markDispatched');
+  const markCancelledBtn = document.getElementById('markCancelled');
+
+  // invoice short refs
+  const shortOrderId = document.getElementById('shortOrderId');
+  const shortOrderDate = document.getElementById('shortOrderDate');
+  const shortCustomer = document.getElementById('shortCustomer');
+  const shortPhone = document.getElementById('shortPhone');
+  const orderShortStatus = document.getElementById('orderShortStatus');
+
+  // local state
+  let ORDERS = [];
+  let PRODUCTS = [];
+  let CUSTOMERS = [];
+  let CURRENT_ORDER = null;
+
+  // util: read query param orderId
+  function getQueryParam(name){
+    const u = new URL(window.location.href);
+    return u.searchParams.get(name);
+  }
+
+  // sanitize for HTML
+  function esc(s){ if(s === undefined || s === null) return ''; return String(s).replace(/[&<>"'`=\/]/g, function(ch){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;'})[ch]; }); }
+
+  // rupee format
+  function rf(v){ return '₹' + (Number(v||0).toFixed(0)); }
+
+  // initial load
+  (async function init(){
+    try{
+      // fetch products/customers/orders in parallel if available
+      const [p, c, o] = await Promise.all([_fetchProducts(), _fetchCustomers(), _fetchOrders()]);
+
+      PRODUCTS = Array.isArray(p) ? p : (p && p.products ? p.products : []);
+      CUSTOMERS = Array.isArray(c) ? c : (c && c.customers ? c.customers : []);
+      ORDERS = Array.isArray(o) ? o : (o && o.orders ? o.orders : []);
+
+      // normalize orders: ensure array of objects
+      ORDERS = ORDERS.map(normalizeOrder);
+
+      const orderId = getQueryParam('orderId');
+      if(orderId){
+        CURRENT_ORDER = ORDERS.find(x => String(x.OrderID || x.orderId || x.id) === String(orderId));
+        // if not found locally, try reloading with backend GET by action=orders and filter
+        if(!CURRENT_ORDER){
+          // attempt to find by calling fetchOrders again (some backends return new items)
+          const o2 = await _fetchOrders();
+          const all = Array.isArray(o2) ? o2 : (o2 && o2.orders ? o2.orders : []);
+          ORDERS = all.map(normalizeOrder);
+          CURRENT_ORDER = ORDERS.find(x => String(x.OrderID || x.orderId || x.id) === String(orderId));
+        }
+      }
+
+      // if no orderId provided, show list of recent orders
+      if(!CURRENT_ORDER){
+        renderOrderList();
+      } else {
+        renderOrder(CURRENT_ORDER);
+      }
+
+    }catch(err){
+      console.error('init error', err);
+      orderArea.innerHTML = `<div style="padding:18px;color:var(--muted)">Unable to load orders — check backend connection.</div>`;
+    }
+  })();
+
+  // normalize order object shape
+  function normalizeOrder(raw){
+    if(!raw) return raw;
+    const o = Object.assign({}, raw);
+    // unify keys: OrderID, CustomerID, Item/Items, Total Amount/TotalAmount, Final Amount/FinalAmount, Order Date/OrderDate, Status
+    o.OrderID = o.OrderID || o.orderId || o.OrderId || o.id || '';
+    o.CustomerID = o.CustomerID || o.customerId || o.Customer || '';
+    o.Items = o.Items || o.Item || o.items || o.item || '[]';
+    // parse items if string
+    if(typeof o.Items === 'string'){
+      try{ o.Items = JSON.parse(o.Items); } catch(e){ /* leave as string */ }
+    }
+    o.TotalAmount = Number(o['Total Amount'] || o.TotalAmount || o.totalAmount || 0);
+    o.Discount = Number(o.Discount || o['Discount'] || o.discount || 0);
+    o.FinalAmount = Number(o['Final Amount'] || o.FinalAmount || o.finalAmount || 0) || o.TotalAmount - o.Discount;
+    o.OrderDate = o['Order Date'] || o.OrderDate || o.orderDate || o.date || '';
+    o.Status = o.Status || o.status || 'placed';
+    o.Payment = o['Payment Method'] || o.Payment || o.payment || '';
+    o.DeliveryAddress = o['Delivery Address'] || o.DeliveryAddress || o.deliveryAddress || o.address || '';
+    return o;
+  }
+
+  // render list of recent orders (if no specific orderId supplied)
+  function renderOrderList(){
+    if(!ORDERS || ORDERS.length === 0){
+      orderArea.innerHTML = `<div style="padding:18px;text-align:center;color:var(--muted)">No orders found.</div>`;
+      return;
+    }
+    // sort by date if possible (newest first)
+    const ordered = ORDERS.slice().reverse();
+    const html = document.createElement('div');
+    html.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-weight:800">Recent orders</div>
+        <div class="small muted">${ORDERS.length} orders</div>
+      </div>`;
+    const tbl = document.createElement('table');
+    tbl.innerHTML = `<thead><tr><th>Order ID</th><th>Customer</th><th>Date</th><th class="right">Total</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody>`;
+    const tbody = tbl.querySelector('tbody');
+    ordered.forEach(o => {
+      const cust = lookupCustomerName(o.CustomerID);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${esc(o.OrderID)}</td><td>${esc(cust || '—')}</td><td>${esc(o.OrderDate)}</td><td class="right">${rf(o.FinalAmount)}</td><td>${renderStatusPillInline(o.Status)}</td><td><button class="btn ghost viewOrderBtn" data-id="${esc(o.OrderID)}">View</button></td>`;
+      tbody.appendChild(tr);
+    });
+    html.appendChild(tbl);
+    orderArea.innerHTML = '';
+    orderArea.appendChild(html);
+
+    // bind view buttons
+    orderArea.querySelectorAll('.viewOrderBtn').forEach(b => b.addEventListener('click', (e) => {
+      const id = e.currentTarget.dataset.id;
+      location.href = location.pathname + '?orderId=' + encodeURIComponent(id);
+    }));
+  }
+
+  // render a single order full detail
+  function renderOrder(order){
+    CURRENT_ORDER = order;
+    // short details update
+    shortOrderId.textContent = order.OrderID || '—';
+    shortOrderDate.textContent = order.OrderDate || '—';
+    const cust = lookupCustomer(order.CustomerID);
+    shortCustomer.textContent = cust ? (cust.Name || cust.name || '—') : (order.CustomerID || '—');
+    shortPhone.textContent = cust ? (cust.Phone || cust.phone || '—') : (order.Phone || order.phone || '—');
+    orderShortStatus.textContent = (order.Status || 'placed').toUpperCase();
+
+    const statusClass = statusToClass(order.Status || 'placed');
+    orderShortStatus.className = 'badge ' + statusClass;
+
+    // build items table
+    const items = Array.isArray(order.Items) ? order.Items : (order.Items ? [order.Items] : []);
+    const tbl = document.createElement('table');
+    tbl.innerHTML = `<thead><tr><th>Item</th><th>Qty</th><th class="right">Price</th><th class="right">Total</th></tr></thead><tbody></tbody>`;
+    const tbody = tbl.querySelector('tbody');
+
+    let subtotal = 0;
+    items.forEach(it => {
+      // it may be object or simple; support both
+      const pid = it.ProductID || it.productId || it.id || '';
+      const qty = Number(it.qty || it.qtyOrdered || it.quantity || it.Quantity || 1);
+      const name = it.Name || it.name || findProductName(pid) || 'Item';
+      const price = Number(it.Price || it.price || it.unitPrice || 0);
+      const lineTotal = price * qty;
+      subtotal += lineTotal;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${esc(name)}</td><td>${esc(qty)}</td><td class="right">${rf(price)}</td><td class="right">${rf(lineTotal)}</td>`;
+      tbody.appendChild(tr);
+    });
+
+    // fallback compute from order.TotalAmount if items missing
+    if(items.length === 0){
+      subtotal = Number(order.TotalAmount || order.Total || 0);
+    }
+
+    // totals area
+    const delivery = Number(order.DeliveryCharge || order.delivery || (subtotal >= 1000 ? 0 : 20));
+    const discount = Number(order.Discount || 0);
+    const final = Number(order.FinalAmount || subtotal + delivery - discount);
+
+    // build HTML
+    const container = document.createElement('div');
+    container.innerHTML = `
       <div class="order-header">
-        <div>
-          <div class="order-id">Order #${order.id}</div>
-          <div class="muted">Placed on ${new Date(order.createdAt).toLocaleString()}</div>
+        <div class="order-info">
+          <div>
+            <div style="font-weight:800">Order ${esc(order.OrderID)}</div>
+            <div class="small muted">${esc(order.OrderDate)}</div>
+          </div>
         </div>
-        <div class="order-status ${statusClass(order.status)}">${capitalize(order.status)}</div>
+        <div style="text-align:right">
+          <div class="status-pill ${statusClass}" id="statusPill">${esc(order.Status || 'placed')}</div>
+        </div>
       </div>
-      <div class="order-body">
-        <div class="items">
-          ${order.items.map(i=>`
-            <div class="item">
-              <img src="${i.image||'https://via.placeholder.com/100'}" alt="">
-              <div class="item-info">
-                <h4>${i.name}</h4>
-                <div class="muted">₹${i.price} × ${i.qty} = ₹${i.price*i.qty}</div>
-              </div>
+
+      <div class="section">
+        <h3>Delivery details</h3>
+        <div class="grid-2">
+          <div>
+            <div style="font-weight:700">Customer</div>
+            <div class="muted">${esc(cust ? (cust.Name || cust.name || '') : (order.CustomerID || '—'))}</div>
+            <div class="muted">${esc(cust ? (cust.Phone || cust.phone || '') : (order.Phone || '—'))}</div>
+            <div class="muted" style="margin-top:8px">Address: ${esc(order.DeliveryAddress || order.Delivery || order.deliveryAddress || '')}</div>
+            <div class="muted" style="margin-top:8px">Payment: ${esc(order.Payment || order.PaymentMethod || order.Payment || '—')}</div>
+          </div>
+          <div>
+            <div style="font-weight:700">Order summary</div>
+            <div style="margin-top:8px">
+              <div style="display:flex;justify-content:space-between"><div class="muted">Items total</div><div>${rf(subtotal)}</div></div>
+              <div style="display:flex;justify-content:space-between"><div class="muted">Delivery</div><div>${rf(delivery)}</div></div>
+              <div style="display:flex;justify-content:space-between"><div class="muted">Discount</div><div>${rf(discount)}</div></div>
+              <hr style="border:none;border-top:1px dashed #eee;margin:10px 0">
+              <div style="display:flex;justify-content:space-between;font-weight:800"><div>Grand total</div><div>${rf(final)}</div></div>
             </div>
-          `).join('')}
+          </div>
         </div>
       </div>
-      <div class="order-footer">
-        <div class="total">Total: ₹${order.total}</div>
-        <div style="display:flex;gap:6px">
-          <button class="btn ghost toggle-details">Details</button>
-          <button class="btn primary">Track</button>
-          ${order.status==='placed'||order.status==='processing' ? `<button class="btn danger cancel-btn">Cancel</button>` : ''}
-        </div>
-      </div>
-      <div class="details">
-        <p><strong>Payment:</strong> ${order.paymentMethod}</p>
-        <p><strong>Address:</strong> ${order.customerAddress}</p>
-        <p><strong>Phone:</strong> ${order.customerPhone}</p>
-        <p><strong>Delivery Slot:</strong> ${order.slot||'—'}</p>
-        <p><strong>Note:</strong> ${order.deliveryNote||'—'}</p>
-        <p><strong>Status:</strong> ${order.status}</p>
+
+      <div class="section">
+        <h3>Items</h3>
       </div>
     `;
-    box.appendChild(card);
-  });
 
-  // attach toggle events
-  document.querySelectorAll('.toggle-details').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const det = btn.closest('.order').querySelector('.details');
-      det.style.display = det.style.display==='block'?'none':'block';
-    });
-  });
+    // append table
+    container.querySelector('.section:last-of-type').appendChild(tbl);
 
-  // cancel btns
-  document.querySelectorAll('.cancel-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      if(confirm('Cancel this order?')){
-        const id = btn.closest('.order').querySelector('.order-id').textContent.replace('Order #','');
-        cancelOrder(id);
-      }
-    });
-  });
-}
+    // admin/notes area
+    const notes = document.createElement('div');
+    notes.className = 'section';
+    notes.innerHTML = `<h3>Notes & Actions</h3>
+      <div class="muted">Order status: <strong>${esc(order.Status || 'placed')}</strong></div>
+      <div style="margin-top:10px" class="actions">
+        <button id="printInvoiceInline" class="btn ghost"><i class="fa fa-print"></i> Print</button>
+        <button id="openInAdmin" class="btn ghost">Open in Admin</button>
+      </div>
+    `;
+    container.appendChild(notes);
 
-function statusClass(status){
-  switch(status){
-    case 'placed': return 'status-placed';
-    case 'processing': return 'status-processing';
-    case 'out for delivery': return 'status-delivery';
-    case 'delivered': return 'status-delivered';
-    case 'cancelled': return 'status-cancelled';
-    default: return 'status-placed';
-  }
-}
-function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1) }
+    orderArea.innerHTML = '';
+    orderArea.appendChild(container);
 
-// cancel order
-function cancelOrder(id){
-  let orders = JSON.parse(localStorage.getItem('nj_orders')||'[]');
-  const idx = orders.findIndex(o=>o.id==id);
-  if(idx>-1){
-    orders[idx].status = 'cancelled';
-    saveOrders(orders);
-    renderOrders(orders);
-    alert('Order cancelled');
-  }
-}
-
-// init
-async function initOrders(){
-  const orders = await loadOrders();
-  renderOrders(orders);
-}
-
-// demo populate if no orders
-(function seedDemo(){
-  if(!localStorage.getItem('nj_orders')){
-    const demo = [
-      {
-        id:'ORD12345',
-        createdAt:new Date().toISOString(),
-        status:'placed',
-        items:[
-          {id:'p1',name:'Atta 5kg',price:300,qty:1,image:'https://via.placeholder.com/100?text=Atta'},
-          {id:'p2',name:'Salt 1kg',price:20,qty:2,image:'https://via.placeholder.com/100?text=Salt'}
-        ],
-        subtotal:340,
-        deliveryCharge:20,
-        discount:0,
-        tax:18,
-        total:378,
-        paymentMethod:'COD',
-        customerName:'Demo User',
-        customerPhone:'9876543210',
-        customerAddress:'123 Street, City',
-        slot:'Tomorrow 10am-12pm',
-        deliveryNote:'Ring bell'
-      }
-    ];
-    saveOrders(demo);
-  }
-})();
-
-// run
-initOrders();
-
-</script>
-</body>
-</html>
+    // update summary pane
+    shortOrderId.textContent = order.OrderID || '—';
+    shortOrderDate.textContent = order.OrderDate || '—';
+    shortCustomer.textContent = cust ? (cust.Name || cust.na
