@@ -3,26 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NJ Mart — Checkout (Full)</title>
+  <title>NJ Mart — Checkout</title>
 
   <!-- Fonts & icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <!-- =========================================================
-       FULL EXPANDED / PRODUCTION-STYLE Checkout Page
-       - Multi-step checkout UI
-       - Address book + new address form
-       - Delivery slot selection
-       - Payment options (COD/UPI/Card)
-       - Coupon apply + validation
-       - Order summary, totals, taxes, delivery rules
-       - Hooks to backend via `callScriptAPI()` or `placeOrder()` (from script-config.js)
-       - Plenty of comments so you can edit later
-       ========================================================= -->
+  <!-- Styles (expanded, production-ready) -->
   <style>
     :root{
-      --max-width:1100px;
       --bg:#f6fbf8;
       --card:#ffffff;
       --muted:#6b7280;
@@ -31,409 +20,470 @@
       --danger:#ef4444;
       --shadow: 0 12px 30px rgba(12,30,40,0.06);
       --radius:12px;
-      --mono: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      --max-width:1100px;
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:var(--mono);background:var(--bg);color:#111;-webkit-font-smoothing:antialiased}
-    a{color:inherit}
-    .container{max-width:var(--max-width);margin:22px auto;padding:14px}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:#111;-webkit-font-smoothing:antialiased}
+    img{max-width:100%;display:block}
+    a{color:inherit;text-decoration:none}
 
-    /* Page header */
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
-    .store-brand{display:flex;align-items:center;gap:12px}
-    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px}
-    h1{font-size:20px;margin:0}
-    .small-muted{font-size:13px;color:var(--muted)}
+    .wrap{max-width:var(--max-width);margin:18px auto;padding:12px}
 
-    /* layout */
-    .main{display:grid;grid-template-columns:1fr 420px;gap:16px;margin-top:16px}
-    @media(max-width:980px){ .main{grid-template-columns:1fr} }
-
-    /* cards */
-    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
-    .section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-    .section-title h2{font-size:16px;margin:0}
-    .muted{color:var(--muted);font-size:13px}
-
-    /* steps bar */
-    .steps{display:flex;gap:8px;align-items:center;margin:8px 0 18px 0}
-    .step{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;background:#fff;border:1px solid #eef6ef;min-width:90px}
-    .step.active{background:linear-gradient(90deg,var(--accent),var(--accent-dark));color:#fff;border:0}
-    .step .label{font-weight:700;font-size:13px}
-    .step .sub{font-size:12px;color:var(--muted)}
-
-    /* address book */
-    .address-list{display:flex;flex-direction:column;gap:10px}
-    .addr-item{border-radius:10px;border:1px solid #eef3f0;padding:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-    .addr-item .meta{font-size:14px}
-    .addr-actions{display:flex;gap:8px}
-
-    /* form */
-    .form-row{display:flex;gap:10px;flex-wrap:wrap}
-    .form-col{flex:1;min-width:160px}
-    label{display:block;font-size:13px;margin:6px 0 6px}
-    input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #e7eef0;font-size:14px;background:#fff}
-    textarea{min-height:80px;resize:vertical}
-
-    /* delivery slots */
-    .slots{display:flex;flex-wrap:wrap;gap:8px}
-    .slot{padding:10px;border-radius:8px;border:1px solid #e7f3ea;cursor:pointer;background:#fff;min-width:140px}
-    .slot.selected{background:linear-gradient(90deg,var(--accent),var(--accent-dark));color:#fff;border:0}
-
-    /* payment options */
-    .pay-list{display:flex;flex-direction:column;gap:8px}
-    .pay-item{display:flex;gap:10px;align-items:center;padding:10px;border-radius:8px;border:1px solid #eef2f2;background:#fff;cursor:pointer}
-    .pay-item input{width:auto}
-
-    /* order summary (right column) */
-    .summary {position:sticky;top:18px}
-    .items-list{max-height:320px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding-bottom:6px}
-    .summary-item{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;border:1px solid #f3f5f5;background:#fff}
-    .summary-item img{width:64px;height:56px;object-fit:cover;border-radius:8px}
-    .summary-line{display:flex;justify-content:space-between;padding:8px 0;font-size:14px}
-    .total{font-weight:900;font-size:18px}
-
-    /* coupon */
-    .coupon-row{display:flex;gap:8px;margin-top:8px}
-    .coupon-row input{flex:1}
-
-    /* confirm buttons */
-    .actions-row{display:flex;gap:10px;margin-top:12px}
-    .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    header.top{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      background:var(--card);padding:12px;border-radius:var(--radius);box-shadow:var(--shadow);
+      position:sticky;top:12px;z-index:60;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
+    header.top h1{font-size:18px;margin:0}
+    .small{font-size:13px;color:var(--muted)}
+    .btn{padding:10px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
     .btn.primary{background:var(--accent);color:#fff}
     .btn.ghost{background:#fff;border:1px solid #e6eef0}
-    .btn.link{background:transparent;color:var(--accent);text-decoration:underline;padding:6px 8px;border-radius:8px;font-weight:600}
 
-    /* small helpers */
-    .muted-sm{font-size:12px;color:var(--muted)}
-    .notice{background:#fffced;border-radius:8px;padding:10px;border:1px solid #fff1c3;margin-top:12px}
+    /* layout */
+    .page{display:grid;grid-template-columns:1fr 420px;gap:16px;margin-top:16px}
+    @media(max-width:980px){ .page{grid-template-columns:1fr} }
 
+    .card{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:14px}
+
+    /* form */
+    .form-row{display:flex;gap:8px;margin-top:10px}
+    .form-row .col{flex:1}
+    .input{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef0;background:#fff}
+    textarea.input{min-height:80px;resize:vertical}
+
+    /* payment methods */
+    .pay-methods{display:flex;gap:8px;flex-direction:column;margin-top:10px}
+    .pay-option{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;border:1px solid #e6eef0;cursor:pointer}
+    .pay-option input{transform:scale(1.1)}
+    .pay-option.selected{background:#f3fff6;border-color:rgba(45,179,74,0.15)}
+
+    /* summary */
+    .summary{position:sticky;top:90px}
+    .summary .rowline{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
+    .total{font-size:18px;font-weight:800}
+    .coupon-row{display:flex;gap:8px;margin-top:8px}
+    .coupon-row input{flex:1;padding:10px;border-radius:8px;border:1px solid #e6eef0}
+    .note{font-size:13px;color:var(--muted)}
+    .muted{color:var(--muted)}
+
+    /* responsive */
     @media(max-width:720px){
-      .steps{overflow:auto}
-      .section-title{flex-direction:column;align-items:flex-start;gap:6px}
-      .summary{position:static;margin-top:12px}
+      .form-row{flex-direction:column}
+      .page{grid-template-columns:1fr}
+      .summary{position:static}
     }
   </style>
+
+  <!-- script-config.js must be present in same folder -->
+  <script src="./script-config.js"></script>
 </head>
 <body>
+  <div class="wrap">
 
-  <!-- container -->
-  <div class="container">
-
-    <!-- top bar -->
-    <div class="topbar">
-      <div class="store-brand">
+    <!-- header -->
+    <header class="top">
+      <div class="brand">
         <div class="logo">NJ</div>
         <div>
-          <h1>NJ Mart — Checkout</h1>
-          <div class="small-muted">Fast delivery • Secure payments • Save addresses</div>
-        </div>
-      </div>
-      <div class="small-muted">Support: <a href="tel:+917062918607">+91 70629 18607</a></div>
-    </div>
-
-    <!-- steps indicator -->
-    <div style="margin-top:12px" class="card">
-      <div class="steps" role="tablist" aria-label="Checkout steps">
-        <div class="step active" id="stepCart">
-          <div class="label">Cart</div>
-          <div class="sub">Items</div>
-        </div>
-        <div class="step" id="stepAddress">
-          <div class="label">Address</div>
-          <div class="sub">Delivery details</div>
-        </div>
-        <div class="step" id="stepPayment">
-          <div class="label">Payment</div>
-          <div class="sub">Pay & confirm</div>
+          <h1>NJ Mart</h1>
+          <div class="small">Checkout</div>
         </div>
       </div>
 
-      <div class="muted-sm">Follow these steps to place your order. You can save addresses for faster checkout later.</div>
-    </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn ghost" onclick="location.href='cart.html'"><i class="fa fa-arrow-left"></i> Back to cart</button>
+      </div>
+    </header>
 
-    <!-- main layout -->
-    <div class="main">
+    <main class="page">
 
-      <!-- LEFT: checkout flow -->
-      <div>
+      <!-- left: checkout form -->
+      <section class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:800">Billing & delivery</div>
+          <div class="small">Fill details to place the order</div>
+        </div>
 
-        <!-- SECTION: Cart review (expanded list + editable qty) -->
-        <section id="cartReview" class="card" aria-labelledby="stepCart">
-          <div class="section-title">
-            <h2>Review your cart</h2>
-            <div class="muted">Edit quantities or remove items before proceeding</div>
-          </div>
-
-          <!-- items list -->
-          <div id="cartItemsList" style="display:flex;flex-direction:column;gap:10px">
-            <!-- JS will populate -->
-            <div class="muted-sm">Loading cart…</div>
-          </div>
-
-          <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
-            <button id="continueToAddress" class="btn primary">Proceed to Address</button>
-            <button id="clearCartBtn" class="btn ghost">Clear cart</button>
-            <div style="margin-left:auto" class="muted-sm">Need help? Call <a href="tel:+917062918607">+91 70629 18607</a></div>
-          </div>
-        </section>
-
-        <!-- SECTION: Address book & new address -->
-        <section id="addressSection" class="card" aria-labelledby="stepAddress" style="display:none;margin-top:12px">
-          <div class="section-title">
-            <h2>Delivery address</h2>
-            <div class="muted">Select a saved address or add a new one</div>
-          </div>
-
-          <!-- saved addresses -->
-          <div style="margin-bottom:10px">
-            <div class="muted-sm" style="margin-bottom:8px">Saved addresses</div>
-            <div id="addressList" class="address-list">
-              <!-- JS populates saved addresses -->
+        <!-- customer fields -->
+        <div style="margin-top:12px">
+          <div class="form-row">
+            <div class="col">
+              <input id="name" class="input" placeholder="Full name" />
             </div>
-            <div id="noAddressMsg" class="muted-sm" style="display:none;margin-top:8px">No saved addresses yet — add a new one below.</div>
-          </div>
-
-          <hr style="border:none;border-top:1px dashed #eef2ef;margin:12px 0">
-
-          <!-- new address form -->
-          <div>
-            <div class="muted-sm" style="margin-bottom:8px">Add / Edit address</div>
-            <div class="form-row">
-              <div class="form-col">
-                <label for="name">Full name</label>
-                <input id="name" placeholder="Name">
-              </div>
-              <div class="form-col">
-                <label for="phone">Phone</label>
-                <input id="phone" placeholder="+91 9XXXXXXXXX">
-              </div>
+            <div class="col">
+              <input id="phone" class="input" placeholder="Mobile number (10 digits)" />
             </div>
-
-            <div class="form-row" style="margin-top:6px">
-              <div class="form-col">
-                <label for="flat">House / Flat no.</label>
-                <input id="flat" placeholder="House no., floor, building">
-              </div>
-              <div class="form-col">
-                <label for="street">Street / Area</label>
-                <input id="street" placeholder="Street, locality">
-              </div>
-            </div>
-
-            <div class="form-row" style="margin-top:6px">
-              <div class="form-col">
-                <label for="city">City</label>
-                <input id="city" placeholder="City">
-              </div>
-              <div class="form-col">
-                <label for="pincode">Pincode</label>
-                <input id="pincode" placeholder="Pin code">
-              </div>
-            </div>
-
-            <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
-              <button id="useCurrentLocation" class="btn ghost"><i class="fa fa-location-dot"></i> Use current location</button>
-              <button id="saveAddressBtn" class="btn primary">Save address</button>
-              <div style="margin-left:auto" class="muted-sm">You can save multiple addresses</div>
-            </div>
-
           </div>
 
-          <div id="addressMsg" class="muted-sm" style="margin-top:8px;display:none"></div>
-
-          <div style="margin-top:12px;display:flex;gap:8px">
-            <button id="backToCart" class="btn ghost">Back to Cart</button>
-            <button id="continueToPayment" class="btn primary" style="margin-left:auto">Continue to Payment</button>
-          </div>
-        </section>
-
-        <!-- SECTION: Delivery slot selection -->
-        <section id="slotsSection" class="card" style="display:none;margin-top:12px">
-          <div class="section-title">
-            <h2>Delivery slot</h2>
-            <div class="muted">Choose a convenient delivery time</div>
+          <div class="form-row">
+            <input id="email" class="input" placeholder="Email (optional)" />
           </div>
 
-          <div class="muted-sm" style="margin-bottom:8px">Available slots today & tomorrow</div>
-          <div id="slotsContainer" class="slots">
-            <!-- JS populates slots -->
+          <div class="form-row" style="margin-top:10px">
+            <textarea id="address" class="input" placeholder="Delivery address: house / street / landmark"></textarea>
           </div>
 
-          <div class="muted-sm" style="margin-top:10px">Delivery charges may vary by slot or area.</div>
-
-        </section>
-
-        <!-- SECTION: Payment -->
-        <section id="paymentSection" class="card" aria-labelledby="stepPayment" style="display:none;margin-top:12px">
-          <div class="section-title">
-            <h2>Payment</h2>
-            <div class="muted">Choose a payment method</div>
-          </div>
-
-          <div class="pay-list">
-            <label class="pay-item"><input type="radio" name="paymentMethod" value="COD" checked> <div style="font-weight:700">Cash on Delivery (COD)</div> <div class="muted-sm" style="margin-left:auto">Pay when you receive</div></label>
-            <label class="pay-item"><input type="radio" name="paymentMethod" value="UPI"> <div style="font-weight:700">UPI / PhonePe / GooglePay</div> <div class="muted-sm" style="margin-left:auto">Instant & safe</div></label>
-            <label class="pay-item"><input type="radio" name="paymentMethod" value="Card"> <div style="font-weight:700">Card / Netbanking</div> <div class="muted-sm" style="margin-left:auto">Secure payment</div></label>
+          <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+            <button id="useLocation" class="btn ghost"><i class="fa fa-location-dot"></i> Use current location</button>
+            <div class="small muted" id="locationMsg"></div>
           </div>
 
           <div style="margin-top:12px">
-            <label for="deliveryNote">Delivery instructions (optional)</label>
-            <textarea id="deliveryNote" placeholder="e.g. leave at gate, call on arrival"></textarea>
-          </div>
-
-          <div style="margin-top:10px" class="coupon-row">
-            <input id="couponInput" placeholder="Have a coupon code?">
-            <button id="applyCoupon" class="btn ghost">Apply</button>
-            <div id="couponStatus" class="muted-sm" style="margin-left:8px"></div>
-          </div>
-
-          <div class="notice muted-sm" id="paymentNotice" style="display:none;margin-top:12px"></div>
-
-          <div style="margin-top:12px;display:flex;gap:8px">
-            <button id="backToAddress" class="btn ghost">Back</button>
-            <button id="confirmOrderBtn" class="btn primary" style="margin-left:auto">Confirm & Pay</button>
-          </div>
-
-        </section>
-
-      </div>
-
-      <!-- RIGHT: Order summary -->
-      <aside class="summary card">
-        <div class="section-title"><h2>Order Summary</h2><div class="muted-sm">Items & totals</div></div>
-
-        <div id="orderItems" class="items-list">
-          <!-- JS: summary items -->
-          <div class="muted-sm">Loading items…</div>
-        </div>
-
-        <div style="margin-top:10px">
-          <div class="summary-line"><div class="muted-sm">Items total</div><div id="sumItems">₹0</div></div>
-          <div class="summary-line"><div class="muted-sm">Delivery charge</div><div id="sumDelivery">₹0</div></div>
-          <div class="summary-line"><div class="muted-sm">Discount</div><div id="sumDiscount">₹0</div></div>
-          <div class="summary-line"><div class="muted-sm">Taxes (GST)</div><div id="sumTax">₹0</div></div>
-          <div style="border-top:1px dashed #eef3ee;margin-top:8px"></div>
-          <div class="summary-line total" style="margin-top:10px"><div>Total</div><div id="sumTotal">₹0</div></div>
-        </div>
-
-        <div style="margin-top:10px" class="muted-sm">Orders below ₹1000 incur ₹20 delivery charge (example). You can edit items or coupons before placing order.</div>
-
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button id="editCartBtn" class="btn ghost">Edit Cart</button>
-          <button id="placeOrderQuickBtn" class="btn primary" style="margin-left:auto">Place Order</button>
-        </div>
-
-        <div style="margin-top:12px" class="muted-sm">We will send the bill to your registered phone number and email (if provided).</div>
-
-      </aside>
-
-    </div> <!-- main -->
-
-  </div> <!-- container -->
-
-  <!-- ========== SCRIPT: logic, validation, backend calls ========== -->
-  <script>
-    /* ==========
-       Assumptions:
-       - script-config.js provides: callScriptAPI(payload), getLocalUser(), setLocalUser(), getCart(), saveCart(), clearCart(), placeOrder()
-       - If placeOrder() is not available, callScriptAPI({type:'addOrder', order}) will be used
-       - localStorage keys: 'nj_cart' (cart array), 'nj_coupon' (coupon), 'nj_user' (user profile)
-       - This script focuses on client-side flow + calling backend.
-       ========== */
-
-    // Config & thresholds
-    const DELIVERY_FEE = 25;       // default delivery (varies)
-    const DELIVERY_FREE_THRESHOLD = 499; // free above this
-    const DEFAULT_TAX_RATE = 0.05; // 5% example GST
-
-    /* ------------------------
-       Helpers: localStorage cart
-       ------------------------ */
-    function getCartLocal(){ try{ return JSON.parse(localStorage.getItem('nj_cart')||'[]'); }catch(e){ return [] } }
-    function saveCartLocal(cart){ localStorage.setItem('nj_cart', JSON.stringify(cart)); }
-    function clearCartLocal(){ localStorage.removeItem('nj_cart'); }
-    function getLocalUser(){ try{ return JSON.parse(localStorage.getItem('nj_user')||'null') }catch(e){ return null } }
-
-    /* ------------------------
-       Render cart review (left)
-       ------------------------ */
-    function renderCartReview(){
-      const cont = document.getElementById('cartItemsList');
-      const cart = getCartLocal();
-      cont.innerHTML = '';
-      if(!cart || cart.length===0){
-        cont.innerHTML = '<div class="muted-sm">Your cart is empty. Add products before checkout.</div>';
-        return;
-      }
-      cart.forEach(item=>{
-        const node = document.createElement('div');
-        node.className = 'addr-item';
-        node.innerHTML = `
-          <div style="display:flex;gap:12px;align-items:center;">
-            <img src="${item.image||'https://via.placeholder.com/120'}" alt="" style="width:84px;height:72px;object-fit:cover;border-radius:8px">
-            <div>
-              <div style="font-weight:800">${item.name}</div>
-              <div class="muted-sm">₹${item.price} × ${item.qty} = ₹${(item.price*item.qty).toFixed(0)}</div>
-              <div style="margin-top:8px;display:flex;gap:6px;align-items:center">
-                <button class="btn ghost small" data-act="dec" data-id="${item.id}">−</button>
-                <div class="muted-sm">Qty: ${item.qty}</div>
-                <button class="btn ghost small" data-act="inc" data-id="${item.id}">+</button>
-                <button class="btn ghost small" data-act="remove" data-id="${item.id}">Remove</button>
-              </div>
+            <div style="font-weight:800">Payment method</div>
+            <div class="pay-methods" id="payMethods">
+              <!-- options created by JS -->
             </div>
           </div>
-        `;
-        cont.appendChild(node);
+
+          <div style="margin-top:12px">
+            <div style="font-weight:800">Apply coupon</div>
+            <div class="coupon-row">
+              <input id="couponCode" placeholder="Enter coupon code" />
+              <button id="applyCoupon" class="btn primary">Apply</button>
+            </div>
+            <div class="small muted" id="couponMsg" style="margin-top:8px"></div>
+          </div>
+
+          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+            <button id="placeOrderBtn" class="btn primary">Place Order (COD)</button>
+            <button id="upiPayBtn" class="btn" style="background:linear-gradient(90deg,var(--accent),var(--accent-dark));color:#fff">Pay via UPI</button>
+            <button id="cardBtn" class="btn ghost">Pay by Card (Coming)</button>
+          </div>
+
+          <div style="margin-top:8px" class="note">Order confirmation will be sent to the phone number entered above (or account phone if logged in).</div>
+        </div>
+      </section>
+
+      <!-- right: order summary -->
+      <aside class="summary">
+        <div class="card">
+          <div style="font-weight:800">Order summary</div>
+          <div class="rowline" style="margin-top:8px"><div class="muted">Items total</div><div id="subtotal">₹0</div></div>
+          <div class="rowline"><div class="muted">Delivery charge</div><div id="delivery">₹0</div></div>
+          <div class="rowline"><div class="muted">Discount</div><div id="discount">₹0</div></div>
+          <hr style="border:none;border-top:1px dashed #eee;margin:8px 0">
+          <div class="rowline total"><div>Grand total</div><div id="grand">₹0</div></div>
+
+          <div style="margin-top:8px" class="small muted">Delivery ₹20 for orders below ₹1000. Free for ₹1000 and above.</div>
+        </div>
+      </aside>
+
+    </main>
+
+  </div>
+
+  <!-- Script: checkout logic -->
+  <script>
+  /*****************************************************************************
+   * checkout.html — Production-ready checkout page
+   * - Uses script-config.js functions if present:
+   *    getCart(), saveCart(), getUser(), validateCoupon(code), addOrder(payload), addCustomer(payload), toast(msg)
+   * - Fallbacks provided for local use (localStorage)
+   * - UPI ID integrated: njmartnainwa@ybl
+   * - Delivery rule: if subtotal < 1000 => ₹20 delivery else 0
+   *****************************************************************************/
+
+  // ---------- Config ----------
+  const UPI_ID = 'njmartnainwa@ybl';           // provided by you
+  const UPI_PAYEE_NAME = 'NJ Mart';
+  const DELIVERY_THRESHOLD = 1000;             // ₹1000 threshold
+  const DELIVERY_CHARGE = 20;                  // ₹20 when below threshold
+
+  // ---------- safe function wrappers (script-config) ----------
+  function exists(fn){ return (typeof window[fn] === 'function'); }
+  const _getCart = exists('getCart') ? window.getCart : function(){ try{ return JSON.parse(localStorage.getItem('nj_cart')||'[]'); }catch(e){ return []; } };
+  const _saveCart = exists('saveCart') ? window.saveCart : function(c){ localStorage.setItem('nj_cart', JSON.stringify(c)); };
+  const _validateCoupon = exists('validateCoupon') ? window.validateCoupon : async function(code){ return { ok:false, error:'No coupon API' }; };
+  const _addOrder = exists('addOrder') ? window.addOrder : async function(payload){ return { ok:false, error:'No addOrder API' }; };
+  const _addCustomer = exists('addCustomer') ? window.addCustomer : async function(payload){ return { ok:false, error:'No addCustomer API' }; };
+  const _getUser = exists('getUser') ? window.getUser : function(){ try{ return JSON.parse(localStorage.getItem('nj_user')||'null'); }catch(e){ return null; } };
+  const _toast = (typeof toast === 'function') ? toast : function(m,ms=1800){ console.log('toast:',m); if(ms>0) {/* minimal */} alert(m); };
+
+  // ---------- DOM refs ----------
+  const nameEl = document.getElementById('name');
+  const phoneEl = document.getElementById('phone');
+  const emailEl = document.getElementById('email');
+  const addressEl = document.getElementById('address');
+  const useLocationBtn = document.getElementById('useLocation');
+  const locationMsg = document.getElementById('locationMsg');
+
+  const payMethodsEl = document.getElementById('payMethods');
+  const couponInput = document.getElementById('couponCode');
+  const applyCouponBtn = document.getElementById('applyCoupon');
+  const couponMsg = document.getElementById('couponMsg');
+
+  const placeOrderBtn = document.getElementById('placeOrderBtn');
+  const upiPayBtn = document.getElementById('upiPayBtn');
+  const cardBtn = document.getElementById('cardBtn');
+
+  const subtotalEl = document.getElementById('subtotal');
+  const deliveryEl = document.getElementById('delivery');
+  const discountEl = document.getElementById('discount');
+  const grandEl = document.getElementById('grand');
+
+  // ---------- state ----------
+  let CART = [];
+  let APPLIED_COUPON = null;
+  let SELECTED_PAYMENT = 'COD'; // default
+
+  // ---------- init ----------
+  document.addEventListener('DOMContentLoaded', () => {
+    loadCart();
+    renderPaymentOptions();
+    bindUI();
+    prefillUser();
+    updateSummary();
+  });
+
+  function loadCart(){
+    CART = _getCart() || [];
+    // CART expected structure: array of { ProductID, Name, Price, Quantity, Image, ... }
+  }
+
+  function bindUI(){
+    applyCouponBtn.addEventListener('click', onApplyCoupon);
+    placeOrderBtn.addEventListener('click', onPlaceOrderCOD);
+    upiPayBtn.addEventListener('click', onPayViaUPI);
+    cardBtn.addEventListener('click', ()=> _toast('Card integration not configured', 2000));
+    useLocationBtn.addEventListener('click', addCurrentLocation);
+  }
+
+  // Payment options UI
+  function renderPaymentOptions(){
+    const methods = [
+      { id:'COD', label:'Cash on Delivery (Pay at delivery)' },
+      { id:'UPI', label:'Pay via UPI (Instant)' },
+      { id:'CARD', label:'Card / Netbanking (Coming)' }
+    ];
+    payMethodsEl.innerHTML = '';
+    methods.forEach(m=>{
+      const div = document.createElement('div');
+      div.className = 'pay-option' + (m.id === SELECTED_PAYMENT ? ' selected' : '');
+      div.innerHTML = `<label style="display:flex;align-items:center;gap:10px;width:100%"><input type="radio" name="pay" value="${m.id}" ${m.id===SELECTED_PAYMENT?'checked':''} /> <div style="flex:1">${m.label}</div></label>`;
+      div.addEventListener('click', ()=>{
+        SELECTED_PAYMENT = m.id;
+        // visual select
+        Array.from(payMethodsEl.querySelectorAll('.pay-option')).forEach(x=>x.classList.remove('selected'));
+        div.classList.add('selected');
+        // update button visibility / text
+        updatePayButtons();
       });
-    }
-
-    // event delegation for cart qty/remove
-    document.getElementById('cartItemsList').addEventListener('click', (e)=>{
-      const btn = e.target.closest('button');
-      if(!btn) return;
-      const act = btn.dataset.act;
-      const id = btn.dataset.id;
-      let cart = getCartLocal();
-      const idx = cart.findIndex(x=>x.id === id);
-      if(act === 'dec' && idx>-1){
-        if(cart[idx].qty>1) cart[idx].qty--;
-        else if(confirm('Remove item?')) cart.splice(idx,1);
-      }
-      if(act === 'inc' && idx>-1) cart[idx].qty++;
-      if(act === 'remove' && idx>-1) cart.splice(idx,1);
-      saveCartLocal(cart);
-      renderAllSummaries();
-      renderCartReview();
+      payMethodsEl.appendChild(div);
     });
+    updatePayButtons();
+  }
 
-    /* ------------------------
-       Render order summary (right)
-       ------------------------ */
-    function calcTotals(){
-      const cart = getCartLocal();
-      const itemsTotal = cart.reduce((s,i)=> s + (Number(i.price||0) * Number(i.qty||1)), 0);
-      const delivery = (itemsTotal === 0 || itemsTotal >= DELIVERY_FREE_THRESHOLD) ? 0 : DELIVERY_FEE;
-      const coupon = JSON.parse(localStorage.getItem('nj_coupon')||'null');
-      const discount = coupon ? (coupon.discount || 0) : 0;
-      const tax = Math.round((itemsTotal - discount) * DEFAULT_TAX_RATE);
-      const total = Math.max(0, itemsTotal + delivery - discount + tax);
-      return { itemsTotal, delivery, discount, tax, total };
+  function updatePayButtons(){
+    if(SELECTED_PAYMENT === 'COD'){
+      placeOrderBtn.style.display = 'inline-block';
+      upiPayBtn.style.display = 'inline-block';
+      upiPayBtn.textContent = 'Pay via UPI (optional)';
+    } else if(SELECTED_PAYMENT === 'UPI'){
+      placeOrderBtn.style.display = 'inline-block';
+      upiPayBtn.style.display = 'inline-block';
+      upiPayBtn.textContent = 'Pay via UPI';
+    } else {
+      // CARD or others
+      placeOrderBtn.style.display = 'inline-block';
+      upiPayBtn.style.display = 'none';
     }
+  }
 
-    function renderSummaryItems(){
-      const list = document.getElementById('orderItems');
-      const cart = getCartLocal();
-      list.innerHTML = '';
-      if(!cart || cart.length===0){
-        list.innerHTML = '<div class="muted-sm">No items in cart</div>';
+  // Prefill from logged in user if present
+  function prefillUser(){
+    try{
+      const u = _getUser();
+      if(u){
+        if(u.Name) nameEl.value = u.Name;
+        if(u.Phone) phoneEl.value = u.Phone;
+        if(u.Email) emailEl.value = u.Email;
+        if(u.Address) addressEl.value = u.Address;
+      }
+    }catch(e){ console.warn('prefillUser', e); }
+  }
+
+  // Add current location to address
+  function addCurrentLocation(){
+    if(!navigator.geolocation){ locationMsg.textContent = 'Geolocation not supported'; return; }
+    locationMsg.textContent = 'Getting location...';
+    navigator.geolocation.getCurrentPosition((pos)=>{
+      const lat = pos.coords.latitude.toFixed(6);
+      const lon = pos.coords.longitude.toFixed(6);
+      addressEl.value = `Lat: ${lat}, Lon: ${lon} — ${addressEl.value || ''}`;
+      locationMsg.textContent = 'Location added';
+    }, (err)=>{
+      console.error(err);
+      locationMsg.textContent = 'Could not access location';
+    }, { enableHighAccuracy:true, timeout:10000 });
+  }
+
+  // Coupon apply
+  async function onApplyCoupon(){
+    const code = (couponInput.value || '').toString().trim();
+    couponMsg.textContent = '';
+    if(!code){ couponMsg.textContent = 'Enter coupon code'; return; }
+    couponMsg.textContent = 'Checking...';
+    try{
+      const res = await _validateCoupon(code);
+      if(res && res.ok){
+        APPLIED_COUPON = { code: code, discount: Number(res.discount || res.Discount || 0) };
+        couponMsg.textContent = `Coupon applied: ₹${APPLIED_COUPON.discount} off`;
+        _toast('Coupon applied');
+      } else {
+        APPLIED_COUPON = null;
+        couponMsg.textContent = (res && res.error) ? res.error : 'Invalid coupon';
+        _toast('Invalid coupon');
+      }
+    }catch(err){
+      APPLIED_COUPON = null;
+      couponMsg.textContent = 'Coupon check failed';
+      console.error(err);
+    }
+    updateSummary();
+  }
+
+  // Summary calculations
+  function calcTotals(){
+    const subtotal = CART.reduce((s,i) => s + (Number(i.Price || i.price || 0) * Number(i.Quantity || i.qty || 1)), 0);
+    const delivery = (subtotal === 0 || subtotal >= DELIVERY_THRESHOLD) ? 0 : DELIVERY_CHARGE;
+    const discount = APPLIED_COUPON ? Number(APPLIED_COUPON.discount || 0) : 0;
+    const grand = Math.max(0, subtotal + delivery - discount);
+    return { subtotal, delivery, discount, grand };
+  }
+
+  function updateSummary(){
+    const t = calcTotals();
+    subtotalEl.textContent = '₹' + (t.subtotal.toFixed(0));
+    deliveryEl.textContent = '₹' + (t.delivery.toFixed(0));
+    discountEl.textContent = '₹' + (t.discount.toFixed(0));
+    grandEl.textContent = '₹' + (t.grand.toFixed(0));
+  }
+
+  // Helper: validate contact fields
+  function validateCustomerFields(){
+    const name = (nameEl.value || '').trim();
+    const phone = (phoneEl.value || '').trim();
+    const addr = (addressEl.value || '').trim();
+    if(!name){ _toast('Enter name'); nameEl.focus(); return false; }
+    if(!phone || !/^\d{10}$/.test(phone)){ _toast('Enter valid 10-digit phone'); phoneEl.focus(); return false; }
+    if(!addr){ _toast('Enter delivery address'); addressEl.focus(); return false; }
+    return true;
+  }
+
+  // Create order payload for backend
+  function buildOrderPayload(paymentMethod){
+    const t = calcTotals();
+    const items = CART.map(i => ({
+      ProductID: i.ProductID || i.productId || i.id,
+      Name: i.Name || i.name,
+      Price: Number(i.Price || i.price || 0),
+      Quantity: Number(i.Quantity || i.qty || 1)
+    }));
+    const payload = {
+      action: 'addOrder',
+      CustomerID: '', // will be set after addCustomer if needed
+      Items: JSON.stringify(items),
+      TotalAmount: t.subtotal,
+      Discount: t.discount,
+      FinalAmount: t.grand,
+      DeliveryAddress: (addressEl.value || '').trim(),
+      Payment: paymentMethod,
+      OrderDate: new Date().toLocaleString(),
+      Status: (paymentMethod && paymentMethod.startsWith('UPI')) ? 'pending' : 'placed'
+    };
+    // include contact details
+    payload.CustomerName = (nameEl.value || '').trim();
+    payload.CustomerPhone = (phoneEl.value || '').trim();
+    payload.CustomerEmail = (emailEl.value || '').trim();
+    return payload;
+  }
+
+  // Add or find customer prior to order
+  async function ensureCustomerExists(){
+    const u = _getUser();
+    if(u && (u.CustomerID || u.customerId)) return u.CustomerID || u.customerId;
+    // else try to add customer via backend (non-blocking)
+    const customer = {
+      action: 'addCustomer',
+      Name: (nameEl.value || '').trim(),
+      Phone: (phoneEl.value || '').trim(),
+      Email: (emailEl.value || '').trim(),
+      Address: (addressEl.value || '').trim()
+    };
+    try{
+      const res = await _addCustomer(customer);
+      if(res && res.ok && res.id) return res.id;
+    }catch(err){
+      console.warn('addCustomer failed', err);
+    }
+    return '';
+  }
+
+  // Place order for COD (or generic)
+  async function onPlaceOrderCOD(){
+    if(!validateCustomerFields()) return;
+    // ensure cart has items
+    if(!CART || CART.length === 0){ _toast('Cart is empty'); return; }
+
+    placeOrderBtn.disabled = true;
+    placeOrderBtn.textContent = 'Placing order...';
+
+    try{
+      const customerId = await ensureCustomerExists();
+      const payload = buildOrderPayload('COD');
+      if(customerId) payload.CustomerID = customerId;
+      // call backend
+      const res = await _addOrder(payload);
+      if(res && res.ok){
+        _toast('Order placed successfully');
+        // clear local cart
+        CART = [];
+        _saveCart(CART);
+        // redirect to order page with id if returned
+        const orderId = res.orderId || res.orderID || res.order || '';
+        setTimeout(()=> {
+          if(orderId) location.href = 'order.html?orderId=' + encodeURIComponent(orderId);
+          else location.href = 'order.html';
+        }, 600);
+      } else {
+        _toast((res && (res.error || res.message)) || 'Order failed');
+        console.error('addOrder response', res);
+      }
+    }catch(err){
+      console.error('place order error', err);
+      _toast('Order failed: ' + String(err));
+    } finally {
+      placeOrderBtn.disabled = false;
+      placeOrderBtn.textContent = 'Place Order (COD)';
+    }
+  }
+
+  // UPI payment flow: create provisional order (status pending) then open upi:// link
+  async function onPayViaUPI(){
+    if(!validateCustomerFields()) return;
+    if(!CART || CART.length === 0){ _toast('Cart is empty'); return; }
+
+    const totals = calcTotals();
+    // ensure customer exists
+    try{
+      upiPayBtn.disabled = true;
+      upiPayBtn.textContent = 'Preparing UPI...';
+      const customerId = await ensureCustomerExists();
+      const payload = buildOrderPayload('UPI');
+      if(customerId) payload.CustomerID = customerId;
+
+      // save provisional order (status pending)
+      const res = await _addOrder(payload);
+      if(!(res && res.ok)){
+        _toast('Unable to create order. Try again.');
+        upiPayBtn.disabled = false;
+        upiPayBtn.textContent = 'Pay via UPI';
         return;
       }
-      cart.forEach(i=>{
-        const div = document.createElement('div');
-        div.className = 'summary-item';
-        div.innerHTML = `
-          <img src="${i.image||'https://via.placeholder.com/120'}" alt="">
-          <div style="flex:1">
-            <div style="font-weight:700">${i.name}</div>
-            <div class=
+
+      const orderId = res.orderId || res.orderID || res.order || '';
+      // build upi url with amount = totals.grand
+      const amount = (totals.grand || 0).toFixed(2); // two decimals okay for UP
