@@ -1,200 +1,477 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>NJ Mart — Cart</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NJ Mart — Cart & Checkout</title>
+
+  <!-- Fonts + icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <style>
-    :root{--accent:#2db34a;--muted:#6b7280;--card:#fff;--bg:#f6fbf8;--radius:12px}
+    :root{
+      --bg:#f6fbf8;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent:#2db34a;
+      --accent-dark:#1f8a34;
+      --danger:#ef4444;
+      --shadow: 0 10px 30px rgba(12,30,40,0.06);
+      --radius:12px;
+      --max-width:1100px;
+    }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui;background:var(--bg)}
-    .wrap{max-width:980px;margin:12px auto;padding:12px}
-    header{display:flex;align-items:center;justify-content:space-between;background:var(--card);padding:12px;border-radius:12px;box-shadow:0 12px 30px rgba(12,30,40,.06)}
-    .grid{display:grid;grid-template-columns:1fr 360px;gap:12px;margin-top:12px}
-    @media(max-width:980px){ .grid{grid-template-columns:1fr} }
-    .card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 8px 30px rgba(12,30,40,.04)}
-    .cart-item{display:flex;gap:12px;padding:12px;border-radius:10px;border:1px solid #f1f6f2;align-items:center}
-    .thumb{width:92px;height:92px;border-radius:8px;overflow:hidden}
-    .thumb img{width:100%;height:100%;object-fit:cover}
-    .qty-controls{display:flex;gap:8px;align-items:center}
-    .btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
-    .btn.primary{background:var(--accent);color:#fff}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:#111;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+
+    .wrap{max-width:var(--max-width);margin:18px auto;padding:12px}
+
+    header.top{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      background:var(--card);padding:12px;border-radius:var(--radius);box-shadow:var(--shadow);
+      position:sticky;top:12px;z-index:60;
+    }
+    header.top .left{display:flex;align-items:center;gap:12px}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
+    header.top h1{font-size:18px;margin:0}
+    header.top .actions{display:flex;gap:8px;align-items:center}
+
+    .page{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:16px}
+    @media(max-width:980px){ .page{grid-template-columns:1fr} }
+
+    .card{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:14px}
+
+    /* cart list */
+    .cart-list{display:flex;flex-direction:column;gap:12px}
+    .cart-item{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:10px;border:1px solid #f1f3f4}
+    .cart-thumb{width:110px;height:100px;border-radius:10px;overflow:hidden;background:#f4f7f6;flex:0 0 110px;display:flex;align-items:center;justify-content:center}
+    .cart-thumb img{width:100%;height:100%;object-fit:cover}
+    .cart-info{flex:1;display:flex;flex-direction:column;gap:8px}
+    .cart-info h3{margin:0;font-size:16px}
+    .meta{font-size:13px;color:var(--muted)}
+    .qty-control{display:flex;align-items:center;gap:8px}
+    .qty-control button{padding:8px 10px;border-radius:8px;border:1px solid #e6eef0;background:#fff;cursor:pointer}
+    .qty-badge{padding:6px 10px;border-radius:8px;background:#f6f8fa}
+
+    .remove-link{background:transparent;border:0;color:var(--danger);cursor:pointer;font-size:13px}
+
+    /* summary */
+    .summary{display:flex;flex-direction:column;gap:10px;padding:12px}
+    .summary .rowline{display:flex;justify-content:space-between;align-items:center}
+    .summary .total{font-weight:800;font-size:18px}
+    .coupon-row{display:flex;gap:8px;margin-top:6px}
+    .coupon-row input{flex:1;padding:10px;border-radius:8px;border:1px solid #e6eef0}
+    .coupon-row button{padding:10px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+
+    .note{font-size:13px;color:var(--muted)}
     .small{font-size:13px;color:var(--muted)}
+
+    /* checkout form */
+    .form-row{display:flex;gap:8px;align-items:center;margin-top:10px}
+    .form-row .col{flex:1}
+    .input{padding:10px;border-radius:8px;border:1px solid #e6eef0;background:#fff}
+
+    .btn{padding:12px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+    .btn.primary{background:var(--accent);color:#fff}
+    .btn.ghost{background:#fff;border:1px solid #e6eef0}
+
+    /* mobile */
+    @media(max-width:720px){
+      .cart-thumb{width:90px;height:80px}
+      .page{grid-template-columns:1fr}
+      .summary{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.02));padding-bottom:24px}
+    }
   </style>
+
+  <!-- script-config must be present in same folder and include required functions -->
+  <script src="./script-config.js"></script>
 </head>
 <body>
   <div class="wrap">
-    <header><div style="font-weight:800">NJ Mart — Cart</div><div><button onclick="location.href='index.html'">← Continue shopping</button></div></header>
 
-    <div class="grid">
-      <div>
-        <div class="card" id="cartListContainer">
-          <h3>Items in your cart</h3>
-          <div id="cartList"></div>
+    <!-- header -->
+    <header class="top">
+      <div class="left">
+        <div class="logo">NJ</div>
+        <div>
+          <h1>NJ Mart</h1>
+          <div class="small">Cart & Checkout</div>
         </div>
       </div>
+      <div class="actions">
+        <button class="btn ghost" onclick="location.href='index.html'"><i class="fa fa-arrow-left"></i> Continue shopping</button>
+        <button class="btn" onclick="location.href='profile.html'"><i class="fa fa-user"></i></button>
+      </div>
+    </header>
 
-      <aside>
-        <div class="card">
-          <h3>Order Summary</h3>
-          <div style="margin-top:8px">
-            <div style="display:flex;justify-content:space-between"><div>Subtotal</div><div id="subtotal">₹0</div></div>
-            <div style="display:flex;justify-content:space-between"><div>Delivery</div><div id="delivery">₹0</div></div>
-            <div style="display:flex;justify-content:space-between"><div>Discount</div><div id="discount">₹0</div></div>
-            <hr style="margin:10px 0">
-            <div style="display:flex;justify-content:space-between;font-weight:800"><div>Total</div><div id="grand">₹0</div></div>
+    <div class="page">
 
-            <div style="margin-top:10px"><input id="couponInput" placeholder="Coupon code e.g., SAVE50" style="width:100%;padding:10px;border-radius:8px;border:1px solid #eef6f2"></div>
-            <div style="display:flex;gap:8px;margin-top:8px">
-              <button id="applyCoupon" class="btn">Apply</button>
-              <button id="clearCoupon" class="btn">Clear</button>
+      <!-- main cart area -->
+      <main>
+        <section class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <strong style="font-size:16px">Your Cart</strong>
+              <div class="small">Review items, update quantities or remove items</div>
+            </div>
+            <div class="small">Items: <span id="itemsCount">0</span></div>
+          </div>
+        </section>
+
+        <section class="card" style="margin-top:12px">
+          <div id="cartContainer" class="cart-list">
+            <!-- cart items injected here -->
+          </div>
+
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button id="clearCartBtn" class="btn ghost">Clear cart</button>
+            <button id="continueBtn" class="btn" onclick="location.href='index.html'">Continue shopping</button>
+          </div>
+        </section>
+
+        <!-- checkout form -->
+        <section class="card" style="margin-top:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:800">Delivery details</div>
+            <div class="small">You can edit delivery address before placing order</div>
+          </div>
+
+          <div style="margin-top:10px">
+            <div class="form-row">
+              <div class="col">
+                <input id="custName" class="input" placeholder="Full name">
+              </div>
+              <div class="col">
+                <input id="custPhone" class="input" placeholder="Mobile number (10 digits)">
+              </div>
             </div>
 
-            <div style="margin-top:12px">
-              <button id="checkoutBtn" class="btn primary" style="width:100%">Proceed to Checkout</button>
+            <div class="form-row" style="margin-top:10px">
+              <input id="custEmail" class="input" placeholder="Email (optional)">
+            </div>
+
+            <div class="form-row" style="margin-top:10px">
+              <textarea id="custAddress" class="input" placeholder="Delivery address (house, street, landmark)" style="min-height:80px"></textarea>
+            </div>
+
+            <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+              <button id="useLocationBtn" class="btn ghost"><i class="fa fa-location-dot"></i> Use current location</button>
+              <div class="small" id="locationStatus"></div>
+            </div>
+
+            <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+              <button id="placeOrderBtn" class="btn primary">Place Order</button>
+              <button id="saveProfileBtn" class="btn ghost">Save profile</button>
+            </div>
+
+            <div style="margin-top:8px" class="note">Order confirmation will be sent to the phone number entered above (or the account phone if logged in).</div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- summary column -->
+      <aside>
+        <div class="card summary">
+          <div style="font-weight:800">Price details</div>
+          <div class="rowline" style="margin-top:8px"><div class="small">Items total</div><div id="priceSubtotal">₹0</div></div>
+          <div class="rowline"><div class="small">Delivery charge</div><div id="deliveryCharge">₹0</div></div>
+          <div class="rowline"><div class="small">Discount</div><div id="discountAmt">₹0</div></div>
+          <hr style="border:none;border-top:1px dashed #eee;margin:8px 0">
+          <div class="rowline total"><div>Grand total</div><div id="grandTotal">₹0</div></div>
+
+          <div class="coupon-row" style="margin-top:8px">
+            <input id="couponInput" placeholder="Have a coupon? enter code">
+            <button id="applyCouponBtn">Apply</button>
+          </div>
+
+          <div style="margin-top:10px">
+            <div class="small" id="couponStatus"></div>
+            <div class="note" style="margin-top:8px">Delivery ₹20 for orders below ₹1000. Delivery free for ₹1000 & above.</div>
+          </div>
+
+        </div>
+      </aside>
+
+    </div> <!-- page -->
+
+  </div> <!-- wrap -->
+
+  <!-- Scripts: cart logic & backend integration -->
+  <script>
+  /******************************************************
+   * Final cart.html logic — production-ready (no demo)
+   * Depends on script-config.js functions:
+   *   - getCart(), saveCart(cart), addToCart(item), removeFromCart(id), updateCartItem(id,qty), calcCartTotals()
+   *   - fetchProducts(), validateCoupon(code), addOrder(payload), addCustomer(payload)
+   *   - getUser(), toast()
+   *
+   * If some functions are not present, fallback implementations are used.
+   ******************************************************/
+
+  // Delivery rule as requested: ₹20 if total < ₹1000
+  const DELIVERY_THRESHOLD = 1000;
+  const DELIVERY_CHARGE = 20;
+
+  // safe wrappers for script-config functions
+  function exists(fn){ return (typeof window[fn] === 'function'); }
+  const _getCart = exists('getCart') ? window.getCart : function(){ try{ return JSON.parse(localStorage.getItem('nj_cart')||'[]'); }catch(e){ return []; } };
+  const _saveCart = exists('saveCart') ? window.saveCart : function(c){ localStorage.setItem('nj_cart', JSON.stringify(c)); };
+  const _validateCoupon = exists('validateCoupon') ? window.validateCoupon : async function(code){ return { ok:false, error:'validateCoupon not available' }; };
+  const _addOrder = exists('addOrder') ? window.addOrder : async function(payload){ return { ok:false, error:'addOrder not available' }; };
+  const _addCustomer = exists('addCustomer') ? window.addCustomer : async function(payload){ return { ok:false, error:'addCustomer not available' }; };
+  const _getUser = exists('getUser') ? window.getUser : function(){ try{ return JSON.parse(localStorage.getItem('nj_user')||'null'); }catch(e){ return null; } };
+  const _toast = (typeof toast === 'function') ? toast : function(m,ms=1800){ console.log('toast:',m); alert(m); };
+
+  // DOM refs
+  const cartContainer = document.getElementById('cartContainer');
+  const itemsCountEl = document.getElementById('itemsCount');
+  const priceSubtotalEl = document.getElementById('priceSubtotal');
+  const deliveryChargeEl = document.getElementById('deliveryCharge');
+  const discountAmtEl = document.getElementById('discountAmt');
+  const grandTotalEl = document.getElementById('grandTotal');
+  const couponInput = document.getElementById('couponInput');
+  const applyCouponBtn = document.getElementById('applyCouponBtn');
+  const couponStatus = document.getElementById('couponStatus');
+
+  const custName = document.getElementById('custName');
+  const custPhone = document.getElementById('custPhone');
+  const custEmail = document.getElementById('custEmail');
+  const custAddress = document.getElementById('custAddress');
+  const useLocationBtn = document.getElementById('useLocationBtn');
+  const locationStatus = document.getElementById('locationStatus');
+
+  const placeOrderBtn = document.getElementById('placeOrderBtn');
+  const saveProfileBtn = document.getElementById('saveProfileBtn');
+
+  const clearCartBtn = document.getElementById('clearCartBtn');
+  const continueBtn = document.getElementById('continueBtn');
+
+  // state
+  let CART = [];
+  let APPLIED_COUPON = null;
+
+  // init
+  document.addEventListener('DOMContentLoaded', () => {
+    loadCartFromStorage();
+    bindUI();
+    prefillUserIfAny();
+  });
+
+  function loadCartFromStorage(){
+    CART = _getCart() || [];
+    renderCart();
+    updateSummary();
+  }
+
+  function bindUI(){
+    applyCouponBtn.addEventListener('click', applyCoupon);
+    placeOrderBtn.addEventListener('click', onPlaceOrder);
+    saveProfileBtn.addEventListener('click', onSaveProfile);
+    clearCartBtn.addEventListener('click', onClearCart);
+    continueBtn.addEventListener('click', ()=> location.href = 'index.html');
+    useLocationBtn.addEventListener('click', useCurrentLocation);
+    // cart actions will be handled by delegation
+    cartContainer.addEventListener('click', onCartClick);
+  }
+
+  function onClearCart(){
+    if(!confirm('Clear cart?')) return;
+    CART = [];
+    _saveCart(CART);
+    renderCart();
+    updateSummary();
+    _toast('Cart cleared');
+  }
+
+  function onCartClick(e){
+    // inc/dec/remove handlers via dataset attributes
+    const inc = e.target.closest('[data-act="inc"]');
+    const dec = e.target.closest('[data-act="dec"]');
+    const rm = e.target.closest('[data-act="remove"]');
+    if(inc){
+      const id = inc.dataset.id;
+      changeQty(id, +1);
+    } else if(dec){
+      const id = dec.dataset.id;
+      changeQty(id, -1);
+    } else if(rm){
+      const id = rm.dataset.id;
+      removeItem(id);
+    }
+  }
+
+  function changeQty(productId, delta){
+    const idx = CART.findIndex(i => String(i.ProductID) === String(productId));
+    if(idx === -1) return;
+    const current = Number(CART[idx].Quantity || CART[idx].qty || 1);
+    const next = Math.max(1, current + delta);
+    CART[idx].Quantity = next;
+    _saveCart(CART);
+    renderCart();
+    updateSummary();
+  }
+
+  function removeItem(productId){
+    if(!confirm('Remove this item?')) return;
+    CART = CART.filter(i => String(i.ProductID) !== String(productId));
+    _saveCart(CART);
+    renderCart();
+    updateSummary();
+    _toast('Item removed');
+  }
+
+  function renderCart(){
+    cartContainer.innerHTML = '';
+    if(!CART || CART.length === 0){
+      cartContainer.innerHTML = '<div style="padding:18px;color:var(--muted)">Your cart is empty. Add products to continue.</div>';
+      itemsCountEl.textContent = '0';
+      return;
+    }
+    let itemsTotalCount = 0;
+    CART.forEach(item => {
+      const id = item.ProductID || item.productId || item.id || '';
+      const qty = Number(item.Quantity || item.qty || 1);
+      itemsTotalCount += qty;
+      const name = item.Name || item.name || '';
+      const price = Number(item.Price || item.price || 0);
+      const image = item['Image URL'] || item.image || 'https://via.placeholder.com/150';
+      const el = document.createElement('div');
+      el.className = 'cart-item';
+      el.innerHTML = `
+        <div class="cart-thumb"><img src="${escapeHtml(image)}" alt="${escapeHtml(name)}"></div>
+        <div class="cart-info">
+          <h3>${escapeHtml(name)}</h3>
+          <div class="meta">Price: ₹${price} • Seller: NJ Mart</div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="qty-control">
+              <button data-act="dec" data-id="${escapeHtml(id)}">−</button>
+              <div class="qty-badge">${qty}</div>
+              <button data-act="inc" data-id="${escapeHtml(id)}">+</button>
+            </div>
+            <div style="text-align:right">
+              <div style="font-weight:800">₹${(price*qty).toFixed(0)}</div>
+              <button data-act="remove" data-id="${escapeHtml(id)}" class="remove-link">Remove</button>
             </div>
           </div>
         </div>
-      </aside>
-    </div>
-  </div>
+      `;
+      cartContainer.appendChild(el);
+    });
+    itemsCountEl.textContent = itemsTotalCount;
+  }
 
-  <script>
-    const CART_KEY = 'nj_cart';
-    const COUPON_KEY = 'nj_coupon';
-    const CHECKOUT_KEY = 'nj_checkout';
-    const DELIVERY_THRESHOLD = 1000;
-    const DELIVERY_CHARGE = 20;
+  function updateSummary(){
+    const subtotal = CART.reduce((s,i) => s + (Number(i.Price||i.price||0) * Number(i.Quantity||i.qty||1)), 0);
+    const delivery = (subtotal === 0 || subtotal >= DELIVERY_THRESHOLD) ? 0 : DELIVERY_CHARGE;
+    const discount = APPLIED_COUPON ? Number(APPLIED_COUPON.discount||APPLIED_COUPON.Discount||0) : 0;
+    const grand = Math.max(0, subtotal + delivery - discount);
 
-    function loadCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY)) || []; }catch(e){ return []; } }
-    function saveCart(c){ localStorage.setItem(CART_KEY, JSON.stringify(c)); renderCart(); }
-    function loadCoupon(){ try{ return JSON.parse(localStorage.getItem(COUPON_KEY)); }catch(e){ return null; } }
-    function saveCoupon(c){ localStorage.setItem(COUPON_KEY, JSON.stringify(c)); renderTotals(); }
+    priceSubtotalEl.textContent = formatRupee(subtotal);
+    deliveryChargeEl.textContent = formatRupee(delivery);
+    discountAmtEl.textContent = formatRupee(discount);
+    grandTotalEl.textContent = formatRupee(grand);
+  }
 
-    function formatINR(n){ return '₹' + Number(n||0).toFixed(0); }
-
-    // default demo coupons (admin can expand via admin.html)
-    const DEFAULT_COUPONS = [
-      { code:'SAVE50', type:'FLAT', value:50 },
-      { code:'FREEDEL', type:'DELIVERY', value:DELIVERY_CHARGE },
-      { code:'PERC10', type:'PERCENT', value:10 }
-    ];
-
-    function findCoupon(code){
-      if(!code) return null;
-      code = code.trim().toUpperCase();
-      // admin settings override
-      const admin = JSON.parse(localStorage.getItem('nj_settings') || '{}');
-      const adminCoupons = (admin.coupons || []);
-      const combined = adminCoupons.concat(DEFAULT_COUPONS);
-      return combined.find(c => c.code === code) || null;
-    }
-
-    function renderCart(){
-      const cart = loadCart();
-      const container = document.getElementById('cartList');
-      container.innerHTML = '';
-      if(!cart || cart.length === 0){
-        container.innerHTML = '<div style="padding:20px;text-align:center;color:#6b7280">Your cart is empty<br><button onclick="location.href=\\'index.html\\'">Start shopping</button></div>';
-        renderTotals();
-        return;
+  // coupon apply
+  async function applyCoupon(){
+    const code = (couponInput.value || '').toString().trim();
+    couponStatus.textContent = '';
+    if(!code){ couponStatus.textContent = 'Enter coupon code'; return; }
+    couponStatus.textContent = 'Checking...';
+    try{
+      const res = await _validateCoupon(code);
+      if(res && res.ok){
+        APPLIED_COUPON = { code: code, discount: Number(res.discount || res.Discount || 0) };
+        couponStatus.textContent = `Coupon applied: ₹${APPLIED_COUPON.discount} off`;
+        updateSummary();
+        _toast('Coupon applied');
+      } else {
+        APPLIED_COUPON = null;
+        couponStatus.textContent = 'Invalid or expired coupon';
+        _toast('Invalid coupon');
+        updateSummary();
       }
-      cart.forEach((it, idx) => {
-        const el = document.createElement('div');
-        el.className = 'cart-item';
-        el.style.marginBottom = '8px';
-        el.innerHTML = `
-          <div class="thumb"><img src="${it.img || 'https://via.placeholder.com/200'}" style="width:100%;height:100%;object-fit:cover"></div>
-          <div style="flex:1;padding-left:8px">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div style="font-weight:800">${it.name}</div>
-              <div style="font-weight:800">${formatINR(it.price * it.qty)}</div>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-              <div class="qty-controls">
-                <button onclick="changeQty(${idx}, -1)">−</button>
-                <span style="padding:6px 10px;border-radius:6px;background:#f6faf8;margin:0 6px">${it.qty}</span>
-                <button onclick="changeQty(${idx}, 1)">+</button>
-              </div>
-              <button style="background:transparent;border:0;color:#e04545;cursor:pointer" onclick="removeItem(${idx})">Remove</button>
-            </div>
-          </div>
-        `;
-        container.appendChild(el);
-      });
-      renderTotals();
+    } catch(err){
+      APPLIED_COUPON = null;
+      couponStatus.textContent = 'Coupon check failed';
+      console.error(err);
     }
+  }
 
-    function changeQty(idx, delta){
-      const cart = loadCart();
-      if(!cart[idx]) return;
-      const newQty = (cart[idx].qty||0) + delta;
-      if(newQty <= 0){
-        if(confirm('Remove item from cart?')) { cart.splice(idx,1); }
-      } else cart[idx].qty = newQty;
-      saveCart(cart);
-    }
+  // place order
+  async function onPlaceOrder(){
+    // validate cart
+    if(!CART || CART.length === 0){ _toast('Cart is empty'); return; }
 
-    function removeItem(idx){
-      const cart = loadCart();
-      if(!cart[idx]) return;
-      if(confirm('Remove item?')) { cart.splice(idx,1); saveCart(cart); }
-    }
+    // validate customer fields
+    const name = (custName.value || '').toString().trim();
+    const phone = (custPhone.value || '').toString().trim();
+    const email = (custEmail.value || '').toString().trim();
+    const address = (custAddress.value || '').toString().trim();
 
-    function computeTotals(){
-      const cart = loadCart();
-      const subtotal = cart.reduce((s,i)=>s + (i.qty||0) * (i.price||0), 0);
-      const delivery = (subtotal === 0 || subtotal >= DELIVERY_THRESHOLD) ? 0 : DELIVERY_CHARGE;
-      let discount = 0;
-      const applied = loadCoupon();
-      if(applied){
-        if(applied.type === 'FLAT') discount = applied.value;
-        else if(applied.type === 'PERCENT') discount = Math.round(subtotal * (applied.value/100));
-        else if(applied.type === 'DELIVERY') discount = applied.value;
+    if(!name){ _toast('Enter your name'); custName.focus(); return; }
+    if(!phone || !/^\d{10}$/.test(phone)){ _toast('Enter valid 10-digit mobile number'); custPhone.focus(); return; }
+    if(!address){ _toast('Enter delivery address'); custAddress.focus(); return; }
+
+    // prepare order payload
+    const items = CART.map(i => ({ ProductID: i.ProductID || i.productId || i.id, qty: Number(i.Quantity||i.qty||1), Name: i.Name || i.name }));
+    const subtotal = CART.reduce((s,i)=> s + (Number(i.Price||i.price||0) * Number(i.Quantity||i.qty||1)), 0);
+    const delivery = (subtotal === 0 || subtotal >= DELIVERY_THRESHOLD) ? 0 : DELIVERY_CHARGE;
+    const discount = APPLIED_COUPON ? Number(APPLIED_COUPON.discount || 0) : 0;
+    const finalAmount = subtotal + delivery - discount;
+
+    // prepare customer object and add to Customers sheet (if needed)
+    let customerId = '';
+    const user = _getUser();
+    if(user && (user.CustomerID || user.customerId)) {
+      customerId = user.CustomerID || user.customerId;
+    } else {
+      // create new customer on sheet via addCustomer (non-blocking)
+      try{
+        const custPayload = {
+          action: 'addCustomer',
+          Name: name,
+          Phone: phone,
+          Email: email,
+          Address: address
+        };
+        const custRes = await _addCustomer(custPayload);
+        if(custRes && custRes.ok && custRes.id) customerId = custRes.id;
+      } catch(e){
+        console.warn('addCustomer failed', e);
       }
-      const grand = Math.max(0, subtotal + delivery - discount);
-      return { subtotal, delivery, discount, grand, applied };
     }
 
-    function renderTotals(){
-      const t = computeTotals();
-      document.getElementById('subtotal').textContent = formatINR(t.subtotal);
-      document.getElementById('delivery').textContent = formatINR(t.delivery);
-      document.getElementById('discount').textContent = formatINR(t.discount);
-      document.getElementById('grand').textContent = formatINR(t.grand);
-    }
+    // show confirm before placing
+    if(!confirm(`Place order for ${formatRupee(finalAmount)}?`)) return;
 
-    // apply coupon button
-    document.getElementById('applyCoupon').addEventListener('click', ()=>{
-      const code = document.getElementById('couponInput').value.trim();
-      if(!code){ alert('Enter coupon'); return; }
-      const c = findCoupon(code);
-      if(!c){ alert('Invalid coupon'); return; }
-      saveCoupon(c);
-      alert('Coupon applied: ' + c.code);
-      renderTotals();
-    });
+    // assemble order payload expected by backend
+    const orderPayload = {
+      action: 'addOrder',
+      CustomerID: customerId,
+      Items: items,
+      TotalAmount: subtotal,
+      Discount: discount,
+      FinalAmount: finalAmount,
+      Payment: 'Cash on Delivery',
+      DeliveryAddress: address,
+      OrderDate: new Date().toLocaleString()
+    };
 
-    document.getElementById('clearCoupon').addEventListener('click', ()=> {
-      localStorage.removeItem(COUPON_KEY);
-      renderTotals();
-      alert('Coupon cleared');
-    });
+    placeOrderBtn.disabled = true;
+    placeOrderBtn.textContent = 'Placing order...';
 
-    // proceed to checkout
-    document.getElementById('checkoutBtn').addEventListener('click', ()=>{
-      const cart = loadCart();
-      if(!cart || cart.length === 0){ alert('Cart is empty'); return; }
-      const totals = computeTotals();
-      const snapshot = { items: cart, totals, coupon: loadCoupon() || null, createdAt: Date.now() };
-      localStorage.setItem(CHECKOUT_KEY, JSON.stringify(snapshot));
-      location.href = 'checkout.html';
-    });
-
-    // load on page ready
-    (function init(){
-      renderCart();
-    })();
-  </script>
-</body>
-</html>
+    try{
+      const res = await _addOrder(orderPayload);
+      if(res && res.ok){
+        _toast('Order placed successfully');
+        // clear cart
+        CART = [];
+        _saveCart(CART);
+        renderCart();
+        updateSummary();
+        // send user to order confirmation or show order id
+        const orderId = res.orderId || res
