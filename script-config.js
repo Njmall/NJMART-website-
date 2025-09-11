@@ -1,209 +1,232 @@
-/**
- * script-config.js
- * Expanded, production-ready client helper for NJ Mart frontend → Google Apps Script backend
- * 
- * Replace WEBAPP_URL with your deployed Apps Script webapp '/exec' URL (already replaced below)
- * If using a key parameter in webapp, set API_KEY accordingly (else leave empty)
- */
+// ========== NJ Mart — script-config.js ==========
+// Client-side connector between frontend and Google Apps Script backend
+// All API calls, storage helpers, and utilities included
+// Backend URL (fixed, do not change)
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwsG5H7er3nqwGjEbrtokssc5LeGFc9Zog2bG1s0C5bQ-P2b_1S1kisSLpOmdESH7FB/exec";
 
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxL4jW3HF4bjBHf4sao6o263Hy1wL6j8rJKF6xgdBx9OSAiF8V0lg545dptJlGynJU7/exec";
-const API_KEY = ""; // If your Apps Script expects a key param, set here
-
-/* ====== Utility Helpers ====== */
-
-function buildUrl(action, params = {}) {
-  const url = new URL(WEBAPP_URL);
-  url.searchParams.set("action", action);
-  if (API_KEY) url.searchParams.set("key", API_KEY);
-  Object.keys(params).forEach(k => {
-    if (params[k] !== undefined && params[k] !== null) {
-      url.searchParams.set(k, params[k]);
-    }
-  });
-  return url.toString();
-}
-
-function wait(ms) {
-  return new Promise(res => setTimeout(res, ms));
-}
-
-async function fetchWithTimeout(resource, options = {}, timeout = 15000) {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
+// ========== Generic API Helpers ==========
+async function apiGet(action) {
   try {
-    const resp = await fetch(resource, { signal: controller.signal, ...options });
-    clearTimeout(id);
-    return resp;
+    const url = `${BACKEND_URL}?action=${encodeURIComponent(action)}`;
+    const res = await fetch(url);
+    return await res.json();
   } catch (err) {
-    clearTimeout(id);
-    throw err;
+    console.error("GET error", err);
+    return { ok: false, error: String(err) };
   }
 }
 
-async function apiFetch(action, { method = "GET", payload = null, params = {}, retries = 2, timeout = 15000 } = {}) {
-  const url = buildUrl(action, params);
-  let attempt = 0;
-  while (attempt <= retries) {
-    try {
-      const options = { method, headers: { "Accept": "application/json" } };
-      if (method === "POST") {
-        options.headers["Content-Type"] = "application/json;charset=utf-8";
-        options.body = JSON.stringify(payload || {});
-      }
-      const resp = await fetchWithTimeout(url, options, timeout);
-      if (!resp.ok) {
-        const text = await resp.text().catch(()=>"");
-        throw new Error(`HTTP ${resp.status}: ${resp.statusText} - ${text}`);
-      }
-      const text = await resp.text();
-      try {
-        const data = JSON.parse(text);
-        return data;
-      } catch (errJson) {
-        return text;
-      }
-    } catch (err) {
-      if (attempt < retries) {
-        console.warn(`[apiFetch] action=${action} attempt=${attempt} failed: ${err.message}. retrying...`);
-        await wait(300 + attempt * 500);
-        attempt++;
-        continue;
-      }
-      console.error(`[apiFetch] final failure action=${action}:`, err);
-      throw err;
-    }
+async function apiPost(data) {
+  try {
+    const res = await fetch(BACKEND_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("POST error", err);
+    return { ok: false, error: String(err) };
   }
 }
 
-/* ====== High-Level API Functions ====== */
-
-async function getProducts({ category = "", q = "", limit = 1000 } = {}) {
-  return await apiFetch("getProducts", { method: "GET", params: { category, q, limit } });
-}
-
-async function getProductById(id) {
-  if (!id) throw new Error("getProductById: id required");
-  return await apiFetch("getProduct", { method: "GET", params: { id } });
+// ========== Products ==========
+async function fetchProducts() {
+  const res = await apiGet("products");
+  if (res.ok) return res.products || [];
+  return [];
 }
 
 async function addProduct(product) {
-  if (!product || !product.id) throw new Error("addProduct: product.id required");
-  return await apiFetch("addProduct", { method: "POST", payload: { product } });
+  const payload = { action: "addproduct", ...product };
+  return await apiPost(payload);
 }
 
-async function updateProduct(product) {
-  if (!product || !product.id) throw new Error("updateProduct: product.id required");
-  return await apiFetch("updateProduct", { method: "POST", payload: { product } });
-}
-
-async function removeProduct(id) {
-  if (!id) throw new Error("removeProduct: id required");
-  return await apiFetch("removeProduct", { method: "POST", payload: { id } });
-}
-
-async function getCustomers({ q = "", limit = 1000 } = {}) {
-  return await apiFetch("getCustomers", { method: "GET", params: { q, limit } });
-}
-
-async function getCustomerById(id) {
-  if (!id) throw new Error("getCustomerById: id required");
-  return await apiFetch("getCustomer", { method: "GET", params: { id } });
+// ========== Customers ==========
+async function fetchCustomers() {
+  const res = await apiGet("customers");
+  if (res.ok) return res.customers || [];
+  return [];
 }
 
 async function addCustomer(customer) {
-  if (!customer || !customer.id) throw new Error("addCustomer: customer.id required");
-  return await apiFetch("addCustomer", { method: "POST", payload: { customer } });
+  const payload = { action: "addcustomer", ...customer };
+  return await apiPost(payload);
 }
 
-async function getOrders({ status = "", q = "", limit = 1000 } = {}) {
-  return await apiFetch("getOrders", { method: "GET", params: { status, q, limit } });
-}
-
-async function getOrderById(orderId) {
-  if (!orderId) throw new Error("getOrderById: orderId required");
-  return await apiFetch("getOrder", { method: "GET", params: { orderId } });
+// ========== Orders ==========
+async function fetchOrders() {
+  const res = await apiGet("orders");
+  if (res.ok) return res.orders || [];
+  return [];
 }
 
 async function addOrder(order) {
-  if (!order || !Array.isArray(order.items) || order.items.length === 0) {
-    throw new Error("addOrder: order.items required");
+  const payload = { action: "addorder", ...order };
+  return await apiPost(payload);
+}
+
+// ========== Coupons ==========
+async function fetchCoupons() {
+  const res = await apiGet("coupons");
+  if (res.ok) return res.coupons || [];
+  return [];
+}
+
+async function validateCoupon(code) {
+  const payload = { action: "validatecoupon", code };
+  return await apiPost(payload);
+}
+
+// ========== Settings ==========
+async function fetchSettings() {
+  const res = await apiGet("settings");
+  if (res.ok) return res.settings || {};
+  return {};
+}
+
+// ========== Staff ==========
+async function fetchStaff() {
+  const res = await apiGet("staff");
+  if (res.ok) return res.staff || [];
+  return [];
+}
+
+async function addStaff(staff) {
+  const payload = { action: "addstaff", ...staff };
+  return await apiPost(payload);
+}
+
+// ========== Reports ==========
+async function fetchReports() {
+  const res = await apiGet("reports");
+  if (res.ok) return res.reports || [];
+  return [];
+}
+
+// ========== LocalStorage Helpers ==========
+function saveLocal(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (err) {
+    console.error("saveLocal error", err);
   }
-  return await apiFetch("addOrder", { method: "POST", payload: { order } });
 }
 
-async function updateOrderStatus(orderId, status) {
-  if (!orderId) throw new Error("updateOrderStatus: orderId required");
-  if (!status) throw new Error("updateOrderStatus: status required");
-  return await apiFetch("updateOrderStatus", { method: "POST", payload: { orderId, status } });
+function loadLocal(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key) || "null");
+  } catch {
+    return null;
+  }
 }
 
-async function getStaff({ limit = 100 } = {}) {
-  return await apiFetch("getStaff", { method: "GET", params: { limit } });
+function clearLocal(key) {
+  localStorage.removeItem(key);
 }
 
-async function getCoupons({ q = "", limit = 100 } = {}) {
-  return await apiFetch("getCoupons", { method: "GET", params: { q, limit } });
+// ========== Cart Helpers ==========
+const CART_KEY = "nj_cart";
+
+function getCart() {
+  return loadLocal(CART_KEY) || [];
 }
 
-async function validateCoupon(code, orderTotal = 0) {
-  if (!code) throw new Error("validateCoupon: code required");
-  return await apiFetch("validateCoupon", { method: "GET", params: { code, orderTotal } });
+function saveCart(cart) {
+  saveLocal(CART_KEY, cart);
 }
 
-async function getSettings() {
-  return await apiFetch("getSettings", { method: "GET" });
+function clearCart() {
+  clearLocal(CART_KEY);
 }
 
-async function updateSettings(settingsObj) {
-  return await apiFetch("updateSettings", { method: "POST", payload: { settings: settingsObj } });
+function addToCart(item) {
+  const cart = getCart();
+  const idx = cart.findIndex((x) => x.ProductID === item.ProductID);
+  if (idx > -1) {
+    cart[idx].Quantity += 1;
+  } else {
+    cart.push({ ...item, Quantity: 1 });
+  }
+  saveCart(cart);
+  return cart;
 }
 
-async function getReports({ type = "orders", from = "", to = "" } = {}) {
-  return await apiFetch("getReports", { method: "GET", params: { type, from, to } });
+function updateCartItem(id, qty) {
+  const cart = getCart();
+  const idx = cart.findIndex((x) => x.ProductID === id);
+  if (idx > -1) {
+    cart[idx].Quantity = qty;
+  }
+  saveCart(cart);
+  return cart;
 }
 
-async function pingBackend() {
-  return await apiFetch("ping", { method: "GET" });
+function removeFromCart(id) {
+  let cart = getCart();
+  cart = cart.filter((x) => x.ProductID !== id);
+  saveCart(cart);
+  return cart;
 }
 
-function friendlyError(err) {
-  console.error(err);
-  const msg = (err && err.message) ? err.message : String(err);
-  return `Server error: ${msg}`;
+function calcCartTotals() {
+  const cart = getCart();
+  let subtotal = 0;
+  cart.forEach((i) => {
+    subtotal += (Number(i.Price) || 0) * (Number(i.Quantity) || 1);
+  });
+  const delivery = subtotal >= 499 || subtotal === 0 ? 0 : 20;
+  return {
+    subtotal,
+    delivery,
+    total: subtotal + delivery,
+  };
 }
 
-/* ====== Expose to window ====== */
-window.NJ_API = {
-  // Utilities
-  pingBackend,
-  getSettings,
-  updateSettings,
-  getReports,
-  
-  // Products
-  getProducts,
-  getProductById,
-  addProduct,
-  updateProduct,
-  removeProduct,
-  
-  // Customers
-  getCustomers,
-  getCustomerById,
-  addCustomer,
-  
-  // Orders
-  getOrders,
-  getOrderById,
-  addOrder,
-  updateOrderStatus,
-  
-  // Staff / Coupons
-  getStaff,
-  getCoupons,
-  validateCoupon,
-  
-  // Lower-level
-  apiFetch,
-  buildUrl
-};
+// ========== Account / Session ==========
+const USER_KEY = "nj_user";
+
+function getUser() {
+  return loadLocal(USER_KEY);
+}
+
+function saveUser(user) {
+  saveLocal(USER_KEY, user);
+}
+
+function clearUser() {
+  clearLocal(USER_KEY);
+}
+
+// ========== UI Helpers ==========
+function toast(msg, time = 2000) {
+  const el = document.createElement("div");
+  el.textContent = msg;
+  el.style.position = "fixed";
+  el.style.bottom = "20px";
+  el.style.left = "50%";
+  el.style.transform = "translateX(-50%)";
+  el.style.background = "#2db34a";
+  el.style.color = "#fff";
+  el.style.padding = "10px 18px";
+  el.style.borderRadius = "8px";
+  el.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
+  el.style.zIndex = 9999;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), time);
+}
+
+// ========== Example Usage Bindings ==========
+document.addEventListener("DOMContentLoaded", async () => {
+  console.log("NJ Mart config loaded");
+
+  // auto-load settings
+  const settings = await fetchSettings();
+  console.log("Settings:", settings);
+
+  // update header cart count
+  const cart = getCart();
+  const count = cart.reduce((s, i) => s + (i.Quantity || 0), 0);
+  const cartBadge = document.getElementById("headerCartCount");
+  if (cartBadge) cartBadge.textContent = count;
+});
