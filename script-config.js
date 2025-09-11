@@ -1,159 +1,209 @@
-// ==========================================================
-// NJ Mart - Config + API Helpers (Expanded Full Version)
-// ==========================================================
+/**
+ * script-config.js
+ * Expanded, production-ready client helper for NJ Mart frontend → Google Apps Script backend
+ * 
+ * Replace WEBAPP_URL with your deployed Apps Script webapp '/exec' URL (already replaced below)
+ * If using a key parameter in webapp, set API_KEY accordingly (else leave empty)
+ */
 
-// 🔗 Google Apps Script Web App URL (backend connector)
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx3fv5CST1x6LSO5PDDOtRCQaQcON99FiKPrNETBLQBQXWmeuI8SXlOKmyLNpDwLqem/exec";
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxL4jW3HF4bjBHf4sao6o263Hy1wL6j8rJKF6xgdBx9OSAiF8V0lg545dptJlGynJU7/exec";
+const API_KEY = ""; // If your Apps Script expects a key param, set here
 
-// ===================
-// Branding & Settings
-// ===================
-const APP_NAME = "NJ Mart";
-const SUPPORT_PHONE = "+91 70629 18607";
-const SUPPORT_EMAIL = "support@njmart.example";
+/* ====== Utility Helpers ====== */
 
-const DELIVERY_CHARGE = 25;
-const FREE_DELIVERY_THRESHOLD = 499;
-const MIN_ORDER_VALUE = 100;
+function buildUrl(action, params = {}) {
+  const url = new URL(WEBAPP_URL);
+  url.searchParams.set("action", action);
+  if (API_KEY) url.searchParams.set("key", API_KEY);
+  Object.keys(params).forEach(k => {
+    if (params[k] !== undefined && params[k] !== null) {
+      url.searchParams.set(k, params[k]);
+    }
+  });
+  return url.toString();
+}
 
-// ===================
-// Helper Functions
-// ===================
+function wait(ms) {
+  return new Promise(res => setTimeout(res, ms));
+}
 
-// GET request
-async function apiGet(params = {}) {
+async function fetchWithTimeout(resource, options = {}, timeout = 15000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
   try {
-    const url = new URL(SCRIPT_URL);
-    Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
-    const res = await fetch(url, { method: "GET" });
-    return res.json();
+    const resp = await fetch(resource, { signal: controller.signal, ...options });
+    clearTimeout(id);
+    return resp;
   } catch (err) {
-    console.error("GET error:", err);
-    return { ok: false, error: err.message };
+    clearTimeout(id);
+    throw err;
   }
 }
 
-// POST request
-async function apiPost(bodyObj = {}) {
-  try {
-    const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      body: JSON.stringify(bodyObj),
-      headers: { "Content-Type": "application/json" }
-    });
-    return res.json();
-  } catch (err) {
-    console.error("POST error:", err);
-    return { ok: false, error: err.message };
+async function apiFetch(action, { method = "GET", payload = null, params = {}, retries = 2, timeout = 15000 } = {}) {
+  const url = buildUrl(action, params);
+  let attempt = 0;
+  while (attempt <= retries) {
+    try {
+      const options = { method, headers: { "Accept": "application/json" } };
+      if (method === "POST") {
+        options.headers["Content-Type"] = "application/json;charset=utf-8";
+        options.body = JSON.stringify(payload || {});
+      }
+      const resp = await fetchWithTimeout(url, options, timeout);
+      if (!resp.ok) {
+        const text = await resp.text().catch(()=>"");
+        throw new Error(`HTTP ${resp.status}: ${resp.statusText} - ${text}`);
+      }
+      const text = await resp.text();
+      try {
+        const data = JSON.parse(text);
+        return data;
+      } catch (errJson) {
+        return text;
+      }
+    } catch (err) {
+      if (attempt < retries) {
+        console.warn(`[apiFetch] action=${action} attempt=${attempt} failed: ${err.message}. retrying...`);
+        await wait(300 + attempt * 500);
+        attempt++;
+        continue;
+      }
+      console.error(`[apiFetch] final failure action=${action}:`, err);
+      throw err;
+    }
   }
 }
 
-// ===================
-// API Wrappers
-// ===================
+/* ====== High-Level API Functions ====== */
 
-// Products
-async function getProducts() { return apiGet({ type: "getProducts" }); }
-async function updateProductStock(id, stock) {
-  return apiPost({ type: "updateProductStock", id, stock });
+async function getProducts({ category = "", q = "", limit = 1000 } = {}) {
+  return await apiFetch("getProducts", { method: "GET", params: { category, q, limit } });
 }
 
-// Customers
-async function getCustomers() { return apiGet({ type: "getCustomers" }); }
+async function getProductById(id) {
+  if (!id) throw new Error("getProductById: id required");
+  return await apiFetch("getProduct", { method: "GET", params: { id } });
+}
+
+async function addProduct(product) {
+  if (!product || !product.id) throw new Error("addProduct: product.id required");
+  return await apiFetch("addProduct", { method: "POST", payload: { product } });
+}
+
+async function updateProduct(product) {
+  if (!product || !product.id) throw new Error("updateProduct: product.id required");
+  return await apiFetch("updateProduct", { method: "POST", payload: { product } });
+}
+
+async function removeProduct(id) {
+  if (!id) throw new Error("removeProduct: id required");
+  return await apiFetch("removeProduct", { method: "POST", payload: { id } });
+}
+
+async function getCustomers({ q = "", limit = 1000 } = {}) {
+  return await apiFetch("getCustomers", { method: "GET", params: { q, limit } });
+}
+
+async function getCustomerById(id) {
+  if (!id) throw new Error("getCustomerById: id required");
+  return await apiFetch("getCustomer", { method: "GET", params: { id } });
+}
+
 async function addCustomer(customer) {
-  return apiPost({ type: "addCustomer", customer });
+  if (!customer || !customer.id) throw new Error("addCustomer: customer.id required");
+  return await apiFetch("addCustomer", { method: "POST", payload: { customer } });
 }
 
-// Orders
-async function getOrders(customerId) {
-  return apiGet({ type: "getOrders", customerId });
+async function getOrders({ status = "", q = "", limit = 1000 } = {}) {
+  return await apiFetch("getOrders", { method: "GET", params: { status, q, limit } });
 }
+
+async function getOrderById(orderId) {
+  if (!orderId) throw new Error("getOrderById: orderId required");
+  return await apiFetch("getOrder", { method: "GET", params: { orderId } });
+}
+
 async function addOrder(order) {
-  return apiPost({ type: "addOrder", order });
+  if (!order || !Array.isArray(order.items) || order.items.length === 0) {
+    throw new Error("addOrder: order.items required");
+  }
+  return await apiFetch("addOrder", { method: "POST", payload: { order } });
 }
 
-// Settings
-async function getSettings() { return apiGet({ type: "getSettings" }); }
-
-// ===================
-// Local Storage Helpers
-// ===================
-function loadCart() {
-  try { return JSON.parse(localStorage.getItem("nj_cart") || "[]"); }
-  catch (e) { return []; }
-}
-function saveCart(cart) { localStorage.setItem("nj_cart", JSON.stringify(cart)); }
-function clearCart() { localStorage.removeItem("nj_cart"); }
-
-function saveCustomerLocal(customer) {
-  localStorage.setItem("nj_customer", JSON.stringify(customer));
-}
-function loadCustomerLocal() {
-  try { return JSON.parse(localStorage.getItem("nj_customer") || "{}"); }
-  catch (e) { return {}; }
-}
-function clearCustomerLocal() { localStorage.removeItem("nj_customer"); }
-
-// Checkout data
-function saveCheckout(data) {
-  localStorage.setItem("nj_checkout", JSON.stringify(data));
-}
-function loadCheckout() {
-  try { return JSON.parse(localStorage.getItem("nj_checkout") || "{}"); }
-  catch (e) { return {}; }
-}
-function clearCheckout() { localStorage.removeItem("nj_checkout"); }
-
-// ===================
-// Utility Functions
-// ===================
-function formatPrice(num) {
-  return "₹" + (Number(num) || 0).toFixed(0);
+async function updateOrderStatus(orderId, status) {
+  if (!orderId) throw new Error("updateOrderStatus: orderId required");
+  if (!status) throw new Error("updateOrderStatus: status required");
+  return await apiFetch("updateOrderStatus", { method: "POST", payload: { orderId, status } });
 }
 
-function showToast(text, ms = 1500) {
-  const t = document.createElement("div");
-  t.textContent = text;
-  t.style.position = "fixed";
-  t.style.left = "50%";
-  t.style.top = "20px";
-  t.style.transform = "translateX(-50%)";
-  t.style.background = "rgba(0,0,0,0.8)";
-  t.style.color = "white";
-  t.style.padding = "10px 20px";
-  t.style.borderRadius = "6px";
-  t.style.fontSize = "14px";
-  t.style.zIndex = "9999";
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), ms);
+async function getStaff({ limit = 100 } = {}) {
+  return await apiFetch("getStaff", { method: "GET", params: { limit } });
 }
 
-// ===================
-// Export to window
-// ===================
-window.NJAPI = {
-  // products
-  getProducts,
-  updateProductStock,
-  // customers
-  getCustomers,
-  addCustomer,
-  // orders
-  getOrders,
-  addOrder,
-  // settings
+async function getCoupons({ q = "", limit = 100 } = {}) {
+  return await apiFetch("getCoupons", { method: "GET", params: { q, limit } });
+}
+
+async function validateCoupon(code, orderTotal = 0) {
+  if (!code) throw new Error("validateCoupon: code required");
+  return await apiFetch("validateCoupon", { method: "GET", params: { code, orderTotal } });
+}
+
+async function getSettings() {
+  return await apiFetch("getSettings", { method: "GET" });
+}
+
+async function updateSettings(settingsObj) {
+  return await apiFetch("updateSettings", { method: "POST", payload: { settings: settingsObj } });
+}
+
+async function getReports({ type = "orders", from = "", to = "" } = {}) {
+  return await apiFetch("getReports", { method: "GET", params: { type, from, to } });
+}
+
+async function pingBackend() {
+  return await apiFetch("ping", { method: "GET" });
+}
+
+function friendlyError(err) {
+  console.error(err);
+  const msg = (err && err.message) ? err.message : String(err);
+  return `Server error: ${msg}`;
+}
+
+/* ====== Expose to window ====== */
+window.NJ_API = {
+  // Utilities
+  pingBackend,
   getSettings,
-  // local
-  loadCart,
-  saveCart,
-  clearCart,
-  saveCustomerLocal,
-  loadCustomerLocal,
-  clearCustomerLocal,
-  saveCheckout,
-  loadCheckout,
-  clearCheckout,
-  // helpers
-  formatPrice,
-  showToast
+  updateSettings,
+  getReports,
+  
+  // Products
+  getProducts,
+  getProductById,
+  addProduct,
+  updateProduct,
+  removeProduct,
+  
+  // Customers
+  getCustomers,
+  getCustomerById,
+  addCustomer,
+  
+  // Orders
+  getOrders,
+  getOrderById,
+  addOrder,
+  updateOrderStatus,
+  
+  // Staff / Coupons
+  getStaff,
+  getCoupons,
+  validateCoupon,
+  
+  // Lower-level
+  apiFetch,
+  buildUrl
 };
