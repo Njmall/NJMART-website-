@@ -1,96 +1,462 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>NJ Mart — Coupons</title>
+
+  <!-- Fonts & icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+
   <style>
-    body { font-family: Arial, sans-serif; background:#f7f9fc; margin:0; }
-    header { background:#2db34a; color:#fff; padding:12px; text-align:center; }
-    .page { max-width:960px; margin:20px auto; background:#fff; border-radius:10px; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,.08); }
-    h1 { margin:0 0 15px; }
-    table { width:100%; border-collapse:collapse; margin-top:15px; }
-    th, td { border:1px solid #ddd; padding:10px; text-align:left; }
-    th { background:#f1f1f1; }
-    .btn { padding:8px 14px; border:none; border-radius:6px; cursor:pointer; }
-    .btn-add { background:#2db34a; color:#fff; }
-    .btn-del { background:#e04d4d; color:#fff; }
-    .form-inline { display:flex; gap:10px; flex-wrap:wrap; margin-top:15px; }
-    .form-inline input { padding:8px; border:1px solid #ddd; border-radius:6px; flex:1; }
+  /* Inline styles specific to coupon page (keeps file self-contained) */
+  :root{--accent:#2db34a;--muted:#6b7280;--card:#fff;--shadow:0 8px 30px rgba(12,30,40,0.06)}
+  body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:#f6fbf8;margin:0;color:#111}
+  .wrap{max-width:1100px;margin:18px auto;padding:12px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0}
+  header h1{margin:0;font-size:20px}
+  .card{background:var(--card);padding:14px;border-radius:12px;box-shadow:var(--shadow);margin-bottom:12px}
+  .grid{display:grid;grid-template-columns:1fr 360px;gap:12px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr}}
+  .form-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  input[type="text"], input[type="number"], select, textarea{padding:10px;border-radius:8px;border:1px solid #e6eef0;width:100%}
+  label{font-weight:700;font-size:13px}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{border:1px solid #eee;padding:8px;text-align:left;font-size:14px}
+  th{background:#f3fff6}
+  .btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
+  .btn.primary{background:var(--accent);color:#fff}
+  .btn.ghost{background:#fff;border:1px solid #e6eef0}
+  .muted{color:var(--muted)}
+  .small{font-size:13px;color:var(--muted)}
+  .actions{display:flex;gap:8px;align-items:center}
+  .searchbox{display:flex;gap:8px;align-items:center}
+  .searchbox input{width:260px}
+  .pager{display:flex;gap:6px;align-items:center;margin-top:10px}
+  .badge{background:#eefbf2;color:#1f8a34;padding:6px 8px;border-radius:999px;font-weight:700}
+  .help{font-size:13px;color:#5b6b6b;margin-top:8px}
+  .label{display:inline-block;padding:6px 8px;border-radius:6px;background:#f3fff6;color:#1f8a34;font-weight:700}
+  .danger{color:#ef4444}
+  .table-wrap{max-height:420px;overflow:auto}
   </style>
 </head>
 <body>
-  <header>
-    <h2>Coupon Management</h2>
-  </header>
+  <div class="wrap">
 
-  <div class="page">
-    <h1>Available Coupons</h1>
+    <header>
+      <div>
+        <h1>Coupons — NJ Mart</h1>
+        <div class="small">Create, edit and manage discount coupons. Changes saved to Google Sheet backend.</div>
+      </div>
+      <div class="actions">
+        <div class="searchbox card" style="display:flex;align-items:center">
+          <input id="searchInput" type="text" placeholder="Search code / status / type">
+          <button id="searchBtn" class="btn ghost">Search</button>
+          <button id="refreshBtn" class="btn ghost">Refresh</button>
+        </div>
+      </div>
+    </header>
 
-    <div class="form-inline">
-      <input type="text" id="code" placeholder="Coupon Code">
-      <input type="number" id="discount" placeholder="Discount Amount (₹)">
-      <input type="date" id="expiry" placeholder="Expiry Date">
-      <button class="btn btn-add" onclick="addCoupon()">Add Coupon</button>
+    <div class="grid">
+      <!-- LEFT: Coupon list & table -->
+      <section>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:800">Available Coupons</div>
+            <div class="small muted" id="totalCouponsLabel">Loading…</div>
+          </div>
+
+          <div class="table-wrap">
+            <table id="couponTable" aria-live="polite">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Type</th>
+                  <th>Discount</th>
+                  <th>Min Order</th>
+                  <th>Status</th>
+                  <th>Valid From</th>
+                  <th>Valid To</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- rows inserted here -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pager">
+            <button id="prevPage" class="btn ghost">Prev</button>
+            <div id="pageInfo" class="muted">Page 1</div>
+            <button id="nextPage" class="btn ghost">Next</button>
+            <div style="flex:1"></div>
+            <button id="exportBtn" class="btn ghost">Export JSON</button>
+            <button id="importBtn" class="btn ghost">Import JSON</button>
+            <input id="importFile" type="file" accept=".json" style="display:none">
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="font-weight:800">Apply Coupon (Customer view)</div>
+          <div class="form-row" style="margin-top:8px">
+            <input id="applyCode" placeholder="Enter coupon code">
+            <button id="applyBtn" class="btn primary">Apply</button>
+          </div>
+          <div id="applyResult" class="help"></div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Create / Edit coupon form -->
+      <aside>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:800" id="formTitle">Create Coupon</div>
+            <div><span class="label">Backend: Google Sheets</span></div>
+          </div>
+
+          <form id="couponForm" style="margin-top:10px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div>
+                <label>Code</label>
+                <input id="code" name="Code" required placeholder="E.g. SAVE50">
+              </div>
+              <div>
+                <label>Type</label>
+                <select id="type" name="Type" required>
+                  <option value="flat">flat</option>
+                  <option value="percent">percent</option>
+                </select>
+              </div>
+              <div>
+                <label>Discount</label>
+                <input id="discount" name="Discount" type="number" required placeholder="Value (₹ or % depending on type)">
+              </div>
+              <div>
+                <label>Min Order (optional)</label>
+                <input id="minOrder" name="MinOrder" type="number" placeholder="Minimum order value">
+              </div>
+
+              <div>
+                <label>Status</label>
+                <select id="status" name="Status">
+                  <option value="active">active</option>
+                  <option value="expired">expired</option>
+                </select>
+              </div>
+
+              <div>
+                <label>Usage Limit (optional)</label>
+                <input id="limit" name="Limit" type="number" placeholder="Max number of uses (leave blank for unlimited)">
+              </div>
+
+              <div>
+                <label>Valid From (optional)</label>
+                <input id="validFrom" name="ValidFrom" type="date">
+              </div>
+
+              <div>
+                <label>Valid To (optional)</label>
+                <input id="validTo" name="ValidTo" type="date">
+              </div>
+
+              <div style="grid-column:1/-1">
+                <label>Description (optional)</label>
+                <textarea id="desc" name="Description" rows="3" placeholder="Short note for admin/customers"></textarea>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <button id="saveCoupon" class="btn primary" type="submit">Save coupon</button>
+              <button id="resetForm" class="btn ghost" type="button">Reset form</button>
+              <button id="deleteCoupon" class="btn ghost danger" type="button" style="margin-left:auto;color:#ef4444;border:1px solid #ffecec">Delete</button>
+            </div>
+
+            <div id="formMsg" class="small muted" style="margin-top:8px"></div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div style="font-weight:800">Admin quick actions</div>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px">
+            <button id="activateAll" class="btn ghost">Activate all coupons</button>
+            <button id="expireAll" class="btn ghost">Expire all coupons</button>
+            <button id="clearAll" class="btn ghost danger">Delete all coupons</button>
+          </div>
+          <div class="help" style="margin-top:10px">Use these actions carefully. They update the Google Sheet directly.</div>
+        </div>
+      </aside>
     </div>
-
-    <table id="couponTable">
-      <thead>
-        <tr>
-          <th>Code</th>
-          <th>Discount</th>
-          <th>Expiry</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
   </div>
 
+  <!-- Script config (must exist in your repo; sets BACKEND_URL) -->
+  <script src="script-config.js"></script>
+
   <script>
-    const API_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+  /*************************************************************************
+   * coupon.html — Final expanded version (no demo data)
+   * - Requires script-config.js which must export BACKEND_URL string
+   * - Interacts with Apps Script backend:
+   *     GET ?action=coupons               -> returns { ok:true, coupons: [...] }
+   *     POST { action:'addcoupon', ... }  -> add coupon row
+   *     POST { action:'updatecoupon', ... } -> update coupon row (backend must support)
+   *     POST { action:'deletecoupon', code } -> delete coupon
+   *     POST { action:'validatecoupon', code } -> validate coupon (for customer)
+   *
+   * Ensure your Apps Script supports these actions (see earlier Code.gs handlers).
+   *************************************************************************/
 
-    async function loadCoupons(){
-      const res = await fetch(API_URL+"?type=coupons");
-      const data = await res.json();
-      const tbody = document.querySelector("#couponTable tbody");
-      tbody.innerHTML = "";
-      data.forEach(c=>{
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${c.code}</td>
-          <td>₹${c.discount}</td>
-          <td>${c.expiry}</td>
-          <td><button class="btn btn-del" onclick="deleteCoupon('${c.code}')">Delete</button></td>
-        `;
-        tbody.appendChild(row);
-      });
+  // ---------- Config ----------
+  const API = (typeof BACKEND_URL !== 'undefined') ? BACKEND_URL : 'https://script.google.com/macros/s/YOUR_DEPLOYED_WEBAPP_ID/exec';
+  const PAGE_SIZE = 12;
+
+  // ---------- DOM ----------
+  const tableBody = document.querySelector('#couponTable tbody');
+  const totalCouponsLabel = document.getElementById('totalCouponsLabel');
+  const pageInfo = document.getElementById('pageInfo');
+  const prevPageBtn = document.getElementById('prevPage');
+  const nextPageBtn = document.getElementById('nextPage');
+  const searchInput = document.getElementById('searchInput');
+  const searchBtn = document.getElementById('searchBtn');
+  const refreshBtn = document.getElementById('refreshBtn');
+
+  const couponForm = document.getElementById('couponForm');
+  const formTitle = document.getElementById('formTitle');
+  const codeInput = document.getElementById('code');
+  const typeInput = document.getElementById('type');
+  const discountInput = document.getElementById('discount');
+  const minOrderInput = document.getElementById('minOrder');
+  const statusInput = document.getElementById('status');
+  const limitInput = document.getElementById('limit');
+  const validFromInput = document.getElementById('validFrom');
+  const validToInput = document.getElementById('validTo');
+  const descInput = document.getElementById('desc');
+  const saveCouponBtn = document.getElementById('saveCoupon');
+  const resetFormBtn = document.getElementById('resetForm');
+  const deleteCouponBtn = document.getElementById('deleteCoupon');
+  const formMsg = document.getElementById('formMsg');
+
+  const applyCodeInput = document.getElementById('applyCode');
+  const applyBtn = document.getElementById('applyBtn');
+  const applyResult = document.getElementById('applyResult');
+
+  const exportBtn = document.getElementById('exportBtn');
+  const importBtn = document.getElementById('importBtn');
+  const importFile = document.getElementById('importFile');
+
+  const activateAllBtn = document.getElementById('activateAll');
+  const expireAllBtn = document.getElementById('expireAll');
+  const clearAllBtn = document.getElementById('clearAll');
+
+  // ---------- State ----------
+  let ALL_COUPONS = [];    // full list from backend
+  let FILTERED = [];       // after search/pagination
+  let currentPage = 1;
+  let currentEditCode = null; // when editing a coupon
+  let totalPages = 1;
+
+  // ---------- Helpers ----------
+  function toast(msg){ const t=document.createElement('div'); t.textContent=msg; t.style.position='fixed'; t.style.left='50%'; t.style.top='18px'; t.style.transform='translateX(-50%)'; t.style.background='rgba(0,0,0,0.8)'; t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='8px'; t.style.zIndex=9999; document.body.appendChild(t); setTimeout(()=>t.remove(),1500); }
+
+  async function apiGet(action){ const url = new URL(API); url.searchParams.set('action', action); const res = await fetch(url.toString()); return res.json(); }
+  async function apiPost(obj){ const res = await fetch(API, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(obj) }); return res.json(); }
+
+  function formatDate(dstr){
+    if(!dstr) return '';
+    const d = new Date(dstr);
+    if(isNaN(d)) return dstr;
+    return d.toLocaleDateString();
+  }
+
+  function safe(v){ return v === undefined || v === null ? '' : v; }
+
+  // ---------- Load & render ----------
+  async function loadCoupons(){
+    try{
+      const j = await apiGet('coupons');
+      if(!j) throw new Error('Invalid response');
+      ALL_COUPONS = Array.isArray(j.coupons) ? j.coupons.map(c=>normalizeCouponObject(c)) : [];
+      applySearchAndPagination();
+      toast('Coupons loaded');
+    }catch(err){
+      console.error('loadCoupons', err);
+      toast('Failed to load coupons: ' + err.message);
+      ALL_COUPONS = [];
+      applySearchAndPagination();
     }
+  }
 
-    async function addCoupon(){
-      const code = document.getElementById("code").value.trim();
-      const discount = document.getElementById("discount").value.trim();
-      const expiry = document.getElementById("expiry").value;
-      if(!code || !discount){ alert("Enter all fields"); return; }
+  function normalizeCouponObject(raw){
+    // Ensure consistent fields and types
+    return {
+      Code: safe(raw.Code || raw.code || raw.CodeValue || ''),
+      Type: (raw.Type || raw.type || 'flat').toString(),
+      Discount: Number(raw.Discount || raw.discount || 0),
+      MinOrder: Number(raw.MinOrder || raw['Min Order'] || raw.MinOrderValue || 0) || 0,
+      Status: (raw.Status || raw.status || 'active').toString(),
+      Limit: Number(raw.Limit || raw.UsageLimit || raw.Limit || 0) || 0,
+      ValidFrom: raw.ValidFrom || raw['Valid From'] || raw.from || '',
+      ValidTo: raw.ValidTo || raw['Valid To'] || raw.to || '',
+      Description: safe(raw.Description || raw.Desc || raw.Note || ''),
+      Raw: raw
+    };
+  }
 
-      await fetch(API_URL,{
-        method:"POST",
-        body:JSON.stringify({type:"addCoupon", code, discount, expiry})
-      });
-      loadCoupons();
+  function applySearchAndPagination(){
+    const q = (searchInput.value || '').trim().toLowerCase();
+    FILTERED = ALL_COUPONS.filter(c => {
+      if(!q) return true;
+      return (c.Code||'').toLowerCase().includes(q) ||
+             (c.Type||'').toLowerCase().includes(q) ||
+             (c.Status||'').toLowerCase().includes(q) ||
+             (c.Description||'').toLowerCase().includes(q);
+    });
+    totalPages = Math.max(1, Math.ceil(FILTERED.length / PAGE_SIZE));
+    if(currentPage > totalPages) currentPage = totalPages;
+    renderTablePage(currentPage);
+  }
+
+  function renderTablePage(page){
+    tableBody.innerHTML = '';
+    const start = (page - 1) * PAGE_SIZE;
+    const rows = FILTERED.slice(start, start + PAGE_SIZE);
+    rows.forEach(c => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${escapeHtml(c.Code)}</td>
+        <td>${escapeHtml(c.Type)}</td>
+        <td>${escapeHtml(c.Discount)}</td>
+        <td>${escapeHtml(c.MinOrder)}</td>
+        <td>${escapeHtml(c.Status)}</td>
+        <td>${escapeHtml(formatDate(c.ValidFrom))}</td>
+        <td>${escapeHtml(formatDate(c.ValidTo))}</td>
+        <td>
+          <button class="btn ghost editBtn" data-code="${escapeHtml(c.Code)}">Edit</button>
+          <button class="btn ghost" data-code="${escapeHtml(c.Code)}" onclick="copyToClipboard('${escapeForJs(c.Code)}')">Copy</button>
+          <button class="btn ghost" data-code="${escapeHtml(c.Code)}" onclick="downloadCouponJson('${escapeForJs(c.Code)}')">Export</button>
+        </td>
+      `;
+      tableBody.appendChild(tr);
+    });
+    pageInfo.textContent = `Page ${page} / ${totalPages}`;
+    totalCouponsLabel.textContent = `${ALL_COUPONS.length} coupons`;
+    // attach edit handlers
+    document.querySelectorAll('.editBtn').forEach(b => b.addEventListener('click', onEditClick));
+  }
+
+  function escapeHtml(s){ return (''+s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  function escapeForJs(s){ return (''+s).replace(/'/g,"\\'").replace(/\\/g,"\\\\"); }
+
+  // ---------- actions ----------
+  prevPageBtn.addEventListener('click', ()=>{ if(currentPage>1){ currentPage--; renderTablePage(currentPage); }});
+  nextPageBtn.addEventListener('click', ()=>{ if(currentPage<totalPages){ currentPage++; renderTablePage(currentPage); }});
+  searchBtn.addEventListener('click', ()=>{ currentPage = 1; applySearchAndPagination(); });
+  refreshBtn.addEventListener('click', ()=>{ loadCoupons(); });
+
+  // Edit coupon
+  function onEditClick(e){
+    const code = e.currentTarget.dataset.code;
+    const coupon = ALL_COUPONS.find(c => (c.Code||'') == code);
+    if(!coupon){ toast('Coupon not found'); return; }
+    fillFormForEdit(coupon);
+  }
+
+  function fillFormForEdit(c){
+    formTitle.textContent = 'Edit Coupon';
+    codeInput.value = c.Code || '';
+    typeInput.value = c.Type || 'flat';
+    discountInput.value = c.Discount || 0;
+    minOrderInput.value = c.MinOrder || '';
+    statusInput.value = c.Status || 'active';
+    limitInput.value = c.Limit || '';
+    validFromInput.value = c.ValidFrom ? (new Date(c.ValidFrom)).toISOString().slice(0,10) : '';
+    validToInput.value = c.ValidTo ? (new Date(c.ValidTo)).toISOString().slice(0,10) : '';
+    descInput.value = c.Description || '';
+    currentEditCode = c.Code;
+    formMsg.textContent = 'Editing coupon: ' + c.Code;
+  }
+
+  // Reset form
+  resetFormBtn.addEventListener('click', ()=>{
+    couponForm.reset();
+    currentEditCode = null;
+    formTitle.textContent = 'Create Coupon';
+    formMsg.textContent = '';
+  });
+
+  // Save coupon (create or update)
+  couponForm.addEventListener('submit', async (ev)=>{
+    ev.preventDefault();
+    const payload = {
+      action: currentEditCode ? 'updatecoupon' : 'addcoupon',
+      Code: codeInput.value.trim(),
+      Type: typeInput.value,
+      Discount: Number(discountInput.value || 0),
+      MinOrder: Number(minOrderInput.value || 0),
+      Status: statusInput.value,
+      Limit: Number(limitInput.value || 0),
+      ValidFrom: validFromInput.value || '',
+      ValidTo: validToInput.value || '',
+      Description: descInput.value || ''
+    };
+
+    if(!payload.Code){ formMsg.textContent = 'Code is required'; return; }
+    formMsg.textContent = 'Saving…';
+    try{
+      const res = await apiPost(payload);
+      if(res && res.ok){
+        formMsg.textContent = 'Saved successfully';
+        currentEditCode = null;
+        couponForm.reset();
+        await loadCoupons();
+      } else {
+        formMsg.textContent = 'Save failed: ' + (res && res.error ? res.error : 'Unknown');
+      }
+    }catch(err){
+      console.error('save coupon', err);
+      formMsg.textContent = 'Save error: ' + err.message;
     }
+  });
 
-    async function deleteCoupon(code){
-      if(!confirm("Delete coupon "+code+" ?")) return;
-      await fetch(API_URL,{
-        method:"POST",
-        body:JSON.stringify({type:"deleteCoupon", code})
-      });
-      loadCoupons();
+  // Delete coupon
+  deleteCouponBtn.addEventListener('click', async ()=>{
+    const code = currentEditCode || codeInput.value.trim();
+    if(!code){ alert('Select or enter coupon code to delete'); return; }
+    if(!confirm('Delete coupon ' + code + '? This action cannot be undone.')) return;
+    try{
+      const res = await apiPost({ action:'deletecoupon', Code: code });
+      if(res && res.ok){
+        toast('Deleted ' + code);
+        couponForm.reset();
+        currentEditCode = null;
+        formTitle.textContent = 'Create Coupon';
+        await loadCoupons();
+      } else {
+        alert('Delete failed: ' + (res && res.error ? res.error : 'Unknown'));
+      }
+    }catch(err){
+      console.error('delete coupon', err);
+      alert('Delete error: ' + err.message);
     }
+  });
 
-    loadCoupons();
-  </script>
-</body>
-</html>
+  // Apply coupon (customer)
+  applyBtn.addEventListener('click', async ()=>{
+    const code = (applyCodeInput.value || '').trim();
+    if(!code){ applyResult.textContent = 'Enter coupon code'; return; }
+    applyResult.textContent = 'Validating…';
+    try{
+      const res = await apiPost({ action:'validatecoupon', code });
+      if(res && res.ok){
+        applyResult.innerHTML = `<strong>Applied:</strong> ${res.code} — Discount ₹${res.discount || 0}`;
+      } else {
+        applyResult.textContent = 'Invalid/expired coupon';
+      }
+    }catch(err){
+      console.error('validatecoupon', err);
+      applyResult.textContent = 'Validation error';
+    }
+  });
+
+  // Export single coupon 
