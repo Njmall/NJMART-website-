@@ -2,107 +2,202 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NJ Mart — Reports</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>NJ Mart - Reports</title>
+  <link rel="stylesheet" href="style.css">
+
   <style>
-    :root {
-      --green: #2db34a;
-      --muted: #777;
-      --card-bg: #fff;
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f6f6f6; }
+    header { background:#2b7a78; color:#fff; padding:15px; text-align:center; }
+    header h1 { margin:0; font-size:24px; }
+    nav { display:flex; justify-content:center; background:#3aafa9; }
+    nav a {
+      padding:12px 18px; color:#fff; text-decoration:none; font-weight:bold;
     }
-    * { box-sizing: border-box; font-family: Inter, system-ui, sans-serif; }
-    body { margin: 0; background: #f7f9fb; color: #222; }
-    header { background: var(--green); color: #fff; padding: 14px; font-size: 20px; font-weight: 600; }
-    .container { max-width: 1000px; margin: 20px auto; padding: 20px; }
-    h2 { margin-top: 0; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
-    .card { background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,.08); }
-    .stat { font-size: 26px; font-weight: 700; margin-top: 10px; }
-    canvas { max-width: 100%; }
-    footer { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
+    nav a:hover { background:#2b7a78; }
+
+    .container { max-width:1100px; margin:20px auto; padding:20px; background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+    h2 { margin-top:0; color:#2b7a78; }
+
+    table { width:100%; border-collapse:collapse; margin-top:15px; }
+    th, td { border:1px solid #ddd; padding:8px; text-align:left; }
+    th { background:#def2f1; }
+
+    .filters { display:flex; gap:12px; flex-wrap:wrap; margin-top:15px; }
+    .filters input, .filters select {
+      padding:8px; border:1px solid #ccc; border-radius:6px;
+    }
+    .filters button {
+      background:#3aafa9; color:#fff; border:none; padding:8px 14px; border-radius:6px; cursor:pointer;
+    }
+    .filters button:hover { background:#2b7a78; }
+
+    .chart-box { margin-top:25px; background:#fafafa; border:1px solid #eee; padding:20px; border-radius:10px; }
+    canvas { width:100% !important; height:400px !important; }
+
+    .summary-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px; margin-top:20px; }
+    .card { background:#f9ffff; border:1px solid #e1f1f1; padding:15px; border-radius:10px; text-align:center; box-shadow:0 2px 6px rgba(0,0,0,0.06); }
+    .card h3 { margin:0; font-size:18px; color:#2b7a78; }
+    .card p { margin:8px 0 0; font-size:16px; font-weight:bold; }
+
+    footer { margin-top:20px; background:#17252a; color:#fff; padding:12px; text-align:center; }
   </style>
 </head>
 <body>
-  <header>📊 NJ Mart — Reports & Analytics</header>
-  <div class="container">
-    <div class="grid">
-      <div class="card">
-        <h2>Total Orders</h2>
-        <div id="totalOrders" class="stat">0</div>
-      </div>
-      <div class="card">
-        <h2>Total Revenue</h2>
-        <div id="totalRevenue" class="stat">₹0</div>
-      </div>
-      <div class="card">
-        <h2>Active Customers</h2>
-        <div id="totalCustomers" class="stat">0</div>
-      </div>
-    </div>
 
-    <div class="card" style="margin-top:20px;">
-      <h2>Sales Trend (Last 7 Days)</h2>
-      <canvas id="salesChart"></canvas>
-    </div>
+<header>
+  <h1>📊 NJ Mart - Reports</h1>
+</header>
 
-    <div class="card" style="margin-top:20px;">
-      <h2>Top Products</h2>
-      <canvas id="productsChart"></canvas>
-    </div>
+<nav>
+  <a href="admin.html">Admin</a>
+  <a href="reports.html">Reports</a>
+  <a href="index.html">Website</a>
+</nav>
+
+<div class="container">
+  <h2>Reports Dashboard</h2>
+
+  <!-- SUMMARY CARDS -->
+  <div class="summary-cards">
+    <div class="card"><h3>Total Orders</h3><p id="totalOrders">0</p></div>
+    <div class="card"><h3>Total Revenue</h3><p id="totalRevenue">₹0</p></div>
+    <div class="card"><h3>Total Customers</h3><p id="totalCustomers">0</p></div>
+    <div class="card"><h3>Coupons Used</h3><p id="totalCoupons">0</p></div>
   </div>
 
-  <footer>
-    NJ Mart © 2025 • Auto-generated reports from Google Sheet
-  </footer>
+  <!-- FILTERS -->
+  <div class="filters">
+    <input type="date" id="fromDate">
+    <input type="date" id="toDate">
+    <select id="reportType">
+      <option value="">All Types</option>
+      <option value="order">Orders</option>
+      <option value="revenue">Revenue</option>
+      <option value="customer">Customers</option>
+    </select>
+    <button onclick="applyFilters()">Apply Filters</button>
+    <button onclick="resetFilters()">Reset</button>
+  </div>
 
-  <script>
-    const API_URL = "https://script.google.com/macros/s/PASTE_YOUR_SCRIPT_URL_HERE/exec";
+  <!-- TABLE -->
+  <table id="reportTable">
+    <thead>
+      <tr><th>Report ID</th><th>Type</th><th>Value</th><th>Date</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    async function loadReports() {
-      const res = await fetch(API_URL + "?action=getReports");
-      const data = await res.json();
+  <!-- CHARTS -->
+  <div class="chart-box">
+    <canvas id="ordersChart"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas id="revenueChart"></canvas>
+  </div>
+</div>
 
-      // Stats
-      document.getElementById("totalOrders").textContent = data.totalOrders || 0;
-      document.getElementById("totalRevenue").textContent = "₹" + (data.totalRevenue || 0);
-      document.getElementById("totalCustomers").textContent = data.totalCustomers || 0;
+<footer>
+  <p>© 2025 NJ Mart Reports Dashboard</p>
+</footer>
 
-      // Sales Trend Chart
-      const ctx1 = document.getElementById("salesChart").getContext("2d");
-      new Chart(ctx1, {
-        type: "line",
-        data: {
-          labels: data.salesTrend.map(x => x.date),
-          datasets: [{
-            label: "Revenue",
-            data: data.salesTrend.map(x => x.amount),
-            backgroundColor: "rgba(45,179,74,0.2)",
-            borderColor: "#2db34a",
-            borderWidth: 2,
-            fill: true,
-            tension: 0.3
-          }]
-        }
-      });
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script-config.js"></script>
+<script>
+  let REPORTS = [];
 
-      // Top Products Chart
-      const ctx2 = document.getElementById("productsChart").getContext("2d");
-      new Chart(ctx2, {
-        type: "bar",
-        data: {
-          labels: data.topProducts.map(x => x.name),
-          datasets: [{
-            label: "Sales",
-            data: data.topProducts.map(x => x.qty),
-            backgroundColor: "#2db34a"
-          }]
-        }
-      });
-    }
+  // fetch reports
+  async function loadReports(){
+    const res = await fetch(BACKEND_URL+"?action=reports");
+    const data = await res.json();
+    REPORTS = data.reports || [];
+    renderReports(REPORTS);
+    updateSummary(REPORTS);
+    drawCharts(REPORTS);
+  }
 
-    loadReports();
-  </script>
+  function renderReports(reports){
+    const tb = document.querySelector("#reportTable tbody");
+    tb.innerHTML="";
+    reports.forEach(r=>{
+      tb.innerHTML+=`<tr>
+        <td>${r["Report ID"]}</td>
+        <td>${r.Type}</td>
+        <td>${r.Value}</td>
+        <td>${r.Date}</td>
+      </tr>`;
+    });
+  }
+
+  function updateSummary(reports){
+    let orders=0, revenue=0, customers=0, coupons=0;
+    reports.forEach(r=>{
+      if(r.Type==="order"){ orders++; revenue+=Number(r.Value||0); }
+      if(r.Type==="customer") customers++;
+      if(r.Type==="coupon") coupons++;
+    });
+    document.getElementById("totalOrders").innerText=orders;
+    document.getElementById("totalRevenue").innerText="₹"+revenue.toFixed(0);
+    document.getElementById("totalCustomers").innerText=customers;
+    document.getElementById("totalCoupons").innerText=coupons;
+  }
+
+  function applyFilters(){
+    const from=document.getElementById("fromDate").value;
+    const to=document.getElementById("toDate").value;
+    const type=document.getElementById("reportType").value;
+    let filtered=REPORTS;
+    if(from){ filtered=filtered.filter(r=> new Date(r.Date)>=new Date(from)); }
+    if(to){ filtered=filtered.filter(r=> new Date(r.Date)<=new Date(to)); }
+    if(type){ filtered=filtered.filter(r=> r.Type===type); }
+    renderReports(filtered);
+    updateSummary(filtered);
+    drawCharts(filtered);
+  }
+
+  function resetFilters(){
+    document.getElementById("fromDate").value="";
+    document.getElementById("toDate").value="";
+    document.getElementById("reportType").value="";
+    renderReports(REPORTS);
+    updateSummary(REPORTS);
+    drawCharts(REPORTS);
+  }
+
+  // charts
+  let ordersChart, revenueChart;
+  function drawCharts(reports){
+    const dailyOrders={};
+    const dailyRevenue={};
+    reports.forEach(r=>{
+      const d=new Date(r.Date).toLocaleDateString();
+      if(r.Type==="order"){
+        dailyOrders[d]=(dailyOrders[d]||0)+1;
+        dailyRevenue[d]=(dailyRevenue[d]||0)+Number(r.Value||0);
+      }
+    });
+
+    const labels=Object.keys(dailyOrders);
+    const orders=Object.values(dailyOrders);
+    const revenues=Object.values(dailyRevenue);
+
+    if(ordersChart) ordersChart.destroy();
+    if(revenueChart) revenueChart.destroy();
+
+    ordersChart=new Chart(document.getElementById("ordersChart"),{
+      type:"bar",
+      data:{ labels:labels, datasets:[{label:"Orders", data:orders, backgroundColor:"#2b7a78"}]},
+      options:{ responsive:true, plugins:{legend:{display:false}} }
+    });
+
+    revenueChart=new Chart(document.getElementById("revenueChart"),{
+      type:"line",
+      data:{ labels:labels, datasets:[{label:"Revenue", data:revenues, borderColor:"#3aafa9", backgroundColor:"rgba(58,175,169,0.2)"}]},
+      options:{ responsive:true }
+    });
+  }
+
+  window.onload=loadReports;
+</script>
 </body>
 </html>
