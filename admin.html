@@ -1,532 +1,469 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NJ Mart — Profile</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>NJ Mart — Admin Dashboard</title>
 
   <!-- Fonts + icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+  <!-- Link the centralized stylesheet (you created) -->
+  <link rel="stylesheet" href="style.css">
+
   <style>
-    :root{
-      --bg:#f6fbf8;
-      --card:#ffffff;
-      --muted:#6b7280;
-      --accent:#2db34a;
-      --accent-dark:#1f8a34;
-      --danger:#ef4444;
-      --shadow: 0 10px 30px rgba(12,30,40,0.06);
-      --max-width:960px;
+    /* Small admin-specific overrides to complement style.css */
+    .admin-wrap{display:flex;gap:18px;max-width:1300px;margin:18px auto;padding:12px}
+    aside.sidebar{
+      width:260px;
+      background:#fff;
+      border-radius:14px;
+      padding:14px;
+      box-shadow:0 10px 30px rgba(12,30,40,0.06);
+      display:flex;flex-direction:column;gap:12px;flex-shrink:0;height:calc(100vh - 48px);position:sticky;top:12px;overflow:auto;
     }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:#111;-webkit-font-smoothing:antialiased}
-    a{color:inherit;text-decoration:none}
-    img{max-width:100%;display:block}
-
-    /* layout */
-    .wrap{max-width:var(--max-width);margin:20px auto;padding:12px}
-    header.site-header{
-      background:var(--card);
-      border-radius:12px;
-      box-shadow:var(--shadow);
-      padding:12px 16px;
-      display:flex;align-items:center;gap:12px;
-    }
-    .brand{display:flex;align-items:center;gap:10px}
-    .brand .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px}
-    h1.brand-title{font-size:18px;margin:0}
-    .muted{color:var(--muted)}
-
-    /* grid */
-    .main{display:grid;grid-template-columns:340px 1fr;gap:16px;margin-top:16px}
-    @media(max-width:880px){ .main{grid-template-columns:1fr} }
-
-    /* left card (profile summary) */
-    .card{background:var(--card);padding:16px;border-radius:12px;box-shadow:var(--shadow)}
-    .profile-photo{
-      width:120px;height:120px;border-radius:12px;background:#f2f6f4;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:30px;color:var(--accent);
-      margin:0 auto 12px auto;
-    }
-    .info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #f1f3f4}
-    .info-row:last-child{border-bottom:0}
-
-    /* right area (forms & orders) */
-    .section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-    form.profile-form{display:flex;flex-direction:column;gap:12px}
-    .field{display:flex;flex-direction:column;gap:6px}
-    label{font-weight:700;font-size:13px}
-    input[type="text"], input[type="email"], input[type="tel"], textarea{
-      padding:10px;border-radius:8px;border:1px solid #e6eef0;background:#fff;font-size:14px;
-    }
-    textarea{min-height:90px;resize:vertical}
-    .btn{border:0;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}
-    .btn.primary{background:var(--accent);color:#fff}
-    .btn.ghost{background:#fff;border:1px solid #e6eef0}
-
-    /* small helper */
-    .muted-sm{color:var(--muted);font-size:13px}
-    .divider{height:1px;background:#f1f3f4;margin:10px 0;border-radius:4px}
-
-    /* orders list */
-    .orders-list{display:flex;flex-direction:column;gap:8px}
-    .order-card{background:#fff;padding:12px;border-radius:10px;box-shadow:0 6px 14px rgba(12,30,40,0.04)}
-    .order-meta{display:flex;justify-content:space-between;align-items:center}
-
-    /* responsive tweaks */
-    @media(max-width:480px){
-      .profile-photo{width:100px;height:100px}
+    aside .brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+    aside .brand .logo{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;background:linear-gradient(135deg,#2db34a,#1f8a34);font-weight:800}
+    aside .brand h1{font-size:18px;margin:0}
+    .menu{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+    .menu-item{background:transparent;border:0;padding:10px 12px;text-align:left;border-radius:10px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:10px}
+    .menu-item.active{background:#f3fff6;border:1px solid rgba(45,179,74,0.12)}
+    .main-content{flex:1;display:flex;flex-direction:column;gap:12px}
+    .admin-header{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
+    .grid-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .big-number{font-size:22px;font-weight:800;margin-top:6px}
+    .page{display:block}
+    .hidden{display:none}
+    .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .form{display:flex;flex-direction:column;gap:8px;background:#fff;padding:12px;border-radius:12px;box-shadow:0 10px 30px rgba(12,30,40,0.04)}
+    /* Modal styles */
+    .modal-backdrop{position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:120}
+    .modal{background:#fff;border-radius:12px;padding:18px;max-width:900px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.18);max-height:88vh;overflow:auto}
+    .modal h3{margin:0 0 8px 0}
+    .table td .btn{margin-right:6px}
+    @media(max-width:980px){
+      .admin-wrap{flex-direction:column;padding:8px}
+      aside.sidebar{width:100%;height:auto;position:relative;top:auto}
+      .grid-cards{grid-template-columns:repeat(2,1fr)}
     }
   </style>
 </head>
 <body>
+  <div class="admin-wrap">
 
-  <div class="wrap">
-
-    <header class="site-header" role="banner">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="logo">NJ</div>
         <div>
-          <h1 class="brand-title">NJ Mart</h1>
-          <div class="muted" style="font-size:12px">Profile</div>
+          <h1>NJ Mart</h1>
+          <div style="font-size:12px;color:#6b7280">Admin</div>
         </div>
       </div>
 
-      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-        <button id="btnSignOut" class="btn ghost" style="display:none"><i class="fa fa-right-from-bracket"></i> Sign out</button>
-        <a href="index.html" class="btn ghost">Home</a>
-        <a href="checkout.html" class="btn primary">Checkout</a>
-      </div>
-    </header>
+      <nav class="menu" aria-label="Admin menu">
+        <button class="menu-item active" data-page="dashboardPage"><i class="fa fa-chart-line"></i> Dashboard</button>
+        <button class="menu-item" data-page="productsPage"><i class="fa fa-box"></i> Products</button>
+        <button class="menu-item" data-page="ordersPage"><i class="fa fa-shopping-cart"></i> Orders</button>
+        <button class="menu-item" data-page="customersPage"><i class="fa fa-users"></i> Customers</button>
+        <button class="menu-item" data-page="staffPage"><i class="fa fa-user-tie"></i> Staff</button>
+        <button class="menu-item" data-page="couponsPage"><i class="fa fa-ticket"></i> Coupons</button>
+        <button class="menu-item" data-page="reportsPage"><i class="fa fa-file-alt"></i> Reports</button>
+        <button class="menu-item" data-page="settingsPage"><i class="fa fa-cogs"></i> Settings</button>
+        <div style="flex:1"></div>
+        <button id="btnLogout" class="menu-item" style="color:#ef4444"><i class="fa fa-sign-out-alt"></i> Logout</button>
+      </nav>
+    </aside>
 
-    <div class="main" role="main">
+    <!-- MAIN CONTENT -->
+    <main class="main-content" role="main">
 
-      <!-- LEFT: profile summary -->
-      <aside>
-        <div class="card">
-          <div class="profile-photo" id="avatar">NJ</div>
-          <div style="text-align:center">
-            <div id="displayName" style="font-weight:800;font-size:18px">Guest</div>
-            <div id="displayPhone" class="muted-sm">Not signed in</div>
+      <!-- HEADER -->
+      <header class="admin-header">
+        <div>
+          <h2 id="pageTitle" style="margin:0">Dashboard</h2>
+          <div style="color:#6b7280;font-size:13px">Overview & quick actions</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="refreshBtn" class="btn ghost"><i class="fa fa-sync"></i> Refresh</button>
+          <button id="openQuickAdd" class="btn primary"><i class="fa fa-plus"></i> Quick Add</button>
+        </div>
+      </header>
+
+      <!-- PAGES: Dashboard -->
+      <section class="page" id="dashboardPage">
+        <div class="grid-cards">
+          <div class="card">
+            <h3 style="margin:0">Total Products</h3>
+            <div id="dashProducts" class="big-number">0</div>
+            <div class="text-muted" style="font-size:13px;margin-top:6px">Active items in catalog</div>
           </div>
-
-          <div class="divider"></div>
-
-          <div class="info-row">
-            <div class="muted-sm">Total orders</div>
-            <div id="summaryOrders" style="font-weight:800">0</div>
+          <div class="card">
+            <h3 style="margin:0">Total Orders</h3>
+            <div id="dashOrders" class="big-number">0</div>
+            <div class="text-muted" style="font-size:13px;margin-top:6px">Orders placed</div>
           </div>
-          <div class="info-row">
-            <div class="muted-sm">Total spent</div>
-            <div id="summarySpent" style="font-weight:800">₹0</div>
+          <div class="card">
+            <h3 style="margin:0">Total Customers</h3>
+            <div id="dashCustomers" class="big-number">0</div>
+            <div class="text-muted" style="font-size:13px;margin-top:6px">Registered customers</div>
           </div>
-
-          <div class="divider"></div>
-
-          <div style="font-size:13px;margin-top:8px">
-            <div style="font-weight:700">Quick actions</div>
-            <div style="display:flex;gap:8px;margin-top:8px">
-              <button id="btnEdit" class="btn ghost" style="flex:1">Edit profile</button>
-              <button id="btnOrders" class="btn primary" style="flex:1">My orders</button>
-            </div>
+          <div class="card">
+            <h3 style="margin:0">Revenue (₹)</h3>
+            <div id="dashRevenue" class="big-number">₹0</div>
+            <div class="text-muted" style="font-size:13px;margin-top:6px">Sum of completed orders</div>
           </div>
         </div>
-      </aside>
 
-      <!-- RIGHT: profile edit & orders -->
-      <section>
-        <div class="card" id="profileCard">
-          <div class="section-title">
-            <div>
-              <h2 style="margin:0">Your profile</h2>
-              <div class="muted-sm">Manage your contact details and delivery address</div>
-            </div>
-            <div>
-              <span id="statusMsg" class="muted-sm"></span>
-            </div>
-          </div>
-
-          <!-- Profile form -->
-          <form id="profileForm" class="profile-form" autocomplete="off" onsubmit="return false;">
-            <div class="field">
-              <label for="name">Full name</label>
-              <input id="name" name="Name" type="text" placeholder="Your full name" required />
-            </div>
-
-            <div style="display:flex;gap:8px">
-              <div style="flex:1" class="field">
-                <label for="phone">Phone</label>
-                <input id="phone" name="Phone" type="tel" placeholder="10-digit phone" required />
-              </div>
-              <div style="flex:1" class="field">
-                <label for="email">Email</label>
-                <input id="email" name="Email" type="email" placeholder="your@email.com" />
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="address">Delivery address</label>
-              <textarea id="address" name="Address" placeholder="House no, locality, city, pin..."></textarea>
-            </div>
-
-            <div style="display:flex;gap:8px">
-              <button id="btnSaveProfile" class="btn primary">Save profile</button>
-              <button id="btnClearLocal" class="btn ghost" type="button">Clear local</button>
-            </div>
-            <div id="saveNote" class="muted-sm" style="margin-top:6px">Saving will append your profile to the Customers sheet (Google Sheets).</div>
-          </form>
-        </div>
-
-        <!-- Orders area -->
         <div class="card" style="margin-top:12px">
-          <div class="section-title">
-            <div>
-              <h3 style="margin:0">Your orders</h3>
-              <div class="muted-sm">Recent orders placed with this phone/email</div>
-            </div>
-            <div>
-              <button id="btnRefreshOrders" class="btn ghost">Refresh</button>
-            </div>
-          </div>
-
-          <div id="ordersArea" class="orders-list">
-            <div class="muted-sm" style="padding:12px">No orders found</div>
-          </div>
+          <h3>Recent Orders</h3>
+          <table class="table" id="recentOrders">
+            <thead>
+              <tr>
+                <th style="width:140px">Order ID</th>
+                <th>Customer</th>
+                <th style="width:120px">Total</th>
+                <th style="width:120px">Status</th>
+                <th style="width:180px">Date</th>
+                <th style="width:120px">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="6" class="text-muted">Loading…</td></tr>
+            </tbody>
+          </table>
         </div>
-
       </section>
 
-    </div> <!-- main -->
-
-  </div> <!-- wrap -->
-
-  <script>
-  /*****************************************************************
-   * Profile page script (client side)
-   *
-   * - Reads/writes to Apps Script backend (Google Sheets)
-   * - Uses the deployed web app endpoint (API_BASE)
-   * - Save profile -> POST action=addcustomer (appends a new row)
-   * - Loads customers to show orders summary (and user's orders)
-   *
-   * NOTE: If your deployed endpoint is different, update API_BASE below.
-   *****************************************************************/
-
-  // ----------------- CONFIG -----------------
-  // Replace with your deployed Apps Script web app URL if needed.
-  const API_BASE = 'https://script.google.com/macros/s/AKfycbwsG5H7er3nqwGjEbrtokssc5LeGFc9Zog2bG1s0C5bQ-P2b_1S1kisSLpOmdESH7FB/exec';
-
-  // selectors
-  const el = id => document.getElementById(id);
-  const profileForm = el('profileForm');
-  const btnSave = el('btnSaveProfile');
-  const btnClearLocal = el('btnClearLocal');
-  const btnEdit = el('btnEdit');
-  const btnOrders = el('btnOrders');
-  const btnRefreshOrders = el('btnRefreshOrders');
-
-  const displayName = el('displayName');
-  const displayPhone = el('displayPhone');
-  const avatar = el('avatar');
-  const summaryOrders = el('summaryOrders');
-  const summarySpent = el('summarySpent');
-  const ordersArea = el('ordersArea');
-  const statusMsg = el('statusMsg');
-
-  // localStorage keys
-  const KEY_PROFILE = 'nj_profile';
-
-  // initial
-  let CURRENT_PROFILE = null;   // in-memory profile
-  let CUSTOMERS = [];           // loaded customers list
-  let ORDERS = [];              // loaded orders list (if needed)
-
-  // ----------------- helpers -----------------
-  function pretty(v){ return (v===null || v===undefined || v==='') ? '-' : v; }
-  function showStatus(msg, timeout=2000){ statusMsg.textContent = msg || ''; if(timeout>0){ setTimeout(()=>statusMsg.textContent = '', timeout); } }
-
-  // load saved profile from localStorage
-  function loadLocalProfile(){
-    try{
-      const raw = localStorage.getItem(KEY_PROFILE);
-      if(!raw) return null;
-      const obj = JSON.parse(raw);
-      return obj;
-    }catch(e){
-      return null;
-    }
-  }
-
-  // save profile to localStorage
-  function saveLocalProfile(data){
-    try{
-      localStorage.setItem(KEY_PROFILE, JSON.stringify(data||{}));
-    }catch(e){}
-  }
-
-  // clear local profile
-  function clearLocalProfile(){
-    localStorage.removeItem(KEY_PROFILE);
-    CURRENT_PROFILE = null;
-    renderProfileUI();
-    showStatus('Local profile cleared', 2000);
-  }
-
-  // set avatar initials
-  function setAvatar(name){
-    if(!name) { avatar.textContent = 'NJ'; return; }
-    const parts = name.trim().split(/\s+/);
-    let initials = parts.length === 1 ? parts[0].slice(0,2) : (parts[0][0] + (parts[1][0]||'')).toUpperCase();
-    initials = initials.toUpperCase();
-    avatar.textContent = initials;
-  }
-
-  // render profile UI from CURRENT_PROFILE
-  function renderProfileUI(){
-    const p = CURRENT_PROFILE || {};
-    el('name').value = p.Name || '';
-    el('phone').value = p.Phone || '';
-    el('email').value = p.Email || '';
-    el('address').value = p.Address || '';
-
-    displayName.textContent = p.Name || 'Guest';
-    displayPhone.textContent = p.Phone ? p.Phone : 'Not signed in';
-    setAvatar(p.Name || 'NJ');
-
-    if(p.Phone) el('btnSignOut').style.display = 'inline-block';
-    else el('btnSignOut').style.display = 'none';
-  }
-
-  // ----------------- API helpers -----------------
-  // GET action=customers or action=orders etc.
-  async function apiGet(params={}) {
-    const url = new URL(API_BASE);
-    Object.keys(params || {}).forEach(k => url.searchParams.set(k, params[k]));
-    try{
-      const res = await fetch(url.toString(), {method:'GET', cache:'no-store'});
-      const json = await res.json();
-      return json;
-    }catch(err){
-      return {ok:false, error: String(err)};
-    }
-  }
-
-  // POST (application/json) to webapp
-  async function apiPost(payload){
-    try{
-      const res = await fetch(API_BASE, {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      return data;
-    }catch(err){
-      return {ok:false, error:String(err)};
-    }
-  }
-
-  // ----------------- load customers & orders -----------------
-  async function loadCustomers(){
-    // loads all customers from sheet
-    const r = await apiGet({ action: 'customers' });
-    if(!r || !r.ok){ console.warn('customers load failed', r); CUSTOMERS = []; return; }
-    CUSTOMERS = r.customers || [];
-  }
-
-  async function loadOrders(){
-    const r = await apiGet({ action: 'orders' });
-    if(!r || !r.ok){ ORDERS = []; return; }
-    ORDERS = r.orders || [];
-  }
-
-  // build order summary for current profile (by phone or email)
-  function buildOrderSummaryForProfile(profile){
-    if(!profile) return {count:0, total:0, items:[]};
-    const phone = (profile.Phone || '').toString().trim();
-    const email = (profile.Email || '').toString().trim().toLowerCase();
-
-    const matched = ORDERS.filter(o=>{
-      const cid = (o['CustomerID'] || '').toString().trim();
-      const oPhone = (o['CustomerID'] || '').toString().trim(); // depends on how orders saved
-      // Many implementations store CustomerID, but sometimes they store phone. We check multiple keys:
-      const fields = Object.values(o).map(v => (''+v).toLowerCase());
-      return fields.some(f => f.includes(phone) || (email && f.includes(email)));
-    });
-
-    let total = 0;
-    matched.forEach(m=>{
-      const val = Number(m['Final Amount'] || m['Total Amount'] || m.Value || 0);
-      total += isNaN(val) ? 0 : val;
-    });
-    return {count: matched.length, total, items: matched};
-  }
-
-  // render orders list to UI
-  function renderOrders(profile){
-    const summary = buildOrderSummaryForProfile(profile);
-    summaryOrders.textContent = summary.count;
-    summarySpent.textContent = '₹' + (summary.total || 0).toFixed(0);
-
-    // clear orders area
-    ordersArea.innerHTML = '';
-    if(!summary.items || summary.items.length === 0){
-      ordersArea.innerHTML = '<div class="muted-sm" style="padding:12px">No orders found for this profile.</div>';
-      return;
-    }
-
-    // show most recent 10
-    const recent = summary.items.slice(-10).reverse();
-    recent.forEach(item=>{
-      const node = document.createElement('div');
-      node.className = 'order-card';
-      const orderId = item['OrderID'] || item['Report ID'] || item['orderId'] || '—';
-      const date = item['Order Date'] || item['Date'] || '';
-      const status = item['Status'] || item['status'] || 'placed';
-      const amount = item['Final Amount'] || item['Total Amount'] || item['Value'] || 0;
-      node.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center">
+      <!-- PAGES: Products -->
+      <section class="page hidden" id="productsPage">
+        <div class="page-header">
           <div>
-            <div style="font-weight:700">Order ${orderId}</div>
-            <div class="muted-sm">${pretty(date)}</div>
+            <h3 style="margin:0">Products</h3>
+            <div class="text-muted" style="font-size:13px">Add, update, or remove products</div>
           </div>
-          <div style="text-align:right">
-            <div style="font-weight:800">₹${Number(amount||0).toFixed(0)}</div>
-            <div class="muted-sm">${status}</div>
+          <div style="display:flex;gap:8px">
+            <input id="productSearch" type="search" placeholder="Search product by name or id" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
+            <select id="productCategoryFilter" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
+              <option value="">All categories</option>
+            </select>
+            <button id="btnAddProduct" class="btn primary"><i class="fa fa-plus"></i> Add product</button>
           </div>
         </div>
-      `;
-      ordersArea.appendChild(node);
-    });
+
+        <div class="card">
+          <table class="table" id="productsTable">
+            <thead>
+              <tr>
+                <th style="width:120px">ProductID</th>
+                <th>Name</th>
+                <th style="width:120px">Price (₹)</th>
+                <th style="width:100px">Stock</th>
+                <th style="width:140px">Category</th>
+                <th style="width:160px">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="6" class="text-muted">Loading products…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PAGES: Orders -->
+      <section class="page hidden" id="ordersPage">
+        <div class="page-header">
+          <div>
+            <h3 style="margin:0">Orders</h3>
+            <div class="text-muted" style="font-size:13px">View and manage incoming orders</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <select id="orderStatusFilter" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
+              <option value="">All status</option>
+              <option value="placed">Placed</option>
+              <option value="processing">Processing</option>
+              <option value="out for delivery">Out for delivery</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <input id="orderSearch" placeholder="Search order id / customer" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
+          </div>
+        </div>
+
+        <div class="card">
+          <table class="table" id="ordersTable">
+            <thead>
+              <tr>
+                <th style="width:140px">OrderID</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th style="width:120px">Total (₹)</th>
+                <th style="width:140px">Payment</th>
+                <th style="width:120px">Status</th>
+                <th style="width:180px">Date</th>
+                <th style="width:160px">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="8" class="text-muted">Loading orders…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PAGES: Customers -->
+      <section class="page hidden" id="customersPage">
+        <div class="page-header">
+          <div>
+            <h3 style="margin:0">Customers</h3>
+            <div class="text-muted" style="font-size:13px">View and export customer list</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <input id="customerSearch" placeholder="Search by name or phone" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
+            <button id="btnExportCustomers" class="btn ghost"><i class="fa fa-download"></i> Export CSV</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <table class="table" id="customersTable">
+            <thead>
+              <tr>
+                <th style="width:140px">CustomerID</th>
+                <th>Name</th>
+                <th style="width:140px">Phone</th>
+                <th style="width:200px">Email</th>
+                <th style="width:120px">Orders</th>
+                <th style="width:120px">Total Spent</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="6" class="text-muted">Loading customers…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PAGES: Staff -->
+      <section class="page hidden" id="staffPage">
+        <div class="page-header">
+          <div>
+            <h3 style="margin:0">Staff</h3>
+            <div class="text-muted" style="font-size:13px">Manage delivery & store staff</div>
+          </div>
+          <div>
+            <button id="btnOpenStaffModal" class="btn primary"><i class="fa fa-plus"></i> Add Staff</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <table class="table" id="staffTable">
+            <thead>
+              <tr>
+                <th style="width:120px">StaffID</th>
+                <th>Name</th>
+                <th style="width:140px">Role</th>
+                <th style="width:160px">Phone</th>
+                <th style="width:200px">Email</th>
+                <th style="width:120px">Status</th>
+                <th style="width:160px">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="7" class="text-muted">Loading staff…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PAGES: Coupons -->
+      <section class="page hidden" id="couponsPage">
+        <div class="page-header">
+          <div>
+            <h3 style="margin:0">Coupons</h3>
+            <div class="text-muted" style="font-size:13px">Create and manage discount coupons</div>
+          </div>
+          <div>
+            <button id="btnOpenCouponModal" class="btn primary"><i class="fa fa-plus"></i> Add Coupon</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <table class="table" id="couponsTable">
+            <thead>
+              <tr>
+                <th style="width:160px">Code</th>
+                <th style="width:120px">Discount</th>
+                <th style="width:120px">Type</th>
+                <th style="width:160px">Expiry</th>
+                <th style="width:100px">Status</th>
+                <th style="width:160px">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="6" class="text-muted">Loading coupons…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PAGES: Reports -->
+      <section class="page hidden" id="reportsPage">
+        <div class="page-header">
+          <div>
+            <h3 style="margin:0">Reports</h3>
+            <div class="text-muted" style="font-size:13px">Sales and cashflow reports</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <input type="date" id="reportFrom" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
+            <input type="date" id="reportTo" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
+            <button id="btnGenerateReport" class="btn primary">Generate</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <table class="table" id="reportsTable">
+            <thead>
+              <tr><th style="width:160px">ReportID</th><th>Type</th><th style="width:160px">Value</th><th style="width:180px">Date</th></tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="4" class="text-muted">Loading reports…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PAGES: Settings -->
+      <section class="page hidden" id="settingsPage">
+        <div class="page-header">
+          <div>
+            <h3 style="margin:0">Settings</h3>
+            <div class="text-muted" style="font-size:13px">Store configuration and business details</div>
+          </div>
+        </div>
+
+        <form id="settingsForm" class="form">
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+            <label>
+              Store name
+              <input name="StoreName" placeholder="NJ Mart"/>
+            </label>
+            <label>
+              Business email
+              <input type="email" name="BusinessEmail" placeholder="support@njmart.example"/>
+            </label>
+            <label>
+              Support phone
+              <input name="SupportPhone" placeholder="+91 90000 00000"/>
+            </label>
+            <label>
+              Minimum order (₹)
+              <input name="MinOrder" type="number" placeholder="199"/>
+            </label>
+            <label>
+              Delivery charge (₹)
+              <input name="DeliveryCharge" type="number" placeholder="25"/>
+            </label>
+            <label>
+              Free delivery threshold (₹)
+              <input name="FreeDelivery" type="number" placeholder="499"/>
+            </label>
+            <label>
+              UPI ID
+              <input name="UPIID" placeholder="njmart@ybl"/>
+            </label>
+            <label>
+              COD available
+              <select name="CODAvailable"><option value="yes">Yes</option><option value="no">No</option></select>
+            </label>
+          </div>
+
+          <div style="margin-top:12px;display:flex;justify-content:flex-end;gap:8px">
+            <button type="button" id="btnResetSettings" class="btn ghost">Reset</button>
+            <button type="submit" class="btn primary">Save settings</button>
+          </div>
+        </form>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODALS (Add/Edit Product, Add Staff, Add Coupon, Order Detail) -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" id="modal">
+      <!-- modal content injected by JS -->
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="adminToast" style="position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:8px;display:none;z-index:140">Saved</div>
+
+  <script>
+  /*******************************************************************
+   * NJ Mart — Admin (expanded)
+   * Single-file admin UI that talks to Google Apps Script backend.
+   *
+   * IMPORTANT:
+   * Replace API_BASE with your deployed Apps Script webapp URL if different.
+   *******************************************************************/
+  const API_BASE = "https://script.google.com/macros/s/AKfycbwsG5H7er3nqwGjEbrtokssc5LeGFc9Zog2bG1s0C5bQ-P2b_1S1kisSLpOmdESH7FB/exec";
+
+  /* ------------------ small helpers ------------------ */
+  const $ = (s,root=document) => root.querySelector(s);
+  const $$ = (s,root=document) => Array.from(root.querySelectorAll(s));
+  function showToast(msg,ms=1800){
+    const t = document.getElementById('adminToast');
+    t.textContent = msg; t.style.display='block';
+    setTimeout(()=>t.style.display='none', ms);
+  }
+  function apiGet(params={}) {
+    const u = new URL(API_BASE);
+    Object.keys(params).forEach(k => u.searchParams.set(k, params[k]));
+    return fetch(u).then(r=>r.json()).catch(e=>({ok:false,error:String(e)}));
+  }
+  function apiPost(body={}){
+    return fetch(API_BASE,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    }).then(r=>r.json()).catch(e=>({ok:false,error:String(e)}));
   }
 
-  // ----------------- form actions -----------------
-  // validate phone (basic)
-  function validPhone(v){
-    if(!v) return false;
-    const s = (''+v).replace(/\D/g,'');
-    return s.length >= 10;
+  /* ------------------ navigation ------------------ */
+  $$('.menu-item').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      $$('.menu-item').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const p = btn.dataset.page;
+      if(p) showPage(p);
+    });
+  });
+  function showPage(pageId){
+    // hide all pages
+    $$('.page').forEach(p=>p.classList.add('hidden'));
+    // show requested
+    document.getElementById(pageId).classList.remove('hidden');
+    document.getElementById('pageTitle').textContent = document.getElementById(pageId).querySelector('h3,h2')?.textContent || 'Admin';
+    window.scrollTo({top:0,behavior:'smooth'});
   }
 
-  async function handleSaveProfile(){
-    // gather fields
-    const data = {
-      action: 'addcustomer',            // backend expects this action
-      Name: el('name').value.trim(),
-      Phone: el('phone').value.trim(),
-      Email: el('email').value.trim(),
-      Address: el('address').value.trim(),
-    };
-
-    if(!data.Name){ showStatus('Please enter name'); el('name').focus(); return; }
-    if(!validPhone(data.Phone)){ showStatus('Enter valid phone'); el('phone').focus(); return; }
-
-    // disable button while saving
-    btnSave.disabled = true;
-    btnSave.textContent = 'Saving…';
-
-    const res = await apiPost(data);
-    btnSave.disabled = false;
-    btnSave.textContent = 'Save profile';
-
-    if(!res || !res.ok){
-      showStatus('Save failed: ' + (res && res.error ? res.error : 'unknown'));
-      return;
-    }
-
-    // we saved — set local profile
-    CURRENT_PROFILE = {
-      Name: data.Name, Phone: data.Phone, Email: data.Email, Address: data.Address, CustomerID: res.id || ''
-    };
-    saveLocalProfile(CURRENT_PROFILE);
-    renderProfileUI();
-    await loadCustomers();   // refresh customers cache
-    await loadOrders();
-    renderOrders(CURRENT_PROFILE);
-    showStatus('Profile saved');
-  }
-
-  // ----------------- init & event wiring -----------------
-  async function init(){
-    // load local
-    CURRENT_PROFILE = loadLocalProfile();
-    if(!CURRENT_PROFILE) {
-      // attempt to detect from URL params (optional) e.g. ?phone=...
-      const urlp = new URLSearchParams(window.location.search);
-      const phonep = urlp.get('phone') || urlp.get('ph') || '';
-      const namep = urlp.get('name') || '';
-      if(phonep) {
-        CURRENT_PROFILE = { Name: namep||'', Phone: phonep, Email: '', Address: '' };
-        saveLocalProfile(CURRENT_PROFILE);
-      }
-    }
-
-    renderProfileUI();
-    showStatus('Loading data…', 1000);
-
-    // load remote data
-    await loadCustomers();   // all customers
-    await loadOrders();      // all orders
-
-    // if local profile exists, try to populate with matching customer row (best-effort)
-    if(CURRENT_PROFILE && CURRENT_PROFILE.Phone){
-      // try find in customer list by phone or email
-      const phone = (CURRENT_PROFILE.Phone || '').toString().trim();
-      const email = (CURRENT_PROFILE.Email||'').toString().trim().toLowerCase();
-
-      const found = CUSTOMERS.find(c=>{
-        if(!c) return false;
-        const p = (c.Phone || '').toString().trim();
-        const e = (c.Email || '').toString().trim().toLowerCase();
-        return (p && phone && p.includes(phone)) || (e && email && e === email);
-      });
-
-      if(found){
-        // merge found into CURRENT_PROFILE
-        CURRENT_PROFILE = Object.assign({}, CURRENT_PROFILE, found);
-        saveLocalProfile(CURRENT_PROFILE);
-        renderProfileUI();
-      }
-    }
-
-    renderOrders(CURRENT_PROFILE);
-
-    // show sign out button if profile exists
-    el('btnSignOut').addEventListener('click', ()=>{
-      clearLocalProfile();
-      showStatus('Signed out', 2000);
-    });
-
-    // wire buttons
-    btnSave.addEventListener('click', handleSaveProfile);
-    btnClearLocal.addEventListener('click', ()=>{
-      clearLocalProfile();
-    });
-
-    btnEdit.addEventListener('click', ()=>{
-      // focus name input
-      el('name').focus();
-      window.scrollTo({top:0,behavior:'smooth'});
-    });
-
-    btnOrders.addEventListener('click', ()=>{
-      // scroll to orders
-      const rect = ordersArea.getBoundingClientRect();
-      window.scrollTo({ top: window.scrollY + rect.top - 64, behavior: 'smooth' });
-    });
-
-    btnRefreshOrders.addEventListener('click', async ()=>{
-      showStatus('Refreshing orders…', 1000);
-      await loadOrders();
-      renderOrders(CURRENT_PROFILE);
-      showStatus('Updated', 1200);
-    });
-  }
-
-  // initialize on DOM ready
-  document.addEventListener('DOMContentLoaded', init);
-  </script>
-
-</body>
-</html>
+  /* ------------------ load dashboard data ------------------ */
+  async function loadDashboard(){
+    const [pRes,oRes,cRes,rRes] = await Promise.all([
+      apiGet({action:'products'}),
+      apiGet({action:'orders'}),
+      apiGet({action:'customers'}),
+      apiGet({action:'reports'})
+    ]);
+    if(pRes.ok) $('#dashProducts').textContent = (pRes.products||[]).length;
+    if(oRes.ok){
+      const orders = oRes.orders || [];
+      $('#dashOrders').textContent = orders.length;
+      const revenue = orders.reduce((s,x)=> s + (Number(x['Final Amount']||x['Total Amount']||0)), 0);
+      $('#dashRevenue').textContent = '₹' + Number(revenue||0).toFixed(0);
+      // recent orders
+      const tbody = $('#recentOrders tbody'); tbody.innerHTML='';
+      orders.slice(-8).reverse().forEach(o=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${o.OrderID||''}</td><td>${o.CustomerID||''}</td><td>₹${Number(o['Final Amount']||0).toFixed(0)}</td><td>${o.Status||''}</td><td>${o['Order Date']||''}</td>
+          <td><button class="btn ghost small" data-id="${o.OrderID}" data-act="
