@@ -5,496 +5,528 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>NJ Mart — Profile</title>
 
-  <!-- Fonts & icons -->
+  <!-- Fonts + icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
     :root{
-      --max-width:980px;
       --bg:#f6fbf8;
-      --card:#fff;
+      --card:#ffffff;
       --muted:#6b7280;
       --accent:#2db34a;
       --accent-dark:#1f8a34;
       --danger:#ef4444;
       --shadow: 0 10px 30px rgba(12,30,40,0.06);
-      --radius:12px;
+      --max-width:960px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto;background:var(--bg);color:#111;-webkit-font-smoothing:antialiased}
-    .wrap{max-width:var(--max-width);margin:18px auto;padding:12px}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:#111;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
 
-    header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:800}
-    h1{font-size:20px;margin:0}
-    .muted{color:var(--muted);font-size:13px}
+    /* layout */
+    .wrap{max-width:var(--max-width);margin:20px auto;padding:12px}
+    header.site-header{
+      background:var(--card);
+      border-radius:12px;
+      box-shadow:var(--shadow);
+      padding:12px 16px;
+      display:flex;align-items:center;gap:12px;
+    }
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px}
+    h1.brand-title{font-size:18px;margin:0}
+    .muted{color:var(--muted)}
 
-    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;margin-bottom:12px}
+    /* grid */
+    .main{display:grid;grid-template-columns:340px 1fr;gap:16px;margin-top:16px}
+    @media(max-width:880px){ .main{grid-template-columns:1fr} }
 
-    form .row{display:flex;gap:12px;flex-wrap:wrap}
-    .col{flex:1;min-width:180px}
-    label{display:block;font-weight:700;margin:8px 0 6px}
-    input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #e8f0ec;font-size:15px;background:#fff}
+    /* left card (profile summary) */
+    .card{background:var(--card);padding:16px;border-radius:12px;box-shadow:var(--shadow)}
+    .profile-photo{
+      width:120px;height:120px;border-radius:12px;background:#f2f6f4;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:30px;color:var(--accent);
+      margin:0 auto 12px auto;
+    }
+    .info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #f1f3f4}
+    .info-row:last-child{border-bottom:0}
+
+    /* right area (forms & orders) */
+    .section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    form.profile-form{display:flex;flex-direction:column;gap:12px}
+    .field{display:flex;flex-direction:column;gap:6px}
+    label{font-weight:700;font-size:13px}
+    input[type="text"], input[type="email"], input[type="tel"], textarea{
+      padding:10px;border-radius:8px;border:1px solid #e6eef0;background:#fff;font-size:14px;
+    }
     textarea{min-height:90px;resize:vertical}
-
-    .actions{display:flex;gap:10px;margin-top:12px}
-    .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .btn{border:0;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}
     .btn.primary{background:var(--accent);color:#fff}
     .btn.ghost{background:#fff;border:1px solid #e6eef0}
-    .btn.warn{background:var(--danger);color:#fff}
 
-    .small{font-size:13px;color:var(--muted)}
-    .info{background:#f8fff9;border-radius:8px;padding:10px;border:1px solid #eef8ee;margin-top:8px}
+    /* small helper */
+    .muted-sm{color:var(--muted);font-size:13px}
+    .divider{height:1px;background:#f1f3f4;margin:10px 0;border-radius:4px}
 
-    .center{display:flex;align-items:center;gap:8px}
-    .hidden{display:none}
+    /* orders list */
+    .orders-list{display:flex;flex-direction:column;gap:8px}
+    .order-card{background:#fff;padding:12px;border-radius:10px;box-shadow:0 6px 14px rgba(12,30,40,0.04)}
+    .order-meta{display:flex;justify-content:space-between;align-items:center}
 
-    @media(max-width:720px){
-      .row{flex-direction:column}
-      .col{min-width:unset}
+    /* responsive tweaks */
+    @media(max-width:480px){
+      .profile-photo{width:100px;height:100px}
     }
   </style>
-
-  <!-- script-config provides callScriptAPI, getLocalUser, setLocalUser etc. -->
-  <script src="./script-config.js"></script>
-  <!-- firebase-config may exist for signOut, optional -->
-  <script type="module" src="./firebase-config.js"></script>
 </head>
 <body>
+
   <div class="wrap">
-    <header class="top">
+
+    <header class="site-header" role="banner">
       <div class="brand">
         <div class="logo">NJ</div>
         <div>
-          <h1>My Profile</h1>
-          <div class="muted">Manage your contact, address & preferences</div>
+          <h1 class="brand-title">NJ Mart</h1>
+          <div class="muted" style="font-size:12px">Profile</div>
         </div>
       </div>
 
-      <div class="center">
-        <div id="userPhone" class="small muted">Not signed in</div>
-        <button id="btnLogout" class="btn ghost hidden"><i class="fa fa-sign-out-alt"></i> Logout</button>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <button id="btnSignOut" class="btn ghost" style="display:none"><i class="fa fa-right-from-bracket"></i> Sign out</button>
+        <a href="index.html" class="btn ghost">Home</a>
+        <a href="checkout.html" class="btn primary">Checkout</a>
       </div>
     </header>
 
-    <!-- Profile card -->
-    <section class="card" aria-labelledby="profileTitle">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <h2 id="profileTitle" style="margin:0">Account details</h2>
-          <div class="small muted">Your basic profile info (editable)</div>
-        </div>
-        <div id="statusNote" class="small muted">Autosave to Google Sheet</div>
-      </div>
+    <div class="main" role="main">
 
-      <form id="profileForm" style="margin-top:12px">
-        <div class="row">
-          <div class="col">
-            <label for="fullName">Full name</label>
-            <input id="fullName" name="fullName" placeholder="e.g. Nitin Kumar">
+      <!-- LEFT: profile summary -->
+      <aside>
+        <div class="card">
+          <div class="profile-photo" id="avatar">NJ</div>
+          <div style="text-align:center">
+            <div id="displayName" style="font-weight:800;font-size:18px">Guest</div>
+            <div id="displayPhone" class="muted-sm">Not signed in</div>
           </div>
-          <div class="col">
-            <label for="email">Email (optional)</label>
-            <input id="email" name="email" placeholder="you@example.com" type="email">
+
+          <div class="divider"></div>
+
+          <div class="info-row">
+            <div class="muted-sm">Total orders</div>
+            <div id="summaryOrders" style="font-weight:800">0</div>
           </div>
-        </div>
-
-        <div class="row" style="margin-top:8px">
-          <div class="col">
-            <label for="phone">Phone (required)</label>
-            <input id="phone" name="phone" placeholder="+91 9XXXXXXXXX" required>
+          <div class="info-row">
+            <div class="muted-sm">Total spent</div>
+            <div id="summarySpent" style="font-weight:800">₹0</div>
           </div>
-          <div class="col">
-            <label for="pincode">Pincode</label>
-            <input id="pincode" name="pincode" placeholder="e.g. 110001">
-          </div>
-        </div>
 
-        <div style="margin-top:10px">
-          <label for="address">Full address</label>
-          <textarea id="address" name="address" placeholder="House no, street, area, city, state"></textarea>
-        </div>
+          <div class="divider"></div>
 
-        <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
-          <button id="btnLocation" type="button" class="btn ghost"><i class="fa fa-location-dot"></i> Use current location</button>
-          <button id="btnSave" type="button" class="btn primary"><i class="fa fa-save"></i> Save profile</button>
-          <div id="saveMsg" class="small muted" style="margin-left:8px">Not saved</div>
-        </div>
-
-        <div class="info" style="margin-top:12px">
-          <div style="font-weight:700">How this works</div>
-          <div class="small muted" style="margin-top:6px">
-            When you save, the profile is stored in your Google Sheet (admin panel). Admin can edit it later.
-            Billing and orders will use the phone number you save here.
+          <div style="font-size:13px;margin-top:8px">
+            <div style="font-weight:700">Quick actions</div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button id="btnEdit" class="btn ghost" style="flex:1">Edit profile</button>
+              <button id="btnOrders" class="btn primary" style="flex:1">My orders</button>
+            </div>
           </div>
         </div>
-      </form>
-    </section>
+      </aside>
 
-    <!-- Saved addresses (readable) -->
-    <section id="addressesCard" class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <h2 style="margin:0">Saved addresses</h2>
-          <div class="small muted">Manage your delivery addresses (stored in sheet)</div>
-        </div>
-        <div>
-          <button id="btnAddAddress" class="btn primary">Add address</button>
-        </div>
-      </div>
+      <!-- RIGHT: profile edit & orders -->
+      <section>
+        <div class="card" id="profileCard">
+          <div class="section-title">
+            <div>
+              <h2 style="margin:0">Your profile</h2>
+              <div class="muted-sm">Manage your contact details and delivery address</div>
+            </div>
+            <div>
+              <span id="statusMsg" class="muted-sm"></span>
+            </div>
+          </div>
 
-      <div id="addressesList" style="margin-top:12px">
-        <!-- addresses will be injected here -->
-        <div class="small muted">Loading saved addresses…</div>
-      </div>
-    </section>
+          <!-- Profile form -->
+          <form id="profileForm" class="profile-form" autocomplete="off" onsubmit="return false;">
+            <div class="field">
+              <label for="name">Full name</label>
+              <input id="name" name="Name" type="text" placeholder="Your full name" required />
+            </div>
 
-    <!-- Address modal-like area (simple inline form) -->
-    <section id="addressEditor" class="card hidden">
-      <h3 style="margin:0 0 8px 0">Add / Edit address</h3>
-      <form id="addrForm">
-        <div class="row">
-          <div class="col">
-            <label for="addrName">Name</label>
-            <input id="addrName" placeholder="Name for this address">
-          </div>
-          <div class="col">
-            <label for="addrPhone">Phone</label>
-            <input id="addrPhone" placeholder="Phone">
-          </div>
+            <div style="display:flex;gap:8px">
+              <div style="flex:1" class="field">
+                <label for="phone">Phone</label>
+                <input id="phone" name="Phone" type="tel" placeholder="10-digit phone" required />
+              </div>
+              <div style="flex:1" class="field">
+                <label for="email">Email</label>
+                <input id="email" name="Email" type="email" placeholder="your@email.com" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="address">Delivery address</label>
+              <textarea id="address" name="Address" placeholder="House no, locality, city, pin..."></textarea>
+            </div>
+
+            <div style="display:flex;gap:8px">
+              <button id="btnSaveProfile" class="btn primary">Save profile</button>
+              <button id="btnClearLocal" class="btn ghost" type="button">Clear local</button>
+            </div>
+            <div id="saveNote" class="muted-sm" style="margin-top:6px">Saving will append your profile to the Customers sheet (Google Sheets).</div>
+          </form>
         </div>
-        <div style="margin-top:8px">
-          <label for="addrLine">Address line</label>
-          <input id="addrLine" placeholder="House no, building, street">
-        </div>
-        <div class="row" style="margin-top:8px">
-          <div class="col">
-            <label for="addrCity">City</label>
-            <input id="addrCity" placeholder="City">
+
+        <!-- Orders area -->
+        <div class="card" style="margin-top:12px">
+          <div class="section-title">
+            <div>
+              <h3 style="margin:0">Your orders</h3>
+              <div class="muted-sm">Recent orders placed with this phone/email</div>
+            </div>
+            <div>
+              <button id="btnRefreshOrders" class="btn ghost">Refresh</button>
+            </div>
           </div>
-          <div class="col">
-            <label for="addrPin">Pincode</label>
-            <input id="addrPin" placeholder="Pincode">
+
+          <div id="ordersArea" class="orders-list">
+            <div class="muted-sm" style="padding:12px">No orders found</div>
           </div>
         </div>
 
-        <div style="margin-top:10px;display:flex;gap:8px">
-          <button id="addrSaveBtn" type="button" class="btn primary">Save address</button>
-          <button id="addrCancelBtn" type="button" class="btn ghost">Cancel</button>
-          <button id="addrUseLoc" type="button" class="btn ghost">Use current location</button>
-          <div id="addrMsg" class="small muted" style="margin-left:8px"></div>
-        </div>
-      </form>
-    </section>
+      </section>
 
-    <!-- Orders quick link -->
-    <section class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <h2 style="margin:0">Your Orders</h2>
-          <div class="small muted">View or track past orders</div>
-        </div>
-        <div><button id="viewOrdersBtn" class="btn ghost">My Orders</button></div>
-      </div>
-    </section>
+    </div> <!-- main -->
 
-    <footer style="text-align:center;margin-top:10px" class="small muted">NJ Mart © 2025 — Your data stored in Google Sheet (admins can edit)</footer>
-  </div>
+  </div> <!-- wrap -->
 
-  <!-- ================ SCRIPT ================ -->
   <script>
-  /************************************************************************
-   * profile.html
+  /*****************************************************************
+   * Profile page script (client side)
    *
-   * This script:
-   *  - checks if user is logged in (getLocalUser or localStorage)
-   *  - fetches profile from Google Sheet via callScriptAPI
-   *  - allows save/update to sheet (payload types: addCustomer / updateCustomer)
-   *  - manages address list stored in Sheet (add/edit/delete)
+   * - Reads/writes to Apps Script backend (Google Sheets)
+   * - Uses the deployed web app endpoint (API_BASE)
+   * - Save profile -> POST action=addcustomer (appends a new row)
+   * - Loads customers to show orders summary (and user's orders)
    *
-   * Requirements:
-   *  - script-config.js must be present and expose callScriptAPI(), getLocalUser(), setLocalUser()
-   *  - Apps Script WebApp should accept payload types:
-   *       { type: "getCustomer", userId }           -> returns { ok:true, data: { ... } }  (preferred)
-   *       { type: "getCustomers" }                  -> returns list of customers
-   *       { type: "addCustomer", customer }         -> add a customer
-   *       { type: "updateCustomer", customer }      -> update by id
-   *       { type: "getAddresses", userId }          -> optional: get addresses for user
-   *       { type: "addAddress", address }           -> optional: add address row
-   *       { type: "updateAddress", address }        -> optional
-   *       { type: "deleteAddress", addressId }      -> optional
-   *
-   * If your Apps Script uses different keys, change the payload types below.
-   ************************************************************************/
+   * NOTE: If your deployed endpoint is different, update API_BASE below.
+   *****************************************************************/
 
-  // small helpers that use script-config wrappers if available
-  const callAPI = (typeof callScriptAPI === 'function') ? callScriptAPI : null;
-  const getLocal = (typeof getLocalUser === 'function') ? getLocalUser : (() => JSON.parse(localStorage.getItem('nj_user')||'null'));
-  const saveLocal = (typeof setLocalUser === 'function') ? setLocalUser : ((u)=> localStorage.setItem('nj_user', JSON.stringify(u)));
+  // ----------------- CONFIG -----------------
+  // Replace with your deployed Apps Script web app URL if needed.
+  const API_BASE = 'https://script.google.com/macros/s/AKfycbwsG5H7er3nqwGjEbrtokssc5LeGFc9Zog2bG1s0C5bQ-P2b_1S1kisSLpOmdESH7FB/exec';
 
-  // DOM elements
-  const fullNameEl = document.getElementById('fullName');
-  const emailEl = document.getElementById('email');
-  const phoneEl = document.getElementById('phone');
-  const pincodeEl = document.getElementById('pincode');
-  const addressEl = document.getElementById('address');
-  const saveBtn = document.getElementById('btnSave');
-  const saveMsg = document.getElementById('saveMsg');
-  const userPhoneBadge = document.getElementById('userPhone');
-  const logoutBtn = document.getElementById('btnLogout');
+  // selectors
+  const el = id => document.getElementById(id);
+  const profileForm = el('profileForm');
+  const btnSave = el('btnSaveProfile');
+  const btnClearLocal = el('btnClearLocal');
+  const btnEdit = el('btnEdit');
+  const btnOrders = el('btnOrders');
+  const btnRefreshOrders = el('btnRefreshOrders');
 
-  // address editor elements
-  const addressListEl = document.getElementById('addressesList');
-  const addrEditor = document.getElementById('addressEditor');
-  const addrForm = document.getElementById('addrForm');
-  const addrName = document.getElementById('addrName');
-  const addrPhone = document.getElementById('addrPhone');
-  const addrLine = document.getElementById('addrLine');
-  const addrCity = document.getElementById('addrCity');
-  const addrPin = document.getElementById('addrPin');
-  const addrSaveBtn = document.getElementById('addrSaveBtn');
-  const addrCancelBtn = document.getElementById('addrCancelBtn');
-  const addrUseLoc = document.getElementById('addrUseLoc');
-  const addrMsg = document.getElementById('addrMsg');
-  const addAddressBtn = document.getElementById('btnAddAddress');
+  const displayName = el('displayName');
+  const displayPhone = el('displayPhone');
+  const avatar = el('avatar');
+  const summaryOrders = el('summaryOrders');
+  const summarySpent = el('summarySpent');
+  const ordersArea = el('ordersArea');
+  const statusMsg = el('statusMsg');
 
-  // orders button
-  const viewOrdersBtn = document.getElementById('viewOrdersBtn');
+  // localStorage keys
+  const KEY_PROFILE = 'nj_profile';
 
-  // state
-  let CURRENT_USER = null;      // object -> { id, uid, name, phone, email, address, ... }
-  let ADDRESSES = [];           // list of addresses from sheet or localStorage
-  let EDITING_ADDRESS_INDEX = -1;
+  // initial
+  let CURRENT_PROFILE = null;   // in-memory profile
+  let CUSTOMERS = [];           // loaded customers list
+  let ORDERS = [];              // loaded orders list (if needed)
 
-  /***********************
-   * Init on load
-   ***********************/
-  (async function init(){
-    // 1) check local user (from login)
-    CURRENT_USER = getLocal();
-    if(!CURRENT_USER){
-      // not logged in, show message and redirect to login optionally
-      userPhoneBadge.textContent = 'Not signed in';
-      // If you want to force login:
-      // if(confirm('You are not signed in. Login now?')) location.href='login.html';
-    } else {
-      // show phone/email in header
-      userPhoneBadge.textContent = CURRENT_USER.phone || (CURRENT_USER.email || 'Signed in');
-      logoutBtn.classList.remove('hidden');
+  // ----------------- helpers -----------------
+  function pretty(v){ return (v===null || v===undefined || v==='') ? '-' : v; }
+  function showStatus(msg, timeout=2000){ statusMsg.textContent = msg || ''; if(timeout>0){ setTimeout(()=>statusMsg.textContent = '', timeout); } }
+
+  // load saved profile from localStorage
+  function loadLocalProfile(){
+    try{
+      const raw = localStorage.getItem(KEY_PROFILE);
+      if(!raw) return null;
+      const obj = JSON.parse(raw);
+      return obj;
+    }catch(e){
+      return null;
     }
-
-    // 2) load profile from backend (if available), otherwise use local user
-    await loadProfile();
-
-    // 3) load addresses
-    await loadAddresses();
-
-    // 4) wire up events
-    setupEvents();
-
-    // 5) nice UX: focus name field if empty
-    if(!fullNameEl.value) fullNameEl.focus();
-  })();
-
-  /***********************
-   * LOAD PROFILE
-   ***********************/
-  async function loadProfile(){
-    // If we have logged-in user ID, try to fetch record from sheet
-    const userId = CURRENT_USER ? (CURRENT_USER.id || CURRENT_USER.uid || CURRENT_USER.email) : null;
-
-    // first, fill from local if exists
-    if(CURRENT_USER){
-      fullNameEl.value = CURRENT_USER.name || '';
-      emailEl.value = CURRENT_USER.email || '';
-      phoneEl.value = CURRENT_USER.phone || '';
-      addressEl.value = CURRENT_USER.address || '';
-      pincodeEl.value = CURRENT_USER.pincode || '';
-      saveMsg.textContent = 'Loaded from local';
-    }
-
-    if(!callAPI || !userId){
-      // No backend or no user => we stop here
-      return;
-    }
-
-    // try preferred API: getCustomer by userId
-    try {
-      const r = await callAPI({ type: 'getCustomer', userId });
-      if(r && r.ok && r.data){
-        // expected r.data to be a single object
-        CURRENT_USER = r.data;
-        // update local copy
-        try { saveLocal(CURRENT_USER); } catch(e){}
-        // populate fields
-        fullNameEl.value = CURRENT_USER.name || '';
-        emailEl.value = CURRENT_USER.email || '';
-        phoneEl.value = CURRENT_USER.phone || '';
-        addressEl.value = CURRENT_USER.address || '';
-        pincodeEl.value = CURRENT_USER.pincode || '';
-        saveMsg.textContent = 'Loaded from sheet';
-        userPhoneBadge.textContent = CURRENT_USER.phone || CURRENT_USER.email || 'Signed in';
-        logoutBtn.classList.remove('hidden');
-        return;
-      }
-    } catch (err) {
-      console.warn('getCustomer API error', err);
-    }
-
-    // fallback: get all customers and find by phone/email
-    try {
-      const resAll = await callAPI({ type: 'getCustomers' });
-      if(resAll && resAll.ok && Array.isArray(resAll.data)){
-        const found = resAll.data.find(c => (CURRENT_USER && (c.phone === CURRENT_USER.phone || c.email === CURRENT_USER.email)));
-        if(found){
-          CURRENT_USER = found;
-          try { saveLocal(CURRENT_USER); } catch(e){}
-          fullNameEl.value = CURRENT_USER.name || '';
-          emailEl.value = CURRENT_USER.email || '';
-          phoneEl.value = CURRENT_USER.phone || '';
-          addressEl.value = CURRENT_USER.address || '';
-          pincodeEl.value = CURRENT_USER.pincode || '';
-          saveMsg.textContent = 'Loaded from sheet';
-          userPhoneBadge.textContent = CURRENT_USER.phone || CURRENT_USER.email || 'Signed in';
-          logoutBtn.classList.remove('hidden');
-          return;
-        }
-      }
-    } catch (err){
-      console.warn('getCustomers fallback error', err);
-    }
-
-    // if we reach here, profile not found on sheet — keep local
-    saveMsg.textContent = 'Profile not found on sheet (local only)';
   }
 
-  /***********************
-   * SAVE / UPDATE PROFILE
-   ***********************/
-  saveBtn.addEventListener('click', async ()=>{
-    // validate phone
-    const name = fullNameEl.value.trim();
-    const email = emailEl.value.trim();
-    const phone = phoneEl.value.trim();
-    const address = addressEl.value.trim();
-    const pincode = pincodeEl.value.trim();
+  // save profile to localStorage
+  function saveLocalProfile(data){
+    try{
+      localStorage.setItem(KEY_PROFILE, JSON.stringify(data||{}));
+    }catch(e){}
+  }
 
-    if(!phone){
-      alert('Phone is required');
-      phoneEl.focus();
+  // clear local profile
+  function clearLocalProfile(){
+    localStorage.removeItem(KEY_PROFILE);
+    CURRENT_PROFILE = null;
+    renderProfileUI();
+    showStatus('Local profile cleared', 2000);
+  }
+
+  // set avatar initials
+  function setAvatar(name){
+    if(!name) { avatar.textContent = 'NJ'; return; }
+    const parts = name.trim().split(/\s+/);
+    let initials = parts.length === 1 ? parts[0].slice(0,2) : (parts[0][0] + (parts[1][0]||'')).toUpperCase();
+    initials = initials.toUpperCase();
+    avatar.textContent = initials;
+  }
+
+  // render profile UI from CURRENT_PROFILE
+  function renderProfileUI(){
+    const p = CURRENT_PROFILE || {};
+    el('name').value = p.Name || '';
+    el('phone').value = p.Phone || '';
+    el('email').value = p.Email || '';
+    el('address').value = p.Address || '';
+
+    displayName.textContent = p.Name || 'Guest';
+    displayPhone.textContent = p.Phone ? p.Phone : 'Not signed in';
+    setAvatar(p.Name || 'NJ');
+
+    if(p.Phone) el('btnSignOut').style.display = 'inline-block';
+    else el('btnSignOut').style.display = 'none';
+  }
+
+  // ----------------- API helpers -----------------
+  // GET action=customers or action=orders etc.
+  async function apiGet(params={}) {
+    const url = new URL(API_BASE);
+    Object.keys(params || {}).forEach(k => url.searchParams.set(k, params[k]));
+    try{
+      const res = await fetch(url.toString(), {method:'GET', cache:'no-store'});
+      const json = await res.json();
+      return json;
+    }catch(err){
+      return {ok:false, error: String(err)};
+    }
+  }
+
+  // POST (application/json) to webapp
+  async function apiPost(payload){
+    try{
+      const res = await fetch(API_BASE, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      return data;
+    }catch(err){
+      return {ok:false, error:String(err)};
+    }
+  }
+
+  // ----------------- load customers & orders -----------------
+  async function loadCustomers(){
+    // loads all customers from sheet
+    const r = await apiGet({ action: 'customers' });
+    if(!r || !r.ok){ console.warn('customers load failed', r); CUSTOMERS = []; return; }
+    CUSTOMERS = r.customers || [];
+  }
+
+  async function loadOrders(){
+    const r = await apiGet({ action: 'orders' });
+    if(!r || !r.ok){ ORDERS = []; return; }
+    ORDERS = r.orders || [];
+  }
+
+  // build order summary for current profile (by phone or email)
+  function buildOrderSummaryForProfile(profile){
+    if(!profile) return {count:0, total:0, items:[]};
+    const phone = (profile.Phone || '').toString().trim();
+    const email = (profile.Email || '').toString().trim().toLowerCase();
+
+    const matched = ORDERS.filter(o=>{
+      const cid = (o['CustomerID'] || '').toString().trim();
+      const oPhone = (o['CustomerID'] || '').toString().trim(); // depends on how orders saved
+      // Many implementations store CustomerID, but sometimes they store phone. We check multiple keys:
+      const fields = Object.values(o).map(v => (''+v).toLowerCase());
+      return fields.some(f => f.includes(phone) || (email && f.includes(email)));
+    });
+
+    let total = 0;
+    matched.forEach(m=>{
+      const val = Number(m['Final Amount'] || m['Total Amount'] || m.Value || 0);
+      total += isNaN(val) ? 0 : val;
+    });
+    return {count: matched.length, total, items: matched};
+  }
+
+  // render orders list to UI
+  function renderOrders(profile){
+    const summary = buildOrderSummaryForProfile(profile);
+    summaryOrders.textContent = summary.count;
+    summarySpent.textContent = '₹' + (summary.total || 0).toFixed(0);
+
+    // clear orders area
+    ordersArea.innerHTML = '';
+    if(!summary.items || summary.items.length === 0){
+      ordersArea.innerHTML = '<div class="muted-sm" style="padding:12px">No orders found for this profile.</div>';
       return;
     }
 
-    // create payload
-    const customer = {
-      id: CURRENT_USER && (CURRENT_USER.id || CURRENT_USER.uid) ? (CURRENT_USER.id || CURRENT_USER.uid) : ('c_' + Date.now()),
-      name, email, phone, address, pincode
+    // show most recent 10
+    const recent = summary.items.slice(-10).reverse();
+    recent.forEach(item=>{
+      const node = document.createElement('div');
+      node.className = 'order-card';
+      const orderId = item['OrderID'] || item['Report ID'] || item['orderId'] || '—';
+      const date = item['Order Date'] || item['Date'] || '';
+      const status = item['Status'] || item['status'] || 'placed';
+      const amount = item['Final Amount'] || item['Total Amount'] || item['Value'] || 0;
+      node.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:700">Order ${orderId}</div>
+            <div class="muted-sm">${pretty(date)}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-weight:800">₹${Number(amount||0).toFixed(0)}</div>
+            <div class="muted-sm">${status}</div>
+          </div>
+        </div>
+      `;
+      ordersArea.appendChild(node);
+    });
+  }
+
+  // ----------------- form actions -----------------
+  // validate phone (basic)
+  function validPhone(v){
+    if(!v) return false;
+    const s = (''+v).replace(/\D/g,'');
+    return s.length >= 10;
+  }
+
+  async function handleSaveProfile(){
+    // gather fields
+    const data = {
+      action: 'addcustomer',            // backend expects this action
+      Name: el('name').value.trim(),
+      Phone: el('phone').value.trim(),
+      Email: el('email').value.trim(),
+      Address: el('address').value.trim(),
     };
 
-    // optimistic local save
-    try { saveLocal(customer); CURRENT_USER = customer; } catch(e){ console.warn(e); }
+    if(!data.Name){ showStatus('Please enter name'); el('name').focus(); return; }
+    if(!validPhone(data.Phone)){ showStatus('Enter valid phone'); el('phone').focus(); return; }
 
-    // UI feedback
-    saveMsg.textContent = 'Saving...';
+    // disable button while saving
+    btnSave.disabled = true;
+    btnSave.textContent = 'Saving…';
 
-    // if we have backend, call add/update
-    if(callAPI){
-      try {
-        // prefer updateCustomer if exists
-        const useType = (CURRENT_USER && CURRENT_USER.id) ? 'updateCustomer' : 'addCustomer';
-        const r = await callAPI({ type: useType, customer });
-        if(r && r.ok){
-          saveMsg.textContent = 'Saved';
-          // update CURRENT_USER with returned data if any
-          if(r.data) { CURRENT_USER = r.data; try{ saveLocal(CURRENT_USER); }catch(e){} }
-          // refresh addresses
-          await loadAddresses();
-          return;
-        } else {
-          saveMsg.textContent = 'Saved locally (sheet returned error)';
-          console.warn('sheet save error', r);
-        }
-      } catch (err) {
-        saveMsg.textContent = 'Saved locally (sheet error)';
-        console.warn('callAPI error', err);
-      }
-    } else {
-      saveMsg.textContent = 'Saved locally (no backend)';
-    }
-  });
+    const res = await apiPost(data);
+    btnSave.disabled = false;
+    btnSave.textContent = 'Save profile';
 
-  /***********************
-   * LOGOUT
-   ***********************/
-  logoutBtn.addEventListener('click', async ()=>{
-    // clear local user
-    try {
-      // if firebase-config exports signOutUser
-      if(typeof signOutUser === 'function'){
-        await signOutUser();
-      }
-    } catch(e){ console.warn('firebase sign out', e) }
-
-    // clear local storage values related to auth/profile
-    try {
-      localStorage.removeItem('nj_user');
-    } catch(e){/* ignore */}
-    CURRENT_USER = null;
-    userPhoneBadge.textContent = 'Not signed in';
-    logoutBtn.classList.add('hidden');
-    alert('Logged out');
-    // optionally redirect to login
-    // location.href = 'login.html';
-  });
-
-  /***********************
-   * ADDRESSES: load / render / add / update / delete
-   ***********************/
-  async function loadAddresses(){
-    // prefer backend call if available
-    if(callAPI && CURRENT_USER && (CURRENT_USER.id || CURRENT_USER.phone || CURRENT_USER.email)){
-      try {
-        const userId = CURRENT_USER.id || CURRENT_USER.uid || CURRENT_USER.email || CURRENT_USER.phone;
-        const r = await callAPI({ type: 'getAddresses', userId });
-        if(r && r.ok && Array.isArray(r.data)){
-          ADDRESSES = r.data;
-          renderAddresses();
-          return;
-        }
-      } catch(err){
-        console.warn('getAddresses error', err);
-      }
-    }
-
-    // fallback to localStorage stored addresses
-    try {
-      ADDRESSES = JSON.parse(localStorage.getItem('nj_addresses_' + (CURRENT_USER ? (CURRENT_USER.id || CURRENT_USER.phone || 'guest') : 'guest')) || '[]');
-      renderAddresses();
-    } catch(e){
-      ADDRESSES = [];
-      renderAddresses();
-    }
-  }
-
-  function renderAddresses(){
-    addressListEl.innerHTML = '';
-    if(!ADDRESSES || ADDRESSES.length === 0){
-      addressListEl.innerHTML = '<div class="small muted">No saved addresses</div>';
+    if(!res || !res.ok){
+      showStatus('Save failed: ' + (res && res.error ? res.error : 'unknown'));
       return;
     }
-    ADDRESSES.forEach((a, idx)=>{
-      const node = document.createElement('div');
-      node.className = 'card';
-      node.style.marginBottom = '10px';
-      node.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
-          <div>
-            <div style="font-weight:800">${a.name} <span class="small muted">(${a.phone})</span></div>
-            <div class="small muted" style="margin-top:6px">${a.line}, ${a.city} - ${a.pin}</div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <button class="btn ghost" data-act="select" data-idx="${idx}">Deliver here</button>
-            <button class="btn ghost" data-act="edit" data-idx="${idx}">Edit</button>
-            <button class="btn ghost" data-act="delete" data-idx
+
+    // we saved — set local profile
+    CURRENT_PROFILE = {
+      Name: data.Name, Phone: data.Phone, Email: data.Email, Address: data.Address, CustomerID: res.id || ''
+    };
+    saveLocalProfile(CURRENT_PROFILE);
+    renderProfileUI();
+    await loadCustomers();   // refresh customers cache
+    await loadOrders();
+    renderOrders(CURRENT_PROFILE);
+    showStatus('Profile saved');
+  }
+
+  // ----------------- init & event wiring -----------------
+  async function init(){
+    // load local
+    CURRENT_PROFILE = loadLocalProfile();
+    if(!CURRENT_PROFILE) {
+      // attempt to detect from URL params (optional) e.g. ?phone=...
+      const urlp = new URLSearchParams(window.location.search);
+      const phonep = urlp.get('phone') || urlp.get('ph') || '';
+      const namep = urlp.get('name') || '';
+      if(phonep) {
+        CURRENT_PROFILE = { Name: namep||'', Phone: phonep, Email: '', Address: '' };
+        saveLocalProfile(CURRENT_PROFILE);
+      }
+    }
+
+    renderProfileUI();
+    showStatus('Loading data…', 1000);
+
+    // load remote data
+    await loadCustomers();   // all customers
+    await loadOrders();      // all orders
+
+    // if local profile exists, try to populate with matching customer row (best-effort)
+    if(CURRENT_PROFILE && CURRENT_PROFILE.Phone){
+      // try find in customer list by phone or email
+      const phone = (CURRENT_PROFILE.Phone || '').toString().trim();
+      const email = (CURRENT_PROFILE.Email||'').toString().trim().toLowerCase();
+
+      const found = CUSTOMERS.find(c=>{
+        if(!c) return false;
+        const p = (c.Phone || '').toString().trim();
+        const e = (c.Email || '').toString().trim().toLowerCase();
+        return (p && phone && p.includes(phone)) || (e && email && e === email);
+      });
+
+      if(found){
+        // merge found into CURRENT_PROFILE
+        CURRENT_PROFILE = Object.assign({}, CURRENT_PROFILE, found);
+        saveLocalProfile(CURRENT_PROFILE);
+        renderProfileUI();
+      }
+    }
+
+    renderOrders(CURRENT_PROFILE);
+
+    // show sign out button if profile exists
+    el('btnSignOut').addEventListener('click', ()=>{
+      clearLocalProfile();
+      showStatus('Signed out', 2000);
+    });
+
+    // wire buttons
+    btnSave.addEventListener('click', handleSaveProfile);
+    btnClearLocal.addEventListener('click', ()=>{
+      clearLocalProfile();
+    });
+
+    btnEdit.addEventListener('click', ()=>{
+      // focus name input
+      el('name').focus();
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+
+    btnOrders.addEventListener('click', ()=>{
+      // scroll to orders
+      const rect = ordersArea.getBoundingClientRect();
+      window.scrollTo({ top: window.scrollY + rect.top - 64, behavior: 'smooth' });
+    });
+
+    btnRefreshOrders.addEventListener('click', async ()=>{
+      showStatus('Refreshing orders…', 1000);
+      await loadOrders();
+      renderOrders(CURRENT_PROFILE);
+      showStatus('Updated', 1200);
+    });
+  }
+
+  // initialize on DOM ready
+  document.addEventListener('DOMContentLoaded', init);
+  </script>
+
+</body>
+</html>
