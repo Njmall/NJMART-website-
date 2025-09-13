@@ -1,318 +1,464 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NJ Mart - Login</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NJ Mart — Login</title>
 
-  <!-- TailwindCSS CDN -->
+  <!-- Tailwind CDN (utility classes for clean UI) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <!-- Font / icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Custom Styles -->
   <style>
-    body {
-      background: #f8fafc;
+    :root{
+      --accent:#16a34a; /* green */
+      --muted:#6b7280;
+      --card:#ffffff;
+      --bg:#f6fbf8;
+      --shadow: 0 8px 28px rgba(12,30,40,0.06);
     }
-    .login-card {
-      max-width: 450px;
-      margin: 40px auto;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      background: white;
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      background: linear-gradient(180deg, var(--bg), #eef7f1);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
-    .tab-btn {
-      cursor: pointer;
-      padding: 10px 20px;
-      font-weight: 600;
+    /* small helper classes for this page (kept minimal - tailwind covers most) */
+    .logo {
+      width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#0f7a36);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px;
     }
-    .tab-active {
-      border-bottom: 3px solid #2563eb;
-      color: #2563eb;
-    }
-    .hidden {
-      display: none;
-    }
+    /* subtle scrollbar for desktop */
+    ::-webkit-scrollbar { height:10px; width:10px; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius:8px; }
+    /* prevent accidental text-select on buttons */
+    button { user-select: none; }
   </style>
 </head>
-<body class="font-sans">
+<body class="min-h-screen flex items-center justify-center p-6">
 
-  <div class="login-card">
-    <h1 class="text-2xl font-bold text-center mb-6">NJ Mart Admin Login</h1>
+  <!-- Outer container -->
+  <div class="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-    <!-- Tabs -->
-    <div class="flex justify-center mb-6">
-      <div id="tab-email" class="tab-btn tab-active">Email Login</div>
-      <div id="tab-phone" class="tab-btn">Phone Login</div>
+    <!-- Left: Branding + Info -->
+    <div class="hidden lg:flex flex-col justify-center px-8 py-10 rounded-2xl shadow-[var(--shadow)] bg-white">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="logo">NJ</div>
+        <div>
+          <div class="text-lg font-bold">NJ Mart</div>
+          <div class="text-sm text-var(--muted)">Admin Panel — Login</div>
+        </div>
+      </div>
+
+      <h2 class="text-2xl font-extrabold mb-2">Sign in to your admin account</h2>
+      <p class="text-sm text-gray-600 mb-6">Use Google, email + password or phone OTP to access the admin panel. Keep credentials safe.</p>
+
+      <div class="grid gap-3">
+        <div class="p-4 rounded-lg border border-gray-100">
+          <div class="text-xs text-gray-600">Quick checklist</div>
+          <ul class="mt-2 list-disc list-inside text-sm text-gray-700">
+            <li>Authorized domain set in Firebase console</li>
+            <li>Google & Phone sign-in enabled</li>
+            <li>Apps Script backend URL configured for sheets</li>
+          </ul>
+        </div>
+
+        <div class="p-4 rounded-lg border border-gray-100">
+          <div class="text-xs text-gray-600">Support</div>
+          <div class="text-sm text-gray-700 mt-2">If login fails check console (F12) for errors — common issues are API key/domain config or reCAPTCHA.</div>
+        </div>
+      </div>
     </div>
 
-    <!-- Email Login Form -->
-    <div id="email-login">
-      <label class="block mb-2 text-gray-700 font-medium">Email</label>
-      <input type="email" id="email" class="w-full border px-3 py-2 mb-4 rounded" placeholder="Enter email" />
+    <!-- Right: Login UI -->
+    <div class="bg-white rounded-2xl shadow-[var(--shadow)] p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <div class="logo">NJ</div>
+          <div>
+            <div class="font-semibold text-lg">NJ Mart Admin</div>
+            <div class="text-sm text-gray-500">Sign in & manage your store</div>
+          </div>
+        </div>
+        <div class="text-sm text-gray-400">Secure</div>
+      </div>
 
-      <label class="block mb-2 text-gray-700 font-medium">Password</label>
-      <input type="password" id="password" class="w-full border px-3 py-2 mb-4 rounded" placeholder="Enter password" />
+      <!-- Main form area -->
+      <div class="space-y-6">
 
-      <button id="login-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded mb-2">Login</button>
-      <button id="signup-btn" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded mb-2">Sign Up</button>
-      <button id="reset-btn" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded">Forgot Password</button>
+        <!-- Email login box -->
+        <div class="space-y-3">
+          <div class="text-sm font-semibold">Email login</div>
+          <input id="emailInput" type="email" placeholder="Email" class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" />
+          <input id="passwordInput" type="password" placeholder="Password" class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" />
+
+          <div class="flex gap-3 items-center">
+            <button id="btnEmailLogin" class="btn-email bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold">Login</button>
+            <button id="btnEmailSignUp" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold">Sign up</button>
+            <button id="btnResetPwd" class="ml-auto text-sm text-gray-500 hover:underline">Forgot password?</button>
+          </div>
+        </div>
+
+        <!-- OR -->
+        <div class="flex items-center gap-3">
+          <hr class="flex-1 border-gray-200" />
+          <div class="text-sm text-gray-400 uppercase text-xs">or</div>
+          <hr class="flex-1 border-gray-200" />
+        </div>
+
+        <!-- Google sign-in -->
+        <div class="space-y-2">
+          <div class="text-sm font-semibold">Continue with Google</div>
+          <button id="btnGoogle" class="w-full flex items-center justify-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-50">
+            <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="w-5 h-5" />
+            <span class="font-medium">Sign in with Google</span>
+          </button>
+        </div>
+
+        <!-- Phone OTP -->
+        <div class="space-y-3">
+          <div class="text-sm font-semibold">Phone login (OTP)</div>
+          <input id="phoneInput" type="text" placeholder="+91 9876543210" class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" />
+          <!-- container for Recaptcha -->
+          <div id="recaptcha-container" class="mt-2"></div>
+
+          <div class="flex gap-3">
+            <button id="btnSendOtp" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-semibold">Send OTP</button>
+            <input id="otpInput" placeholder="Enter OTP" class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-200" />
+            <button id="btnVerifyOtp" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold">Verify</button>
+          </div>
+        </div>
+
+        <!-- Status / messages -->
+        <div id="status" class="text-sm text-center text-gray-600"></div>
+
+        <!-- footer buttons -->
+        <div class="flex items-center justify-between mt-2">
+          <a href="index.html" class="text-sm text-gray-500 hover:underline">Back to Store</a>
+          <div class="text-xs text-gray-400">NJ Mart Admin © <span id="year"></span></div>
+        </div>
+      </div>
     </div>
-
-    <!-- Phone Login Form -->
-    <div id="phone-login" class="hidden">
-      <label class="block mb-2 text-gray-700 font-medium">Phone Number</label>
-      <input type="text" id="phone-number" class="w-full border px-3 py-2 mb-4 rounded" placeholder="+91 9876543210" />
-
-      <div id="recaptcha-container" class="mb-4"></div>
-
-      <button id="send-otp-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded mb-2">Send OTP</button>
-
-      <label class="block mb-2 text-gray-700 font-medium">Enter OTP</label>
-      <input type="text" id="otp-code" class="w-full border px-3 py-2 mb-4 rounded" placeholder="Enter OTP" />
-
-      <button id="verify-otp-btn" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded">Verify OTP</button>
-    </div>
-
-    <p id="status" class="text-center mt-4 text-sm text-gray-600"></p>
   </div>
 
-  <!-- Firebase Config -->
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCbf19k8pLfH-9UQz8sQRim2rPYT1qaEL8",
-      authDomain: "njmartonline.firebaseapp.com",
-      projectId: "njmartonline",
-      storageBucket: "njmartonline.appspot.com",
-      messagingSenderId: "594505763627",
-      appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
-    };
+  <!-- =========================
+       Firebase SDKs (compat) - required before our script
+       Use compat builds so existing auth() style code works.
+       ========================= -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    console.log("[NJ_FIREBASE] Firebase initialized successfully for NJ Mart");
+  <!-- =========================
+       Main client logic (all-in-one file)
+       - Firebase config is populated below.
+       - Auth: Google / Email / Phone
+       - Uses Apps Script backend API for any server calls (API_BASE)
+       ========================= -->
+  <script>
+  /*********************************************************************************
+   * NJ Mart - login.html
+   * Final integrated login page (Google, Email, Phone OTP) — production ready.
+   *
+   * IMPORTANT:
+   *  - Keep the compat SDKs included above before this script.
+   *  - Ensure your Firebase project allows the domains you deploy from (Authorized domains).
+   *  - For phone OTP to work, enable Phone provider in Firebase Auth and set up reCAPTCHA domain.
+   *
+   * NOTE: This file includes your provided firebase config & Apps Script backend by default.
+   *********************************************************************************/
+
+  // ---------- CONFIG ----------
+  // Replace API_BASE if you want to change backend later:
+  const API_BASE = 'https://script.google.com/macros/s/AKfycbwsG5H7er3nqwGjEbrtokssc5LeGFc9Zog2bG1s0C5bQ-P2b_1S1kisSLpOmdESH7FB/exec';
+
+  // Firebase config (you provided these values earlier)
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyCbf19k8pLFh-9UQz8sQRim2rPYT1qaEL8",
+    authDomain: "njmartonline.firebaseapp.com",
+    projectId: "njmartonline",
+    storageBucket: "njmartonline.firebasestorage.app",
+    messagingSenderId: "594505763627",
+    appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
+  };
+
+  // ---------- UI helpers ----------
+  const el = id => document.getElementById(id);
+  const setStatus = (msg, colorClass = 'text-gray-600') => {
+    const s = el('status');
+    s.textContent = msg || '';
+    s.className = 'text-sm text-center ' + (colorClass || '');
+  };
+
+  // add year
+  el('year').textContent = new Date().getFullYear();
+
+  // ---------- Initialize Firebase ----------
+  (() => {
+    try {
+      if(typeof firebase === 'undefined' || !firebase || !firebase.apps) {
+        console.error('Firebase SDK not loaded. Make sure SDK scripts are included before this script.');
+        setStatus('Firebase SDK not loaded. Check console.', 'text-red-500');
+        return;
+      }
+      // initialize only if not initialized
+      if(!firebase.apps.length) {
+        firebase.initializeApp(FIREBASE_CONFIG);
+        console.info('Firebase initialized for NJ Mart.');
+      } else {
+        console.info('Firebase already initialized.');
+      }
+    } catch(err) {
+      console.error('Firebase init error', err);
+      setStatus('Firebase initialization error. See console.', 'text-red-500');
+    }
+  })();
+
+  // shortcuts
+  const auth = firebase.auth();
+  const db = firebase.firestore ? firebase.firestore() : null;
+  const storage = firebase.storage ? firebase.storage() : null;
+
+  // ---------- DOM elements ----------
+  const emailInput = el('emailInput');
+  const passwordInput = el('passwordInput');
+  const btnEmailLogin = el('btnEmailLogin');
+  const btnEmailSignUp = el('btnEmailSignUp');
+  const btnResetPwd = el('btnResetPwd');
+
+  const btnGoogle = el('btnGoogle');
+
+  const phoneInput = el('phoneInput');
+  const btnSendOtp = el('btnSendOtp');
+  const otpInput = el('otpInput');
+  const btnVerifyOtp = el('btnVerifyOtp');
+
+  // recaptcha verifier holder
+  let recaptchaVerifier = null;
+  let confirmationResult = null;
+
+  // ---------- Utility ----------
+  function validEmail(v){ return !!(v && v.includes('@')); }
+  function validPhone(v){
+    if(!v) return false;
+    const s = v.replace(/\s+/g,'').replace(/[^0-9\+]/g,'');
+    // basic check: at least 10 digits
+    const digits = s.replace(/\D/g,'');
+    return digits.length >= 10;
+  }
+
+  // ---------- Auth state observer ----------
+  auth.onAuthStateChanged(user => {
+    if(user) {
+      // User signed in
+      console.info('User logged in:', user);
+      const display = user.displayName || user.email || user.phoneNumber || 'User';
+      setStatus('Logged in as ' + display, 'text-green-600');
+      // You can redirect to admin area:
+      // window.location.href = '/admin.html';
+    } else {
+      console.info('No user logged in');
+      setStatus('No user logged in', 'text-gray-600');
+    }
+  });
+
+  // ---------- Email / Password flows ----------
+  btnEmailLogin.addEventListener('click', async (ev) => {
+    const email = emailInput.value.trim();
+    const pwd = passwordInput.value;
+    if(!validEmail(email)) { setStatus('Enter a valid email', 'text-red-500'); emailInput.focus(); return; }
+    if(!pwd) { setStatus('Enter password', 'text-red-500'); passwordInput.focus(); return; }
+
+    setStatus('Signing in…', 'text-gray-600');
+    try {
+      await auth.signInWithEmailAndPassword(email, pwd);
+      setStatus('Signed in', 'text-green-600');
+    } catch(err) {
+      console.error('Email login error', err);
+      setStatus('Login failed: ' + (err.message || err), 'text-red-500');
+    }
+  });
+
+  btnEmailSignUp.addEventListener('click', async (ev) => {
+    const email = emailInput.value.trim();
+    const pwd = passwordInput.value;
+    if(!validEmail(email)) { setStatus('Enter a valid email', 'text-red-500'); emailInput.focus(); return; }
+    if(!pwd || pwd.length < 6) { setStatus('Password must be at least 6 chars', 'text-red-500'); passwordInput.focus(); return; }
+
+    setStatus('Creating account…', 'text-gray-600');
+    try {
+      const res = await auth.createUserWithEmailAndPassword(email, pwd);
+      setStatus('Account created — signed in', 'text-green-600');
+      // optionally update profile or store in backend
+      // await saveCustomerToBackend({ Email: email, Created: new Date().toISOString() });
+    } catch(err) {
+      console.error('Sign up error', err);
+      setStatus('Sign up failed: ' + (err.message || err), 'text-red-500');
+    }
+  });
+
+  btnResetPwd.addEventListener('click', async (ev) => {
+    const email = emailInput.value.trim();
+    if(!validEmail(email)) { setStatus('Enter your email to reset password', 'text-red-500'); emailInput.focus(); return; }
+    setStatus('Sending password reset email…', 'text-gray-600');
+    try {
+      await auth.sendPasswordResetEmail(email);
+      setStatus('Password reset email sent', 'text-green-600');
+    } catch(err) {
+      console.error('Reset error', err);
+      setStatus('Reset failed: ' + (err.message || err), 'text-red-500');
+    }
+  });
+
+  // ---------- Google sign-in ----------
+  btnGoogle.addEventListener('click', async (ev) => {
+    setStatus('Opening Google sign-in…', 'text-gray-600');
+    const provider = new firebase.auth.GoogleAuthProvider();
+    try {
+      const result = await auth.signInWithPopup(provider);
+      const user = result.user;
+      setStatus('Signed in as ' + (user.displayName || user.email), 'text-green-600');
+
+      // optional: send user info to backend
+      // await saveCustomerToBackend({ Name: user.displayName, Email: user.email });
+    } catch(err) {
+      console.error('Google login error', err);
+      setStatus('Google sign-in failed: ' + (err.message || err), 'text-red-500');
+    }
+  });
+
+  // ---------- Phone OTP flows ----------
+  // initialize recaptcha (invisible) when page loads
+  function initRecaptcha() {
+    try {
+      if(!recaptchaVerifier) {
+        // invisible reCAPTCHA - container id 'recaptcha-container'
+        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+          'size': 'invisible',
+          'callback': (response) => {
+            // reCAPTCHA solved - will proceed with sendOTP
+            console.log('recaptcha solved');
+          },
+          'expired-callback': () => {
+            console.log('recaptcha expired');
+          }
+        });
+        // render (optional)
+        recaptchaVerifier.render().then(widgetId => {
+          console.info('reCAPTCHA rendered, widgetId=', widgetId);
+        });
+      }
+    } catch(err) {
+      console.error('recaptcha init error', err);
+      setStatus('reCAPTCHA initialization error. See console.', 'text-red-500');
+    }
+  }
+
+  // call init once
+  initRecaptcha();
+
+  btnSendOtp.addEventListener('click', async () => {
+    const phone = phoneInput.value.trim();
+    if(!validPhone(phone)) { setStatus('Enter valid phone (with country code)', 'text-red-500'); phoneInput.focus(); return; }
+
+    setStatus('Sending OTP…', 'text-gray-600');
+    try {
+      // ensure recaptchaVerifier exists
+      if(!recaptchaVerifier) initRecaptcha();
+
+      confirmationResult = await auth.signInWithPhoneNumber(phone, recaptchaVerifier);
+      // now a code has been sent
+      setStatus('OTP sent to ' + phone + '. Enter OTP & Verify.', 'text-green-600');
+      console.info('confirmationResult ready', confirmationResult);
+    } catch(err) {
+      console.error('send OTP error', err);
+      // if reCAPTCHA not solved or domain not authorized you will see errors
+      setStatus('Send OTP failed: ' + (err.message || err), 'text-red-500');
+      // try to reset reCAPTCHA so user can attempt again
+      try { recaptchaVerifier.clear(); recaptchaVerifier = null; initRecaptcha(); } catch(e){}
+    }
+  });
+
+  btnVerifyOtp.addEventListener('click', async () => {
+    const code = otpInput.value.trim();
+    if(!code) { setStatus('Enter OTP', 'text-red-500'); otpInput.focus(); return; }
+    if(!confirmationResult) { setStatus('No OTP request in progress. Send OTP first.', 'text-red-500'); return; }
+
+    setStatus('Verifying OTP…', 'text-gray-600');
+    try {
+      const res = await confirmationResult.confirm(code);
+      setStatus('Phone verified & signed in', 'text-green-600');
+      console.info('OTP verified user', res.user);
+    } catch(err) {
+      console.error('OTP verify error', err);
+      setStatus('OTP verification failed: ' + (err.message || err), 'text-red-500');
+    }
+  });
+
+  // ---------- Optional: helper to post basic info to backend (Apps Script) ----------
+  async function saveCustomerToBackend(payload = {}) {
+    try {
+      const url = new URL(API_BASE);
+      // using action 'addcustomer' convention — backend should support as needed
+      url.searchParams.set('action', 'addcustomer');
+      const res = await fetch(url.toString(), {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const json = await res.json();
+      return json;
+    } catch(err) {
+      console.warn('Backend save error', err);
+      return { ok:false, error: String(err) };
+    }
+  }
+
+  // ---------- Small UX polish: Enter key submit ----------
+  [emailInput, passwordInput].forEach(inp=>{
+    inp.addEventListener('keydown', ev => {
+      if(ev.key === 'Enter') {
+        btnEmailLogin.click();
+      }
+    });
+  });
+
+  // prevent accidental double-clicks
+  const disableTemporarily = (btn, ms=1200) => {
+    btn.disabled = true;
+    setTimeout(()=>btn.disabled = false, ms);
+  };
+
+  // disable while actions are pending
+  btnEmailLogin.addEventListener('click', ()=>disableTemporarily(btnEmailLogin));
+  btnEmailSignUp.addEventListener('click', ()=>disableTemporarily(btnEmailSignUp));
+  btnGoogle.addEventListener('click', ()=>disableTemporarily(btnGoogle));
+  btnSendOtp.addEventListener('click', ()=>disableTemporarily(btnSendOtp, 4000));
+  btnVerifyOtp.addEventListener('click', ()=>disableTemporarily(btnVerifyOtp, 2000));
+
+  // ---------- Debug helpers (visible in console only) ----------
+  console.info('NJ Mart login page loaded. BACKEND URL:\n', API_BASE);
+
+  // expose small helpers for debugging in console (optional)
+  window._NJ = {
+    auth, db, storage,
+    FIREBASE_CONFIG,
+    API_BASE,
+    initRecaptcha,
+    saveCustomerToBackend
+  };
+
+  // done
+  setStatus('Ready — choose sign-in method', 'text-gray-600');
+
   </script>
 
-  <!-- Script Config (Backend URL etc.) -->
-  <script src="script-config.js"></script>
-
-  <!-- Login Logic (Part 2 & 3) will come here -->
+  <!-- End of file -->
 </body>
 </html>
-<script>
-/********************************************************************
- * NJ Mart Login Logic
- * Handles Email/Password login, Signup, Reset + Phone OTP Login
- ********************************************************************/
-
-// ---------- Tab Switch ----------
-const tabEmail = document.getElementById("tab-email");
-const tabPhone = document.getElementById("tab-phone");
-const emailLogin = document.getElementById("email-login");
-const phoneLogin = document.getElementById("phone-login");
-
-tabEmail.addEventListener("click", () => {
-  tabEmail.classList.add("tab-active");
-  tabPhone.classList.remove("tab-active");
-  emailLogin.classList.remove("hidden");
-  phoneLogin.classList.add("hidden");
-});
-
-tabPhone.addEventListener("click", () => {
-  tabPhone.classList.add("tab-active");
-  tabEmail.classList.remove("tab-active");
-  phoneLogin.classList.remove("hidden");
-  emailLogin.classList.add("hidden");
-});
-
-// ---------- Status Message ----------
-const statusEl = document.getElementById("status");
-function showStatus(msg, color = "text-gray-600") {
-  statusEl.className = `text-center mt-4 text-sm ${color}`;
-  statusEl.textContent = msg;
-}
-
-// ---------- Email/Password Login ----------
-document.getElementById("login-btn").addEventListener("click", async () => {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
-  if (!email || !password) {
-    showStatus("Enter email and password", "text-red-500");
-    return;
-  }
-  try {
-    await auth.signInWithEmailAndPassword(email, password);
-    showStatus("Login successful ✅", "text-green-600");
-    window.location.href = "admin.html";
-  } catch (error) {
-    showStatus("Error: " + error.message, "text-red-500");
-  }
-});
-
-// ---------- Signup ----------
-document.getElementById("signup-btn").addEventListener("click", async () => {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
-  if (!email || !password) {
-    showStatus("Enter email and password", "text-red-500");
-    return;
-  }
-  try {
-    await auth.createUserWithEmailAndPassword(email, password);
-    showStatus("Signup successful 🎉", "text-green-600");
-  } catch (error) {
-    showStatus("Error: " + error.message, "text-red-500");
-  }
-});
-
-// ---------- Reset Password ----------
-document.getElementById("reset-btn").addEventListener("click", async () => {
-  const email = document.getElementById("email").value.trim();
-  if (!email) {
-    showStatus("Enter your email first", "text-red-500");
-    return;
-  }
-  try {
-    await auth.sendPasswordResetEmail(email);
-    showStatus("Password reset link sent 📩", "text-green-600");
-  } catch (error) {
-    showStatus("Error: " + error.message, "text-red-500");
-  }
-});
-
-// ---------- Phone OTP Login ----------
-let confirmationResult;
-
-// reCAPTCHA setup
-window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier("recaptcha-container", {
-  size: "normal",
-  callback: (response) => {
-    console.log("reCAPTCHA solved");
-  },
-});
-
-// Send OTP
-document.getElementById("send-otp-btn").addEventListener("click", async () => {
-  const phone = document.getElementById("phone-number").value.trim();
-  if (!phone) {
-    showStatus("Enter phone number", "text-red-500");
-    return;
-  }
-  try {
-    confirmationResult = await auth.signInWithPhoneNumber(phone, window.recaptchaVerifier);
-    showStatus("OTP sent ✅", "text-green-600");
-  } catch (error) {
-    showStatus("Error: " + error.message, "text-red-500");
-  }
-});
-
-// Verify OTP
-document.getElementById("verify-otp-btn").addEventListener("click", async () => {
-  const code = document.getElementById("otp-code").value.trim();
-  if (!code || !confirmationResult) {
-    showStatus("Enter OTP", "text-red-500");
-    return;
-  }
-  try {
-    await confirmationResult.confirm(code);
-    showStatus("Phone login successful ✅", "text-green-600");
-    window.location.href = "admin.html";
-  } catch (error) {
-    showStatus("Error: " + error.message, "text-red-500");
-  }
-});
-</script>
-<script>
-/********************************************************************
- * Auth State Listener + Local Storage + Signout
- ********************************************************************/
-
-// ---------- Auth State Change ----------
-auth.onAuthStateChanged((user) => {
-  if (user) {
-    // User logged in
-    console.log("User logged in:", user);
-
-    const profile = {
-      uid: user.uid,
-      name: user.displayName || "",
-      email: user.email || "",
-      phone: user.phoneNumber || "",
-    };
-
-    // Save to localStorage
-    localStorage.setItem("njmart_user", JSON.stringify(profile));
-
-    // Auto redirect if on login page
-    if (window.location.pathname.endsWith("login.html")) {
-      window.location.href = "index.html";
-    }
-  } else {
-    // User logged out
-    console.log("User logged out");
-    localStorage.removeItem("njmart_user");
-  }
-});
-
-// ---------- Signout ----------
-function signOutUser() {
-  auth.signOut()
-    .then(() => {
-      showStatus("Signed out ✅", "text-green-600");
-      localStorage.removeItem("njmart_user");
-      window.location.href = "login.html";
-    })
-    .catch((error) => {
-      showStatus("Error: " + error.message, "text-red-500");
-    });
-}
-</script>
-<script>
-/********************************************************************
- * Auth State Listener + Local Storage + Signout
- ********************************************************************/
-
-// ---------- Auth State Change ----------
-auth.onAuthStateChanged((user) => {
-  if (user) {
-    // User logged in
-    console.log("User logged in:", user);
-
-    const profile = {
-      uid: user.uid,
-      name: user.displayName || "",
-      email: user.email || "",
-      phone: user.phoneNumber || "",
-    };
-
-    // Save to localStorage
-    localStorage.setItem("njmart_user", JSON.stringify(profile));
-
-    // Auto redirect if on login page
-    if (window.location.pathname.endsWith("login.html")) {
-      window.location.href = "index.html";
-    }
-  } else {
-    // User logged out
-    console.log("User logged out");
-    localStorage.removeItem("njmart_user");
-  }
-});
-
-// ---------- Signout ----------
-function signOutUser() {
-  auth.signOut()
-    .then(() => {
-      showStatus("Signed out ✅", "text-green-600");
-      localStorage.removeItem("njmart_user");
-      window.location.href = "login.html";
-    })
-    .catch((error) => {
-      showStatus("Error: " + error.message, "text-red-500");
-    });
-}
-</script>
