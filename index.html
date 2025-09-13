@@ -3,388 +3,445 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NJ Mart — Fresh groceries, fast delivery</title>
+  <title>NJ Mart — Online Grocery</title>
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/sgVhyLYH/IMG-20250913-WA0003.jpg">
 
-  <!-- Fonts + icons -->
+  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <!-- Main stylesheet (must exist in same folder) -->
-  <link rel="stylesheet" href="style.css">
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
 
   <style>
-    /* Small page-specific adjustments (keeps file standalone-friendly) */
-    :root{--accent:#2db34a;--accent-dark:#1f8a34;--muted:#6b7280;--card:#ffffff}
-    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial; margin:0;background:#f6fbf8;color:#111}
-    .wrap{max-width:1100px;margin:14px auto;padding:12px}
-    header.site-header{display:flex;gap:12px;align-items:center;background:var(--card);padding:12px;border-radius:12px;box-shadow:0 10px 30px rgba(12,30,40,0.06)}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
-    .search-box{flex:1;display:flex;gap:8px;align-items:center}
-    .search-box input{width:100%;padding:10px;border-radius:10px;border:1px solid #e6eef0;background:#fff;font-size:15px}
-    .actions{display:flex;gap:8px;align-items:center}
-    .btn{padding:8px 12px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
-    .btn.primary{background:var(--accent);color:#fff}
-    .btn.ghost{background:#fff;border:1px solid #e6eef0}
-    .cart-badge{background:#fff;border-radius:999px;padding:2px 8px;margin-left:6px;font-weight:700}
-    .main-grid{display:grid;grid-template-columns:260px 1fr;gap:16px;margin-top:16px}
-    @media(max-width:980px){ .main-grid{grid-template-columns:1fr} .logo{width:48px;height:48px} .search-box input{font-size:14px} }
-    .sidebar{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 10px 30px rgba(12,30,40,0.04)}
-    .category-list{display:flex;flex-direction:column;gap:8px}
-    .category-item{padding:8px;border-radius:8px;cursor:pointer;border:1px dashed transparent}
-    .category-item.active{background:#f3fff6;border:1px solid rgba(45,179,74,0.12)}
-    .hero{background:linear-gradient(90deg,var(--accent),var(--accent-dark));color:#fff;padding:18px;border-radius:12px;display:flex;gap:12px;align-items:center}
-    .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:12px}
-    .product{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 8px 24px rgba(12,30,40,0.04);display:flex;flex-direction:column;justify-content:space-between}
-    .product .thumb{height:150px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#f4f7f6}
-    .product h4{margin:8px 0 6px 0;font-size:15px}
-    .meta{font-size:13px;color:var(--muted)}
-    .price{font-weight:800;color:var(--accent);font-size:16px}
-    .product .row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:8px}
-    .cart-fab{position:fixed;right:18px;bottom:18px;z-index:80;background:var(--accent);color:#fff;padding:12px 16px;border-radius:14px;box-shadow:0 10px 36px rgba(16,185,129,0.18);cursor:pointer;display:flex;gap:8px;align-items:center}
-    .cart-panel{position:fixed;right:18px;bottom:80px;width:360px;max-width:calc(100% - 32px);background:var(--card);border-radius:12px;box-shadow:0 20px 60px rgba(12,30,40,0.12);padding:12px;display:none;z-index:85}
-    .cart-item{display:flex;gap:8px;align-items:center;padding:8px;border-bottom:1px solid #f1f3f4}
-    .cart-item img{width:64px;height:64px;object-fit:cover;border-radius:8px}
-    .small{font-size:13px;color:var(--muted)}
-    .badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#f1f6f3;color:#1f8a34;font-weight:700}
-    footer.site-footer{margin-top:18px;background:var(--card);padding:16px;border-radius:12px;box-shadow:0 10px 30px rgba(12,30,40,0.04);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    body { margin:0; font-family: 'Inter', sans-serif; background:#f9fafb; }
+    header.site-header { background:#fff; box-shadow:0 4px 20px rgba(0,0,0,0.05); padding:12px 20px; position:sticky; top:0; z-index:100; display:flex; align-items:center; }
+    header .brand { display:flex; align-items:center; gap:10px; font-weight:800; font-size:20px; color:#2db34a; }
+    header nav { margin-left:auto; display:flex; gap:16px; align-items:center; }
+    header nav a { color:#111; font-weight:600; text-decoration:none; }
+    header nav .btn { background:#2db34a; color:#fff; padding:8px 14px; border-radius:8px; text-decoration:none; font-weight:600; }
+
+    /* Hero section */
+    .hero { background:#2db34a; color:#fff; padding:60px 20px; text-align:center; }
+    .hero h1 { font-size:36px; margin:0 0 12px; }
+    .hero p { font-size:18px; margin:0; }
+
+    /* Layout */
+    .container { max-width:1200px; margin:20px auto; padding:0 16px; }
+    .flex { display:flex; gap:16px; }
+    .sidebar { width:260px; background:#fff; padding:16px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.05); }
+    .content { flex:1; }
+
+    /* Sidebar filters */
+    .sidebar h3 { margin:0 0 12px; font-size:18px; }
+    .sidebar label { font-size:14px; display:block; margin-top:8px; }
+    .sidebar input[type="number"] { width:100%; padding:6px; margin-top:4px; border:1px solid #ddd; border-radius:6px; }
+    .sidebar button { margin-top:10px; width:100%; padding:8px; border:none; border-radius:8px; background:#2db34a; color:#fff; font-weight:600; cursor:pointer; }
+
+    /* Product Grid */
+    .products-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
+    .product-card { background:#fff; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.05); padding:12px; display:flex; flex-direction:column; }
+    .product-card img { width:100%; height:160px; object-fit:cover; border-radius:8px; }
+    .product-card h4 { margin:10px 0 6px; font-size:16px; font-weight:700; }
+    .product-card p { margin:0; font-size:14px; color:#555; }
+    .product-card .price { font-size:16px; font-weight:700; color:#2db34a; margin:8px 0; }
+    .product-card button { margin-top:auto; padding:8px; background:#2db34a; color:#fff; border:none; border-radius:8px; font-weight:600; cursor:pointer; }
+
+    /* Cart button floating */
+    .cart-btn { position:fixed; bottom:20px; right:20px; background:#2db34a; color:#fff; padding:14px 20px; border-radius:50px; box-shadow:0 4px 14px rgba(0,0,0,0.2); font-weight:700; cursor:pointer; }
+
+    /* Footer */
+    footer { margin-top:40px; padding:20px; background:#fff; border-top:1px solid #eee; text-align:center; font-size:14px; color:#555; }
   </style>
 </head>
 <body>
-  <div class="wrap">
 
-    <!-- HEADER -->
-    <header class="site-header" role="banner">
-      <div class="brand">
-        <div class="logo">NJ</div>
-        <div>
-          <h1 style="margin:0">NJ Mart</h1>
-          <div class="small" style="margin-top:4px">Fresh groceries — home delivery</div>
-        </div>
-      </div>
-
-      <div class="search-box" role="search">
-        <input id="globalSearch" type="search" placeholder="Search for products, brands or categories..." aria-label="Search products">
-      </div>
-
-      <div class="actions">
-        <button id="btnAccount" class="btn ghost" onclick="location.href='login.html'"><i class="fa fa-user"></i> <span id="accountLabel">Login</span></button>
-        <button id="btnCartHeader" class="btn" title="Open cart"><i class="fa fa-shopping-cart"></i> Cart <span class="cart-badge" id="headerCartCount">0</span></button>
-      </div>
-    </header>
-
-    <!-- LAYOUT -->
-    <div class="main-grid" role="main">
-
-      <!-- SIDEBAR -->
-      <aside class="sidebar" aria-label="Filters">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div style="font-weight:800">Categories</div>
-          <button id="clearFilters" class="btn ghost" title="Clear filters">Clear</button>
-        </div>
-
-        <div id="categoryList" class="category-list" style="margin-top:10px">
-          <!-- categories injected here -->
-        </div>
-
-        <div style="margin-top:12px">
-          <div style="font-weight:800;margin-bottom:8px">Price range</div>
-          <div style="display:flex;gap:8px">
-            <input id="minPrice" type="number" placeholder="Min ₹" style="flex:1;padding:8px;border-radius:8px;border:1px solid #e6eef0">
-            <input id="maxPrice" type="number" placeholder="Max ₹" style="flex:1;padding:8px;border-radius:8px;border:1px solid #e6eef0">
-          </div>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button id="applyPrice" class="btn primary">Apply</button>
-            <button id="resetPrice" class="btn ghost">Reset</button>
-          </div>
-        </div>
-
-        <div style="margin-top:14px">
-          <div style="font-weight:800;margin-bottom:8px">Sort</div>
-          <select id="sortSelect" style="width:100%;padding:8px;border-radius:8px;border:1px solid #e6eef0">
-            <option value="">Default</option>
-            <option value="price_asc">Price low → high</option>
-            <option value="price_desc">Price high → low</option>
-            <option value="name_asc">Name A → Z</option>
-            <option value="name_desc">Name Z → A</option>
-          </select>
-        </div>
-
-        <div style="margin-top:16px" class="small">
-          <div style="font-weight:700;margin-bottom:6px">Delivery info</div>
-          <div>Free delivery above <span class="badge" id="freeThreshold">₹499</span></div>
-          <div style="margin-top:6px">Delivery charge <span class="badge" id="deliveryCharge">₹25</span></div>
-        </div>
-      </aside>
-
-      <!-- CONTENT AREA -->
-      <section class="content-area">
-
-        <!-- HERO -->
-        <div class="hero" role="banner">
-          <div style="flex:1">
-            <h2 style="margin:0">Fresh groceries delivered to your door</h2>
-            <p style="margin:8px 0 0 0;opacity:0.95">Daily essentials, staples and fresh produce — shop local brands with quick delivery.</p>
-            <div style="margin-top:10px">
-              <button id="shopNow" class="btn primary">Shop now</button>
-              <button id="viewOffers" class="btn ghost">View offers</button>
-            </div>
-          </div>
-          <div style="width:220px;text-align:center">
-            <img src="https://via.placeholder.com/220x140?text=Fresh+Box" alt="Fresh box" style="border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.08)">
-          </div>
-        </div>
-
-        <!-- TOPBAR -->
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:12px">
-          <div>
-            <h3 style="margin:0">Products</h3>
-            <div class="small" style="margin-top:4px">Browse and add to cart — we deliver fast</div>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center">
-            <input id="quickSearch" placeholder="Quick search in results" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
-            <select id="perPage" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
-              <option value="12">12 / page</option>
-              <option value="24">24 / page</option>
-              <option value="48">48 / page</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- PRODUCT GRID -->
-        <div id="productGrid" class="product-grid" aria-live="polite" style="margin-top:12px">
-          <!-- products show here -->
-          <div style="grid-column:1/-1;color:var(--muted);padding:30px;border-radius:10px;background:#fff">Loading products…</div>
-        </div>
-
-        <!-- PAGINATION -->
-        <div style="display:flex;justify-content:center;margin-top:12px;gap:8px">
-          <button id="prevPage" class="btn ghost">Prev</button>
-          <div id="pageInfo" style="padding:8px 12px;background:#fff;border-radius:8px;box-shadow:0 6px 18px rgba(12,30,40,0.04)">Page 1</div>
-          <button id="nextPage" class="btn ghost">Next</button>
-        </div>
-
-        <!-- FOOTER -->
-        <footer class="site-footer" role="contentinfo">
-          <div>
-            <div style="font-weight:800">NJ Mart</div>
-            <div class="small" style="margin-top:6px">Groceries & essentials with same-day delivery.</div>
-          </div>
-          <div>
-            <div style="font-weight:700">Support</div>
-            <div class="small" style="margin-top:6px">Phone: <a href="tel:+917062918607">+91 70629 18607</a></div>
-            <div class="small">Email: support@njmart.example</div>
-          </div>
-        </footer>
-
-      </section>
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="brand">
+      <i class="fa fa-store"></i> NJ Mart
     </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="cart.html">Cart <span id="cartCount">(0)</span></a>
+      <a href="login.html">Login</a>
+      <a href="profile.html">Profile</a>
+      <a href="checkout.html" class="btn">Checkout</a>
+    </nav>
+  </header>
 
-    <!-- CART FAB -->
-    <div class="cart-fab" id="openCart" aria-live="polite">
-      <i class="fa fa-shopping-basket"></i>
-      <div>View cart</div>
-      <div class="cart-badge" id="fabCount">0</div>
-    </div>
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Fresh groceries delivered to your door</h1>
+    <p>Daily essentials, staples and fresh produce — shop local brands with quick home delivery</p>
+  </section>
 
-    <!-- CART PANEL -->
-    <div class="cart-panel" id="cartPanel" role="dialog" aria-hidden="true">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div style="font-weight:800">Your cart</div>
-        <button id="closeCart" class="btn ghost">Close</button>
+  <!-- MAIN CONTENT -->
+  <div class="container flex">
+    <!-- Sidebar Filters -->
+    <aside class="sidebar">
+      <h3>Filter Products</h3>
+      <label>Min Price</label>
+      <input type="number" id="minPrice" placeholder="₹0">
+      <label>Max Price</label>
+      <input type="number" id="maxPrice" placeholder="₹1000">
+      <button onclick="applyFilters()">Apply</button>
+    </aside>
+
+    <!-- Products -->
+    <main class="content">
+      <h2>Products</h2>
+      <div id="productsArea" class="products-grid">
+        <!-- Products will be loaded here -->
       </div>
+    </main>
+  </div>
+  <!-- ========== Part 2 — products, cart & scripts ========== -->
 
-      <div id="cartItems" style="margin-top:10px;max-height:320px;overflow:auto">
-        <!-- items injected here -->
-      </div>
+  <!-- cart floating button -->
+  <button id="btnCart" class="cart-btn" title="View cart">Cart • <span id="cartTotalAmount">₹0</span></button>
 
-      <div style="margin-top:10px;border-top:1px dashed #eee;padding-top:10px">
-        <div style="display:flex;justify-content:space-between"><div class="small">Subtotal</div><div id="cartSubtotal">₹0</div></div>
-        <div style="display:flex;justify-content:space-between;margin-top:6px"><div class="small">Delivery</div><div id="cartDelivery">₹0</div></div>
-        <hr style="border:none;border-top:1px dashed #eee;margin:10px 0">
-        <div style="display:flex;justify-content:space-between;font-weight:800"><div>Total</div><div id="cartTotal">₹0</div></div>
+  <!-- footer -->
+  <footer>
+    © <span id="year"></span> NJ Mart — All rights reserved. Support: +91 70000 00000
+  </footer>
 
-        <div style="margin-top:10px;display:flex;gap:8px">
-          <button id="checkoutBtn" class="btn primary" style="flex:1">Checkout</button>
-          <button id="clearCartBtn" class="btn ghost">Clear</button>
-        </div>
-        <div style="margin-top:8px" class="small">You can change delivery address at checkout</div>
-      </div>
-    </div>
-
-  </div> <!-- wrap -->
-
-  <!-- ========== SCRIPT: product load, cart logic, filters, pagination ========== -->
+  <!-- Scripts: app logic -->
   <script>
-  /*******************************************************************
-   * index.html — Customer-facing final version
-   * - Loads products from Apps Script backend (API_BASE?action=products)
-   * - Supports: search, filters, pagination, add-to-cart, localStorage cart
-   * - Checkout redirects to checkout.html (which should read localStorage 'nj_checkout')
+  /****************************************************************
+   * NJ Mart — client-side app.js (embedded)
+   * - Loads products from Apps Script backend (API_BASE)
+   * - Maintains cart in localStorage
+   * - Supports search, filter, pagination, coupon validation
+   * - Checkout flow supports COD & UPI deep link
    *
-   * NOTE:
-   * - Replace API_BASE with your Apps Script webapp URL if needed.
-   * - style.css should exist in the same folder.
-   *******************************************************************/
+   * Make sure API_BASE matches your deployed Apps Script web app URL.
+   ****************************************************************/
+
+  // ---------------- CONFIG ----------------
   const API_BASE = 'https://script.google.com/macros/s/AKfycbwsG5H7er3nqwGjEbrtokssc5LeGFc9Zog2bG1s0C5bQ-P2b_1S1kisSLpOmdESH7FB/exec';
+  const PRODUCT_SHEET = 'Products';
+  const STORAGE_KEYS = { CART: 'nj_cart_v1', COUPON: 'nj_coupon' };
+  const PAGE_SIZE = 12;
 
-  // Config
-  const DELIVERY_THRESHOLD_DEFAULT = 499;
-  const DELIVERY_CHARGE_DEFAULT = 25;
-
-  // State
-  let PRODUCTS = [];      // full products from backend
-  let FILTERED = [];      // filtered set
-  let CATEGORIES = [];
-  let currentPage = 1;
-  let perPage = Number(localStorage.getItem('nj_perpage') || 12);
-
-  // Elements
+  // ---------------- DOM helpers ----------------
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
   const el = id => document.getElementById(id);
-  const productGrid = el('productGrid');
-  const headerCartCount = el('headerCartCount');
-  const fabCount = el('fabCount');
-  const cartPanel = el('cartPanel');
-  const openCartBtn = el('openCart');
-  const closeCartBtn = el('closeCart');
-  const cartItemsEl = el('cartItems');
-  const checkoutBtn = el('checkoutBtn');
-  const clearCartBtn = el('clearCartBtn');
-  const cartSubtotalEl = el('cartSubtotal');
-  const cartDeliveryEl = el('cartDelivery');
-  const cartTotalEl = el('cartTotal');
-  const pageInfo = el('pageInfo');
-  const prevPageBtn = el('prevPage');
-  const nextPageBtn = el('nextPage');
 
-  // Helpers: localStorage cart
-  function loadCart(){ try{ return JSON.parse(localStorage.getItem('nj_cart')||'[]'); }catch(e){ return []; } }
-  function saveCart(c){ localStorage.setItem('nj_cart', JSON.stringify(c)); updateCartCounts(); }
-  function clearCart(){ localStorage.removeItem('nj_cart'); renderCart(); updateCartCounts(); }
+  const productsArea = document.getElementById('productsArea');
+  const cartBtn = document.getElementById('btnCart');
+  const cartTotalAmountEl = document.getElementById('cartTotalAmount');
+  const cartCountEl = document.getElementById('cartCount');
 
-  function updateCartCounts(){
-    const cart = loadCart();
-    const count = cart.reduce((s,i)=> s + (i.qty||0), 0);
-    headerCartCount.textContent = count;
-    fabCount.textContent = count;
+  // ---------------- State ----------------
+  let PRODUCTS = [];        // loaded product objects
+  let FILTERED = [];        // after filter/search
+  let CURRENT_PAGE = 1;
+  let CART = loadCartFromStorage() || [];
+
+  // ---------------- Utils ----------------
+  function formatPrice(v){ return '₹' + (Number(v||0)).toFixed(0); }
+  function nowYear(){ document.getElementById('year').textContent = new Date().getFullYear(); }
+
+  // image fallback
+  function safeImage(url){
+    if(!url) return 'https://via.placeholder.com/300x200?text=No+Image';
+    // if user provided valid http(s) URL, use it; otherwise placeholder
+    if(/^https?:\/\//i.test(url)) return url;
+    return 'https://via.placeholder.com/300x200?text=No+Image';
   }
 
-  // Fetch products from backend
-  async function fetchProducts(){
-    productGrid.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);padding:30px;border-radius:10px;background:#fff">Loading products…</div>';
+  // ---------------- Storage ----------------
+  function saveCartToStorage(){
+    try{ localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(CART || [])); }catch(e){}
+    renderCartSummary();
+  }
+  function loadCartFromStorage(){
     try{
-      const url = new URL(API_BASE);
-      url.searchParams.set('action','products');
-      const res = await fetch(url.toString(),{cache:'no-store'});
-      const data = await res.json();
-      if(!data.ok){ throw new Error(data.error||'Failed'); }
-      PRODUCTS = (data.products || []).map(p => normalizeProduct(p));
-      CATEGORIES = Array.from(new Set(PRODUCTS.map(p=>p.Category||'').filter(Boolean))).sort();
-      renderCategoryList();
-      applyFiltersAndRender();
+      const raw = localStorage.getItem(STORAGE_KEYS.CART);
+      if(!raw) return [];
+      return JSON.parse(raw);
+    }catch(e){ return []; }
+  }
+
+  // ---------------- Cart functions ----------------
+  function findCartItemIndex(productId){
+    return CART.findIndex(i => i.ProductID === productId);
+  }
+
+  function addToCart(product, qty=1){
+    const idx = findCartItemIndex(product.ProductID);
+    if(idx === -1){
+      CART.push({
+        ProductID: product.ProductID,
+        Name: product.Name || 'Unnamed product',
+        Price: Number(product.Price || 0),
+        Quantity: Number(qty || 1),
+        ImageURL: product['Image URL'] || product.Image || ''
+      });
+    } else {
+      CART[idx].Quantity = Number(CART[idx].Quantity || 0) + Number(qty || 1);
+    }
+    saveCartToStorage();
+    toast('Added to cart');
+  }
+
+  function updateCartItem(productId, qty){
+    const idx = findCartItemIndex(productId);
+    if(idx === -1) return;
+    if(qty <= 0){
+      CART.splice(idx,1);
+    } else {
+      CART[idx].Quantity = Number(qty);
+    }
+    saveCartToStorage();
+  }
+
+  function clearCart(){
+    CART = [];
+    saveCartToStorage();
+    toast('Cart cleared');
+  }
+
+  function cartTotal(){
+    return CART.reduce((s,it)=> s + (Number(it.Price||0) * Number(it.Quantity||0)), 0);
+  }
+
+  function cartCount(){
+    return CART.reduce((s,it)=> s + Number(it.Quantity||0), 0);
+  }
+
+  // ---------------- UI render functions ----------------
+  function renderProductsList(page=1){
+    CURRENT_PAGE = page || 1;
+    const start = (CURRENT_PAGE - 1) * PAGE_SIZE;
+    const pageItems = FILTERED.slice(start, start + PAGE_SIZE);
+
+    productsArea.innerHTML = '';
+    if(!pageItems || pageItems.length === 0){
+      productsArea.innerHTML = '<div style="padding:32px;color:#666">No products found</div>';
+      return;
+    }
+
+    pageItems.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      const img = safeImage(p['Image URL'] || p.Image || p.image);
+      const price = Number(p.Price || p.price || 0);
+      const stock = Number(p.Stock || p.stock || 0);
+      card.innerHTML = `
+        <img src="${img}" alt="${escapeHtml(p.Name||'Product')}" onerror="this.src='https://via.placeholder.com/300x200?text=Image+not+found'"/>
+        <h4>${escapeHtml(p.Name||'Unnamed')}</h4>
+        <p class="muted-sm">${escapeHtml(p.Category || p.category || '')}</p>
+        <div class="price">${formatPrice(price)}</div>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+          <input type="number" min="1" max="${Math.max(1,stock)}" value="1" style="width:70px;padding:6px;border-radius:6px;border:1px solid #eee" class="qty-input" data-id="${p.ProductID}" />
+          <button class="add-btn" data-id="${p.ProductID}">Add to cart</button>
+        </div>
+        <div style="margin-top:8px;font-size:13px;color:${stock>0? '#22c55e':'#ef4444'}">
+          ${stock>0 ? 'In stock ('+stock+')' : 'Out of stock'}
+        </div>
+      `;
+      productsArea.appendChild(card);
+    });
+
+    // attach handlers for add buttons
+    $$('.add-btn').forEach(b=>{
+      b.addEventListener('click', (ev)=>{
+        const pid = b.getAttribute('data-id');
+        const input = document.querySelector('.qty-input[data-id="'+pid+'"]');
+        const qty = input ? Math.max(1, Number(input.value||1)) : 1;
+        const prod = PRODUCTS.find(x=> x.ProductID === pid) || {};
+        if(Number(prod.Stock||0) > 0 || Number(prod.Stock||0) === 0){ // allow adding even if stock unknown
+          addToCart(prod, qty);
+        } else {
+          toast('Product out of stock');
+        }
+      });
+    });
+
+    renderPagination();
+  }
+
+  function renderPagination(){
+    const totalPages = Math.max(1, Math.ceil(FILTERED.length / PAGE_SIZE));
+    // simple pagination: prev / page / next
+    const nav = document.createElement('div');
+    nav.style.marginTop = '18px';
+    nav.style.display = 'flex';
+    nav.style.gap = '8px';
+    nav.style.alignItems = 'center';
+    nav.innerHTML = `
+      <button id="prevBtn" class="btn ghost">Prev</button>
+      <div style="font-weight:700">Page ${CURRENT_PAGE} of ${totalPages}</div>
+      <button id="nextBtn" class="btn ghost">Next</button>
+    `;
+    productsArea.appendChild(nav);
+    document.getElementById('prevBtn').addEventListener('click', ()=> {
+      if(CURRENT_PAGE>1) renderProductsList(CURRENT_PAGE-1);
+    });
+    document.getElementById('nextBtn').addEventListener('click', ()=> {
+      if(CURRENT_PAGE < totalPages) renderProductsList(CURRENT_PAGE+1);
+    });
+  }
+
+  function renderCartSummary(){
+    cartTotalAmountEl.textContent = formatPrice(cartTotal());
+    cartCountEl.textContent = '(' + cartCount() + ')';
+  }
+
+  // ---------------- Toast ----------------
+  let toastTimer = null;
+  function toast(msg, duration=1400){
+    // small ephemeral message top-right
+    let box = document.getElementById('nj_toast');
+    if(!box){
+      box = document.createElement('div');
+      box.id = 'nj_toast';
+      box.style.position = 'fixed';
+      box.style.top = '20px';
+      box.style.right = '20px';
+      box.style.background = 'rgba(0,0,0,0.8)';
+      box.style.color = '#fff';
+      box.style.padding = '10px 14px';
+      box.style.borderRadius = '8px';
+      box.style.zIndex = 9999;
+      document.body.appendChild(box);
+    }
+    box.textContent = msg || '';
+    box.style.opacity = 1;
+    if(toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> { box.style.opacity = 0; }, duration);
+  }
+
+  // ---------------- Search & Filter ----------------
+  function applyFilters(){
+    const min = Number((document.getElementById('minPrice')||{}).value || 0);
+    const max = Number((document.getElementById('maxPrice')||{}).value || 0) || Number.MAX_SAFE_INTEGER;
+    FILTERED = PRODUCTS.filter(p => {
+      const price = Number(p.Price || p.price || 0);
+      if(price < min) return false;
+      if(price > max) return false;
+      return true;
+    });
+    renderProductsList(1);
+  }
+
+  // escape html
+  function escapeHtml(s){ return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // ---------------- API helpers ----------------
+  async function apiGet(params={}){
+    const u = new URL(API_BASE);
+    Object.keys(params || {}).forEach(k => u.searchParams.set(k, params[k]));
+    try{
+      const res = await fetch(u.toString(), { method:'GET', cache:'no-store' });
+      const json = await res.json();
+      return json;
     }catch(err){
-      productGrid.innerHTML = `<div style="grid-column:1/-1;color:#e04d4d;padding:30px;border-radius:10px;background:#fff">Unable to load products: ${String(err)}</div>`;
+      console.error('apiGet error', err);
+      return { ok:false, error: String(err) };
     }
   }
 
-  function normalizeProduct(p){
-    // ensure consistent keys
-    return {
-      id: p.ProductID || p.id || p.ProductId || p.ProductId || (p.Name ? slugify(p.Name) : ''),
-      name: p.Name || p.name || '',
-      price: Number(p.Price || p.price || p['MRP'] || 0),
-      stock: Number(p.Stock || p.stock || p.Quantity || 0),
-      category: p.Category || p.category || '',
-      image: p['Image URL'] || p.Image || p.image || (p.photo || ''),
-      desc: p.Description || p.Desc || p.description || ''
-    };
+  async function apiPost(payload){
+    try{
+      const res = await fetch(API_BASE, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify(payload)
+      });
+      return await res.json();
+    }catch(err){
+      console.error('apiPost error', err);
+      return { ok:false, error: String(err) };
+    }
   }
 
-  function slugify(s){ return s.toString().toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-_]/g,'').slice(0,40); }
-
-  /* =========== Render category list =========== */
-  function renderCategoryList(){
-    const container = el('categoryList');
-    container.innerHTML = '';
-    // All
-    const allBtn = document.createElement('button');
-    allBtn.className = 'category-item active';
-    allBtn.textContent = 'All categories';
-    allBtn.dataset.cat = '';
-    allBtn.addEventListener('click', ()=> { selectCategory(''); });
-    container.appendChild(allBtn);
-    CATEGORIES.forEach(cat=>{
-      const b = document.createElement('button');
-      b.className = 'category-item';
-      b.textContent = cat;
-      b.dataset.cat = cat;
-      b.addEventListener('click', ()=> selectCategory(cat));
-      container.appendChild(b);
-    });
-  }
-
-  function selectCategory(cat){
-    $$('.category-item').forEach(el=>el.classList.remove('active'));
-    $$('.category-item').find(x => x.dataset.cat === (cat||'') )?.classList.add('active');
-    el('productSearch').value = '';
-    el('globalSearch').value = '';
-    applyFiltersAndRender({category:cat});
-  }
-
-  // small DOM helper
-  function $(sel,root=document){ return root.querySelector(sel); }
-  function $$(sel,root=document){ return Array.from(root.querySelectorAll(sel)); }
-
-  /* =========== Filtering, sorting, pagination =========== */
-  function applyFiltersAndRender(opts = {}){
-    const qGlobal = (el('globalSearch').value || '').trim().toLowerCase();
-    const qQuick = (el('quickSearch').value || '').trim().toLowerCase();
-    const category = opts.category !== undefined ? opts.category : ( $$('.category-item.active')?.find? $$('.category-item.active')[0]?.dataset.cat : ( $$('.category-item').find? ($$('.category-item').find(b=>b.classList.contains('active'))?.dataset.cat : '') );
-    const minP = Number(el('minPrice').value || 0);
-    const maxP = Number(el('maxPrice').value || 0);
-    const sort = el('sortSelect').value;
-    // filter
-    FILTERED = PRODUCTS.filter(p=>{
-      if(category && p.category !== category) return false;
-      if(qGlobal && !(p.name.toLowerCase().includes(qGlobal) || (p.desc||'').toLowerCase().includes(qGlobal) || (p.category||'').toLowerCase().includes(qGlobal))) return false;
-      if(qQuick && !(p.name.toLowerCase().includes(qQuick))) return false;
-      if(minP && p.price < minP) return false;
-      if(maxP && maxP>0 && p.price > maxP) return false;
-      return true;
-    });
-    // sort
-    if(sort==='price_asc') FILTERED.sort((a,b)=>a.price-b.price);
-    else if(sort==='price_desc') FILTERED.sort((a,b)=>b.price-a.price);
-    else if(sort==='name_asc') FILTERED.sort((a,b)=> a.name.localeCompare(b.name));
-    else if(sort==='name_desc') FILTERED.sort((a,b)=> b.name.localeCompare(a.name));
-    // pagination
-    perPage = Number(el('perPage').value || perPage);
-    localStorage.setItem('nj_perpage', perPage);
-    const totalPages = Math.max(1, Math.ceil(FILTERED.length / perPage));
-    if(currentPage > totalPages) currentPage = totalPages;
-    renderProductsPage(currentPage, perPage);
-  }
-
-  function renderProductsPage(page, pageSize){
-    productGrid.innerHTML = '';
-    const start = (page-1) * pageSize;
-    const end = start + pageSize;
-    const slice = FILTERED.slice(start, end);
-    if(slice.length === 0){
-      productGrid.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);padding:30px;border-radius:10px;background:#fff">No products found</div>';
+  // ---------------- Load products ----------------
+  async function loadProducts(){
+    toast('Loading products...');
+    // Prefer backend (sheet). If backend fails, fallback to static sample.
+    const r = await apiGet({ action: 'products' });
+    if(r && r.ok && Array.isArray(r.products) && r.products.length){
+      PRODUCTS = normalizeProducts(r.products);
     } else {
-      slice.forEach(p => {
-        const node = document.createElement('div');
-        node.className = 'product';
-        node.innerHTML = `
-          <div class="thumb"><img src="${escapeHtml(p.image)||'https://via.placeholder.com/300x300?text=Image'}" alt="${escapeHtml(p.name)}"></div>
-          <div>
-            <h4>${escapeHtml(p.name)}</h4>
-            <div class="meta">${escapeHtml(p.category || '')}</div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-              <div class="price">₹${Number(p.price).toFixed(0)}</div>
-              <div class="small">Stock: ${p.stock}</div>
-            </div>
-            <div class="row" style="margin-top:10px">
-              <button class="btn primary add-btn" data-id="${p.id}">Add</button>
-              <button class="btn ghost buy-now" data-id="${p.id}">Buy Now</b
+      // fallback sample if backend fails
+      PRODUCTS = [
+        { ProductID:'p-sample-1', Name:'Sample Aata', Price:400, Stock:10, Category:'Aats', 'Image URL': 'https://via.placeholder.com/300x200?text=Aata', Quantity:'10kg' },
+        { ProductID:'p-sample-2', Name:'Colgate Toothpaste', Price:70, Stock:20, Category:'Paste', 'Image URL': 'https://via.placeholder.com/300x200?text=Toothpaste', Quantity:'100gm' }
+      ];
+      toast('Loaded fallback products (backend unavailable)');
+    }
+    FILTERED = PRODUCTS.slice();
+    renderProductsList(1);
+    renderCartSummary();
+  }
+
+  // normalize product fields
+  function normalizeProducts(list){
+    return list.map((p, idx) => {
+      return {
+        ProductID: p.ProductID || p.ProductId || p['Product ID'] || ('p-'+(p.name||p.Name||idx)),
+        Name: p.Name || p.name || 'Unnamed product',
+        Price: Number(p.Price || p.price || 0),
+        Stock: Number(p.Stock || p.stock || 0),
+        Category: p.Category || p.category || p.cat || '',
+        'Image URL': p['Image URL'] || p.Image || p.image || p['ImageURL'] || '',
+        Quantity: p.Quantity || p.quantity || ''
+      };
+    });
+  }
+
+  // ---------------- Coupons ----------------
+  async function validateCoupon(code){
+    if(!code) return { ok:false, error:'Empty code' };
+    const res = await apiPost({ action:'validatecoupon', code: code });
+    return res;
+  }
+
+  // ---------------- Checkout helpers ----------------
+  // build UPI deep-link for payment
+  function buildUpiLink(vpa, name, amount, note='Order from NJ Mart'){
+    // UPI: pay?pa=<vpa>&pn=<name>&tn=<note>&am=<amount>&cu=INR
+    const q = new URLSearchParams({
+      pa: vpa,
+      pn: name || 'NJ Mart',
+      tn: note,
+      am: String(Number(amount||0).toFixed(2)),
+      cu: 'INR'
+    });
+    return 'upi://pay?' + q.toString();
+  }
+
+  // save order to backend (adds to Orders sheet)
+  async function saveOrder(order){
+    // order: { CustomerID, Items (array), TotalAmount, Discount, FinalAmount, Payment, DeliveryAddress }
+    const payload = {
+      action: 'addorder',
+      CustomerID: order.CustomerID || '',
+      Items: JSON.stringify(order.Items || []),
+      TotalAmount: order.TotalAmount || 0,
+      Discount: order.Discount || 0,
+      FinalAmount: order.FinalAmount || order.TotalAmount || 0,
+      Payment: order.Payment || 'COD',
+      DeliveryAddress: order.DeliveryAddress || '',
+      Status: 'placed'
+    };
+    const res = await apiPost(payload);
+    return res;
+  }
+
+  // open cart / checkout page
+  function openCartPage(){
+    // simplest: redirect to cart.html or checkout.html with cart in localStorage
+    window.location.href = 'cart.html';
+  }
+
+  // ---------------- Events ----------------
+  cartBtn.addEventListener('click', openCartPage);
+  document.querySelector('button[onclick="applyFilters()"]').addEventListener('click', applyFilters);
+
+  // attach search (if you later add search input)
+  // e.g. document.get
