@@ -1,167 +1,362 @@
-/**
- * firebase-config.js
- * NJ Mart — Expanded Final Version (≈420+ lines)
- *
- * This file is production-ready. All Firebase config values and backend URL
- * are pre-filled for NJ Mart. Just copy–paste and include in your project.
- *
- * REQUIREMENTS:
- * - Include Firebase compat SDKs before this file:
- *   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
- *   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
- *   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
- *   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
- */
+/**************************************************************
+ *  NJ Mart - Firebase Config & Initialization
+ *  Complete Setup for Firebase SDKs using CDN (Netlify friendly)
+ *  Includes: Authentication, Firestore Database, Storage
+ **************************************************************/
 
-/* ============================================================================
-   ==========  Configuration  ================================================
-   ========================================================================== */
+// ------------------------- Firebase SDK -------------------------
+/*
+  Important: Make sure in your HTML (login.html, index.html, admin.html etc.)
+  you add these BEFORE this firebase-config.js
 
-// ✅ Firebase Config (already filled with your project values)
-const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyCbf19k8pLFh-9UQz8sQRim2rPYTlqaEL8",
-  authDomain: "njmartonline.firebaseapp.com",
-  projectId: "njmartonline",
-  storageBucket: "njmartonline.appspot.com",
-  messagingSenderId: "594505763627",
-  appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js"></script>
+*/
+
+console.log("[NJ_FIREBASE] Loading firebase-config.js ...");
+
+// ------------------------- Config -------------------------
+const firebaseConfig = {
+    apiKey: "AIzaSyCbf19k8pLFh-9UQz8sQRim2PYT1qaEL8",
+    authDomain: "njmartonline.firebaseapp.com",
+    projectId: "njmartonline",
+    storageBucket: "njmartonline.appspot.com",
+    messagingSenderId: "594505763627",
+    appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
 };
 
-// ✅ Apps Script Backend URL (Google Sheet)
-const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwsG5H7er3nqwGjEbrtokssc5LeGFc9Zog2bG1s0C5bQ-P2b_1S1kisSLpOmdESH7FB/exec";
+// ------------------------- Initialization -------------------------
+let app, auth, db, storage;
 
-/* ============================================================================
-   ==========  Initialization  ===============================================
-   ========================================================================== */
-(function ensureFirebaseLoaded(){
-  if(typeof firebase === 'undefined' || !firebase.initializeApp){
-    console.error('Firebase SDK not found. Include Firebase SDK scripts before firebase-config.js');
-  }
-})();
-
-let _firebaseInitialized = false;
 try {
-  if(typeof firebase !== 'undefined' && firebase.initializeApp){
-    if (!firebase.apps || !firebase.apps.length) {
-      firebase.initializeApp(FIREBASE_CONFIG);
+    app = firebase.initializeApp(firebaseConfig);
+    auth = firebase.auth();
+    db = firebase.firestore();
+    storage = firebase.storage();
+    console.log("[NJ_FIREBASE] Firebase initialized successfully for NJ Mart");
+} catch (err) {
+    console.error("[NJ_FIREBASE] Error initializing Firebase: ", err);
+}
+
+// ------------------------- Authentication Helpers -------------------------
+
+/**
+ * Sign up with email & password
+ */
+async function njSignup(email, password) {
+    try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        console.log("[NJ_FIREBASE] User signed up:", userCredential.user.uid);
+        return userCredential.user;
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Signup Error:", error.message);
+        throw error;
     }
-    _firebaseInitialized = true;
-    try { firebase.auth(); } catch(e){}
-    try { firebase.firestore(); } catch(e){}
-    try { firebase.storage(); } catch(e){}
-    console.log('✅ Firebase initialized for NJ Mart');
-  }
-} catch(err){
-  console.error('Firebase init error', err);
 }
 
-/* ============================================================================
-   ==========  Globals  ======================================================
-   ========================================================================== */
-const _NJ = {
-  BACKEND_URL,
-  FIREBASE_CONFIG,
-  STORAGE_KEYS: {
-    USER: 'nj_user',
-    CART: 'nj_cart',
-    COUPON: 'nj_coupon',
-    LAST_ORDER: 'nj_last_order'
-  },
-  DELIVERY: { threshold: 499, charge: 20 },
-  OTP: { recaptchaContainerId: 'recaptcha-container', recaptchaWidgetId: null, confirmationResult: null }
-};
-
-const _svc = {
-  auth: (typeof firebase !== 'undefined' && firebase.auth) ? firebase.auth() : null,
-  firestore: (typeof firebase !== 'undefined' && firebase.firestore) ? firebase.firestore() : null,
-  storage: (typeof firebase !== 'undefined' && firebase.storage) ? firebase.storage() : null
-};
-
-/* ============================================================================
-   ==========  Helpers (logs, fetch, local storage)  =========================
-   ========================================================================== */
-function _log(...a){ console.log('[NJ_FIREBASE]', ...a); }
-function _warn(...a){ console.warn('[NJ_FIREBASE]', ...a); }
-function _err(...a){ console.error('[NJ_FIREBASE]', ...a); }
-
-function isFirebaseReady(){ return _firebaseInitialized && _svc.auth; }
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-
-async function _fetchJson(url, opts={}){ try{const r=await fetch(url,opts);return await r.json();}catch(e){return{ok:false,error:String(e)}} }
-async function _postJson(url,body){ try{const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return await r.json();}catch(e){return{ok:false,error:String(e)}} }
-
-/* ============================================================================
-   ==========  Auth Functions (Email, Google, Phone OTP)  ====================
-   ========================================================================== */
-async function signUpWithEmailPassword(email,pass,name=''){
-  try{
-    const u=await _svc.auth.createUserWithEmailAndPassword(email,pass);
-    if(name) await u.user.updateProfile({displayName:name});
-    localStorage.setItem(_NJ.STORAGE_KEYS.USER,JSON.stringify({uid:u.user.uid,email:u.user.email,name:u.user.displayName||''}));
-    return{ok:true,user:u.user};
-  }catch(e){return{ok:false,error:e.message}}
-}
-async function signInWithEmailPassword(email,pass){
-  try{
-    const u=await _svc.auth.signInWithEmailAndPassword(email,pass);
-    localStorage.setItem(_NJ.STORAGE_KEYS.USER,JSON.stringify({uid:u.user.uid,email:u.user.email,name:u.user.displayName||''}));
-    return{ok:true,user:u.user};
-  }catch(e){return{ok:false,error:e.message}}
-}
-async function signInWithGooglePopup(){
-  try{
-    const p=new firebase.auth.GoogleAuthProvider();
-    const r=await _svc.auth.signInWithPopup(p);
-    const u=r.user;
-    localStorage.setItem(_NJ.STORAGE_KEYS.USER,JSON.stringify({uid:u.uid,email:u.email,name:u.displayName||''}));
-    return{ok:true,user:u};
-  }catch(e){return{ok:false,error:e.message}}
-}
-function initPhoneRecaptcha(id='recaptcha-container'){ if(window.__recaptchaVerifier) return window.__recaptchaVerifier; window.__recaptchaVerifier=new firebase.auth.RecaptchaVerifier(id,{size:'invisible'}); return window.__recaptchaVerifier; }
-async function sendOtpToPhone(num){ try{const conf=await _svc.auth.signInWithPhoneNumber(num,initPhoneRecaptcha());_NJ.OTP.confirmationResult=conf;return{ok:true}}catch(e){return{ok:false,error:e.message}} }
-async function verifyOtp(code){ try{const res=await _NJ.OTP.confirmationResult.confirm(code);localStorage.setItem(_NJ.STORAGE_KEYS.USER,JSON.stringify({uid:res.user.uid,phone:res.user.phoneNumber||''}));return{ok:true,user:res.user}}catch(e){return{ok:false,error:e.message}} }
-async function signOutUser(){ await _svc.auth.signOut();localStorage.removeItem(_NJ.STORAGE_KEYS.USER);return{ok:true}}
-
-/* ============================================================================
-   ==========  Cart + Orders Helpers  ========================================
-   ========================================================================== */
-function getCart(){try{return JSON.parse(localStorage.getItem(_NJ.STORAGE_KEYS.CART)||'[]')}catch(e){return[]}}
-function saveCart(c){localStorage.setItem(_NJ.STORAGE_KEYS.CART,JSON.stringify(c))}
-function clearCart(){localStorage.removeItem(_NJ.STORAGE_KEYS.CART)}
-
-function buildOrderPayload({customer=null,payment='COD'}={}){
-  const cart=getCart();
-  const subtotal=cart.reduce((s,i)=>s+i.price*i.qty,0);
-  const delivery=(subtotal>=_NJ.DELIVERY.threshold||subtotal===0)?0:_NJ.DELIVERY.charge;
-  const final=subtotal+delivery;
-  return{
-    OrderID:'ORD-'+Date.now(),
-    CustomerID:customer?.uid||'GUEST',
-    Items:JSON.stringify(cart),
-    TotalAmount:subtotal,
-    FinalAmount:final,
-    Payment:payment,
-    Date:new Date().toLocaleString()
-  }
+/**
+ * Sign in with email & password
+ */
+async function njLogin(email, password) {
+    try {
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        console.log("[NJ_FIREBASE] User logged in:", userCredential.user.uid);
+        return userCredential.user;
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Login Error:", error.message);
+        throw error;
+    }
 }
 
-/* ============================================================================
-   ==========  Backend (Google Sheets via Apps Script)  ======================
-   ========================================================================== */
-async function fetchProductsFromSheet(){return _fetchJson(`${_NJ.BACKEND_URL}?action=products`)}
-async function fetchSettingsFromSheet(){return _fetchJson(`${_NJ.BACKEND_URL}?action=settings`)}
-async function validateCouponOnBackend(code){return _postJson(_NJ.BACKEND_URL,{action:'validatecoupon',code})}
-async function saveCustomerToSheet(c){return _postJson(_NJ.BACKEND_URL,Object.assign({},c,{action:'addcustomer'}))}
-async function saveOrderToSheet(o){return _postJson(_NJ.BACKEND_URL,Object.assign({},o,{action:'addorder'}))}
+/**
+ * Logout
+ */
+async function njLogout() {
+    try {
+        await auth.signOut();
+        console.log("[NJ_FIREBASE] User logged out");
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Logout Error:", error.message);
+    }
+}
 
-/* ============================================================================
-   ==========  Export Global  ================================================
-   ========================================================================== */
-window.NJ_FIREBASE={
-  CONFIG:_NJ,
-  signUpWithEmailPassword,signInWithEmailPassword,signInWithGooglePopup,
-  sendOtpToPhone,verifyOtp,signOutUser,
-  getCart,saveCart,clearCart,buildOrderPayload,
-  fetchProductsFromSheet,fetchSettingsFromSheet,validateCouponOnBackend,
-  saveCustomerToSheet,saveOrderToSheet
-};
+/**
+ * Auth state listener
+ */
+auth.onAuthStateChanged(user => {
+    if (user) {
+        console.log("[NJ_FIREBASE] Auth state: Logged in as", user.email);
+    } else {
+        console.log("[NJ_FIREBASE] Auth state: No user logged in");
+    }
+});
+/**************************************************************
+ *  NJ Mart - Firestore Database Helpers
+ *  Collections: Products, Orders, Customers
+ **************************************************************/
+
+// ------------------------- Products -------------------------
+
+/**
+ * Add a new product
+ */
+async function addProduct(product) {
+    try {
+        const docRef = await db.collection("products").add(product);
+        console.log("[NJ_FIREBASE] Product added with ID: ", docRef.id);
+        return docRef.id;
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Error adding product: ", error.message);
+        throw error;
+    }
+}
+
+/**
+ * Get all products
+ */
+async function getProducts() {
+    try {
+        const snapshot = await db.collection("products").get();
+        let products = [];
+        snapshot.forEach(doc => {
+            products.push({ id: doc.id, ...doc.data() });
+        });
+        console.log("[NJ_FIREBASE] Products loaded:", products.length);
+        return products;
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Error fetching products:", error.message);
+        throw error;
+    }
+}
+
+/**
+ * Update product by ID
+ */
+async function updateProduct(productId, data) {
+    try {
+        await db.collection("products").doc(productId).update(data);
+        console.log("[NJ_FIREBASE] Product updated:", productId);
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Error updating product:", error.message);
+        throw error;
+    }
+}
+
+/**
+ * Delete product by ID
+ */
+async function deleteProduct(productId) {
+    try {
+        await db.collection("products").doc(productId).delete();
+        console.log("[NJ_FIREBASE] Product deleted:", productId);
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Error deleting product:", error.message);
+        throw error;
+    }
+}
+
+// ------------------------- Orders -------------------------
+
+/**
+ * Place a new order
+ */
+async function addOrder(order) {
+    try {
+        const docRef = await db.collection("orders").add(order);
+        console.log("[NJ_FIREBASE] Order placed with ID:", docRef.id);
+        return docRef.id;
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Error placing order:", error.message);
+        throw error;
+    }
+}
+
+/**
+ * Get all orders
+ */
+async function getOrders() {
+    try {
+        const snapshot = await db.collection("orders").get();
+        let orders = [];
+        snapshot.forEach(doc => {
+            orders.push({ id: doc.id, ...doc.data() });
+        });
+        console.log("[NJ_FIREBASE] Orders loaded:", orders.length);
+        return orders;
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Error fetching orders:", error.message);
+        throw error;
+    }
+}
+
+/**
+ * Update order status
+ */
+async function updateOrder(orderId, data) {
+    try {
+        await db.collection("orders").doc(orderId).update(data);
+        console.log("[NJ_FIREBASE] Order updated:", orderId);
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Error updating order:", error.message);
+        throw error;
+    }
+}
+
+// ------------------------- Customers -------------------------
+
+/**
+ * Add new customer
+ */
+async function addCustomer(customer) {
+    try {
+        const docRef = await db.collection("customers").add(customer);
+        console.log("[NJ_FIREBASE] Customer added with ID:", docRef.id);
+        return docRef.id;
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Error adding customer:", error.message);
+        throw error;
+    }
+}
+
+/**
+ * Get all customers
+ */
+async function getCustomers() {
+    try {
+        const snapshot = await db.collection("customers").get();
+        let customers = [];
+        snapshot.forEach(doc => {
+            customers.push({ id: doc.id, ...doc.data() });
+        });
+        console.log("[NJ_FIREBASE] Customers loaded:", customers.length);
+        return customers;
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Error fetching customers:", error.message);
+        throw error;
+    }
+}
+/**************************************************************
+ *  NJ Mart - Firebase Storage + Admin Utilities
+ **************************************************************/
+
+// ------------------------- Storage -------------------------
+
+/**
+ * Upload image to Firebase Storage
+ * @param {File} file - image file
+ * @param {String} path - storage folder path (e.g., "products/")
+ */
+async function uploadImage(file, path = "uploads/") {
+    try {
+        const storageRef = storage.ref(`${path}${Date.now()}_${file.name}`);
+        await storageRef.put(file);
+        const url = await storageRef.getDownloadURL();
+        console.log("[NJ_FIREBASE] Image uploaded:", url);
+        return url;
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Error uploading image:", error.message);
+        throw error;
+    }
+}
+
+/**
+ * Delete image from Firebase Storage
+ * @param {String} fileUrl - full image URL
+ */
+async function deleteImage(fileUrl) {
+    try {
+        const fileRef = storage.refFromURL(fileUrl);
+        await fileRef.delete();
+        console.log("[NJ_FIREBASE] Image deleted:", fileUrl);
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Error deleting image:", error.message);
+        throw error;
+    }
+}
+
+// ------------------------- Admin Utilities -------------------------
+
+/**
+ * Add new admin
+ */
+async function addAdmin(email) {
+    try {
+        const docRef = await db.collection("admins").add({ email });
+        console.log("[NJ_FIREBASE] Admin added:", email);
+        return docRef.id;
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Error adding admin:", error.message);
+        throw error;
+    }
+}
+
+/**
+ * Get all admins
+ */
+async function getAdmins() {
+    try {
+        const snapshot = await db.collection("admins").get();
+        let admins = [];
+        snapshot.forEach(doc => {
+            admins.push({ id: doc.id, ...doc.data() });
+        });
+        console.log("[NJ_FIREBASE] Admins loaded:", admins.length);
+        return admins;
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Error fetching admins:", error.message);
+        throw error;
+    }
+}
+
+/**
+ * Delete admin
+ */
+async function deleteAdmin(adminId) {
+    try {
+        await db.collection("admins").doc(adminId).delete();
+        console.log("[NJ_FIREBASE] Admin deleted:", adminId);
+    } catch (error) {
+        console.error("[NJ_FIREBASE] Error deleting admin:", error.message);
+        throw error;
+    }
+}
+
+// ------------------------- Utility Functions -------------------------
+
+/**
+ * Generic Error Logger
+ */
+function logError(error, context = "") {
+    console.error(`[NJ_FIREBASE] ERROR in ${context}:`, error.message);
+    // Optional: push error logs to Firestore
+    db.collection("logs").add({
+        context,
+        error: error.message,
+        time: new Date().toISOString()
+    });
+}
+
+/**
+ * Health Check - Ensure Firebase connected
+ */
+async function healthCheck() {
+    try {
+        await db.collection("health").doc("status").set({
+            updatedAt: new Date().toISOString(),
+            status: "OK"
+        });
+        console.log("[NJ_FIREBASE] Health check OK");
+    } catch (error) {
+        logError(error, "healthCheck");
+    }
+}
+
+/**************************************************************
+ *  NJ Mart Firebase Config - Completed
+ *  Part 1: Auth + Config
+ *  Part 2: Firestore (Products, Orders, Customers)
+ *  Part 3: Storage + Admin Utilities + Error Handling
+ **************************************************************/
+console.log("[NJ_FIREBASE] Firebase Config fully loaded ✅");
