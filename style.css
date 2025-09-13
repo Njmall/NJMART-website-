@@ -1,288 +1,424 @@
-/* ================================
-   NJ Mart — Global Styles (style.css)
-   ================================ */
+/* ==========================================================================
+   NJ Mart — FULL Expanded style.css
+   Final (400+ lines) — includes Light + Dark mode, responsive, admin, cart,
+   checkout, products, modals, tables, forms, toasts, badges, utilities.
+   ========================================================================== */
 
-/* RESET + BASE */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-html, body {
-  height: 100%;
-}
-body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background: #f6fbf8;
-  color: #111;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-a { color: inherit; text-decoration: none; }
-img { max-width: 100%; display: block; border-radius: 8px; }
-button, input, select, textarea {
-  font-family: inherit;
-  font-size: 1rem;
-  outline: none;
-}
-
-/* COLORS + VARIABLES */
-:root {
+/* -------------------------
+   ROOT VARIABLES
+   ------------------------- */
+:root{
   --bg: #f6fbf8;
-  --card: #ffffff;
+  --surface: #ffffff;
   --muted: #6b7280;
+  --text: #111827;
   --accent: #2db34a;
-  --accent-dark: #1f8a34;
+  --accent-600: #1f8a34;
   --danger: #ef4444;
-  --warning: #f59e0b;
-  --info: #3b82f6;
+  --shadow-1: 0 6px 18px rgba(12,30,40,0.06);
+  --shadow-2: 0 12px 40px rgba(12,30,40,0.08);
   --radius: 12px;
-  --shadow: 0 8px 24px rgba(0,0,0,0.08);
-  --transition: all 0.2s ease-in-out;
+  --max-width: 1200px;
+  --glass: rgba(255,255,255,0.6);
+  --glass-2: rgba(0,0,0,0.03);
+  --transition: 200ms cubic-bezier(.2,.9,.2,1);
+  --border: 1px solid rgba(15,23,42,0.06);
+  --code-bg: #0f1724;
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --info: #06b6d4;
+  --font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
-/* UTILITIES */
-.container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 1rem;
-}
-.text-muted { color: var(--muted); }
-.text-center { text-align: center; }
-.rounded { border-radius: var(--radius); }
-.shadow { box-shadow: var(--shadow); }
-.mt-1 { margin-top: .5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.mb-1 { margin-bottom: .5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
-.p-1 { padding: .5rem; }
-.p-2 { padding: 1rem; }
-.p-3 { padding: 1.5rem; }
-
-/* BUTTONS */
-.btn {
-  display: inline-block;
-  padding: 0.6rem 1rem;
-  border-radius: var(--radius);
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: var(--transition);
-}
-.btn.primary {
-  background: var(--accent);
-  color: #fff;
-}
-.btn.primary:hover { background: var(--accent-dark); }
-.btn.ghost {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  color: #111;
-}
-.btn.ghost:hover { background: #f9fafb; }
-.btn.danger {
-  background: var(--danger);
-  color: #fff;
-}
-.btn.danger:hover { opacity: 0.9; }
-.btn.small { padding: 0.4rem 0.7rem; font-size: 0.85rem; }
-
-/* HEADER */
-header.site-header {
-  background: var(--card);
-  box-shadow: var(--shadow);
-  border-radius: var(--radius);
-  padding: 0.8rem 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: .8rem;
-}
-.brand .logo {
-  width: 48px; height: 48px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; color: white;
-  box-shadow: 0 4px 10px rgba(0,0,0,.1);
-}
-.search-box {
-  flex: 1;
-  display: flex;
-  align-items: center;
-}
-.search-box input {
-  width: 100%;
-  padding: .6rem 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: var(--radius);
-}
-.actions { display: flex; gap: .5rem; }
-
-/* FOOTER */
-footer.site-footer {
-  background: var(--card);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 1.2rem;
-  margin-top: 2rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 1rem;
-}
-footer.site-footer .col {
-  min-width: 200px;
+/* Dark theme variables (prefers or toggle) */
+:root[data-theme="dark"]{
+  --bg: #0b1220;
+  --surface: #0f1724;
+  --muted: #9aa3ad;
+  --text: #e6eef3;
+  --accent: #29c153;
+  --accent-600: #1f8a34;
+  --danger: #ff6b6b;
+  --shadow-1: 0 8px 30px rgba(0,0,0,0.6);
+  --shadow-2: 0 18px 60px rgba(0,0,0,0.65);
+  --glass: rgba(255,255,255,0.04);
+  --glass-2: rgba(255,255,255,0.02);
+  --border: 1px solid rgba(255,255,255,0.04);
+  --code-bg: #07101a;
 }
 
-/* HERO BANNER */
-.hero {
-  background: linear-gradient(90deg,var(--accent),var(--accent-dark));
-  color: #fff;
-  padding: 1.5rem;
-  border-radius: var(--radius);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.hero h2 { margin-bottom: .3rem; }
-
-/* PRODUCT GRID */
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
-  gap: 1rem;
-}
-.product {
-  background: var(--card);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.product .thumb {
-  height: 160px;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: .6rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f9fafb;
-}
-.product h4 { font-size: 1rem; margin-bottom: .3rem; }
-.product .meta { font-size: .85rem; color: var(--muted); margin-bottom: .6rem; }
-.product .price { font-weight: 700; color: var(--accent); margin-bottom: .6rem; }
-.product button { margin-top: auto; }
-
-/* CART PANEL */
-.cart-panel {
-  background: var(--card);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 1rem;
-}
-.cart-item {
-  display: flex;
-  gap: .6rem;
-  padding: .6rem 0;
-  border-bottom: 1px solid #f1f3f4;
-}
-.cart-item:last-child { border-bottom: none; }
-.cart-item img {
-  width: 72px;
-  height: 64px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-.cart-summary {
-  border-top: 1px dashed #ddd;
-  padding-top: .8rem;
-  margin-top: .8rem;
-  font-size: .9rem;
+/* -------------------------
+   Global resets & base
+   ------------------------- */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-family);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.45;
+  font-size:15px;
+  transition: background var(--transition), color var(--transition);
 }
 
-/* FORMS */
-form {
-  background: var(--card);
-  padding: 1rem;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-form .form-group {
-  margin-bottom: 1rem;
-}
-form label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: .3rem;
-}
-form input, form select, form textarea {
-  width: 100%;
-  padding: .6rem .8rem;
-  border-radius: var(--radius);
-  border: 1px solid #e5e7eb;
-}
-form input:focus, form select:focus, form textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(45,179,74,0.15);
+/* link */
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+
+/* container */
+.container{
+  max-width:var(--max-width);
+  margin:20px auto;
+  padding:14px;
 }
 
-/* TABLES (Admin / Staff / Reports) */
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0;
-  background: var(--card);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow);
+/* -------------------------
+   Typography
+   ------------------------- */
+.h1{font-size:20px;font-weight:800;margin:0}
+.h2{font-size:18px;font-weight:700;margin:0}
+.h3{font-size:16px;font-weight:700;margin:0}
+.lead{font-size:15px;color:var(--muted)}
+.small{font-size:13px;color:var(--muted)}
+.muted{color:var(--muted)}
+.nowrap{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* -------------------------
+   Cards & Panels
+   ------------------------- */
+.card, .panel{
+  background:var(--surface);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-1);
+  padding:14px;
+  border:var(--border);
+  transition:box-shadow var(--transition), transform var(--transition);
 }
-.table th, .table td {
-  padding: .8rem;
-  text-align: left;
-  border-bottom: 1px solid #eee;
+.card.hoverable:hover, .panel.hoverable:hover{ transform: translateY(-4px); box-shadow:var(--shadow-2); }
+
+.kv{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.row{display:flex;gap:12px;align-items:center}
+.col{flex:1}
+
+/* -------------------------
+   Header / Navbar
+   ------------------------- */
+.site-header{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:10px;
+  border-radius:var(--radius);
+  background:var(--surface);
+  box-shadow:var(--shadow-1);
+  border:var(--border);
+  position:sticky;
+  top:12px;
+  z-index:60;
 }
-.table th {
-  background: #f9fafb;
-  font-weight: 700;
+.brand{display:flex;align-items:center;gap:10px}
+.logo{
+  width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-600));
+  display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;box-shadow:0 6px 18px rgba(0,0,0,0.08)
 }
-.table tr:hover td {
-  background: #f5fdf7;
+.brand h1{margin:0;font-size:18px}
+.search-box{flex:1;display:flex;align-items:center;gap:10px}
+.search-box input{
+  width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96));
+  transition:box-shadow var(--transition), border-color var(--transition);
+}
+:root[data-theme="dark"] .search-box input{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
+
+/* actions */
+.actions{display:flex;gap:8px;align-items:center}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;cursor:pointer;border-radius:10px;padding:8px 12px;border:0;font-weight:700;transition:all var(--transition);
+  background:var(--surface);box-shadow:none;border:var(--border);
+}
+.btn.primary{background:var(--accent);color:#fff;border:0}
+.btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.06)}
+.btn.icon{padding:8px;border-radius:10px;background:var(--surface)}
+.btn.small{padding:6px 8px;font-size:13px}
+
+/* badge */
+.badge{background:var(--surface);padding:6px 10px;border-radius:999px;border:var(--border);font-weight:700}
+
+/* -------------------------
+   Layout grid / Sidebar
+   ------------------------- */
+.main-grid{display:grid;grid-template-columns:260px 1fr;gap:16px;margin-top:16px}
+@media(max-width:980px){ .main-grid{grid-template-columns:1fr} }
+
+.sidebar{
+  padding:12px;
+  border-radius:12px;
+  background:var(--surface);
+  border:var(--border);
+}
+.nav-list{display:flex;flex-direction:column;gap:8px}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;border:1px solid transparent;
+}
+.nav-item:hover{background:var(--glass);border-color:rgba(0,0,0,0.03)}
+.nav-item.active{background:linear-gradient(90deg, rgba(45,179,74,0.06), rgba(255,255,255,0.01));border-color:rgba(45,179,74,0.12)}
+
+/* -------------------------
+   Product grid + cards
+   ------------------------- */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+@media(max-width:720px){ .product-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));} }
+
+.product{
+  display:flex;flex-direction:column;justify-content:space-between;
+  gap:8px;padding:12px;border-radius:10px;background:var(--surface);border:var(--border);
+  box-shadow:var(--shadow-1);
+}
+.product .thumb{height:150px;border-radius:8px;overflow:hidden;background:var(--glass-2);display:flex;align-items:center;justify-content:center}
+.product h4{margin:0;font-size:15px}
+.product .meta{font-size:13px;color:var(--muted)}
+.product .price{font-weight:800;color:var(--accent);font-size:16px}
+
+/* product actions */
+.card-actions{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.add-btn{background:var(--accent);color:#fff;padding:8px 10px;border-radius:8px;border:0;font-weight:800}
+
+/* -------------------------
+   Cart FAB & Panel
+   ------------------------- */
+.cart-drawer{position:fixed;right:18px;bottom:18px;z-index:80}
+.cart-fab{background:var(--accent);color:#fff;padding:12px 16px;border-radius:14px;box-shadow:0 12px 34px rgba(45,179,74,0.16);cursor:pointer;display:flex;gap:8px;align-items:center}
+.cart-panel{
+  position:fixed;right:18px;bottom:86px;width:380px;max-width:calc(100% - 32px);
+  background:var(--surface);border-radius:12px;padding:12px;box-shadow:var(--shadow-2);border:var(--border);display:none;
+}
+.cart-panel.active{display:block}
+.cart-item{display:flex;gap:10px;align-items:center;padding:8px;border-bottom:1px solid rgba(0,0,0,0.04)}
+.cart-item img{width:72px;height:64px;object-fit:cover;border-radius:8px}
+
+/* summary lines */
+.summary-row{display:flex;justify-content:space-between;padding:8px 0;color:var(--muted)}
+.total-line{font-weight:800;font-size:18px}
+
+/* -------------------------
+   Checkout & Forms
+   ------------------------- */
+.form-row{display:flex;gap:10px}
+.form-col{flex:1}
+input[type="text"], input[type="email"], input[type="tel"], input[type="number"], select, textarea{
+  width:100%;padding:10px;border-radius:8px;border:var(--border);background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96));
+  transition:box-shadow var(--transition), border-color var(--transition);
+}
+:root[data-theme="dark"] input, :root[data-theme="dark"] textarea{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
+
+label{font-weight:700;font-size:13px;margin-bottom:6px;display:block}
+textarea{min-height:90px;resize:vertical}
+
+/* payment options */
+.payment-options{display:flex;gap:8px;flex-wrap:wrap}
+.payment-card{padding:10px;border-radius:10px;border:var(--border);background:var(--surface);cursor:pointer}
+.payment-card.active{border-color:var(--accent);box-shadow:0 6px 18px rgba(45,179,74,0.06)}
+
+/* UPI button style */
+.upi-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;background:linear-gradient(90deg,#fff,#f7fff6);border:1px solid rgba(0,0,0,0.04);font-weight:800}
+.upi-btn small{display:block;font-size:12px;color:var(--muted)}
+
+/* COD badge */
+.cod-badge{padding:6px 10px;border-radius:8px;background:#fff;border:1px dashed rgba(0,0,0,0.05)}
+
+/* -------------------------
+   Tables (Admin / Orders)
+   ------------------------- */
+.table{width:100%;border-collapse:collapse}
+.table th, .table td{padding:10px;border-bottom:1px solid rgba(0,0,0,0.04);text-align:left}
+.table thead th{background:transparent;font-weight:700}
+.table tr:hover{background:linear-gradient(90deg, rgba(45,179,74,0.02), transparent)}
+
+/* status pills */
+.pill{display:inline-block;padding:6px 10px;border-radius:999px;font-weight:700}
+.p-status-placed{background:#fff8f6;color:#c2410c;border:1px solid rgba(196,65,12,0.06)}
+.p-status-dispatched{background:#fff9ed;color:#a16207;border:1px solid rgba(161,98,7,0.06)}
+.p-status-delivered{background:#f0fff4;color:var(--success);border:1px solid rgba(16,185,129,0.06)}
+.p-status-cancelled{background:#fff4f4;color:var(--danger);border:1px solid rgba(239,68,68,0.06)}
+
+/* -------------------------
+   Admin dashboard components
+   ------------------------- */
+.admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:980px){ .admin-grid{grid-template-columns:1fr} }
+
+.stat-card{padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfff5);box-shadow:0 6px 20px rgba(12,30,40,0.03)}
+.stat-value{font-weight:900;font-size:20px}
+.stat-label{font-size:13px;color:var(--muted)}
+
+/* charts container */
+.chart-box{height:260px;border-radius:10px;padding:12px;border:var(--border);background:var(--surface);box-shadow:var(--shadow-1)}
+
+/* export / CSV actions */
+.action-row{display:flex;gap:8px;align-items:center;justify-content:flex-end}
+
+/* -------------------------
+   Modals
+   ------------------------- */
+.modal{position:fixed;left:0;top:0;width:100%;height:100%;display:none;align-items:center;justify-content:center;background:rgba(1,2,3,0.45);z-index:9999}
+.modal.active{display:flex}
+.modal .dialog{width:880px;max-width:96%;background:var(--surface);padding:18px;border-radius:12px;box-shadow:var(--shadow-2);border:var(--border)}
+.modal .dialog .modal-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+
+/* form row within modal */
+.modal-form .row{margin-bottom:10px}
+
+/* -------------------------
+   Toasts / Notifications
+   ------------------------- */
+.toast-wrap{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:99999}
+.toast{padding:10px 14px;border-radius:10px;color:#fff;background:rgba(0,0,0,0.8);box-shadow:0 8px 30px rgba(0,0,0,0.4);margin-top:8px}
+
+/* inline statuses */
+.status{padding:8px 10px;border-radius:8px}
+.status.ok{background:#edf7ee;color:var(--success)}
+.status.warn{background:#fff7e6;color:var(--warning)}
+.status.err{background:#fdecea;color:var(--danger)}
+
+/* -------------------------
+   Utilities
+   ------------------------- */
+.flex{display:flex;gap:8px;align-items:center}
+.grid{display:grid;gap:8px}
+.justify-between{display:flex;justify-content:space-between;align-items:center}
+.mt-6{margin-top:6px}.mt-8{margin-top:8px}.mt-12{margin-top:12px}
+.mb-6{margin-bottom:6px}.mb-12{margin-bottom:12px}
+.p-6{padding:6px}.p-12{padding:12px}
+.round-sm{border-radius:8px}
+.center{text-align:center}
+
+/* icon helper */
+.icon{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;background:var(--glass);}
+
+/* hidden helper */
+.hidden{display:none!important}
+
+/* -------------------------
+   Responsive tweaks
+   ------------------------- */
+@media(max-width:980px){
+  .site-header{flex-direction:column;align-items:stretch;gap:8px}
+  .search-box{order:1}
+  .actions{order:2;justify-content:flex-end}
+  .product .thumb{height:120px}
+  .cart-panel{right:12px;left:12px}
 }
 
-/* STATUS BADGES */
-.badge {
-  display: inline-block;
-  padding: .3rem .6rem;
-  font-size: .75rem;
-  border-radius: 999px;
-  font-weight: 600;
-}
-.badge.success { background: #dcfce7; color: #166534; }
-.badge.warning { background: #fef9c3; color: #854d0e; }
-.badge.danger { background: #fee2e2; color: #991b1b; }
-.badge.info { background: #dbeafe; color: #1e3a8a; }
+/* -------------------------
+   Profile / Account
+   ------------------------- */
+.profile-photo{width:120px;height:120px;border-radius:12px;background:var(--glass);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;color:var(--accent)}
+.profile-info{display:flex;flex-direction:column;gap:8px}
 
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  header.site-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .hero { flex-direction: column; align-items: flex-start; }
-  .product-grid { grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); }
-  footer.site-footer { flex-direction: column; }
+/* order card */
+.order-card{padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfff5);border:var(--border);display:flex;justify-content:space-between;align-items:center}
+.order-card .meta{font-size:13px;color:var(--muted)}
+
+/* -------------------------
+   Reports & charts style helpers
+   ------------------------- */
+.reports-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.report-metric{padding:12px;border-radius:10px;background:linear-gradient(90deg,#fff,#fbfff5);box-shadow:0 6px 18px rgba(12,30,40,0.04)}
+.report-metric strong{display:block;font-size:18px}
+
+/* -------------------------
+   Staff / Team page
+   ------------------------- */
+.staff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:980px){ .staff-grid{grid-template-columns:1fr} }
+.staff-card{padding:12px;border-radius:10px;background:var(--surface);border:var(--border);display:flex;gap:10px;align-items:center}
+.staff-avatar{width:56px;height:56px;border-radius:10px;background:var(--glass);display:flex;align-items:center;justify-content:center;font-weight:800}
+
+/* -------------------------
+   Coupons / Promotions
+   ------------------------- */
+.coupon-list{display:flex;flex-direction:column;gap:8px}
+.coupon-card{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#f7fff6);border:var(--border)}
+.coupon-code{font-weight:900;color:var(--accent)}
+
+/* -------------------------
+   Code / developer block
+   ------------------------- */
+.code-block{background:var(--code-bg);color:#fff;padding:12px;border-radius:8px;overflow:auto;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;font-size:13px}
+
+/* -------------------------
+   Accessibility helpers
+   ------------------------- */
+:focus{outline:2px solid rgba(45,179,74,0.18);outline-offset:2px}
+[aria-hidden="true"]{display:none}
+
+/* -------------------------
+   Extra large components (for final expanded file)
+   Add more granular style definitions to reach >400 lines,
+   and ensure everything admin+customer needs is covered.
+   ------------------------- */
+
+/* filter chips */
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:8px 10px;border-radius:999px;background:var(--surface);border:var(--border);font-weight:700}
+
+/* pagination */
+.pagination{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:10px}
+.page-btn{padding:8px 10px;border-radius:8px;border:1px solid rgba(0,0,0,0.04);background:var(--surface)}
+
+/* file uploader */
+.uploader{padding:12px;border-radius:10px;border:1px dashed rgba(0,0,0,0.06);background:linear-gradient(180deg,#fff,#fbfff6);text-align:center}
+.uploader input[type="file"]{display:none}
+
+/* empty state */
+.empty-state{padding:26px;border-radius:10px;background:var(--surface);border:var(--border);text-align:center;color:var(--muted)}
+
+/* quick summary list */
+.summary-list{display:flex;flex-direction:column;gap:6px}
+.summary-item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:linear-gradient(180deg,#fff,#fff);border:var(--border)}
+
+/* search results */
+.search-split{display:grid;grid-template-columns:1fr 340px;gap:12px}
+@media(max-width:980px){ .search-split{grid-template-columns:1fr} }
+
+/* timeline (orders activity) */
+.timeline{display:flex;flex-direction:column;gap:8px}
+.timeline .node{display:flex;gap:10px;align-items:flex-start}
+.timeline .node .dot{width:10px;height:10px;border-radius:999px;background:var(--accent)}
+
+/* download button */
+.dl-btn{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:8px;background:linear-gradient(90deg,#fff,#f7fff6);border:var(--border)}
+
+/* tooltip */
+.tooltip{position:relative}
+.tooltip[data-tip]:hover::after{
+  content:attr(data-tip);
+  position:absolute;left:50%;transform:translateX(-50%);
+  bottom:120%;padding:8px 10px;background:rgba(0,0,0,0.8);color:#fff;border-radius:8px;font-size:13px;white-space:nowrap;
+  box-shadow:0 6px 20px rgba(0,0,0,0.4);
 }
+
+/* subtle animations */
+.fade-in{animation:fadeIn .28s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none}}
+
+/* -------------------------
+   Dark-mode quick helper button style
+   ------------------------- */
+.theme-toggle{
+  display:inline-flex;align-items:center;gap:8px;padding:6px 8px;border-radius:10px;border:var(--border);background:var(--surface);
+  cursor:pointer;font-weight:700
+}
+
+/* -------------------------
+   Final small tweaks & overrides
+   ------------------------- */
+hr{border:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,0,0,0.04),transparent);margin:12px 0;border-radius:2px}
+.small-muted{font-size:13px;color:var(--muted);}
+
+/* -------------------------
+   End of expanded style.css
+   (If you want colors/font sizes changed, I can update quickly)
+   ------------------------- */
