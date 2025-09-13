@@ -1,78 +1,93 @@
+<!-- ===========================
+     login.html  — NJ Mart (FINAL)
+     Part 1 of 3
+     Copy Part1, then Part2, then Part3 into a single file.
+     =========================== -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>NJ Mart — Login</title>
+  <meta name="description" content="NJ Mart — Login & account. Sign in with Google or Phone OTP." />
 
-  <!-- Fonts + icons -->
+  <!-- ====== Fonts & icons ====== -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <!-- Link to your global stylesheet (if using) -->
-  <link rel="stylesheet" href="style.css">
-
-  <!-- NOTE:
-       This page expects firebase-config.js to initialise firebase and expose `firebase`.
-       Also expects script-config.js to expose API_BASE and other project constants.
-       Example files already present in your repo: firebase-config.js, script-config.js
-  -->
-
+  <!-- ====== Page styles (light, responsive) ====== -->
   <style>
-    /* Inline critical login styles to keep page self-contained & accessible.
-       The rest of the site CSS should be in style.css; these are small overrides. */
     :root{
       --bg:#f6fbf8;
       --card:#ffffff;
       --muted:#6b7280;
       --accent:#2db34a;
-      --accent-2:#199338;
+      --accent-dark:#1f8a34;
+      --danger:#ef4444;
       --shadow: 0 10px 30px rgba(12,30,40,0.06);
-      --max-width:900px;
+      --max-width:960px;
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:#111;-webkit-font-smoothing:antialiased}
     a{color:inherit;text-decoration:none}
-    .wrap{max-width:var(--max-width);margin:18px auto;padding:14px}
-    header.site-header{display:flex;align-items:center;gap:12px;padding:10px 12px}
-    .brand{display:flex;align-items:center;gap:10px}
-    .brand .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px}
-    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow)}
-    .grid{display:grid;grid-template-columns:1fr 360px;gap:16px}
-    @media(max-width:880px){ .grid{grid-template-columns:1fr} .right-col{order:2} }
-    h1{margin:0;font-size:20px}
-    .muted{color:var(--muted)}
-    .signin-btn{display:flex;gap:8px;align-items:center;border:1px solid #e6eef0;padding:10px;border-radius:8px;cursor:pointer}
-    .signin-btn .icon{width:20px;height:20px}
-    .form-row{display:flex;gap:8px}
-    input[type="text"], input[type="tel"], input[type="email"], .phone-input{
-      width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef0;background:#fff;font-size:14px;
+    img{max-width:100%;display:block}
+
+    .wrap{max-width:var(--max-width);margin:20px auto;padding:18px}
+    header.site-header{
+      background:var(--card);
+      border-radius:12px;
+      box-shadow:var(--shadow);
+      padding:12px 16px;
+      display:flex;align-items:center;gap:12px;
     }
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px}
+    h1.brand-title{font-size:18px;margin:0}
+    .muted{color:var(--muted)}
+
+    /* layout */
+    .main{display:grid;grid-template-columns:420px 1fr;gap:16px;margin-top:16px}
+    @media(max-width:900px){ .main{grid-template-columns:1fr} }
+
+    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow)}
+    .muted-sm{color:var(--muted);font-size:13px}
     .btn{border:0;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}
     .btn.primary{background:var(--accent);color:#fff}
     .btn.ghost{background:#fff;border:1px solid #e6eef0}
-    .small{font-size:13px;color:var(--muted)}
-    .divider{height:1px;background:#f1f3f4;margin:12px 0;border-radius:4px}
 
-    .helper { font-size:13px; color:var(--muted); margin-top:6px; }
+    .auth-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid #e6eef0;background:#fff;cursor:pointer}
+    .auth-btn .icon{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center}
 
-    /* phone auth area */
-    .recaptcha-wrap{margin-top:6px}
-    .otp-area{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+    label{font-weight:700;font-size:13px}
+    input[type="text"], input[type="tel"], input[type="email"]{
+      padding:10px;border-radius:8px;border:1px solid #e6eef0;background:#fff;font-size:14px;
+    }
 
-    /* messages */
-    .msg{padding:8px;border-radius:8px;margin-bottom:10px}
-    .msg.info{background:#eef7ef;color:#165b20}
-    .msg.warn{background:#fff7ed;color:#7a4a00}
-    .msg.err{background:#fff0f0;color:#7a0000}
+    .small-note{font-size:12px;color:var(--muted);margin-top:8px}
 
-    /* accessibility focus */
-    button:focus, input:focus{outline:3px solid rgba(34,197,94,0.12);outline-offset:2px}
+    /* help / status box */
+    .status-box{padding:10px;border-radius:8px;background:#f5ffef;border:1px solid rgba(45,179,74,0.08);color:var(--accent-dark);font-weight:600}
 
-    /* visual footer links */
-    .footer-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
-    .legal{font-size:12px;color:var(--muted)}
+    /* center content */
+    .center{display:flex;align-items:center;justify-content:center}
+
+    /* bottom links */
+    .links-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .help{font-size:13px;color:var(--muted)}
+    .divider{height:1px;background:#f1f3f4;margin:10px 0;border-radius:4px}
   </style>
+
+  <!-- =========================
+       Firebase SDKs — MUST be included BEFORE any firebase-config or code that uses firebase.
+       Using compat libraries (so older style firebase.* calls still work).
+       ========================= -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+
+  <!-- Part 1 ends here; Part 2 contains firebase-config + helper core + UI body start -->
 </head>
 <body>
 
@@ -82,8 +97,8 @@
       <div class="brand">
         <div class="logo">NJ</div>
         <div>
-          <h1>NJ Mart</h1>
-          <div class="muted" style="font-size:12px">Login & Account</div>
+          <h1 class="brand-title">NJ Mart</h1>
+          <div class="muted" style="font-size:12px">Login & account</div>
         </div>
       </div>
 
@@ -93,514 +108,439 @@
       </div>
     </header>
 
-    <main class="grid" role="main" aria-labelledby="loginTitle">
+    <div class="main" role="main">
 
-      <!-- LEFT: sign-in forms -->
-      <section class="card left-col" aria-label="Sign in options">
-        <h2 id="loginTitle">Sign in or create account</h2>
-        <p class="small">Secure & fast. You can sign in with Google or Phone (OTP).</p>
-
-        <div id="alertArea" style="margin-top:12px"></div>
-
-        <div style="margin-top:12px">
-          <!-- Google Sign-in -->
-          <div id="googleSignIn" class="signin-btn" role="button" tabindex="0" aria-pressed="false" title="Sign in with Google">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" class="icon" />
-            <div>Sign in with Google</div>
-          </div>
+      <!-- LEFT: auth card -->
+      <aside>
+        <div class="card">
+          <h2 style="margin:0 0 8px 0">Sign in or create account</h2>
+          <div class="muted-sm">Secure & fast — sign in with Google or Phone OTP</div>
 
           <div style="height:12px"></div>
 
-          <!-- Phone OTP area -->
-          <div class="card" style="padding:12px">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div>
-                <strong>Phone OTP</strong>
-                <div class="small muted">Enter your phone number with country code (e.g. +91XXXXXXXXXX)</div>
-              </div>
+          <!-- Google sign in -->
+          <div id="btnGoogle" class="auth-btn" role="button" aria-label="Sign in with Google">
+            <div class="icon" aria-hidden>
+              <svg width="20" height="20" viewBox="0 0 488 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#EA4335" d="M..."></path>
+              </svg>
             </div>
-
-            <div style="height:10px"></div>
-
-            <div class="form-row" aria-hidden="false">
-              <input id="inputPhone" type="tel" class="phone-input" placeholder="+91xxxxxxxxxx" aria-label="Phone number" />
-              <button id="btnSendOTP" class="btn primary" aria-label="Send OTP">Send OTP</button>
-            </div>
-
-            <div class="recaptcha-wrap" id="recaptcha-container" aria-hidden="false"></div>
-
-            <div style="height:10px"></div>
-
-            <div id="otpBlock" style="display:none">
-              <div class="otp-area">
-                <input id="inputOTP" type="text" maxlength="10" placeholder="Enter OTP" aria-label="One time password" />
-                <button id="btnVerifyOTP" class="btn ghost">Verify</button>
-                <button id="btnResendOTP" class="btn" style="background:#f3f4f6">Resend</button>
-              </div>
-              <div class="helper small">If you don't receive OTP, check your phone number or try resend. Phone auth requires reCAPTCHA & Authorized domains.</div>
-            </div>
-
-            <div style="height:8px"></div>
-            <div id="phoneStatus" class="small muted"></div>
+            <div style="flex:1;font-weight:700">Sign in with Google</div>
           </div>
 
           <div class="divider"></div>
 
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-            <a href="login.html" class="small">Email sign-in (optional)</a>
-            <div class="muted small">Email/password is intentionally not enabled to keep flow simple.</div>
+          <!-- Phone OTP -->
+          <div>
+            <h3 style="margin:0 0 8px 0">Phone OTP</h3>
+            <div class="muted-sm">Enter your phone number with country code (e.g. +91xxxxxxxxxx)</div>
+
+            <div class="field" style="margin-top:10px">
+              <label for="phoneInput">Phone</label>
+              <input id="phoneInput" type="tel" placeholder="+91xxxxxxxxxx" />
+            </div>
+
+            <!-- recaptcha placeholder -->
+            <div id="recaptcha-container" class="center" style="margin:8px 0"></div>
+
+            <div style="display:flex;gap:8px">
+              <button id="btnSendOtp" class="btn primary" style="flex:1">Send OTP</button>
+              <button id="btnVerifyOtp" class="btn ghost" style="flex:1;display:none">Verify OTP</button>
+            </div>
+
+            <div id="otpRow" style="display:none;margin-top:8px">
+              <div class="field">
+                <label for="otpInput">Enter OTP</label>
+                <input id="otpInput" type="text" placeholder="6-digit code" />
+              </div>
+            </div>
+
+            <div id="authNote" class="small-note">OTP-based login requires Firebase phone auth to be configured (reCAPTCHA & authorized domain).</div>
           </div>
 
           <div class="divider"></div>
 
-          <div class="small muted">
-            Why sign in?
-            <ul>
-              <li>Save profile (address, phone) to reuse at checkout</li>
-              <li>View order history and invoices</li>
-              <li>Faster checkout with one-tap login</li>
-            </ul>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- RIGHT: account summary / quick profile -->
-      <aside class="card right-col" aria-label="Your account">
-        <h3 style="margin:0">Your account</h3>
-        <div class="muted small">You are not signed in. Use Google or Phone OTP to sign in.</div>
-
-        <div style="height:12px"></div>
-
-        <div id="accountView" style="display:block">
-          <div class="small" style="margin-bottom:8px">
-            <button id="btnCheckLocal" class="btn ghost">Check saved profile</button>
-          </div>
-
-          <div id="savedProfile" style="display:none">
-            <div style="font-weight:700" id="sp_name"></div>
-            <div class="muted small" id="sp_phone"></div>
-            <div style="height:8px"></div>
-            <div class="small">
-              <button id="btnUseProfile" class="btn primary">Use this profile</button>
-              <button id="btnClearProfile" class="btn ghost">Clear</button>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="small muted">Saved profiles are kept locally in your browser. Signing in will associate profile with your account.</div>
-
-        <div class="footer-links">
-          <a href="profile.html" class="small">Manage profile</a>
-          <a href="orders.html" class="small">My orders</a>
-          <a href="index.html" class="small">Shop</a>
+          <div class="small-note">Why sign in? Save profile (address, phone) to reuse at checkout — view orders & faster checkout.</div>
         </div>
       </aside>
 
-    </main>
+<!-- =========================
+     Firebase config and script-core (inline)
+     ========================= -->
+      <!-- RIGHT: account & quick actions -->
+      <section>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h2 style="margin:0">Create or sign in</h2>
+              <div class="muted-sm">Use Google or Phone OTP. Email/password intentionally not used to keep flow simple.</div>
+            </div>
+            <div id="statusBadge" class="status-box">Not signed in</div>
+          </div>
 
-    <footer style="max-width:var(--max-width);margin:20px auto;padding:8px">
-      <div class="legal muted">NJ Mart &middot; Built for local demo. Make sure Firebase authorized domains & reCAPTCHA configured for phone auth.</div>
-    </footer>
+          <div class="divider"></div>
 
-  </div>
+          <div id="accountArea">
+            <div id="signedOutBlock">
+              <div style="padding:12px 0">
+                <div class="help">You are not signed in. Use Google or Phone OTP to sign in.</div>
+                <div style="margin-top:12px">
+                  <button id="btnCheckLocal" class="btn ghost">Check saved profile</button>
+                </div>
+              </div>
+            </div>
 
-  <!-- Required: firebase-config.js + script-config.js (should be included in your repo) -->
-  <script src="firebase-config.js"></script>
-  <script src="script-config.js"></script>
+            <div id="signedInBlock" style="display:none">
+              <div style="display:flex;gap:12px;align-items:center">
+                <div style="width:72px;height:72px;border-radius:12px;background:#f2f6f4;display:flex;align-items:center;justify-content:center;font-weight:700" id="uiAvatar">NJ</div>
+                <div>
+                  <div id="uiName" style="font-weight:800">User</div>
+                  <div id="uiPhone" class="muted-sm">phone</div>
+                </div>
+              </div>
 
-  <!-- Load Firebase UI auth (optional) -->
-  <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth__en.js"></script>
-  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.css" />
+              <div class="divider"></div>
 
+              <div class="field">
+                <label for="uiAddress">Delivery address</label>
+                <textarea id="uiAddress" placeholder="House no, locality, city, pin..." rows="3" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef0"></textarea>
+              </div>
+
+              <div style="display:flex;gap:8px">
+                <button id="btnSaveProfileLocal" class="btn primary">Save profile</button>
+                <button id="btnSignOutNow" class="btn ghost">Sign out</button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="card">
+          <h3 style="margin:0 0 8px 0">Help</h3>
+          <div class="muted-sm">Need help logging in? Contact support or check Firebase console settings (authorized domains, phone auth, recaptcha).</div>
+        </div>
+      </section>
+
+    </div> <!-- main -->
+  </div> <!-- wrap -->
+
+  <!-- =========================
+       Inline Firebase config + NJ core script
+       NOTE: This block initializes Firebase and sets up helper functions for authentication.
+       ========================= -->
   <script>
-  /* ========== Login page client script (expanded final) ==========
-     - Works with firebase (Google & Phone OTP)
-     - Uses script-config.js to get BACKEND URL (API_BASE)
-     - Saves local profile in localStorage
-     ----------------------------------------------------------------- */
+  /******************************************************************
+   * NJ Mart — Inline Firebase + core helpers (used by login page)
+   * This file intentionally inlined so you can copy/paste single file.
+   *
+   * IMPORTANT:
+   * - Firebase SDK scripts must be loaded BEFORE this script (they are in head).
+   * - Replace BACKEND_URL if you re-deploy Apps Script backend.
+   ******************************************************************/
 
-  (function(){
-    'use strict';
+  // ---------------- CONFIG ----------------
+  const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwsG5H7er3nqwGjEbrtokssc5LeGFc9Zog2bG1s0C5bQ-P2b_1S1kisSLpOmdESH7FB/exec';
+  // Firebase config (from your project) — already filled for NJ Mart
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyCbf19k8pLFh-9UQz8sQRim2rPYTIqaEL8",
+    authDomain: "njmartonline.firebaseapp.com",
+    projectId: "njmartonline",
+    storageBucket: "njmartonline.appspot.com",
+    messagingSenderId: "594505763627",
+    appId: "1:594505763627:web:a13bd3ef40e620f9b936e"
+  };
 
-    // ---------- CONFIG ----------
-    // fallback API_BASE if script-config didn't set it
-    const API_BASE = (typeof NJ !== 'undefined' && NJ.BACKEND_URL) ? NJ.BACKEND_URL :
-                     (typeof BACKEND_URL !== 'undefined' ? BACKEND_URL : (typeof API_BASE !== 'undefined' ? API_BASE : ''));
-
-    // localStorage keys
-    const KEY_PROFILE = 'nj_profile';
-
-    // selectors
-    const $ = id => document.getElementById(id);
-    const alertArea = $('alertArea');
-    const googleSignIn = $('googleSignIn');
-    const btnSendOTP = $('btnSendOTP');
-    const btnVerifyOTP = $('btnVerifyOTP');
-    const btnResendOTP = $('btnResendOTP');
-    const inputPhone = $('inputPhone');
-    const inputOTP = $('inputOTP');
-    const otpBlock = $('otpBlock');
-    const phoneStatus = $('phoneStatus');
-
-    const btnCheckLocal = $('btnCheckLocal');
-    const savedProfileDiv = $('savedProfile');
-    const sp_name = $('sp_name');
-    const sp_phone = $('sp_phone');
-    const btnUseProfile = $('btnUseProfile');
-    const btnClearProfile = $('btnClearProfile');
-
-    // recaptcha verifier holder
-    let recaptchaVerifier = null;
-    let confirmationResult = null;
-    let lastPhoneSent = null;
-
-    // ---------- helpers ----------
-    function info(msg){ showMsg(msg,'info'); }
-    function warn(msg){ showMsg(msg,'warn'); }
-    function err(msg){ showMsg(msg,'err'); }
-    function clearMsgs(){ alertArea.innerHTML = ''; }
-
-    function showMsg(message, type='info', timeout=4000){
-      const div = document.createElement('div');
-      div.className = 'msg ' + (type==='info' ? 'info' : (type==='err' ? 'err' : 'warn'));
-      div.textContent = message;
-      alertArea.appendChild(div);
-      if(timeout>0){
-        setTimeout(()=>{ if(div && div.parentNode) div.parentNode.removeChild(div); }, timeout);
-      }
-    }
-
-    // read/write local profile
-    function saveLocalProfile(p){
-      try{
-        localStorage.setItem(KEY_PROFILE, JSON.stringify(p||{}));
-      }catch(e){ console.warn('local save failed', e); }
-    }
-
-    function loadLocalProfile(){
-      try{
-        const raw = localStorage.getItem(KEY_PROFILE);
-        if(!raw) return null;
-        return JSON.parse(raw);
-      }catch(e){ return null; }
-    }
-
-    function clearLocalProfile(){
-      localStorage.removeItem(KEY_PROFILE);
-      renderSavedProfile();
-    }
-
-    function renderSavedProfile(){
-      const p = loadLocalProfile();
-      if(p && (p.Name || p.Phone)){
-        sp_name.textContent = p.Name || 'Unnamed';
-        sp_phone.textContent = p.Phone || '';
-        savedProfileDiv.style.display = 'block';
-      } else {
-        savedProfileDiv.style.display = 'none';
-      }
-    }
-
-    // small phone normalizer
-    function normalizePhone(v){
-      if(!v) return '';
-      v = v.toString().trim();
-      // if number missing plus, assume +91 for quick convenience (optional)
-      if(!v.startsWith('+')) {
-        // do not auto-prepend for international; only for 10-digit numbers
-        const digits = v.replace(/\D/g,'');
-        if(digits.length === 10) return '+91' + digits;
-      }
-      return v;
-    }
-
-    function validPhone(v){
-      const s = normalizePhone(v);
-      if(!s) return false;
-      // minimal check: + and 10-15 digits
-      const digits = s.replace(/\D/g,'');
-      return digits.length >= 10 && digits.length <= 15;
-    }
-
-    // ---------- Firebase init check ----------
-    function ensureFirebaseReady(){
+  // ---------------- init firebase ----------------
+  (function initFirebase(){
+    try{
       if(typeof firebase === 'undefined'){
-        err('Firebase SDK not loaded — ensure firebase-config.js is included and initialised.');
-        return false;
-      }
-      if(!firebase.apps || firebase.apps.length === 0){
-        err('Firebase app not initialised — check firebase-config.js');
-        return false;
-      }
-      return true;
-    }
-
-    // ---------- Google sign-in ----------
-    async function signInWithGoogle(){
-      if(!ensureFirebaseReady()) return;
-      const provider = new firebase.auth.GoogleAuthProvider();
-      try{
-        const res = await firebase.auth().signInWithPopup(provider);
-        // res.user available
-        const user = res.user;
-        if(user){
-          // save profile locally
-          const profile = {
-            Name: user.displayName || '',
-            Phone: user.phoneNumber || '',
-            Email: user.email || '',
-            Provider: 'google',
-            UID: user.uid || ''
-          };
-          saveLocalProfile(profile);
-          info('Signed in as ' + (profile.Name || profile.Email || profile.Phone));
-          // redirect or update UI
-          setTimeout(()=>{ window.location.href = 'profile.html'; }, 900);
-        }
-      }catch(error){
-        console.error('Google sign-in failed', error);
-        err('Google sign-in failed: ' + (error.message || error.code || 'unknown'));
-      }
-    }
-
-    // ---------- Phone OTP (send / verify) ----------
-    function setupRecaptcha(){
-      // Only initialize once
-      if(recaptchaVerifier) return recaptchaVerifier;
-      try{
-        // invisible reCAPTCHA by default
-        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-          'size': 'invisible',
-          'callback': function(response) {
-            // recaptcha solved
-            console.log('recaptcha solved', response);
-          }
-        });
-        recaptchaVerifier.render().then(function(widgetId) {
-          console.log('reCAPTCHA rendered, widgetId=',widgetId);
-        });
-      }catch(e){
-        console.warn('recaptcha init failed', e);
-        err('reCAPTCHA init failed. Check Firebase config and authorized domains.');
-      }
-      return recaptchaVerifier;
-    }
-
-    async function sendOTP(){
-      clearMsgs();
-      if(!ensureFirebaseReady()) return;
-      const rawPhone = inputPhone.value || '';
-      const phone = normalizePhone(rawPhone);
-      if(!validPhone(phone)){
-        warn('Enter valid phone number (with country code).');
+        console.error('Firebase SDK not found — ensure <script> includes loaded before this block.');
         return;
       }
-      lastPhoneSent = phone;
-      phoneStatus.textContent = 'Sending OTP…';
-      setupRecaptcha();
-      try{
-        // use recaptchaVerifier
-        confirmationResult = await firebase.auth().signInWithPhoneNumber(phone, recaptchaVerifier);
-        phoneStatus.textContent = 'OTP sent to ' + phone + '.';
-        otpBlock.style.display = 'block';
-        info('OTP sent; enter verification code.');
-      }catch(err){
-        console.error('sendOTP error', err);
-        // common causes: recaptcha not configured, unauthorized domain, quota, invalid phone format
-        if(err && err.code){
-          if(err.code === 'auth/invalid-phone-number'){
-            err('Invalid phone number.');
-          } else if(err.code === 'auth/too-many-requests'){
-            err('SMS quota exceeded. Try again later.');
-          } else {
-            err('Phone OTP error: ' + (err.message || err.code));
-          }
-        } else {
-          err('Phone OTP failed: ' + (err && err.message ? err.message : 'unknown'));
-        }
-        phoneStatus.textContent = '';
-      } finally {
-        // re-enable recaptcha if you want
+      if(!firebase.apps || !firebase.apps.length){
+        firebase.initializeApp(FIREBASE_CONFIG);
+        console.log('Firebase initialized for NJ Mart.');
       }
+    }catch(err){
+      console.error('Firebase init error:', err);
     }
-
-    async function verifyOTP(){
-      clearMsgs();
-      const code = (inputOTP.value || '').trim();
-      if(!confirmationResult){
-        warn('OTP not requested yet. Press "Send OTP" first.');
-        return;
-      }
-      if(!code){
-        warn('Enter OTP code.');
-        return;
-      }
-      try{
-        const res = await confirmationResult.confirm(code);
-        const user = res.user;
-        if(user){
-          // Save profile locally (we may not have displayName)
-          const profile = {
-            Name: user.displayName || '',
-            Phone: lastPhoneSent || (user.phoneNumber || ''),
-            Email: user.email || '',
-            Provider: 'phone',
-            UID: user.uid || ''
-          };
-          saveLocalProfile(profile);
-          info('Phone verified. Signed in.');
-          setTimeout(()=>{ window.location.href = 'profile.html'; }, 900);
-        }
-      }catch(err){
-        console.error('verifyOTP failed', err);
-        err('OTP verify failed: ' + (err.message || err.code || 'invalid code'));
-      }
-    }
-
-    async function resendOTP(){
-      // simple resend: re-render recaptcha and send again
-      if(!lastPhoneSent){
-        warn('No previous phone found — enter phone and press Send OTP first.');
-        return;
-      }
-      inputOTP.value = '';
-      setupRecaptcha();
-      try{
-        confirmationResult = await firebase.auth().signInWithPhoneNumber(lastPhoneSent, recaptchaVerifier);
-        info('OTP resent to ' + lastPhoneSent);
-      }catch(e){
-        console.error('resend failed', e);
-        err('Resend failed: ' + (e.message || e.code));
-      }
-    }
-
-    // ---------- On load: wire UI ----------
-    function wireUI(){
-      // Google click
-      googleSignIn.addEventListener('click', signInWithGoogle);
-      googleSignIn.addEventListener('keypress', function(e){
-        if(e.key === 'Enter' || e.key === ' ') signInWithGoogle();
-      });
-
-      btnSendOTP.addEventListener('click', sendOTP);
-      btnVerifyOTP.addEventListener('click', verifyOTP);
-      btnResendOTP.addEventListener('click', resendOTP);
-
-      btnCheckLocal.addEventListener('click', renderSavedProfile);
-      btnUseProfile.addEventListener('click', function(){
-        const p = loadLocalProfile();
-        if(!p) { warn('No saved profile'); return; }
-        // if profile contains UID or email, optionally try to log the user in server-side
-        info('Profile loaded: ' + (p.Name || p.Phone || p.Email));
-        // redirect to checkout/profile
-        setTimeout(()=> window.location.href = 'profile.html', 600);
-      });
-      btnClearProfile.addEventListener('click', function(){
-        clearLocalProfile();
-        info('Local profile cleared');
-      });
-    }
-
-    // ---------- utility: check auth state ----------
-    function watchAuthState(){
-      if(!ensureFirebaseReady()) return;
-      firebase.auth().onAuthStateChanged(function(user){
-        if(user){
-          console.log('Auth state changed: signed in as', user.uid);
-          // optionally save local profile
-          const p = {
-            Name: user.displayName || '',
-            Email: user.email || '',
-            Phone: user.phoneNumber || '',
-            UID: user.uid
-          };
-          saveLocalProfile(p);
-        } else {
-          console.log('Auth state: signed out');
-        }
-        renderSavedProfile();
-      });
-    }
-
-    // ---------- init ----------
-    function init(){
-      // render saved
-      renderSavedProfile();
-      // init recaptcha only when needed (on send)
-      // wire UI
-      wireUI();
-      // watch firebase auth
-      try{
-        if(typeof firebase !== 'undefined' && firebase && firebase.auth) {
-          watchAuthState();
-        } else {
-          // firebase not ready yet — show a gentle info
-          console.warn('firebase not ready on login page; ensure firebase-config.js loads before this file.');
-        }
-      }catch(e){ console.warn('auth watch init error', e); }
-    }
-
-    // run init after DOM ready
-    document.addEventListener('DOMContentLoaded', init);
-
-    // expose small debug helpers
-    window._nj_login = {
-      saveLocalProfile,
-      loadLocalProfile,
-      clearLocalProfile,
-      sendOTP,
-      verifyOTP
-    };
-
   })();
-  </script>
-<!-- Extra notes, analytics and meta helpers — keep at bottom of file -->
 
-  <!-- Optional: small inline script to show helpful debug information -->
-  <script>
-    (function(){
-      // small debug log; remove in production if not needed
-      try{
-        console.log('NJ Mart login page loaded');
-        if(typeof NJ !== 'undefined') console.log('NJ config:', NJ);
-        if(typeof BACKEND_URL !== 'undefined') console.log('BACKEND_URL:', BACKEND_URL);
-      }catch(e){}
-    })();
-  </script>
+  // short handles
+  const _auth = (typeof firebase !== 'undefined' && firebase.auth) ? firebase.auth() : null;
+  const _db = (typeof firebase !== 'undefined' && firebase.firestore) ? firebase.firestore() : null;
 
-  <!-- Accessibility: focus management (helps keyboard users) -->
-  <script>
-  (function(){
-    // focus the main title for screen readers on load
-    document.addEventListener('DOMContentLoaded', function(){
-      var el = document.getElementById('loginTitle');
-      if(el && el.focus) {
-        el.setAttribute('tabindex','-1');
-        el.focus();
-      }
-    });
-  })();
-  </script>
+  // ---------------- local keys ----------------
+  const KEY_PROFILE = 'nj_profile';
 
-  <!-- SEO + Social meta (kept minimal to avoid repetition) -->
-  <meta name="description" content="NJ Mart — quick local grocery. Sign in with Google or Phone OTP.">
-  <meta name="robots" content="index,follow">
+  // small helper
+  function el(id){ return document.getElementById(id); }
+  function showStatus(text, color){ const b = el('statusBadge'); if(!b) return; b.textContent = text; if(color) b.style.color = color; }
 
-  <!-- Optional structured data (schema) -->
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"WebPage",
-    "name":"NJ Mart — Login",
-    "url": window.location.href || "https://njmart.netlify.app/login.html",
-    "description":"Sign in to NJ Mart — Google or Phone OTP for quick checkout."
+  // ------- local profile helpers --------
+  function saveLocalProfile(profile){
+    try{ localStorage.setItem(KEY_PROFILE, JSON.stringify(profile||{})); }catch(e){}
   }
+  function loadLocalProfile(){
+    try{ const raw = localStorage.getItem(KEY_PROFILE); return raw ? JSON.parse(raw) : null; }catch(e){ return null; }
+  }
+  function clearLocalProfile(){
+    try{ localStorage.removeItem(KEY_PROFILE); }catch(e){} 
+    renderSignedOut();
+  }
+
+  // ---------------- UI helpers ----------------
+  function renderSignedOut(){
+    el('signedInBlock').style.display = 'none';
+    el('signedOutBlock').style.display = 'block';
+    showStatus('Not signed in',''); 
+  }
+  function renderSignedIn(profile){
+    el('signedOutBlock').style.display = 'none';
+    el('signedInBlock').style.display = 'block';
+    el('uiName').textContent = profile.Name || 'User';
+    el('uiPhone').textContent = profile.Phone || '';
+    el('uiAddress').value = profile.Address || '';
+    el('uiAvatar').textContent = ( (profile.Name||'').split(' ').slice(0,2).map(s=>s[0]).join('').toUpperCase() ) || 'NJ';
+    showStatus('Signed in','var(--accent-dark)');
+  }
+
+  // ---------------- API helpers (backend) ----------------
+  async function apiGet(params){
+    const url = new URL(BACKEND_URL);
+    Object.keys(params||{}).forEach(k=>url.searchParams.set(k, params[k]));
+    try{
+      const res = await fetch(url.toString(), { method:'GET', cache:'no-store' });
+      return await res.json();
+    }catch(err){
+      return { ok:false, error: String(err) };
+    }
+  }
+  async function apiPost(body){
+    try{
+      const res = await fetch(BACKEND_URL, {
+        method:'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify(body)
+      });
+      return await res.json();
+    }catch(err){
+      return { ok:false, error: String(err) };
+    }
+  }
+
+  // ---------------- Auth helpers ----------------
+  // Google sign-in popup
+  async function signInWithGoogle(){
+    if(!_auth){ alert('Firebase Auth not ready'); return; }
+    const provider = new firebase.auth.GoogleAuthProvider();
+    try{
+      const result = await _auth.signInWithPopup(provider);
+      const user = result.user;
+      // create minimal profile
+      const profile = {
+        Name: user.displayName || '',
+        Phone: user.phoneNumber || '',
+        Email: user.email || '',
+        Address: '',
+        uid: user.uid || ''
+      };
+      saveLocalProfile(profile);
+      renderSignedIn(profile);
+      // optionally call backend to create customer
+      await apiPost({ action:'addcustomer', Name: profile.Name, Phone: profile.Phone, Email: profile.Email, Address: profile.Address });
+      return profile;
+    }catch(err){
+      console.error('Google sign-in failed', err);
+      alert('Google sign-in failed: ' + (err && err.message ? err.message : String(err)));
+    }
+  }
+
+  // Part 2 ends here — Part 3 contains Phone OTP flow and event wiring + final closure
+  </script>
+<!-- =========================
+     Part 3 of 3
+     Phone OTP flow, event wiring, and final logic
+     ========================= -->
+  <script>
+  /*****************************************************************
+   * Phone OTP flow & page wiring
+   *****************************************************************/
+
+  // reCAPTCHA verifier placeholder (invisible)
+  let recaptchaVerifier = null;
+  let confirmationResult = null;
+
+  function setupRecaptcha(){
+    if(!window.firebase || !firebase.auth) {
+      console.warn('Firebase not available for reCAPTCHA setup.');
+      return;
+    }
+    // Use invisible reCAPTCHA bound to #recaptcha-container
+    try{
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible',
+        callback: function(response){
+          // reCAPTCHA solved — proceed with sign-in
+          console.log('reCAPTCHA solved');
+        }
+      });
+      recaptchaVerifier.render().then(widgetId=>{
+        console.log('reCAPTCHA rendered, widget id:', widgetId);
+      });
+    }catch(err){
+      console.error('recaptcha init error', err);
+    }
+  }
+
+  // send OTP
+  async function sendOtpForPhone(phone){
+    if(!_auth) { alert('Auth not ready'); return; }
+    if(!recaptchaVerifier) setupRecaptcha();
+    try{
+      el('btnSendOtp').disabled = true;
+      el('btnSendOtp').textContent = 'Sending…';
+      confirmationResult = await _auth.signInWithPhoneNumber(phone, recaptchaVerifier);
+      // show OTP UI
+      el('otpRow').style.display = 'block';
+      el('btnVerifyOtp').style.display = 'inline-block';
+      showStatus('OTP sent — check SMS','var(--accent-dark)');
+    }catch(err){
+      console.error('sendOtp error', err);
+      alert('Failed to send OTP: ' + (err && err.message ? err.message : String(err)));
+      // reset recaptcha if needed
+      try{ recaptchaVerifier.clear(); }catch(e){}
+    }finally{
+      el('btnSendOtp').disabled = false;
+      el('btnSendOtp').textContent = 'Send OTP';
+    }
+  }
+
+  // verify OTP
+  async function verifyOtp(code){
+    if(!confirmationResult){
+      alert('No OTP flow started. Click Send OTP first.');
+      return;
+    }
+    try{
+      el('btnVerifyOtp').disabled = true;
+      el('btnVerifyOtp').textContent = 'Verifying…';
+      const res = await confirmationResult.confirm(code);
+      const user = res.user;
+      const profile = {
+        Name: user.displayName || '',
+        Phone: user.phoneNumber || el('phoneInput').value.trim(),
+        Email: user.email || '',
+        Address: ''
+      };
+      saveLocalProfile(profile);
+      renderSignedIn(profile);
+      // call backend to append customer row
+      await apiPost({ action:'addcustomer', Name: profile.Name, Phone: profile.Phone, Email: profile.Email, Address: profile.Address });
+      alert('Phone verified — signed in');
+    }catch(err){
+      console.error('OTP verify failed', err);
+      alert('OTP verify failed: ' + (err && err.message ? err.message : String(err)));
+    }finally{
+      el('btnVerifyOtp').disabled = false;
+      el('btnVerifyOtp').textContent = 'Verify OTP';
+    }
+  }
+
+  // sign out
+  async function signOutNow(){
+    try{
+      if(_auth) await _auth.signOut();
+    }catch(e){}
+    clearLocalProfile();
+    alert('Signed out');
+  }
+
+  // save profile to backend (manual)
+  async function saveProfileToBackend(){
+    const profile = loadLocalProfile();
+    if(!profile || !profile.Phone) { alert('No profile to save'); return; }
+    const res = await apiPost({ action:'addcustomer', Name: profile.Name, Phone: profile.Phone, Email: profile.Email||'', Address: el('uiAddress').value || profile.Address || '' });
+    if(res && res.ok){
+      showStatus('Profile saved to backend');
+      // update local
+      profile.Address = el('uiAddress').value || profile.Address || '';
+      saveLocalProfile(profile);
+    }else{
+      alert('Save failed: ' + (res && res.error ? res.error : 'unknown'));
+    }
+  }
+
+  // ---------------- Init & event wiring ----------------
+  async function initPage(){
+    // Setup recaptcha (if firebase ready)
+    try{ setupRecaptcha(); }catch(e){ console.warn(e); }
+
+    // Wire events
+    el('btnGoogle').addEventListener('click', async ()=>{
+      el('btnGoogle').setAttribute('disabled','disabled');
+      await signInWithGoogle();
+      el('btnGoogle').removeAttribute('disabled');
+    });
+
+    el('btnSendOtp').addEventListener('click', async ()=>{
+      const phone = el('phoneInput').value.trim();
+      if(!phone){ alert('Enter phone number'); el('phoneInput').focus(); return; }
+      // basic validation
+      const digits = phone.replace(/\D/g,'');
+      if(digits.length < 10){ alert('Enter valid phone'); el('phoneInput').focus(); return; }
+      await sendOtpForPhone(phone);
+    });
+
+    el('btnVerifyOtp').addEventListener('click', async ()=>{
+      const code = el('otpInput').value.trim();
+      if(!code){ alert('Enter OTP'); el('otpInput').focus(); return; }
+      await verifyOtp(code);
+    });
+
+    el('btnCheckLocal').addEventListener('click', ()=>{
+      const p = loadLocalProfile();
+      if(!p) return alert('No saved profile');
+      alert('Saved: ' + (p.Name||'') + ' — ' + (p.Phone||''));
+    });
+
+    el('btnSignOutNow').addEventListener('click', signOutNow);
+    el('btnSaveProfileLocal').addEventListener('click', saveProfileToBackend);
+
+    // On load: if local profile exists, render signed in
+    const p = loadLocalProfile();
+    if(p && p.Phone){
+      renderSignedIn(p);
+    }else{
+      renderSignedOut();
+    }
+
+    // If firebase auth state changes (someone signed in via google popup), update UI
+    if(_auth){
+      _auth.onAuthStateChanged(async (user)=>{
+        if(user){
+          const profile = {
+            Name: user.displayName || '',
+            Phone: user.phoneNumber || '',
+            Email: user.email || '',
+            Address: ''
+          };
+          saveLocalProfile(profile);
+          renderSignedIn(profile);
+        }else{
+          // signed out
+        }
+      });
+    }
+
+    console.log('NJ Mart login page loaded. BACKEND URL:', BACKEND_URL);
+  }
+
+  document.addEventListener('DOMContentLoaded', initPage);
   </script>
 
-  <!-- End of login.html -->
 </body>
-</html>
+</html>  
