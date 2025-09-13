@@ -1,203 +1,395 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>NJ Mart - Reports</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NJ Mart — Reports</title>
+
+  <!-- fonts & icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- link site stylesheet -->
   <link rel="stylesheet" href="style.css">
 
+  <!-- small inline helpers (keeps important layout stable before CSS loads) -->
   <style>
-    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f6f6f6; }
-    header { background:#2b7a78; color:#fff; padding:15px; text-align:center; }
-    header h1 { margin:0; font-size:24px; }
-    nav { display:flex; justify-content:center; background:#3aafa9; }
-    nav a {
-      padding:12px 18px; color:#fff; text-decoration:none; font-weight:bold;
-    }
-    nav a:hover { background:#2b7a78; }
-
-    .container { max-width:1100px; margin:20px auto; padding:20px; background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-    h2 { margin-top:0; color:#2b7a78; }
-
-    table { width:100%; border-collapse:collapse; margin-top:15px; }
-    th, td { border:1px solid #ddd; padding:8px; text-align:left; }
-    th { background:#def2f1; }
-
-    .filters { display:flex; gap:12px; flex-wrap:wrap; margin-top:15px; }
-    .filters input, .filters select {
-      padding:8px; border:1px solid #ccc; border-radius:6px;
-    }
-    .filters button {
-      background:#3aafa9; color:#fff; border:none; padding:8px 14px; border-radius:6px; cursor:pointer;
-    }
-    .filters button:hover { background:#2b7a78; }
-
-    .chart-box { margin-top:25px; background:#fafafa; border:1px solid #eee; padding:20px; border-radius:10px; }
-    canvas { width:100% !important; height:400px !important; }
-
-    .summary-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px; margin-top:20px; }
-    .card { background:#f9ffff; border:1px solid #e1f1f1; padding:15px; border-radius:10px; text-align:center; box-shadow:0 2px 6px rgba(0,0,0,0.06); }
-    .card h3 { margin:0; font-size:18px; color:#2b7a78; }
-    .card p { margin:8px 0 0; font-size:16px; font-weight:bold; }
-
-    footer { margin-top:20px; background:#17252a; color:#fff; padding:12px; text-align:center; }
+    body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; background: #f6fbf8; color: #111; margin:0; }
+    .wrap { max-width: 1100px; margin: 18px auto; padding: 14px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>📊 NJ Mart - Reports</h1>
-</header>
+  <div class="wrap">
 
-<nav>
-  <a href="admin.html">Admin</a>
-  <a href="reports.html">Reports</a>
-  <a href="index.html">Website</a>
-</nav>
+    <div class="topbar">
+      <div style="display:flex;gap:12px;align-items:center">
+        <div class="logo-small">NJ</div>
+        <div>
+          <h1 class="page-title">Reports & Analytics</h1>
+          <div class="muted small">Sales, orders, revenue and stock reports — live from your sheets</div>
+        </div>
+      </div>
 
-<div class="container">
-  <h2>Reports Dashboard</h2>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="btnBack" class="btn ghost">← Back</button>
+        <button id="btnExportReports" class="btn ghost"><i class="fa fa-file-csv"></i> Export CSV</button>
+        <div id="adminBadge" class="pill hidden">Admin</div>
+      </div>
+    </div>
 
-  <!-- SUMMARY CARDS -->
-  <div class="summary-cards">
-    <div class="card"><h3>Total Orders</h3><p id="totalOrders">0</p></div>
-    <div class="card"><h3>Total Revenue</h3><p id="totalRevenue">₹0</p></div>
-    <div class="card"><h3>Total Customers</h3><p id="totalCustomers">0</p></div>
-    <div class="card"><h3>Coupons Used</h3><p id="totalCoupons">0</p></div>
-  </div>
+    <!-- filters -->
+    <section class="panel">
+      <div class="filter-row">
+        <div class="filter-col">
+          <label>From</label>
+          <input id="fromDate" type="date">
+        </div>
+        <div class="filter-col">
+          <label>To</label>
+          <input id="toDate" type="date">
+        </div>
+        <div class="filter-col">
+          <label>Report type</label>
+          <select id="reportType">
+            <option value="sales">Sales (revenue)</option>
+            <option value="orders">Orders count</option>
+            <option value="products">Top products</option>
+            <option value="delivery">Delivery performance</option>
+            <option value="customers">Customer growth</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:8px;align-items:end">
+          <button id="btnGenerate" class="btn primary">Generate</button>
+          <button id="btnClearFilters" class="btn ghost">Clear</button>
+        </div>
+      </div>
+    </section>
 
-  <!-- FILTERS -->
-  <div class="filters">
-    <input type="date" id="fromDate">
-    <input type="date" id="toDate">
-    <select id="reportType">
-      <option value="">All Types</option>
-      <option value="order">Orders</option>
-      <option value="revenue">Revenue</option>
-      <option value="customer">Customers</option>
-    </select>
-    <button onclick="applyFilters()">Apply Filters</button>
-    <button onclick="resetFilters()">Reset</button>
-  </div>
+    <!-- quick metrics -->
+    <section class="metrics-row">
+      <div class="metric">
+        <div class="metric-value" id="metricRevenue">₹0</div>
+        <div class="metric-label">Revenue</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" id="metricOrders">0</div>
+        <div class="metric-label">Orders</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" id="metricAOV">₹0</div>
+        <div class="metric-label">Avg. order value</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" id="metricCustomers">0</div>
+        <div class="metric-label">New customers</div>
+      </div>
+    </section>
 
-  <!-- TABLE -->
-  <table id="reportTable">
-    <thead>
-      <tr><th>Report ID</th><th>Type</th><th>Value</th><th>Date</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+    <!-- chart + table area -->
+    <section class="grid-2">
+      <div class="panel">
+        <h2>Time series</h2>
+        <div id="chartArea" style="min-height:260px;display:flex;align-items:center;justify-content:center;color:var(--muted)">Generate a report to view charts</div>
 
-  <!-- CHARTS -->
-  <div class="chart-box">
-    <canvas id="ordersChart"></canvas>
-  </div>
-  <div class="chart-box">
-    <canvas id="revenueChart"></canvas>
-  </div>
-</div>
+        <div style="margin-top:12px">
+          <label class="small muted">Granularity</label>
+          <div style="display:flex;gap:8px;margin-top:6px">
+            <button class="btn ghost small" data-gran="daily">Daily</button>
+            <button class="btn ghost small" data-gran="weekly">Weekly</button>
+            <button class="btn ghost small" data-gran="monthly">Monthly</button>
+          </div>
+        </div>
+      </div>
 
-<footer>
-  <p>© 2025 NJ Mart Reports Dashboard</p>
-</footer>
+      <aside class="panel">
+        <h3>Top items / quick breakdown</h3>
+        <div id="breakdownList">
+          <div class="muted small">Generate a report to view breakdown</div>
+        </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="script-config.js"></script>
-<script>
-  let REPORTS = [];
+        <div style="margin-top:12px">
+          <h3>Quick actions</h3>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button id="btnRefreshReports" class="btn ghost small">Refresh</button>
+            <button id="btnSendSummary" class="btn primary small">Send summary (SMS/Email)</button>
+          </div>
+        </div>
+      </aside>
+    </section>
 
-  // fetch reports
-  async function loadReports(){
-    const res = await fetch(BACKEND_URL+"?action=reports");
-    const data = await res.json();
-    REPORTS = data.reports || [];
-    renderReports(REPORTS);
-    updateSummary(REPORTS);
-    drawCharts(REPORTS);
+    <!-- data table -->
+    <section class="panel" style="margin-top:12px">
+      <h2>Report details</h2>
+      <div style="overflow:auto">
+        <table id="reportsTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Subtotal</th>
+              <th>Delivery</th>
+              <th>Discount</th>
+              <th>Final</th>
+              <th>Payment</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="10" class="muted small">No report loaded</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div style="height:28px"></div>
+
+  </div> <!-- wrap -->
+
+  <!-- libs (firebase first) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+  <!-- your config and helpers -->
+  <script src="firebase-config.js"></script>
+  <script src="script-config.js"></script>
+  <script src="app.js"></script>
+
+  <!-- Charting: lightweight — uses Chart.js CDN (works offline if you already have) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+  /* Reports page logic
+     - Relies on script-config.js providing API_BASE, apiGet(), apiPost()
+     - If not present, fallback to window.API_BASE
+     - This script builds report queries, draws chart and fills table
+  */
+
+  const byId = id => document.getElementById(id);
+  const tableBody = document.querySelector('#reportsTable tbody');
+  let activeChart = null;
+
+  function formatINR(v){ return '₹' + (Number(v||0)).toFixed(0); }
+  function humanDate(d){ const dt = new Date(d); if(isNaN(dt)) return d; return dt.toLocaleString(); }
+
+  async function fetchOrdersInRange(from, to){
+    // backend should return orders list; we filter by Order Date or Date field
+    const res = await (typeof apiGet === 'function' ? apiGet({ action: 'orders' }) : fetch(window.API_BASE + '?action=orders').then(r=>r.json()));
+    if(!res || !res.ok) return { ok:false, error: res && res.error ? res.error : 'Failed to load' };
+    let list = res.orders || [];
+    // Normalize date
+    list = list.map(o => {
+      const d = o['Order Date'] || o.Date || o.date || '';
+      return Object.assign({}, o, { __date: new Date(d) });
+    }).filter(o => !isNaN(o.__date));
+    if(from) list = list.filter(o => o.__date >= new Date(from));
+    if(to) list = list.filter(o => o.__date <= new Date(new Date(to).setHours(23,59,59,999)));
+    // sort by date asc
+    list.sort((a,b)=> a.__date - b.__date);
+    return { ok:true, orders: list };
   }
 
-  function renderReports(reports){
-    const tb = document.querySelector("#reportTable tbody");
-    tb.innerHTML="";
-    reports.forEach(r=>{
-      tb.innerHTML+=`<tr>
-        <td>${r["Report ID"]}</td>
-        <td>${r.Type}</td>
-        <td>${r.Value}</td>
-        <td>${r.Date}</td>
-      </tr>`;
+  function aggregateByDay(list){
+    const map = {};
+    list.forEach(o=>{
+      const day = o.__date.toISOString().slice(0,10);
+      if(!map[day]) map[day] = { revenue:0, orders:0 };
+      const val = Number(o['Final Amount']||o['Total Amount']||0);
+      map[day].revenue += val;
+      map[day].orders += 1;
+    });
+    const days = Object.keys(map).sort();
+    return days.map(d => ({ date:d, revenue: map[d].revenue, orders: map[d].orders }));
+  }
+
+  function drawTimeSeries(data, type='sales'){
+    const ctx = document.createElement('canvas');
+    const area = document.getElementById('chartArea');
+    area.innerHTML = '';
+    area.appendChild(ctx);
+
+    const labels = data.map(r => r.date);
+    const dataset = type === 'orders' ? data.map(r => r.orders) : data.map(r => r.revenue);
+    const label = type === 'orders' ? 'Orders' : 'Revenue (₹)';
+
+    if(activeChart) activeChart.destroy();
+    activeChart = new Chart(ctx.getContext('2d'), {
+      type: 'line',
+      data: { labels, datasets: [{ label, data: dataset, fill:false, tension:0.25, borderWidth:2 }] },
+      options: { responsive:true, plugins:{legend:{display:false}} }
     });
   }
 
-  function updateSummary(reports){
-    let orders=0, revenue=0, customers=0, coupons=0;
-    reports.forEach(r=>{
-      if(r.Type==="order"){ orders++; revenue+=Number(r.Value||0); }
-      if(r.Type==="customer") customers++;
-      if(r.Type==="coupon") coupons++;
+  function fillBreakdown(orders){
+    const area = byId('breakdownList');
+    area.innerHTML = '';
+    if(!orders || orders.length === 0){ area.innerHTML = '<div class="muted small">No data</div>'; return; }
+
+    // compute top products (assumes Items stored as JSON array in 'Item' or 'Items' field)
+    const counts = {};
+    orders.forEach(o=>{
+      const itemsRaw = o.Item || o.Items || o.Items || '[]';
+      let items = [];
+      try{ items = typeof itemsRaw === 'string' ? JSON.parse(itemsRaw) : itemsRaw; }catch(e){ items=[]; }
+      items.forEach(it=>{
+        const pid = it.id || it.ProductID || it.id || it.productId || it.Product || it.name || it.Name;
+        const name = it.name || it.Name || pid || 'Unknown';
+        const qty = Number(it.qty || it.quantity || it.Quantity || 1);
+        if(!counts[name]) counts[name] = 0;
+        counts[name] += qty;
+      });
     });
-    document.getElementById("totalOrders").innerText=orders;
-    document.getElementById("totalRevenue").innerText="₹"+revenue.toFixed(0);
-    document.getElementById("totalCustomers").innerText=customers;
-    document.getElementById("totalCoupons").innerText=coupons;
+    const top = Object.keys(counts).map(k=>({ name:k, qty:counts[k] })).sort((a,b)=>b.qty-a.qty).slice(0,8);
+    const ul = document.createElement('div');
+    top.forEach(t=>{
+      const row = document.createElement('div');
+      row.style.display = 'flex'; row.style.justifyContent='space-between'; row.style.padding='6px 0';
+      row.innerHTML = `<div>${escapeHtml(t.name)}</div><div class="muted small">x${t.qty}</div>`;
+      ul.appendChild(row);
+    });
+    if(top.length===0) ul.innerHTML = '<div class="muted small">No product items found</div>';
+    area.appendChild(ul);
   }
 
-  function applyFilters(){
-    const from=document.getElementById("fromDate").value;
-    const to=document.getElementById("toDate").value;
-    const type=document.getElementById("reportType").value;
-    let filtered=REPORTS;
-    if(from){ filtered=filtered.filter(r=> new Date(r.Date)>=new Date(from)); }
-    if(to){ filtered=filtered.filter(r=> new Date(r.Date)<=new Date(to)); }
-    if(type){ filtered=filtered.filter(r=> r.Type===type); }
-    renderReports(filtered);
-    updateSummary(filtered);
-    drawCharts(filtered);
-  }
+  function escapeHtml(s){ if(!s) return ''; return (''+s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
 
-  function resetFilters(){
-    document.getElementById("fromDate").value="";
-    document.getElementById("toDate").value="";
-    document.getElementById("reportType").value="";
-    renderReports(REPORTS);
-    updateSummary(REPORTS);
-    drawCharts(REPORTS);
-  }
+  function fillTable(orders){
+    tableBody.innerHTML = '';
+    if(!orders || orders.length === 0){ tableBody.innerHTML = '<tr><td colspan="10" class="muted small">No orders in this period</td></tr>'; return; }
+    orders.forEach(o=>{
+      const date = humanDate(o.__date);
+      const items = o.Item || o.Items || '[]';
+      const itemsDisplay = (()=> {
+        try{
+          const parsed = typeof items === 'string' ? JSON.parse(items) : items;
+          if(Array.isArray(parsed)) return parsed.map(i => (i.name || i.Name || i.Product || i.ProductID || i.id) + ' x' + (i.qty||i.quantity||1)).join('<br>');
+          return escapeHtml(''+items);
+        }catch(e){ return escapeHtml(''+items); }
+      })();
 
-  // charts
-  let ordersChart, revenueChart;
-  function drawCharts(reports){
-    const dailyOrders={};
-    const dailyRevenue={};
-    reports.forEach(r=>{
-      const d=new Date(r.Date).toLocaleDateString();
-      if(r.Type==="order"){
-        dailyOrders[d]=(dailyOrders[d]||0)+1;
-        dailyRevenue[d]=(dailyRevenue[d]||0)+Number(r.Value||0);
-      }
-    });
-
-    const labels=Object.keys(dailyOrders);
-    const orders=Object.values(dailyOrders);
-    const revenues=Object.values(dailyRevenue);
-
-    if(ordersChart) ordersChart.destroy();
-    if(revenueChart) revenueChart.destroy();
-
-    ordersChart=new Chart(document.getElementById("ordersChart"),{
-      type:"bar",
-      data:{ labels:labels, datasets:[{label:"Orders", data:orders, backgroundColor:"#2b7a78"}]},
-      options:{ responsive:true, plugins:{legend:{display:false}} }
-    });
-
-    revenueChart=new Chart(document.getElementById("revenueChart"),{
-      type:"line",
-      data:{ labels:labels, datasets:[{label:"Revenue", data:revenues, borderColor:"#3aafa9", backgroundColor:"rgba(58,175,169,0.2)"}]},
-      options:{ responsive:true }
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${escapeHtml(date)}</td>
+        <td class="nowrap">${escapeHtml(o.OrderID || o.orderId || '')}</td>
+        <td class="nowrap">${escapeHtml(o.CustomerID || o.Phone || o.Email || '')}</td>
+        <td>${itemsDisplay}</td>
+        <td>${formatINR(o['Total Amount']||o.Subtotal||0)}</td>
+        <td>${formatINR(o['Delivery Charge']||o.Delivery||0)}</td>
+        <td>${formatINR(o['Discount']||0)}</td>
+        <td>${formatINR(o['Final Amount']||o.Total||0)}</td>
+        <td>${escapeHtml(o['Payment Method']||o.Payment||'')}</td>
+        <td>${escapeHtml(o.Status||'')}</td>
+      `;
+      tableBody.appendChild(row);
     });
   }
 
-  window.onload=loadReports;
-</script>
+  async function generateReport(){
+    byId('btnGenerate').disabled = true;
+    const from = byId('fromDate').value;
+    const to   = byId('toDate').value;
+    const type = byId('reportType').value;
+
+    const res = await fetchOrdersInRange(from, to);
+    byId('btnGenerate').disabled = false;
+    if(!res.ok){ alert('Failed to load orders: ' + (res.error || 'unknown')); return; }
+    const orders = res.orders;
+
+    // compute metrics
+    const revenue = orders.reduce((s,o) => s + Number(o['Final Amount']||o['Total Amount']||0), 0);
+    const ordersCount = orders.length;
+    const customersUnique = new Set(orders.map(o => o.CustomerID || o.Phone || o.Email)).size;
+    const aov = ordersCount ? Math.round(revenue / ordersCount) : 0;
+
+    byId('metricRevenue').textContent = formatINR(revenue);
+    byId('metricOrders').textContent = ordersCount;
+    byId('metricAOV').textContent = formatINR(aov);
+    byId('metricCustomers').textContent = customersUnique;
+
+    // aggregate by day — simple example
+    const agg = aggregateByDay(orders);
+    if(type === 'products'){
+      // for product report we can draw top products as bar data
+      drawProductsBar(orders);
+    } else {
+      drawTimeSeries(agg, type === 'orders' ? 'orders' : 'sales');
+    }
+
+    fillBreakdown(orders);
+    fillTable(orders);
+  }
+
+  function drawProductsBar(orders){
+    // compute product totals
+    const counts = {};
+    orders.forEach(o=>{
+      const itemsRaw = o.Item || o.Items || '[]';
+      let items = [];
+      try{ items = typeof itemsRaw === 'string' ? JSON.parse(itemsRaw) : itemsRaw; }catch(e){ items=[]; }
+      items.forEach(it=>{
+        const name = it.name || it.Name || it.Product || it.ProductID || 'Unknown';
+        counts[name] = (counts[name] || 0) + (Number(it.qty || it.quantity || 1));
+      });
+    });
+    const arr = Object.keys(counts).map(k => ({ name:k, qty:counts[k] })).sort((a,b)=>b.qty - a.qty).slice(0,12);
+    const ctx = document.createElement('canvas');
+    const area = byId('chartArea'); area.innerHTML=''; area.appendChild(ctx);
+
+    if(activeChart) activeChart.destroy();
+    activeChart = new Chart(ctx.getContext('2d'), {
+      type: 'bar',
+      data: { labels: arr.map(a=>a.name), datasets: [{ label:'Qty', data: arr.map(a=>a.qty) }] },
+      options: { indexAxis:'y', plugins:{legend:{display:false}}, responsive:true }
+    });
+  }
+
+  // export table to CSV
+  function tableToCSV(){
+    const rows = [];
+    const header = Array.from(document.querySelectorAll('#reportsTable thead th')).map(th => th.textContent.trim());
+    rows.push(header.join(','));
+    Array.from(tableBody.querySelectorAll('tr')).forEach(tr=>{
+      const cols = Array.from(tr.querySelectorAll('td')).map(td => '"' + (td.innerText.replace(/"/g,'""')) + '"');
+      rows.push(cols.join(','));
+    });
+    return rows.join('\n');
+  }
+
+  // helpers to set default date range for last 7 days
+  function setDefaultDates(){
+    const now = new Date();
+    const to = new Date(now);
+    const from = new Date(now); from.setDate(now.getDate() - 7);
+    byId('fromDate').value = from.toISOString().slice(0,10);
+    byId('toDate').value = to.toISOString().slice(0,10);
+  }
+
+  // UI wiring
+  document.addEventListener('DOMContentLoaded', ()=>{
+    setDefaultDates();
+    byId('btnGenerate').addEventListener('click', generateReport);
+    byId('btnRefreshReports').addEventListener('click', generateReport);
+    byId('btnExportReports').addEventListener('click', ()=>{
+      const csv = tableToCSV();
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'njmart_reports.csv'; a.click();
+      URL.revokeObjectURL(url);
+    });
+    byId('btnBack').addEventListener('click', ()=> location.href = 'admin.html');
+
+    // small convenience: clicking granularity buttons adjusts UI — not required
+    document.querySelectorAll('[data-gran]').forEach(b=>{
+      b.addEventListener('click', (e)=>{
+        document.querySelectorAll('[data-gran]').forEach(x => x.classList.remove('active'));
+        e.target.classList.add('active');
+        // no change in dataset for now — client-side manipulation possible
+      });
+    });
+  });
+  </script>
 </body>
 </html>
