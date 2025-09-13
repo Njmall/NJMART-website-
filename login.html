@@ -4,512 +4,315 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NJ Mart - Login</title>
-  <link rel="stylesheet" href="style.css" />
 
-  <!-- Tailwind + Bootstrap (for flexibility) -->
+  <!-- TailwindCSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-  <!-- Firebase Config -->
-  <script src="firebase-config.js"></script>
-  <script src="script-config.js"></script>
-
+  <!-- Custom Styles -->
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #f0f4f8, #d9e4ec);
-      min-height: 100vh;
+      background: #f8fafc;
     }
-    .login-container {
+    .login-card {
       max-width: 450px;
-      margin: 60px auto;
-      padding: 40px;
+      margin: 40px auto;
+      padding: 30px;
       border-radius: 12px;
-      background: #fff;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      background: white;
     }
-    .btn-custom {
-      background: #2563eb;
-      color: #fff;
-      border-radius: 8px;
-      transition: all 0.3s ease;
+    .tab-btn {
+      cursor: pointer;
+      padding: 10px 20px;
+      font-weight: 600;
     }
-    .btn-custom:hover {
-      background: #1e40af;
+    .tab-active {
+      border-bottom: 3px solid #2563eb;
+      color: #2563eb;
     }
-    .nav-tabs .nav-link.active {
-      font-weight: bold;
-      color: #2563eb !important;
-      border-bottom: 2px solid #2563eb !important;
-    }
-    .error-message {
-      color: red;
-      font-size: 14px;
-    }
-    .success-message {
-      color: green;
-      font-size: 14px;
+    .hidden {
+      display: none;
     }
   </style>
 </head>
-<body>
+<body class="font-sans">
 
-  <!-- Navbar -->
-  <nav class="bg-white shadow-md p-3 flex justify-between items-center">
-    <div class="text-2xl font-bold text-blue-600">NJ Mart</div>
-    <div>
-      <a href="index.html" class="text-gray-600 hover:text-blue-600 mx-3">Home</a>
-      <a href="products.html" class="text-gray-600 hover:text-blue-600 mx-3">Products</a>
-      <a href="contact.html" class="text-gray-600 hover:text-blue-600 mx-3">Contact</a>
-    </div>
-  </nav>
+  <div class="login-card">
+    <h1 class="text-2xl font-bold text-center mb-6">NJ Mart Admin Login</h1>
 
-  <!-- Login Card -->
-  <div class="login-container">
-    <ul class="nav nav-tabs" id="loginTabs" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#loginPanel" type="button" role="tab">Login</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signupPanel" type="button" role="tab">Signup</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="reset-tab" data-bs-toggle="tab" data-bs-target="#resetPanel" type="button" role="tab">Reset Password</button>
-      </li>
-    </ul>
-
-    <div class="tab-content mt-4" id="loginTabsContent">
-
-      <!-- Login Panel -->
-      <div class="tab-pane fade show active" id="loginPanel" role="tabpanel">
-        <h3 class="text-center text-blue-600 mb-4">Login</h3>
-        <form id="loginForm">
-          <div class="mb-3">
-            <label>Email</label>
-            <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required />
-          </div>
-          <div class="mb-3">
-            <label>Password</label>
-            <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required />
-          </div>
-          <div id="loginMessage" class="mt-2"></div>
-          <button type="submit" class="btn btn-custom w-100">Login</button>
-        </form>
-      </div>
-
-      <!-- Signup Panel -->
-      <div class="tab-pane fade" id="signupPanel" role="tabpanel">
-        <h3 class="text-center text-green-600 mb-4">Create Account</h3>
-        <form id="signupForm">
-          <div class="mb-3">
-            <label>Full Name</label>
-            <input type="text" id="signupName" class="form-control" placeholder="Enter your full name" required />
-          </div>
-          <div class="mb-3">
-            <label>Email</label>
-            <input type="email" id="signupEmail" class="form-control" placeholder="Enter email" required />
-          </div>
-          <div class="mb-3">
-            <label>Password</label>
-            <input type="password" id="signupPassword" class="form-control" placeholder="Create password" required />
-          </div>
-          <div class="mb-3">
-            <label>Role</label>
-            <select id="signupRole" class="form-control" required>
-              <option value="customer">Customer</option>
-              <option value="staff">Staff</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-          <div id="signupMessage" class="mt-2"></div>
-          <button type="submit" class="btn btn-custom w-100">Signup</button>
-        </form>
-      </div>
-      <!-- Part 2/3 — continued from Part 1 -->
-      <!-- Reset Password Panel -->
-      <div class="tab-pane fade" id="resetPanel" role="tabpanel">
-        <h3 class="text-center text-yellow-600 mb-4">Reset Password</h3>
-        <form id="resetForm">
-          <div class="mb-3">
-            <label>Enter your account email</label>
-            <input type="email" id="resetEmail" class="form-control" placeholder="you@example.com" required />
-          </div>
-          <div id="resetMessage" class="mt-2"></div>
-          <button type="submit" class="btn btn-custom w-100">Send reset link</button>
-        </form>
-      </div>
-
-    </div> <!-- tab-content -->
-
-    <!-- OTP / Phone quick area (below tabs) -->
-    <div class="mt-4 card">
-      <h5 class="mb-2">Quick Phone Login (OTP)</h5>
-      <div class="row g-2">
-        <div class="col-8">
-          <input id="phoneQuick" class="form-control" placeholder="+91xxxxxxxxxx" />
-        </div>
-        <div class="col-4">
-          <button id="btnQuickOtp" class="btn btn-outline-primary w-100">Send OTP</button>
-        </div>
-      </div>
-
-      <div id="otpVerifyRow" class="mt-3" style="display:none;">
-        <div class="row g-2">
-          <div class="col-8">
-            <input id="otpQuick" class="form-control" placeholder="Enter OTP" />
-          </div>
-          <div class="col-4">
-            <button id="btnQuickVerify" class="btn btn-success w-100">Verify</button>
-          </div>
-        </div>
-      </div>
-
-      <div id="recaptcha-wrapper" class="mt-3">
-        <!-- Invisible reCAPTCHA will render in this container -->
-        <div id="recaptcha-container"></div>
-      </div>
-
-      <div id="otpMessage" class="mt-2"></div>
+    <!-- Tabs -->
+    <div class="flex justify-center mb-6">
+      <div id="tab-email" class="tab-btn tab-active">Email Login</div>
+      <div id="tab-phone" class="tab-btn">Phone Login</div>
     </div>
 
-    <!-- small footer links -->
-    <div class="text-center mt-3 muted-sm">
-      <div class="links-row">
-        <a href="#" id="linkTerms">Terms</a>
-        <a href="#" id="linkPrivacy">Privacy</a>
-        <span class="muted">•</span>
-        <a href="contact.html">Support</a>
-      </div>
+    <!-- Email Login Form -->
+    <div id="email-login">
+      <label class="block mb-2 text-gray-700 font-medium">Email</label>
+      <input type="email" id="email" class="w-full border px-3 py-2 mb-4 rounded" placeholder="Enter email" />
+
+      <label class="block mb-2 text-gray-700 font-medium">Password</label>
+      <input type="password" id="password" class="w-full border px-3 py-2 mb-4 rounded" placeholder="Enter password" />
+
+      <button id="login-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded mb-2">Login</button>
+      <button id="signup-btn" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded mb-2">Sign Up</button>
+      <button id="reset-btn" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded">Forgot Password</button>
     </div>
 
-  </div> <!-- login-container -->
+    <!-- Phone Login Form -->
+    <div id="phone-login" class="hidden">
+      <label class="block mb-2 text-gray-700 font-medium">Phone Number</label>
+      <input type="text" id="phone-number" class="w-full border px-3 py-2 mb-4 rounded" placeholder="+91 9876543210" />
 
-  <!-- ===========================
-       Scripts: Auth wiring + helpers
-       Part 2 contains login/signup/reset/OTP handlers
-       =========================== -->
+      <div id="recaptcha-container" class="mb-4"></div>
+
+      <button id="send-otp-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded mb-2">Send OTP</button>
+
+      <label class="block mb-2 text-gray-700 font-medium">Enter OTP</label>
+      <input type="text" id="otp-code" class="w-full border px-3 py-2 mb-4 rounded" placeholder="Enter OTP" />
+
+      <button id="verify-otp-btn" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded">Verify OTP</button>
+    </div>
+
+    <p id="status" class="text-center mt-4 text-sm text-gray-600"></p>
+  </div>
+
+  <!-- Firebase Config -->
   <script>
-  (function(){
-    'use strict';
-
-    // --- sanity checks (firebase-config.js must be included in head) ---
-    if(typeof firebase === 'undefined' || !firebase.apps || firebase.apps.length === 0){
-      console.error('Firebase not initialized. Ensure firebase-config.js is included and initialized.');
-    }
-
-    // short helpers
-    const $ = id => document.getElementById(id);
-    const showMsg = (id, msg, type='info')=>{
-      const el = $(id);
-      if(!el) return;
-      el.innerHTML = msg ? `<div class="${type==='error'?'error-message':'success-message'}">${msg}</div>` : '';
+    const firebaseConfig = {
+      apiKey: "AIzaSyCbf19k8pLfH-9UQz8sQRim2rPYT1qaEL8",
+      authDomain: "njmartonline.firebaseapp.com",
+      projectId: "njmartonline",
+      storageBucket: "njmartonline.appspot.com",
+      messagingSenderId: "594505763627",
+      appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
     };
 
-    // backend endpoint (Apps Script)
-    const BACKEND_URL = typeof BACKEND_URL !== 'undefined' ? BACKEND_URL : 'https://script.google.com/macros/s/AKfycbwsG5H7er3nqwGjEbrtokssc5LeGFc9Zog2bG1s0C5bQ-P2b_1S1kisSLpOmdESH7FB/exec';
-
-    // local storage key
-    const KEY_PROFILE = 'nj_profile';
-
-    // =====================================================================================
-    // AUTH: Email/Password (signup, login, reset)
-    // =====================================================================================
-
-    // signup
-    $('signupForm').addEventListener('submit', async (ev)=>{
-      ev.preventDefault();
-      showMsg('signupMessage','Saving...');
-      const name = $('signupName').value.trim();
-      const email = $('signupEmail').value.trim();
-      const pwd = $('signupPassword').value;
-      const role = $('signupRole').value || 'customer';
-
-      if(!email || !pwd || !name){ showMsg('signupMessage','Fill required fields', 'error'); return; }
-      try{
-        const userCred = await firebase.auth().createUserWithEmailAndPassword(email, pwd);
-        const user = userCred.user;
-        // update display name
-        await user.updateProfile({ displayName: name });
-        // save to Firestore (customers / staff / admins)
-        const profile = { Name: name, Email: email, Phone:'', Role: role, CreatedAt: new Date().toISOString() };
-        // store profile locally
-        localStorage.setItem(KEY_PROFILE, JSON.stringify(profile));
-        // call backend (Apps Script) to append to Customers sheet
-        await fetch(BACKEND_URL, {
-          method:'POST',
-          headers:{ 'Content-Type':'application/json' },
-          body: JSON.stringify({ action:'addcustomer', Name: name, Phone:'', Email: email, Address:'', Role: role })
-        });
-        showMsg('signupMessage','Account created. Signed in.');
-        // refresh UI (simple)
-        setTimeout(()=>location.href='index.html',800);
-      }catch(err){
-        console.error('Signup error', err);
-        showMsg('signupMessage', err.message || 'Signup failed', 'error');
-      }
-    });
-
-    // login
-    $('loginForm').addEventListener('submit', async (ev)=>{
-      ev.preventDefault();
-      showMsg('loginMessage','Signing in...');
-      const email = $('loginEmail').value.trim();
-      const pwd = $('loginPassword').value;
-      if(!email || !pwd){ showMsg('loginMessage','Enter email & password', 'error'); return; }
-      try{
-        const userCred = await firebase.auth().signInWithEmailAndPassword(email, pwd);
-        const user = userCred.user;
-        // fetch profile from backend or create minimal
-        const profile = { Name: user.displayName || '', Email: user.email || '', Phone: user.phoneNumber || '' };
-        localStorage.setItem(KEY_PROFILE, JSON.stringify(profile));
-        showMsg('loginMessage','Signed in successfully');
-        setTimeout(()=>location.href='index.html',700);
-      }catch(err){
-        console.error('Login error', err);
-        showMsg('loginMessage', err.message || 'Login failed', 'error');
-      }
-    });
-
-    // reset password
-    $('resetForm').addEventListener('submit', async (ev)=>{
-      ev.preventDefault();
-      const email = $('resetEmail').value.trim();
-      if(!email){ showMsg('resetMessage','Enter email', 'error'); return; }
-      try{
-        await firebase.auth().sendPasswordResetEmail(email);
-        showMsg('resetMessage','Reset link sent to your email');
-      }catch(err){
-        console.error('Reset error', err);
-        showMsg('resetMessage', err.message || 'Reset failed', 'error');
-      }
-    });
-
-    // =====================================================================================
-    // AUTH: Google Sign-in (popup)
-    // =====================================================================================
-    const googleBtn = $('btnGoogle');
-    if(googleBtn){
-      googleBtn.addEventListener('click', async ()=>{
-        googleBtn.setAttribute('disabled','disabled');
-        try{
-          const provider = new firebase.auth.GoogleAuthProvider();
-          const result = await firebase.auth().signInWithPopup(provider);
-          const user = result.user;
-          // Save minimal profile locally and to backend
-          const profile = { Name: user.displayName || '', Email: user.email || '', Phone: user.phoneNumber || '' };
-          localStorage.setItem(KEY_PROFILE, JSON.stringify(profile));
-          // call backend to add customer if not exists
-          await fetch(BACKEND_URL, {
-            method:'POST',
-            headers:{ 'Content-Type':'application/json' },
-            body: JSON.stringify({ action:'addcustomer', Name: profile.Name, Phone: profile.Phone, Email: profile.Email, Address:'' })
-          });
-          showMsg('loginMessage','Signed in with Google');
-          setTimeout(()=>location.href='index.html',700);
-        }catch(err){
-          console.error('Google sign-in error', err);
-          alert('Google sign-in failed: ' + (err && err.message ? err.message : err));
-        }finally{
-          googleBtn.removeAttribute('disabled');
-        }
-      });
-    }
-
-    // =====================================================================================
-    // AUTH: Phone OTP (recaptcha + signInWithPhoneNumber)
-    // =====================================================================================
-
-    // recaptcha (invisible)
-    let recaptchaVerifier = null;
-    function initRecaptcha(){
-      try{
-        if(recaptchaVerifier) return;
-        // Firebase v8 recaptcha verifier
-        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-          'size': 'invisible',
-          'callback': function(response) {
-            // solved
-            console.log('reCAPTCHA solved');
-          }
-        });
-        recaptchaVerifier.render().then(widgetId=>{
-          console.log('reCAPTCHA rendered', widgetId);
-        });
-      }catch(e){
-        console.warn('recaptcha init error', e);
-      }
-    }
-    initRecaptcha();
-
-    // send quick OTP
-    $('btnQuickOtp').addEventListener('click', async ()=>{
-      const phone = $('phoneQuick').value.trim();
-      if(!phone){ showMsg('otpMessage','Enter phone with country code', 'error'); return; }
-      try{
-        $('btnQuickOtp').disabled = true;
-        showMsg('otpMessage','Sending OTP...');
-        const appVerifier = recaptchaVerifier;
-        const confirmationResult = await firebase.auth().signInWithPhoneNumber(phone, appVerifier);
-        // store confirmation result globally
-        window._nj_confirmation = confirmationResult;
-        $('otpVerifyRow').style.display = 'block';
-        showMsg('otpMessage','OTP sent. Enter code to verify.');
-      }catch(err){
-        console.error('send OTP error', err);
-        showMsg('otpMessage', err && err.message ? err.message : 'Failed to send OTP', 'error');
-        try{ recaptchaVerifier.clear(); }catch(e){}
-      }finally{
-        $('btnQuickOtp').disabled = false;
-      }
-    });
-
-    // verify quick OTP
-    $('btnQuickVerify').addEventListener('click', async ()=>{
-      const code = $('otpQuick').value.trim();
-      if(!code){ showMsg('otpMessage','Enter OTP', 'error'); return; }
-      try{
-        $('btnQuickVerify').disabled = true;
-        showMsg('otpMessage','Verifying...');
-        const confirmationResult = window._nj_confirmation;
-        if(!confirmationResult){ showMsg('otpMessage','No OTP flow started', 'error'); return; }
-        const res = await confirmationResult.confirm(code);
-        const user = res.user;
-        // create profile and save to backend
-        const profile = { Name: user.displayName || '', Phone: user.phoneNumber || $('phoneQuick').value.trim(), Email: user.email || '' };
-        localStorage.setItem(KEY_PROFILE, JSON.stringify(profile));
-        await fetch(BACKEND_URL, {
-          method:'POST',
-          headers:{ 'Content-Type':'application/json' },
-          body: JSON.stringify({ action:'addcustomer', Name: profile.Name, Phone: profile.Phone, Email: profile.Email, Address:'' })
-        });
-        showMsg('otpMessage','Phone verified and signed in');
-        setTimeout(()=>location.href='index.html',800);
-      }catch(err){
-        console.error('OTP verify error', err);
-        showMsg('otpMessage', err && err.message ? err.message : 'OTP verify failed', 'error');
-      }finally{
-        $('btnQuickVerify').disabled = false;
-      }
-    });
-
-    // =====================================================================================
-    // Utility: Auth state listener — update UI if needed (keeps tab in sync)
-    // =====================================================================================
-    firebase.auth().onAuthStateChanged(async (user)=>{
-      if(user){
-        console.log('Auth state changed — user signed in', user.uid);
-        // keep profile in localStorage
-        const p = JSON.parse(localStorage.getItem(KEY_PROFILE) || '{}');
-        if(!p || !p.Phone) {
-          const profile = { Name: user.displayName || '', Email: user.email || '', Phone: user.phoneNumber || '' };
-          localStorage.setItem(KEY_PROFILE, JSON.stringify(profile));
-        }
-      } else {
-        console.log('Auth state changed — user signed out');
-      }
-    });
-
-    // =====================================================================================
-    // Small helper: Auto-fill from query (optional)
-    // =====================================================================================
-    (function autoFillFromUrl(){
-      const params = new URLSearchParams(window.location.search);
-      if(params.get('phone')) $('phoneQuick').value = params.get('phone');
-      if(params.get('email')) $('loginEmail').value = params.get('email');
-    })();
-
-    // =====================================================================================
-    // End of Part 2 logic — Part 3 will finish file (profile redirect, small UX helpers)
-    // =====================================================================================
-
-  })();
-                </script>
-                <!-- ===========================
-       Part 3/3 — Final integrations
-       =========================== -->
-  <script>
-  (function(){
-    'use strict';
-
-    const $ = id => document.getElementById(id);
-    const KEY_PROFILE = 'nj_profile';
-
-    // sign out button
-    const signOutBtn = $('btnSignOut');
-    if(signOutBtn){
-      signOutBtn.addEventListener('click', async ()=>{
-        try{
-          await firebase.auth().signOut();
-          localStorage.removeItem(KEY_PROFILE);
-          alert('Signed out successfully');
-          location.reload();
-        }catch(err){
-          console.error('Sign out error', err);
-        }
-      });
-    }
-
-    // detect profile + redirect if already logged in
-    function checkExistingProfile(){
-      try{
-        const raw = localStorage.getItem(KEY_PROFILE);
-        if(!raw) return;
-        const profile = JSON.parse(raw);
-        if(profile && (profile.Email || profile.Phone)){
-          // show minimal UI or redirect
-          console.log('Already signed in as', profile.Email || profile.Phone);
-          // optional: redirect directly
-          // location.href = 'index.html';
-        }
-      }catch(e){}
-    }
-    checkExistingProfile();
-
-    // simple UX: pressing Enter on inputs triggers submit
-    document.querySelectorAll('input').forEach(inp=>{
-      inp.addEventListener('keypress', ev=>{
-        if(ev.key === 'Enter'){
-          const form = inp.closest('form');
-          if(form){ form.dispatchEvent(new Event('submit', {cancelable:true})); }
-        }
-      });
-    });
-
-    // after login/signup, we may want to redirect user to checkout if cart has items
-    function redirectPostLogin(){
-      try{
-        const cart = JSON.parse(localStorage.getItem('nj_cart')||'[]');
-        if(cart && cart.length>0){
-          location.href='checkout.html';
-        }else{
-          location.href='index.html';
-        }
-      }catch(e){
-        location.href='index.html';
-      }
-    }
-
-    // override signup/login/otp handlers final redirect
-    window._nj_afterLogin = redirectPostLogin;
-
-    // small UX helper for tab switch
-    document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab=>{
-      tab.addEventListener('shown.bs.tab', ev=>{
-        const targetId = ev.target.getAttribute('href').replace('#','');
-        console.log('Switched tab to', targetId);
-      });
-    });
-
-    // final log
-    console.log('Login page initialized ✅');
-  })();
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    console.log("[NJ_FIREBASE] Firebase initialized successfully for NJ Mart");
   </script>
 
+  <!-- Script Config (Backend URL etc.) -->
+  <script src="script-config.js"></script>
+
+  <!-- Login Logic (Part 2 & 3) will come here -->
 </body>
 </html>
+<script>
+/********************************************************************
+ * NJ Mart Login Logic
+ * Handles Email/Password login, Signup, Reset + Phone OTP Login
+ ********************************************************************/
+
+// ---------- Tab Switch ----------
+const tabEmail = document.getElementById("tab-email");
+const tabPhone = document.getElementById("tab-phone");
+const emailLogin = document.getElementById("email-login");
+const phoneLogin = document.getElementById("phone-login");
+
+tabEmail.addEventListener("click", () => {
+  tabEmail.classList.add("tab-active");
+  tabPhone.classList.remove("tab-active");
+  emailLogin.classList.remove("hidden");
+  phoneLogin.classList.add("hidden");
+});
+
+tabPhone.addEventListener("click", () => {
+  tabPhone.classList.add("tab-active");
+  tabEmail.classList.remove("tab-active");
+  phoneLogin.classList.remove("hidden");
+  emailLogin.classList.add("hidden");
+});
+
+// ---------- Status Message ----------
+const statusEl = document.getElementById("status");
+function showStatus(msg, color = "text-gray-600") {
+  statusEl.className = `text-center mt-4 text-sm ${color}`;
+  statusEl.textContent = msg;
+}
+
+// ---------- Email/Password Login ----------
+document.getElementById("login-btn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  if (!email || !password) {
+    showStatus("Enter email and password", "text-red-500");
+    return;
+  }
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+    showStatus("Login successful ✅", "text-green-600");
+    window.location.href = "admin.html";
+  } catch (error) {
+    showStatus("Error: " + error.message, "text-red-500");
+  }
+});
+
+// ---------- Signup ----------
+document.getElementById("signup-btn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  if (!email || !password) {
+    showStatus("Enter email and password", "text-red-500");
+    return;
+  }
+  try {
+    await auth.createUserWithEmailAndPassword(email, password);
+    showStatus("Signup successful 🎉", "text-green-600");
+  } catch (error) {
+    showStatus("Error: " + error.message, "text-red-500");
+  }
+});
+
+// ---------- Reset Password ----------
+document.getElementById("reset-btn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value.trim();
+  if (!email) {
+    showStatus("Enter your email first", "text-red-500");
+    return;
+  }
+  try {
+    await auth.sendPasswordResetEmail(email);
+    showStatus("Password reset link sent 📩", "text-green-600");
+  } catch (error) {
+    showStatus("Error: " + error.message, "text-red-500");
+  }
+});
+
+// ---------- Phone OTP Login ----------
+let confirmationResult;
+
+// reCAPTCHA setup
+window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier("recaptcha-container", {
+  size: "normal",
+  callback: (response) => {
+    console.log("reCAPTCHA solved");
+  },
+});
+
+// Send OTP
+document.getElementById("send-otp-btn").addEventListener("click", async () => {
+  const phone = document.getElementById("phone-number").value.trim();
+  if (!phone) {
+    showStatus("Enter phone number", "text-red-500");
+    return;
+  }
+  try {
+    confirmationResult = await auth.signInWithPhoneNumber(phone, window.recaptchaVerifier);
+    showStatus("OTP sent ✅", "text-green-600");
+  } catch (error) {
+    showStatus("Error: " + error.message, "text-red-500");
+  }
+});
+
+// Verify OTP
+document.getElementById("verify-otp-btn").addEventListener("click", async () => {
+  const code = document.getElementById("otp-code").value.trim();
+  if (!code || !confirmationResult) {
+    showStatus("Enter OTP", "text-red-500");
+    return;
+  }
+  try {
+    await confirmationResult.confirm(code);
+    showStatus("Phone login successful ✅", "text-green-600");
+    window.location.href = "admin.html";
+  } catch (error) {
+    showStatus("Error: " + error.message, "text-red-500");
+  }
+});
+</script>
+<script>
+/********************************************************************
+ * Auth State Listener + Local Storage + Signout
+ ********************************************************************/
+
+// ---------- Auth State Change ----------
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    // User logged in
+    console.log("User logged in:", user);
+
+    const profile = {
+      uid: user.uid,
+      name: user.displayName || "",
+      email: user.email || "",
+      phone: user.phoneNumber || "",
+    };
+
+    // Save to localStorage
+    localStorage.setItem("njmart_user", JSON.stringify(profile));
+
+    // Auto redirect if on login page
+    if (window.location.pathname.endsWith("login.html")) {
+      window.location.href = "index.html";
+    }
+  } else {
+    // User logged out
+    console.log("User logged out");
+    localStorage.removeItem("njmart_user");
+  }
+});
+
+// ---------- Signout ----------
+function signOutUser() {
+  auth.signOut()
+    .then(() => {
+      showStatus("Signed out ✅", "text-green-600");
+      localStorage.removeItem("njmart_user");
+      window.location.href = "login.html";
+    })
+    .catch((error) => {
+      showStatus("Error: " + error.message, "text-red-500");
+    });
+}
+</script>
+<script>
+/********************************************************************
+ * Auth State Listener + Local Storage + Signout
+ ********************************************************************/
+
+// ---------- Auth State Change ----------
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    // User logged in
+    console.log("User logged in:", user);
+
+    const profile = {
+      uid: user.uid,
+      name: user.displayName || "",
+      email: user.email || "",
+      phone: user.phoneNumber || "",
+    };
+
+    // Save to localStorage
+    localStorage.setItem("njmart_user", JSON.stringify(profile));
+
+    // Auto redirect if on login page
+    if (window.location.pathname.endsWith("login.html")) {
+      window.location.href = "index.html";
+    }
+  } else {
+    // User logged out
+    console.log("User logged out");
+    localStorage.removeItem("njmart_user");
+  }
+});
+
+// ---------- Signout ----------
+function signOutUser() {
+  auth.signOut()
+    .then(() => {
+      showStatus("Signed out ✅", "text-green-600");
+      localStorage.removeItem("njmart_user");
+      window.location.href = "login.html";
+    })
+    .catch((error) => {
+      showStatus("Error: " + error.message, "text-red-500");
+    });
+}
+</script>
