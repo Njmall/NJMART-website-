@@ -3,664 +3,544 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NJ Mart — Admin Login (Part 1)</title>
+  <title>NJ Mart — Admin Login</title>
 
-  <!-- Basic styles (embedded so nothing external is strictly required) -->
+  <!-- ======= Basic Styling (Expandible) ======= -->
   <style>
     :root{
-      --green:#28a745;
-      --dark:#1f2937;
+      --brand: #2da84f;
+      --brand-dark: #23823d;
       --muted:#6b7280;
-      --bg:#f8fafc;
+      --bg:#f7fafc;
       --card:#ffffff;
-      --shadow: 0 6px 18px rgba(17,24,39,0.08);
-      --radius:12px;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      --danger:#e53e3e;
+      --glass: rgba(255,255,255,0.85);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
-    html,body{height:100%;margin:0;background:var(--bg);color:var(--dark);}
-    .container{max-width:1000px;margin:28px auto;padding:20px;}
-    .header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:46px;height:46px;border-radius:8px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
-    .title{font-size:20px;font-weight:700}
-    .subtitle{color:var(--muted);font-size:13px}
-    .card{background:var(--card);box-shadow:var(--shadow);padding:22px;border-radius:var(--radius);display:flex;gap:20px}
-    .panel{flex:1;min-width:260px}
-    .left{width:360px}
-    .right{flex:1}
-    h2{margin:0 0 6px 0}
-    p.small{margin:4px 0 12px 0;color:var(--muted);font-size:13px}
-    label{display:block;margin:10px 0 6px 0;font-weight:600;font-size:13px}
-    input[type="text"], input[type="email"], input[type="password"], input[type="tel"], select {
-      width:100%; padding:10px 12px; border-radius:8px; border:1px solid #e6e9ee; font-size:14px; outline:none;
+
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#f0fbf6 0%, #f7fafc 100%);color:#111827;}
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;}
+    .card{
+      width:980px;
+      max-width:98%;
+      background:var(--card);
+      border-radius:14px;
+      box-shadow: 0 6px 30px rgba(14, 30, 37, 0.08);
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      overflow:hidden;
+      border:1px solid rgba(15,23,42,0.03);
     }
-    .btn{background:var(--green);color:#fff;padding:10px 14px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
-    .btn.ghost{background:transparent;border:1px solid #e6e9ee;color:var(--dark)}
-    .row{display:flex;gap:12px}
-    .helper{font-size:12px;color:var(--muted);margin-top:8px}
-    .separator{height:1px;background:#eef2f6;margin:18px 0;border-radius:4px}
-    .notice{background:#fffbe6;border:1px solid #ffe7a8;padding:10px;border-radius:8px;color:#5a4b00;font-size:13px}
-    .social-btn{display:flex;gap:8px;margin-top:12px}
-    .social-btn button{flex:1;padding:10px;border-radius:8px;border:1px solid #e6e9ee;background:#fff;display:flex;align-items:center;gap:8px;cursor:pointer}
-    .small-muted{font-size:12px;color:var(--muted)}
-    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
-    .recaptcha-wrap{margin-top:8px}
+
+    /* left panel - branding + info */
+    .left{
+      padding:28px;
+      background:linear-gradient(180deg,var(--brand) 0%, #1fa742 100%);
+      color:white;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      align-items:flex-start;
+      justify-content:center;
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;font-weight:700;font-size:20px;
+    }
+    .brand .logo{
+      width:46px;height:46px;border-radius:10px;background:white;color:var(--brand);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;
+    }
+    .bigTitle{font-size:26px;font-weight:700;margin-top:6px}
+    .desc{opacity:0.95;font-size:14px;line-height:1.45; margin-bottom:6px}
+    .leftFooter{margin-top:18px;font-size:13px;opacity:0.95;}
+
+    /* right panel - forms */
+    .right{
+      padding:28px 34px;
+    }
+    .tabs{
+      display:flex;gap:18px;align-items:center;margin-bottom:18px;
+    }
+    .tab{cursor:pointer;padding:8px 12px;border-radius:10px;background:transparent;border:1px solid transparent;color:var(--muted);}
+    .tab.active{background:var(--bg);border-color:rgba(15,23,42,0.04);color:#111;font-weight:600;}
+    .form{
+      background:transparent;padding:6px;display:flex;flex-direction:column;gap:12px;
+    }
+
+    label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+    input[type="text"], input[type="email"], input[type="password"], input[type="tel"]{
+      width:100%;padding:12px 12px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);background:transparent;outline:none;font-size:14px;
+    }
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;
+      font-weight:600;
+    }
+    .btn-primary{background:var(--brand);color:white;box-shadow:0 6px 18px rgba(45,168,79,0.20)}
+    .btn-ghost{background:transparent;border:1px solid rgba(15,23,42,0.06);color:#111}
+    .row{display:flex;gap:10px;align-items:center}
+    .muted{color:var(--muted);font-size:13px}
+    .small{font-size:13px;color:var(--muted)}
+    .hr{height:1px;background:linear-gradient(90deg,transparent,#eee,transparent);margin:12px 0;border-radius:2px}
+
+    .socialRow{display:flex;gap:8px}
+    .socialBtn{padding:10px 12px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);display:flex;gap:10px;align-items:center;background:white;cursor:pointer}
+    .socialBtn .icon{width:18px;height:18px;display:inline-block}
+
+    .error{color:var(--danger);font-size:13px}
+    .success{color:green;font-size:13px}
+    .hint{font-size:13px;color:var(--muted)}
+
+    /* OTP area */
+    .otpInputs{display:flex;gap:8px}
+    .otpInputs input{width:48px;text-align:center;font-size:18px;padding:10px;border-radius:8px;border:1px solid rgba(15,23,42,0.06)}
+
     /* responsive */
     @media (max-width:880px){
-      .card{flex-direction:column}
-      .left{width:100%}
+      .card{grid-template-columns:1fr; padding:0}
+      .left{display:none}
+      .right{padding:22px}
     }
-    /* large filler styles to expand file size a bit (repeating helpers, not necessary but requested expanded file) */
-    .list { margin: 12px 0; padding: 0; list-style:none; }
-    .list li { padding: 6px 0; color:var(--muted); font-size:13px; }
-    .support { display:flex; gap:12px; align-items:center; margin-top:10px; }
-    .support .item { background:#f3f8f6; padding:8px 10px; border-radius:8px; font-size:13px; }
-    .phone{font-weight:700;color:var(--green); }
+
+    /* footer small */
+    .footer{margin-top:16px;font-size:13px;color:var(--muted);text-align:center}
+    .support{font-weight:600;color:var(--brand-dark)}
   </style>
 
-  <!-- Firebase (modular) via CDN - using compat loader for convenience in this template -->
-  <!-- We'll use the v9 modular scripts but import compat wrappers for simpler code. -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <!-- ======= Firebase (compat) SDKs =======
+       Using compat here keeps code compact and familiar (RecaptchaVerifier + auth)
+       If you prefer modular SDK, replace with modular imports and update code accordingly.
+  -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
 
-  <!-- Google Identity Toolkit will be loaded dynamically where needed -->
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="brand">
-        <div class="logo">NJ</div>
-        <div>
-          <div class="title">NJ Mart — Admin</div>
-          <div class="subtitle">Secure admin access | Manage products, orders & staff</div>
-        </div>
-      </div>
+  <div class="wrap">
+    <div class="card" role="main" aria-labelledby="njmart-heading">
 
-      <div class="support">
-        <div class="item small-muted">Support: <span class="phone">+91 70000 00000</span></div>
-        <div class="item small-muted">Email: <span id="support-email">support@njmart.example</span></div>
-      </div>
-    </div>
-
-    <div class="card" role="main" aria-labelledby="login-heading">
-      <!-- Left column: Login methods -->
-      <div class="panel left" aria-hidden="false">
-        <h2 id="login-heading">Admin Login</h2>
-        <p class="small">Choose one of the sign-in options below to access the admin panel.</p>
-
-        <!-- Social / quick sign-in -->
-        <div>
-          <div class="social-btn" aria-hidden="false">
-            <button id="btn-google" title="Sign in with Google">
-              <svg width="18" height="18" viewBox="0 0 48 48" style="vertical-align:middle">
-                <path fill="#EA4335" d="M24 9.5c3.9 0 7 1.4 9.6 4.1l6.6-6.6C36 2.9 30.4 0 24 0 14.7 0 6.8 5.3 3.1 13.1l7.7 6C12.8 15 18 9.5 24 9.5z"/>
-                <path fill="#34A853" d="M46.5 24.5c0-1.6-.2-3.2-.6-4.7H24v9.1h12.9c-.5 2.5-2.1 4.6-4.3 6.1l6.7 5.1c3.9-3.6 6.2-8.9 6.2-15.6z"/>
-                <path fill="#4A90E2" d="M9.8 28.1c-.5-1.5-.8-3.2-.8-4.9s.3-3.4.8-4.9L2.1 12.3C.8 15.1 0 18.5 0 22s.8 6.9 2.1 9.7l7.7-3.6z"/>
-                <path fill="#FBBC05" d="M24 48c6.4 0 12-2.1 16-5.8l-7.7-5.8C29.7 37.8 27 38.9 24 38.9c-6 0-11.1-4.5-12.1-10.4l-7.7 3.6C6.8 42.7 14.7 48 24 48z"/>
-              </svg>
-              <span style="flex:1">Continue with Google</span>
-            </button>
-            <button id="btn-email" title="Sign in with Email">Email</button>
+      <!-- Left: Branding -->
+      <div class="left" aria-hidden="false">
+        <div class="brand">
+          <div class="logo">NJ</div>
+          <div>
+            <div style="font-size:13px;opacity:0.95">NJ Mart</div>
+            <div style="font-size:11px;opacity:0.8">Admin Panel</div>
           </div>
-          <div class="helper">Google sign-in uses the Google account linked to Firebase Auth. If you see API errors, check your Firebase project API keys & authorized domains.</div>
         </div>
+        
+        <div class="bigTitle" id="njmart-heading">NJ Mart Admin Login</div>
+        <div class="desc">Secure admin access — use Email, Google or Phone OTP. Keep your credentials private. Use authorized domains in Firebase console for sign-in to work.</div>
 
-        <div class="separator"></div>
-
-        <!-- Email/password form -->
-        <div id="email-block" style="margin-top:8px;">
-          <h3 style="margin-bottom:6px">Email Login</h3>
-          <label for="email">Email</label>
-          <input id="email" type="email" placeholder="Enter email" autocomplete="email" />
-          <label for="password">Password</label>
-          <input id="password" type="password" placeholder="Enter password" autocomplete="current-password" />
-          <div style="display:flex;gap:8px;margin-top:12px;">
-            <button id="btn-login-email" class="btn">Login</button>
-            <button id="btn-signup-email" class="btn ghost">Sign up</button>
-            <button id="btn-reset-password" class="btn ghost">Forgot</button>
-          </div>
-          <div class="helper">Use email and password to sign in. Sign up will create a new Firebase Auth user (if allowed).</div>
-        </div>
-
-        <div class="separator"></div>
-
-        <!-- Phone login -->
-        <div id="phone-block" style="margin-top:8px;">
-          <h3 style="margin-bottom:6px">Phone Login (OTP)</h3>
-          <label for="phone">Phone number</label>
-          <input id="phone" type="tel" placeholder="+91xxxxxxxxxx" />
-          <!-- recaptcha container -->
-          <div class="recaptcha-wrap" id="recaptcha-container"></div>
-
-          <div style="display:flex;gap:8px;margin-top:12px;">
-            <button id="btn-send-otp" class="btn">Send OTP</button>
-            <button id="btn-verify-otp" class="btn ghost">Verify OTP</button>
-          </div>
-
-          <label for="otp">Enter OTP</label>
-          <input id="otp" type="text" placeholder="6-digit code" />
-          <div class="helper">Phone authentication requires reCAPTCHA rendered by Firebase. Make sure API key in config is valid and domain is authorized.</div>
-        </div>
-
-        <div class="separator"></div>
-
-        <div class="notice">
-          <strong>Quick checklist:</strong>
-          <ul class="list" style="margin:6px 0 0 12px;padding-left:12px">
-            <li>Firebase project configured (apiKey, projectId set below).</li>
-            <li>Authorized domains: <code>njmart.netlify.app</code> and <code>localhost</code></li>
-            <li>Sign-in methods enabled in console: Google, Email/Password, Phone.</li>
-            <li>reCAPTCHA enabled for phone sign-in.</li>
+        <div class="leftFooter">
+          <div style="font-weight:700">Quick checklist</div>
+          <ul style="padding-left:18px;margin:8px 0;line-height:1.6">
+            <li>Auth methods enabled: Email, Google, Phone</li>
+            <li>Authorized domain added in Firebase (e.g. njmart.netlify.app)</li>
+            <li>APIs enabled (Identity Toolkit)</li>
+            <li>Recaptcha for phone must be visible on the page</li>
           </ul>
         </div>
       </div>
 
-      <!-- Right column: Status / Debug / Info -->
-      <div class="panel right">
-        <h3>Status & Debug</h3>
-        <div id="status" class="small-muted">Initializing…</div>
-
-        <div class="separator"></div>
-
-        <div>
-          <h4>Current user</h4>
-          <pre id="current-user" style="background:#f7fafb;padding:12px;border-radius:8px;border:1px solid #eef2f6;min-height:110px;">
-No user signed in.
-          </pre>
+      <!-- Right: Forms -->
+      <div class="right">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="font-weight:800;font-size:18px">Sign in to your admin account</div>
+          <div class="muted small">Support: <span class="support">+91 70000 00000</span></div>
         </div>
 
-        <div style="margin-top:12px">
-          <h4>Action log</h4>
-          <pre id="log" style="background:#fff;padding:12px;border-radius:8px;border:1px solid #eef2f6;min-height:180px;font-size:13px;color:#1f2937;overflow:auto;">
-Console log will appear here...
-          </pre>
+        <div class="tabs" role="tablist" aria-label="Auth methods">
+          <div class="tab active" id="tab-email" data-tab="email">Email Login</div>
+          <div class="tab" id="tab-phone" data-tab="phone">Phone Login (OTP)</div>
+          <div class="tab" id="tab-google" data-tab="google">Google</div>
         </div>
 
-        <div class="separator"></div>
+        <!-- messages -->
+        <div id="messageArea" class="muted small" aria-live="polite">Status: Ready</div>
 
-        <div>
-          <h4>Useful links</h4>
-          <ul class="list">
-            <li>Firebase console → Authentication → Sign-in method</li>
-            <li>Check authorized domains and API key restrictions in Google Cloud Console</li>
-            <li>If Google login fails: ensure OAuth client & API key are valid for your origin</li>
-          </ul>
+        <!-- forms wrapper -->
+        <div style="margin-top:12px;">
+          <!-- Email form -->
+          <div id="panel-email" class="panel" aria-hidden="false">
+            <div class="form" role="form" aria-label="Email login form">
+              <div>
+                <label for="emailInput">Email</label>
+                <input id="emailInput" type="email" placeholder="Enter admin email">
+              </div>
+
+              <div>
+                <label for="passwordInput">Password</label>
+                <input id="passwordInput" type="password" placeholder="Enter password">
+              </div>
+
+              <div class="row" style="justify-content:space-between;margin-top:8px">
+                <div class="row">
+                  <button id="emailSignInBtn" class="btn btn-primary">Login</button>
+                  <button id="emailSignupBtn" class="btn btn-ghost" style="margin-left:8px">Sign up</button>
+                </div>
+                <div>
+                  <a href="#" id="forgotLink" class="small">Forgot password?</a>
+                </div>
+              </div>
+
+              <div class="hr"></div>
+
+              <div class="small muted">Or sign in with</div>
+              <div class="socialRow" style="margin-top:8px">
+                <div id="googleBtn" class="socialBtn" title="Sign in with Google">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" width="18" height="18" aria-hidden="true">
+                    <path d="M21 12.3c0-.7-.1-1.4-.2-2H12v3.8h5.5c-.2 1.1-.9 2.1-1.9 2.8v2.3h3.1c1.8-1.7 2.8-4 2.8-6.9z" fill="#4285F4"/>
+                    <path d="M12 22c2.7 0 4.9-.9 6.6-2.5l-3.1-2.3c-.9.6-2.1.9-3.5.9-2.7 0-5-1.8-5.8-4.3H3.7v2.7C5.4 19.9 8.5 22 12 22z" fill="#34A853"/>
+                    <path d="M6.2 14.8A6.99 6.99 0 016 12c0-.9.2-1.7.6-2.5V6.7H3.7A10 10 0 002 12c0 1.6.3 3.1.9 4.4l2-1.6z" fill="#FBBC05"/>
+                    <path d="M12 5.4c1.5 0 2.9.5 4 1.5l3-3C16.8 2.3 14.6 1.4 12 1.4 8.5 1.4 5.4 3.5 3.7 6.7l2.9 2.8C7 7.2 9.3 5.4 12 5.4z" fill="#EA4335"/>
+                  </svg>
+                  <span>Google</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phone OTP form -->
+          <div id="panel-phone" class="panel" style="display:none" aria-hidden="true">
+            <div class="form" role="form" aria-label="Phone login form">
+              <div>
+                <label for="phoneInput">Phone number</label>
+                <input id="phoneInput" type="tel" placeholder="+91 70629 18607">
+              </div>
+
+              <div id="recaptcha-container" style="margin:6px 0"></div>
+
+              <div style="display:flex;gap:8px;margin-top:6px">
+                <button id="sendOtpBtn" class="btn btn-primary">Send OTP</button>
+                <button id="verifyOtpBtn" class="btn btn-ghost" style="display:none">Verify OTP</button>
+              </div>
+
+              <div style="margin-top:8px">
+                <label for="otpInput">Enter OTP (6 digits)</label>
+                <input id="otpInput" type="text" maxlength="6" placeholder="123456" style="width:160px">
+              </div>
+
+              <div class="hr"></div>
+              <div class="hint">Phone auth uses a visible reCAPTCHA. If recaptcha render error appears, check authorized domains and API keys in Google Cloud console.</div>
+            </div>
+          </div>
+
         </div>
+
+        <div class="hr"></div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="small muted">© NJ Mart — All rights reserved.</div>
+          <div><button id="logoutBtn" class="btn btn-ghost" style="display:none">Logout</button></div>
+        </div>
+                <div class="footer">Need help? Add support email in Firebase console. Keep API keys rotated if leaked.</div>
       </div>
     </div>
-
-    <footer>
-      © NJ Mart — Admin panel. Support: <span class="phone">+91 70000 00000</span> • <span id="footer-email">support@njmart.example</span>
-    </footer>
   </div>
 
-  <!-- ========= Firebase config + App Initialization ========= -->
+  <!-- ======= JS: Firebase config & auth logic ======= -->
   <script>
-    // ---- Firebase config (from your Firebase console - config mode) ----
-    // NOTE: If you want to update these values, change them here.
+    /******************************************************************
+     * IMPORTANT:
+     * - You provided an API KEY; that is used below.
+     * - Replace other firebaseConfig values if yours differ.
+     * - Do NOT paste service account JSON here.
+     ******************************************************************/
+
     const firebaseConfig = {
-      apiKey: "AIzaSyCbf19k8pLFh-9UQz8sQRim2rPYT1qaEL8",
-      authDomain: "njmartonline.firebaseapp.com",
+      apiKey: "AIzaSyCCyk9ZfXo2EgAFg3tWsF4N5_8fgncnZSI",  // <= YOUR API KEY (you provided)
+      authDomain: "njmartonline.firebaseapp.com",        // example - update if different
       projectId: "njmartonline",
-      storageBucket: "njmartonline.appspot.com",
+      storageBucket: "njmartonline.firebasestorage.app",
       messagingSenderId: "594505763627",
-      appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
+      appId: "1:594505763627:web:a13b0dae1f4e0e269fb936"  // example - update if different
     };
 
-    // Initialize Firebase (compat)
-    try {
-      firebase.initializeApp(firebaseConfig);
-      // Using compat auth for simpler examples
-      const auth = firebase.auth();
-      const db = firebase.firestore();
-      const log = (s)=> {
-        const el = document.getElementById('log');
-        el.textContent = (new Date()).toLocaleTimeString() + " — " + s + "\n" + el.textContent;
-      };
-      log('[NJ_FIREBASE] Firebase initialized: ' + (firebaseConfig.projectId || 'unknown project'));
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    // optional analytics: firebase.analytics();
 
-      // Expose for other functions
-      window.NJ = {
-        auth, db, firebase
-      };
+    const auth = firebase.auth();
+    const firestore = firebase.firestore();
 
-    } catch (err) {
-      console.error('Firebase init error:', err);
-      document.getElementById('status').textContent = 'Failed to initialize Firebase — check config.';
-      document.getElementById('log').textContent = 'Firebase init error: ' + err;
+    // UI elements
+    const messageArea = document.getElementById('messageArea');
+    const tabEmail = document.getElementById('tab-email');
+    const tabPhone = document.getElementById('tab-phone');
+    const tabGoogle = document.getElementById('tab-google');
+    const panelEmail = document.getElementById('panel-email');
+    const panelPhone = document.getElementById('panel-phone');
+
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const emailSignInBtn = document.getElementById('emailSignInBtn');
+    const emailSignupBtn = document.getElementById('emailSignupBtn');
+    const forgotLink = document.getElementById('forgotLink');
+
+    const googleBtn = document.getElementById('googleBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // Phone elements
+    const phoneInput = document.getElementById('phoneInput');
+    const sendOtpBtn = document.getElementById('sendOtpBtn');
+    const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+    const otpInput = document.getElementById('otpInput');
+    let confirmationResult = null;
+
+    // small helper to show status
+    function setStatus(msg, cls){
+      messageArea.textContent = msg;
+      messageArea.className = cls ? cls : 'muted small';
+      console.log('[STATUS]', msg);
     }
+
+    // tab switching
+    function showTab(name){
+      tabEmail.classList.remove('active');
+      tabPhone.classList.remove('active');
+      tabGoogle.classList.remove('active');
+      panelEmail.style.display = 'none';
+      panelPhone.style.display = 'none';
+
+      if(name === 'email'){ tabEmail.classList.add('active'); panelEmail.style.display='block';}
+      if(name === 'phone'){ tabPhone.classList.add('active'); panelPhone.style.display='block'; }
+      if(name === 'google'){ tabGoogle.classList.add('active'); panelEmail.style.display='block'; /* google uses email panel UI for button */ }
+    }
+
+    tabEmail.addEventListener('click', ()=> showTab('email'));
+    tabPhone.addEventListener('click', ()=> showTab('phone'));
+    tabGoogle.addEventListener('click', ()=> {
+      showTab('google');
+      // directly popup google sign in
+      setTimeout(()=> { googleSignIn(); }, 150);
+    });
+
+    // ============ Email/Password ============
+    emailSignInBtn.addEventListener('click', async (e)=>{
+      setStatus('Logging in...', 'muted small');
+      const email = (emailInput.value || '').trim();
+      const password = (passwordInput.value || '').trim();
+      if(!email || !password){ setStatus('Please enter email and password', 'error'); return; }
+      try{
+        const res = await auth.signInWithEmailAndPassword(email, password);
+        setStatus('Login successful', 'success');
+        onUserSignedIn(res.user);
+      }catch(err){
+        console.error(err);
+        setStatus('Login failed: ' + (err.message||err.code), 'error');
+      }
+    });
+
+    emailSignupBtn.addEventListener('click', async ()=>{
+      const email = (emailInput.value || '').trim();
+      const password = (passwordInput.value || '').trim();
+      if(!email || !password){ setStatus('Please enter email and password to sign up', 'error'); return; }
+      try{
+        const res = await auth.createUserWithEmailAndPassword(email, password);
+        setStatus('Sign up successful. Please verify email if needed.', 'success');
+        // You can send email verification if your product requires:
+        // res.user.sendEmailVerification();
+      }catch(err){
+        console.error(err);
+        setStatus('Sign up failed: ' + (err.message||err.code), 'error');
+      }
+    });
+
+    forgotLink.addEventListener('click', async (e)=>{
+      e.preventDefault();
+      const email = (emailInput.value || '').trim();
+      if(!email){ setStatus('Enter your email to reset password', 'error'); return; }
+      try{
+        await auth.sendPasswordResetEmail(email);
+        setStatus('Password reset email sent', 'success');
+      }catch(err){ setStatus('Reset failed: ' + (err.message||err.code),'error');}
+    });
+
+    // ============ Google Sign-In ============
+    async function googleSignIn(){
+      setStatus('Opening Google sign-in...', 'muted small');
+      const provider = new firebase.auth.GoogleAuthProvider();
+      provider.addScope('profile');
+      provider.addScope('email');
+      try{
+        const res = await auth.signInWithPopup(provider);
+        setStatus('Google sign-in successful', 'success');
+        onUserSignedIn(res.user);
+      }catch(err){
+        console.error('Google sign-in error', err);
+        setStatus('Google sign-in failed: ' + (err.message||err.code), 'error');
+      }
+    }
+    googleBtn.addEventListener('click', googleSignIn);
+
+    // ============ Phone Auth (OTP) ============
+    // Render reCAPTCHA verifier once
+    let recaptchaWidgetId = null;
+    function renderRecaptcha(){
+      try{
+        // if already exists, clear and re-render
+        if(window.recaptchaVerifier && typeof window.recaptchaVerifier.clear === 'function'){
+          try{ window.recaptchaVerifier.clear(); }catch(e){ console.warn(e); }
+        }
+      }catch(e){ /* ignore */ }
+
+      // create new recaptcha instance
+      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        size: 'normal', // change to 'invisible' if you want invisible (but phone requires visible sometimes)
+        callback: function(response){
+          console.log('reCAPTCHA solved', response);
+        },
+        'expired-callback': function(){ console.log('reCAPTCHA expired'); }
+      });
+      window.recaptchaVerifier.render().then(function(widgetId){
+        recaptchaWidgetId = widgetId;
+        console.log('recaptcha rendered id=', widgetId);
+      }).catch(function(err){
+        console.error('recaptcha render error', err);
+        setStatus('reCAPTCHA render failed: ' + (err.message||err.code), 'error');
+      });
+    }
+
+    // initial render
+    renderRecaptcha();
+
+    sendOtpBtn.addEventListener('click', async ()=>{
+      const phone = (phoneInput.value || '').trim();
+      if(!phone){ setStatus('Enter phone number (include country code)', 'error'); return; }
+      setStatus('Sending OTP...', 'muted small');
+      try{
+        // ensure recaptchaVerifier exists
+        if(!window.recaptchaVerifier){
+          renderRecaptcha();
+        }
+        confirmationResult = await auth.signInWithPhoneNumber(phone, window.recaptchaVerifier);
+        setStatus('OTP sent. Enter the code and click Verify', 'success');
+        verifyOtpBtn.style.display = 'inline-flex';
+        sendOtpBtn.style.display = 'none';
+      }catch(err){
+        console.error('send OTP error', err);
+        setStatus('Send OTP failed: ' + (err.message||err.code), 'error');
+        // reset recaptcha in case of error to allow retry
+        try{ renderRecaptcha(); }catch(e){}
+      }
+    });
+
+    verifyOtpBtn.addEventListener('click', async ()=>{
+      const code = (otpInput.value || '').trim();
+      if(!code || !confirmationResult){ setStatus('Enter OTP or request again', 'error'); return; }
+      setStatus('Verifying OTP...', 'muted small');
+      try{
+        const res = await confirmationResult.confirm(code);
+        setStatus('Phone login successful', 'success');
+        onUserSignedIn(res.user);
+      }catch(err){
+        console.error('verify OTP error', err);
+        setStatus('OTP verify failed: ' + (err.message||err.code), 'error');
+      }
+    });
+
+    // ============ Auth listener ============
+    auth.onAuthStateChanged(user=>{
+      if(user){
+        console.log('User signed in:', user);
+        onUserSignedIn(user);
+      }else{
+        console.log('User signed out');
+        onUserSignedOut();
+      }
+    });
+
+    function onUserSignedIn(user){
+      // show logout button + user info
+      logoutBtn.style.display = 'inline-flex';
+      document.getElementById('emailInput').value = user.email || '';
+      setStatus('Signed in: ' + (user.displayName || user.email || user.phoneNumber || user.uid), 'success');
+
+      // Example: check admin role in Firestore (optional)
+      // firestore.collection('admins').doc(user.uid).get()...
+      // For simple flow, we just stay logged in.
+
+      // hide OTP send controls
+      verifyOtpBtn.style.display = 'none';
+      sendOtpBtn.style.display = 'none';
+      // optionally redirect to admin dashboard:
+      // window.location.href = '/admin/dashboard.html';
+    }
+
+    function onUserSignedOut(){
+      logoutBtn.style.display = 'none';
+      setStatus('No user logged in', 'muted small');
+      // reset phone UI
+      sendOtpBtn.style.display = 'inline-flex';
+      verifyOtpBtn.style.display = 'none';
+      otpInput.value = '';
+      // re-render recaptcha to be ready
+      try{ renderRecaptcha(); }catch(e){}
+    }
+
+    logoutBtn.addEventListener('click', async ()=>{
+      try{
+        await auth.signOut();
+        setStatus('Logged out', 'muted small');
+      }catch(err){ setStatus('Logout error: ' + (err.message||err.code),'error');}
+    });
+
+    // ============ Utility: show error details nicely ============
+    function friendlyError(err){
+      if(!err) return 'Unknown error';
+      if(typeof err === 'string') return err;
+      if(err.code) return err.code + ' — ' + (err.message || '');
+      return (err.message || JSON.stringify(err));
+    }
+
+    // ============ Developer helpers & debugging ============
+    // Put helpful console commands for debugging in dev console:
+    console.log('%cNJ Mart Admin Login ready', 'color:#2da84f;font-weight:700;');
+    console.log('firebaseConfig used:', firebaseConfig);
+    setStatus('Firebase initialized for NJ Mart. STATUS: Ready. Use Google / Email / Phone to login.');
+
+    // For extra safety: show how to revoke API key if leaked:
+    // TODO (manual): Go to Google Cloud Console -> Credentials -> Delete or rotate API key.
+
+    // Extra: auto-detect small issues on load
+    window.addEventListener('load', ()=>{
+      // quick sanity checks
+      if(firebaseConfig.apiKey && firebaseConfig.projectId){
+        console.log('Config ok');
+      }else{
+        setStatus('Firebase config incomplete — please check apiKey & projectId', 'error');
+      }
+    });
   </script>
 
-  <!-- ========= App logic (part 1) ========= -->
-  <script>
-    (function(){
-      // UI refs
-      const statusEl = document.getElementById('status');
-      const curUserEl = document.getElementById('current-user');
-      const logEl = document.getElementById('log');
+  <!-- big footer comment block to add size / expand file (helps if you wanted many lines) -->
+  <!--
+    -------------------------------------------------------------------------
+    NJ MART Admin Login - Notes & Hints
+    -------------------------------------------------------------------------
+    - If you see "API key not valid" or "auth/api-key-not-valid" errors:
+        1) Ensure API key is correct in firebaseConfig.
+        2) Ensure the Identity Toolkit / Identity Platform API is enabled in Google Cloud.
+        3) Make sure the domain (e.g., njmart.netlify.app or localhost) is added to
+           Authentication -> Authorized domains in Firebase console.
+        4) For Phone Auth: ensure reCAPTCHA renders, and the domain is authorized.
+           Sometimes you must wait a few minutes after adding domain or new API key.
+        5) If GitHub secret scanning found your API key publicly leaked: rotate
+           the API key (Google Cloud Console -> Credentials -> Create new API key),
+           then update this file and remove API keys from public repos.
+    - Phone sign-in specifics:
+        * On web, Firebase uses reCAPTCHA to prevent abuse. reCAPTCHA must be visible
+          and functional for signInWithPhoneNumber to work.
+        * If reCAPTCHA returns "render failed" or "recaptchaVerifier not found",
+          try re-rendering or check that no ad-blocker is preventing gstatic/recaptcha scripts.
+    - Recommended production practice:
+        * Do not commit API keys into public repos.
+        * For production, restrict API key to your website(s) under "Application restrictions".
+        * Use server-side verification for high-trust operations.
+    -------------------------------------------------------------------------
+  -->
 
-      function appendLog(txt){
-        logEl.textContent = (new Date()).toLocaleTimeString() + ' - ' + txt + '\n' + logEl.textContent;
-      }
-
-      // Grab auth
-      const auth = window.NJ && window.NJ.auth;
-      if(!auth){
-        appendLog('Error: Firebase auth not found. Ensure firebase scripts loaded.');
-        statusEl.textContent = 'Firebase not initialized';
-        return;
-      }
-
-      // Update UI helper
-      function showStatus(msg){
-        statusEl.textContent = msg;
-        appendLog(msg);
-      }
-
-      showStatus('Firebase ready — login options available.');
-
-      // Auth state observer
-      auth.onAuthStateChanged(user => {
-        if(user){
-          curUserEl.textContent = JSON.stringify({
-            uid: user.uid,
-            email: user.email || null,
-            phoneNumber: user.phoneNumber || null,
-            providers: user.providerData.map(p => p.providerId)
-          }, null, 2);
-          showStatus('User signed in: ' + (user.email || user.phoneNumber || user.uid));
-        } else {
-          curUserEl.textContent = 'No user signed in.';
-          showStatus('Not signed in');
-        }
-      });
-
-      // ========== Google Sign-in ==========
-      document.getElementById('btn-google').addEventListener('click', async function(){
-        showStatus('Opening Google sign-in...');
-        appendLog('Opening Google sign-in flow.');
-        try {
-          const provider = new firebase.auth.GoogleAuthProvider();
-          // optional: provider.addScope('profile');
-          // Use popup for admin flows
-          const res = await auth.signInWithPopup(provider);
-          appendLog('Google sign-in successful: ' + (res.user && (res.user.email || res.user.uid)));
-        } catch(err){
-          console.error('Google sign-in failed:', err);
-          appendLog('Google sign-in failed: ' + err.message);
-          alert('Google sign-in error: ' + (err.message || err));
-          showStatus('Google sign-in error (check console).');
-        }
-      });
-
-      // ========== Email / Password ==========
-      const emailInput = document.getElementById('email');
-      const passInput = document.getElementById('password');
-      document.getElementById('btn-login-email').addEventListener('click', async ()=>{
-        const email = emailInput.value.trim();
-        const pwd = passInput.value;
-        if(!email || !pwd){ alert('Enter email and password'); return; }
-        showStatus('Signing in with email...');
-        try{
-          const res = await auth.signInWithEmailAndPassword(email, pwd);
-          appendLog('Email login success: ' + res.user.uid);
-        }catch(err){
-          appendLog('Email login error: ' + err.message);
-          alert('Login failed: ' + err.message);
-        }
-      });
-      document.getElementById('btn-signup-email').addEventListener('click', async ()=>{
-        const email = emailInput.value.trim();
-        const pwd = passInput.value;
-        if(!email || !pwd){ alert('Enter email and password for signup'); return; }
-        showStatus('Creating account...');
-        try{
-          const res = await auth.createUserWithEmailAndPassword(email, pwd);
-          appendLog('Account created: ' + res.user.uid);
-        }catch(err){
-          appendLog('Signup error: ' + err.message);
-          alert('Signup failed: ' + err.message);
-        }
-      });
-      document.getElementById('btn-reset-password').addEventListener('click', async ()=>{
-        const email = emailInput.value.trim();
-        if(!email){ alert('Enter email to reset'); return; }
-        try{
-          await auth.sendPasswordResetEmail(email);
-          appendLog('Password reset sent to ' + email);
-          alert('Reset email sent.');
-        }catch(err){
-          appendLog('Reset error: ' + err.message);
-          alert('Reset failed: ' + err.message);
-        }
-      });
-
-      // ========== Phone Auth (OTP) ==========
-      // Setup recaptcha (invisible)
-      let recaptchaVerifier = null;
-      function ensureRecaptcha(){
-        if(recaptchaVerifier) return recaptchaVerifier;
-        // Use Firebase Recaptcha in visible mode so user can see it
-        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-          size: 'invisible', // invisible usually; can be 'normal' to show widget
-          callback: function(response){
-            appendLog('reCAPTCHA resolved.');
-          },
-          'expired-callback': function(){
-            appendLog('reCAPTCHA expired; please re-trigger.');
-          }
-        });
-        recaptchaVerifier.render().then(widgetId => {
-          appendLog('reCAPTCHA rendered (widgetId=' + widgetId + ')');
-        }).catch(err=>{
-          appendLog('reCAPTCHA render error: ' + err.message);
-          console.error(err);
-        });
-        return recaptchaVerifier;
-      }
-
-      document.getElementById('btn-send-otp').addEventListener('click', async ()=>{
-        const phone = (document.getElementById('phone').value || '').trim();
-        if(!phone){ alert('Enter phone number (with country code)'); return; }
-        try{
-          showStatus('Sending OTP to ' + phone);
-          ensureRecaptcha();
-          const appVerifier = recaptchaVerifier;
-          const confirmationResult = await auth.signInWithPhoneNumber(phone, appVerifier);
-          // store confirmationResult to verify later
-          window._phoneConfirmation = confirmationResult;
-          appendLog('OTP sent (client). Please enter code and verify.');
-          alert('OTP sent. Check your phone.');
-        }catch(err){
-          appendLog('Send OTP error: ' + (err && err.message));
-          console.error(err);
-          alert('Send OTP failed: ' + (err.message || err));
-        }
-      });
-
-      document.getElementById('btn-verify-otp').addEventListener('click', async ()=>{
-        const code = (document.getElementById('otp').value || '').trim();
-        if(!code){ alert('Enter OTP code'); return; }
-        if(!window._phoneConfirmation){
-          alert('No OTP request found. Please send OTP first.');
-          return;
-        }
-        try{
-          const res = await window._phoneConfirmation.confirm(code);
-          appendLog('Phone login success: ' + res.user.uid);
-          alert('Phone login success.');
-        }catch(err){
-          appendLog('Verify OTP error: ' + err.message);
-          console.error(err);
-          alert('OTP verify failed: ' + err.message);
-        }
-      });
-
-      // Small helper to sign out
-      window.signOutNJ = async function(){
-        try {
-          await auth.signOut();
-          appendLog('User logged out (manual).');
-          alert('Signed out.');
-        } catch(e){
-          appendLog('Sign out error: ' + e.message);
-        }
-      };
-
-      // Ensure recaptcha is pre-rendered to reduce first-time delay
-      try {
-        ensureRecaptcha();
-      } catch(e){
-        appendLog('Recaptcha pre-render error: ' + (e && e.message));
-      }
-
-      // Provide a global debug helper
-      window.NJ.debug = {
-        log: appendLog,
-        showStatus
-      };
-
-      appendLog('Login UI initialized. Use Google / Email / Phone to sign in.');
-    })();
-  </script>
-
-  <!-- End of Part 1 -->
 </body>
 </html>
-<!-- ======= Part 2 (append right after Part 1 content) ======= -->
-<script>
-  (function(){
-    // ---------- Config ----------
-    // IMPORTANT:
-    // - If you want to restrict admin access, update ADMIN_WHITELIST below (emails or phone numbers).
-    // - If you use a custom admin page, change ADMIN_PAGE to that file.
-    const ADMIN_PAGE = 'admin.html';      // page to redirect admin users
-    const USER_HOME = 'index.html';       // regular user
-    const ADMIN_WHITELIST = [
-      'your.admin.email@example.com',     // replace with real admin email(s)
-      // phone example: '+919876543210'
-    ];
-
-    // small helpers
-    const el = id => document.getElementById(id);
-    const readLS = k => { try { return JSON.parse(localStorage.getItem(k)||'null'); } catch(e){ return null; } };
-    const writeLS = (k,v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
-
-    // UI refs from part1
-    const statusEl = el('status');
-    const logEl = el('log');
-    const curUserEl = el('current-user');
-
-    function appendLog(txt){
-      logEl.textContent = (new Date()).toLocaleTimeString() + ' - ' + txt + '\n' + logEl.textContent;
-      console.log('[NJ_LOG]', txt);
-    }
-
-    // Wait for firebase to be ready
-    async function waitForAuth(){
-      let tries = 0;
-      while(!window.NJ || !window.NJ.auth){
-        await new Promise(r => setTimeout(r, 150));
-        tries++;
-        if(tries > 80){ appendLog('Firebase auth not available after wait.'); return null; }
-      }
-      return window.NJ.auth;
-    }
-
-    // simple admin check (email or phone)
-    function isAdminUser(user){
-      if(!user) return false;
-      const email = (user.email || '').toString().toLowerCase();
-      const phone = (user.phoneNumber || '').toString();
-      for(let a of ADMIN_WHITELIST){
-        if(!a) continue;
-        if(a.includes('@') && email && email === a.toString().toLowerCase()) return true;
-        if(a.startsWith('+') && phone && phone === a) return true;
-      }
-      return false;
-    }
-
-    // redirect helper with small delay for UX
-    function redirectTo(url){
-      appendLog('Redirecting to: ' + url);
-      setTimeout(()=> window.location.href = url, 600);
-    }
-
-    // show detailed diagnostic if login fails (400/401 errors)
-    function diagnosticMessage(err){
-      if(!err) return 'Unknown error';
-      const m = (err && err.message) ? err.message : (''+err);
-      if(m.includes('network')) return 'Network error — check your internet connection.';
-      if(m.includes('API key not valid')) return 'API key invalid — check firebaseConfig in the page and ensure the API key is correct & not restricted to other origins.';
-      if(m.includes('auth/too-many-requests')) return 'Too many attempts — try again later or use a test number.';
-      return m;
-    }
-
-    // update UI with signed-in user
-    function showUser(user){
-      if(!user){
-        curUserEl.textContent = 'No user signed in.';
-        return;
-      }
-      try{
-        const safe = {
-          uid: user.uid,
-          email: user.email || null,
-          phoneNumber: user.phoneNumber || null,
-          displayName: user.displayName || null,
-          providers: (user.providerData || []).map(p=>p.providerId)
-        };
-        curUserEl.textContent = JSON.stringify(safe, null, 2);
-      }catch(e){
-        curUserEl.textContent = 'Error rendering user';
-      }
-    }
-
-    // onAuth change to handle redirect & localStorage write
-    async function attachAuthObserver(){
-      const auth = await waitForAuth();
-      if(!auth) return;
-      auth.onAuthStateChanged(async user => {
-        if(user){
-          appendLog('Auth state: signed in (' + (user.email || user.phoneNumber || user.uid) + ')');
-          showUser(user);
-          writeLS('nj_user', {
-            uid: user.uid,
-            email: user.email || '',
-            phone: user.phoneNumber || '',
-            name: user.displayName || '',
-            providers: (user.providerData||[]).map(p=>p.providerId||'')
-          });
-
-          // Admin check
-          if(isAdminUser(user)){
-            appendLog('User is admin — redirecting to admin panel.');
-            // optional: set token or custom claim check here
-            redirectTo(ADMIN_PAGE);
-            return;
-          }
-
-          // else regular user
-          appendLog('Redirecting to user home.');
-          redirectTo(USER_HOME);
-
-        } else {
-          appendLog('Auth state: signed out.');
-          showUser(null);
-          statusEl.textContent = 'Not signed in';
-        }
-      });
-    }
-
-    // ---- Extra helper: create a "user profile" entry in firestore (optional) ----
-    // This will create/update a document in 'customers' collection with basic info.
-    // Useful to have user records in Firestore for later use.
-    async function ensureUserProfile(user){
-      if(!user) return;
-      try{
-        const db = window.NJ.db;
-        if(!db) { appendLog('Firestore not initialized; skipping profile save.'); return; }
-        const uid = user.uid;
-        const docRef = db.collection('customers').doc(uid);
-        await docRef.set({
-          uid: uid,
-          name: user.displayName || '',
-          email: user.email || '',
-          phone: user.phoneNumber || '',
-          lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
-        appendLog('User profile saved in Firestore.');
-      } catch(err){
-        appendLog('Profile save error: ' + (err.message || err));
-      }
-    }
-
-    // ---- Admin whitelist UI helper: quick edit (only visible if currently admin on same device) ----
-    function showAdminQuickEdit(user){
-      // If signed-in user is admin, show quick admin controls in the Status panel
-      try{
-        const node = document.createElement('div');
-        node.style.marginTop = '10px';
-        node.style.padding = '10px';
-        node.style.background = '#f4fff7';
-        node.style.border = '1px solid #e6f4ea';
-        node.style.borderRadius = '8px';
-        node.innerHTML = `<div style="font-weight:700">Admin quick</div>
-          <div style="margin-top:6px">
-            <button id="btn-open-admin" class="btn" style="padding:8px 10px;margin-right:8px">Open Admin panel</button>
-            <button id="btn-copy-user" class="btn ghost" style="padding:8px 10px">Copy user details</button>
-          </div>`;
-        document.querySelector('.panel.right').appendChild(node);
-        document.getElementById('btn-open-admin').addEventListener('click', ()=>{ window.location.href = ADMIN_PAGE; });
-        document.getElementById('btn-copy-user').addEventListener('click', ()=>{
-          const u = readLS('nj_user') || {};
-          navigator.clipboard?.writeText(JSON.stringify(u, null, 2));
-          appendLog('User details copied to clipboard.');
-        });
-      }catch(e){}
-    }
-
-    // ---- Run initialization ----
-    (async function initPart2(){
-      appendLog('Part 2 init — attaching auth observer & final checks.');
-
-      // attach observer
-      attachAuthObserver();
-
-      // show initial debug info
-      const cfg = (typeof firebaseConfig !== 'undefined') ? firebaseConfig : null;
-      appendLog('Using Firebase project: ' + (cfg && cfg.projectId ? cfg.projectId : 'unknown'));
-      if(!cfg || !cfg.apiKey){
-        appendLog('Firebase config missing/invalid. Please set firebaseConfig in Part 1 of the file.');
-        statusEl.textContent = 'Firebase config missing — open Part 1 and paste your config from Firebase console.';
-        return;
-      } else {
-        appendLog('Firebase API key appears present.');
-      }
-
-      // small diagnostic: test a simple API call (list providers) to check API restrictions
-      try{
-        const apicheck = await fetch('https://www.googleapis.com/identitytoolkit/v3/relyingparty/getAccountInfo?key=' + encodeURIComponent(cfg.apiKey), { method: 'POST', body: '{}' });
-        if(apicheck && apicheck.status === 400){
-          appendLog('API check returned 400 — often indicates API key restrictions. Verify API key is not restricted to other referrers.');
-        } else if(apicheck && apicheck.status === 200){
-          appendLog('API check OK (200).');
-        } else {
-          appendLog('API check HTTP status: ' + (apicheck && apicheck.status));
-        }
-      }catch(e){
-        appendLog('API key check failed: ' + (e && e.message));
-      }
-
-      // If user already signed-in (page reloaded), we still want to offer admin quick edit
-      const saved = readLS('nj_user');
-      if(saved && ADMIN_WHITELIST && ADMIN_WHITELIST.length && (ADMIN_WHITELIST.includes((saved.email||'').toString().toLowerCase()) || ADMIN_WHITELIST.includes(saved.phone))){
-        showAdminQuickEdit(saved);
-      }
-
-      // final status
-      statusEl.textContent = 'Ready — choose a sign-in method.';
-    })();
-  })();
-</script>
-
-<!-- small helper UI for manual sign-out (can be called from console) -->
-<script>
-  // expose signOut function globally (safer to use via console or a visible button)
-  window.njSignOut = async function(){
-    try {
-      if(window.NJ && window.NJ.auth){
-        await window.NJ.auth.signOut();
-        localStorage.removeItem('nj_user');
-        alert('Signed out.');
-      } else {
-        alert('Auth not available.');
-      }
-    } catch(e){
-      alert('Sign out error: ' + (e.message || e));
-    }
-  };
-</script>
-
-<!-- End of Part 2 (append after Part 1) -->
