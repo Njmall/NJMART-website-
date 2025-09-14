@@ -1,668 +1,660 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>NJ Mart — Login (Final Expanded)</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NJ Mart — Admin Login</title>
 
-  <!-- ===== Fonts + icons ===== -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
-
-  <!-- ===== Large inline CSS (expanded for readability) ===== -->
+  <!-- Simple CSS reset and styles (keeps file self-contained) -->
   <style>
-    /* ---------- root variables ---------- */
-    :root{
-      --bg:#f6fbf8;
-      --card:#ffffff;
-      --muted:#6b7280;
-      --accent:#2db34a;
-      --accent-dark:#167a2a;
-      --danger:#ef4444;
-      --shadow: 0 12px 36px rgba(12,30,40,0.08);
-      --radius:14px;
-      --maxw:980px;
-      --mono: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    /* Basic reset */
+    html,body,div,span,applet,object,iframe,
+    h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,
+    address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,
+    small,strike,strong,sub,sup,tt,var,b,u,i,center,
+    dl,dt,dd,ol,ul,li,fieldset,form,label,legend,
+    table,caption,tbody,tfoot,thead,tr,th,td {
+      margin:0; padding:0; border:0; font-size:100%; vertical-align:baseline;
     }
-
-    /* ---------- base reset ---------- */
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:var(--mono);
-      background:linear-gradient(180deg,#eef7f0 0%, #f6fbf8 100%);
-      color:#0b1420;
+    html,body { height:100%; }
+    body {
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: #f7fafc;
+      color: #1a202c;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
       line-height:1.4;
+      padding: 20px;
     }
 
-    /* ---------- layout container ---------- */
-    .wrap{
-      max-width:var(--maxw);
-      margin:22px auto;
-      padding:16px;
+    /* Layout */
+    .container {
+      max-width: 980px;
+      margin: 18px auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 8px 30px rgba(10,10,20,0.06);
+      overflow: hidden;
+      display: flex;
+      gap: 0;
+      min-height: 540px;
     }
 
-    /* ---------- header ---------- */
-    header.app-header{
+    .left-panel {
+      width: 420px;
+      background: linear-gradient(180deg,#10b981,#059669);
+      color: white;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .brand {
       display:flex;
+      gap:10px;
       align-items:center;
-      gap:12px;
-      margin-bottom:18px;
+      font-weight:700;
+      font-size:20px;
     }
-    .logo{
-      width:64px;height:64px;border-radius:12px;
-      background:linear-gradient(135deg,var(--accent),var(--accent-dark));
-      display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;
-      box-shadow:0 8px 28px rgba(16,185,129,0.12);
+    .brand .logo {
+      width:44px; height:44px; border-radius:8px;
+      background: rgba(255,255,255,0.18);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:700; color:white;
     }
-    .brand h1{margin:0;font-size:20px}
-    .brand p{margin:0;color:var(--muted);font-size:13px}
+    .left-panel h1 {
+      font-size:28px; margin-top:6px;
+      line-height:1.05;
+    }
+    .left-panel p { opacity:0.95; margin-top:6px; font-size:14px; max-width:320px; }
 
-    /* ---------- grid layout ---------- */
-    .grid{
-      display:grid;
-      grid-template-columns:420px 1fr;
+    .right-panel {
+      flex:1; padding: 28px 30px;
+      display:flex; flex-direction:column;
       gap:18px;
-      align-items:start;
-    }
-    @media(max-width:980px){
-      .grid{grid-template-columns:1fr}
     }
 
-    /* ---------- card ---------- */
-    .card{
-      background:var(--card);
-      border-radius:var(--radius);
-      padding:18px;
-      box-shadow:var(--shadow);
-      border:1px solid rgba(8,20,18,0.02);
+    .card {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 6px 18px rgba(12, 12, 20, 0.04);
     }
 
-    /* ---------- auth column ---------- */
-    .auth-col{display:flex;flex-direction:column;gap:12px}
-
-    .section-title{font-weight:700;font-size:16px;margin:0}
-    .section-sub{color:var(--muted);font-size:13px;margin-top:6px}
-
-    /* ---------- inputs/buttons ---------- */
-    .field{display:flex;flex-direction:column;gap:8px}
-    input[type="text"], input[type="email"], input[type="password"], input[type="tel"], textarea{
-      padding:12px 14px;border-radius:10px;border:1px solid #e6efea;background:#fff;font-size:15px;
-      outline:none;transition:box-shadow .15s ease,border-color .15s ease;
+    /* Tabs */
+    .tabs {
+      display:flex; gap:8px;
+      margin-bottom: 10px;
     }
-    input:focus, textarea:focus{box-shadow:0 6px 18px rgba(16,185,129,0.08);border-color:var(--accent-dark)}
-
-    .btn{
-      display:inline-flex;align-items:center;gap:8px;justify-content:center;
-      padding:10px 12px;border-radius:10px;border:0;font-weight:800;cursor:pointer;
+    .tab {
+      padding:8px 12px; border-radius:8px; cursor:pointer;
+      background: #f3f4f6; color: #374151; font-weight:600;
+      border: 1px solid rgba(15, 15, 20, 0.02);
     }
-    .btn-primary{background:var(--accent);color:#fff}
-    .btn-ghost{background:#fff;border:1px solid #e6f0ea;color:#111;padding:10px}
-    .btn-google{background:#fff;border:1px solid #e8e8e8;color:#111}
-    .small{font-size:13px;color:var(--muted)}
-    .muted{color:var(--muted)}
+    .tab.active { background: white; box-shadow: 0 4px 10px rgba(12,12,20,0.04); }
 
-    /* layout helpers */
-    .row{display:flex;gap:12px;align-items:center}
-    .col{flex:1}
+    /* forms */
+    form { display:flex; flex-direction:column; gap:12px; }
+    label { font-size:13px; color:#374151; font-weight:600; }
+    input[type="text"], input[type="email"], input[type="password"], input[type="tel"] {
+      width:100%; padding:10px 12px; border-radius:8px; border:1px solid #e6e9ef;
+      font-size:14px; outline:none;
+      box-sizing:border-box;
+    }
+    input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="tel"]:focus {
+      border-color: #7dd3fc;
+      box-shadow: 0 8px 20px rgba(34,197,94,0.04);
+    }
+    .row { display:flex; gap:10px; align-items:center; }
+    .btn {
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:10px 14px; border-radius:10px; cursor:pointer; border:0; font-weight:700;
+    }
+    .btn.primary {
+      background: #059669; color:white;
+      box-shadow: 0 10px 24px rgba(5,150,105,0.12);
+    }
+    .btn.ghost {
+      background: transparent; border:1px solid #e6e9ef; color:#111827;
+    }
+    .muted { color:#6b7280; font-size:13px; }
 
-    /* OTP area */
-    #otpArea{display:none}
+    .socials {
+      display:flex; gap:8px;
+    }
+    .social-btn {
+      flex:1; padding:9px; border-radius:9px; display:flex; gap:8px; align-items:center; justify-content:center; cursor:pointer;
+      border:1px solid rgba(0,0,0,0.06);
+      background: #fff;
+    }
 
-    /* right column: tips/debug */
-    .info-list{font-size:13px;color:var(--muted);line-height:1.5}
-    .kbd{background:#f3f4f6;border-radius:6px;padding:6px 8px;font-family:monospace;font-size:13px}
+    .footer {
+      margin-top:auto; font-size:13px; color:#6b7280; text-align:center;
+      padding-top:12px;
+    }
 
-    /* footer */
-    footer.footer{margin-top:18px;padding:12px;text-align:center;color:var(--muted);font-size:13px}
+    .notice {
+      background:#fff3cd; color:#665b00; padding:10px; border-radius:8px; font-size:13px;
+      border:1px solid rgba(200,160,0,0.12);
+    }
+
+    .status-line { font-size:13px; color:#374151; }
+
+    /* responsive */
+    @media (max-width:980px) {
+      .container { flex-direction:column; padding:10px; margin:10px; }
+      .left-panel { width:100%; order:2; padding:20px; text-align:center; }
+      .right-panel { order:1; padding:18px; }
+    }
   </style>
 
+  <!-- Firebase CDN (compat libs) -->
+  <!-- Using compat builds for simpler top-level API in a single file -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
+
+  <!-- NOTE: If Identity Toolkit / reCAPTCHA calls fail in console, check Cloud Console settings and ensure API key is enabled and authorized domain added -->
 </head>
 <body>
-  <div class="wrap">
-
-    <!-- header -->
-    <header class="app-header">
-      <div class="logo">NJ</div>
+  <div class="container" id="app-root">
+    <div class="left-panel">
       <div class="brand">
-        <h1>NJ Mart</h1>
-        <p>Grocery & home delivery — secure admin/customer login</p>
+        <div class="logo">NJ</div>
+        <div>NJ Mart Admin</div>
       </div>
-    </header>
 
-    <div class="grid">
-      <!-- LEFT: Authentication UI -->
-      <section class="card auth-col" aria-labelledby="auth-heading">
+      <h1>Admin access</h1>
+      <p>Use Google, Email or Phone OTP to sign into your admin panel. Keep credentials safe.</p>
 
-        <div>
-          <h2 id="auth-heading" class="section-title">Sign in — NJ Mart</h2>
-          <div class="section-sub">Use Google, Email/password or Phone (OTP). Configure Firebase Auth and Authorized domains as noted below.</div>
+      <div style="margin-top:12px;">
+        <div class="notice">
+          Make sure <strong>Authorized domains</strong> in Firebase console contains your deployment domain (e.g., njmart.netlify.app)
         </div>
+      </div>
 
-        <!-- GOOGLE -->
-        <div class="card" style="padding:12px">
-          <div class="row" style="justify-content:space-between;align-items:center">
-            <div>
-              <div style="font-weight:800">Sign in with Google</div>
-              <div class="small" style="margin-top:6px">Fast sign-in using Google account</div>
-            </div>
-            <div>
-              <button id="btnGoogle" class="btn btn-google"><i class="fa fa-google"></i> Sign in</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- EMAIL -->
-        <div class="card" style="padding:12px">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div style="font-weight:800">Email / Password</div>
-              <div class="small" style="margin-top:6px">Login or create account</div>
-            </div>
-            <div class="kbd">secure</div>
-          </div>
-
-          <form id="emailForm" style="margin-top:12px">
-            <div class="field">
-              <label class="small muted">Email</label>
-              <input id="email" type="email" placeholder="you@example.com" required>
-            </div>
-            <div class="field">
-              <label class="small muted">Password</label>
-              <input id="password" type="password" placeholder="password (min 6 chars)" required>
-            </div>
-
-            <div style="display:flex;gap:8px;margin-top:10px">
-              <button id="btnEmailLogin" class="btn btn-primary col">Login</button>
-              <button id="btnShowSignup" type="button" class="btn btn-ghost">Sign up</button>
-            </div>
-
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-              <a href="#" id="linkForgot" class="small">Forgot password?</a>
-              <div id="emailHelp" class="small muted">We never share your password.</div>
-            </div>
-          </form>
-
-          <!-- signup block (hidden) -->
-          <div id="signupBlock" style="margin-top:12px;display:none;border-top:1px dashed #eef8ee;padding-top:10px">
-            <div class="small muted">Create new account</div>
-            <div class="field" style="margin-top:8px">
-              <label class="small muted">Email</label>
-              <input id="signupEmail" type="email" placeholder="your@email.com">
-            </div>
-            <div class="field">
-              <label class="small muted">Password</label>
-              <input id="signupPassword" type="password" placeholder="choose a password">
-            </div>
-            <div style="display:flex;gap:8px;margin-top:8px">
-              <button id="btnSignupCreate" class="btn btn-primary col">Create</button>
-              <button id="btnSignupCancel" class="btn btn-ghost">Cancel</button>
-            </div>
-          </div>
-
-          <!-- reset password (hidden) -->
-          <div id="resetBlock" style="margin-top:12px;display:none;border-top:1px dashed #fff3e0;padding-top:10px">
-            <div class="small muted">Reset password</div>
-            <div class="field" style="margin-top:8px">
-              <label class="small muted">Email for reset</label>
-              <input id="resetEmail" type="email" placeholder="email to receive reset link">
-            </div>
-            <div style="display:flex;gap:8px;margin-top:8px">
-              <button id="btnResetSend" class="btn btn-primary col">Send Reset Email</button>
-              <button id="btnResetCancel" class="btn btn-ghost">Cancel</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- PHONE -->
-        <div class="card" style="padding:12px">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div style="font-weight:800">Phone (OTP)</div>
-              <div class="small" style="margin-top:6px">Use SMS OTP — requires reCAPTCHA & authorized domain</div>
-            </div>
-            <div class="small muted">E.164 format</div>
-          </div>
-
-          <div style="margin-top:12px">
-            <div class="field">
-              <label class="small muted">Phone</label>
-              <input id="phone" type="tel" placeholder="+91xxxxxxxxxx">
-            </div>
-            <!-- recaptcha container required by Firebase -->
-            <div id="recaptcha-container" style="margin-top:8px"></div>
-
-            <div style="display:flex;gap:8px;margin-top:10px">
-              <button id="btnSendOtp" class="btn btn-primary col">Send OTP</button>
-              <button id="btnClearPhone" class="btn btn-ghost">Clear</button>
-            </div>
-
-            <div id="otpArea" style="margin-top:12px;display:none">
-              <div class="field">
-                <label class="small muted">Enter OTP</label>
-                <input id="otp" type="text" placeholder="6-digit code">
-              </div>
-              <div style="display:flex;gap:8px;margin-top:8px">
-                <button id="btnVerifyOtp" class="btn btn-primary col">Verify</button>
-                <button id="btnResendOtp" class="btn btn-ghost">Resend</button>
-              </div>
-            </div>
-
-            <div class="small muted" style="margin-top:8px">For testing without SMS cost, add test phone numbers in Firebase console (Auth → Sign-in method → Phone → Test numbers).</div>
-          </div>
-        </div>
-
-        <!-- status / actions -->
-        <div class="card" style="padding:12px;display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div style="font-weight:800">Status</div>
-            <div>
-              <button id="btnSignOut" class="btn btn-ghost" style="display:none">Sign out</button>
-            </div>
-          </div>
-
-          <div id="statusBox" class="small muted">Not signed in</div>
-
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button id="btnShowLocal" class="btn btn-ghost">Show local profile</button>
-            <button id="btnClearLocal" class="btn btn-ghost">Clear local</button>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- RIGHT: Info / Backend / Tips -->
-      <aside class="card">
-        <h3 style="margin:0">Deployment checklist</h3>
-        <div class="info-list" style="margin-top:8px">
-          <div>1) Firebase Console → Authentication → Sign-in method: <strong>Enable</strong> Email/Password, Google & Phone.</div>
-          <div style="margin-top:6px">2) Add authorized domain(s): <code>njmart.netlify.app</code> and <code>localhost</code> (if local testing).</div>
-          <div style="margin-top:6px">3) For Phone OTP, configure reCAPTCHA in Firebase settings (domain must match).</div>
-          <div style="margin-top:6px">4) If you want customer rows in Google Sheets, deploy Apps Script web app and set its URL below in code (API_BACKEND_URL).</div>
-        </div>
-
-        <h3 style="margin-top:12px">Apps Script / Backend</h3>
-        <div class="info-list" style="margin-top:6px">
-          <div>Paste your Apps Script web app URL below in the JavaScript variable <code>API_BACKEND_URL</code> to enable auto-save of customers/orders.</div>
-          <div style="margin-top:6px">Example: <span class="kbd">https://script.google.com/macros/s/AKfy.../exec</span></div>
-        </div>
-
-        <h3 style="margin-top:12px">Notes</h3>
-        <div class="info-list" style="margin-top:6px">
-          <div>- If OTP not arriving: check reCAPTCHA domain and Firebase phone quotas/test numbers.</div>
-          <div style="margin-top:6px">- Use browser console to view detailed errors (F12 → Console).</div>
-        </div>
-      </aside>
+      <div style="margin-top:18px; font-size:13px; opacity:0.95;">
+        <div><strong>Support:</strong> +91 70000 00000</div>
+        <div style="margin-top:6px" class="muted">Site: njmart.netlify.app</div>
+      </div>
     </div>
 
-    <footer class="footer">
-      NJ Mart — prepare your account, then sign in. Support: +91 70629 18607
-    </footer>
+    <div class="right-panel">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <div>
+          <div style="font-weight:700; font-size:20px;">Sign in to your admin account</div>
+          <div class="muted" style="margin-top:4px;">Choose one of the available sign-in methods</div>
+        </div>
+        <div class="status-line" id="status-line">Initializing...</div>
+      </div>
+
+      <div class="card">
+        <div class="tabs">
+          <div class="tab active" data-tab="google" id="tab-google">Google</div>
+          <div class="tab" data-tab="email" id="tab-email">Email</div>
+          <div class="tab" data-tab="phone" id="tab-phone">Phone OTP</div>
+        </div>
+
+        <!-- Google Signin -->
+        <div id="panel-google" class="panel">
+          <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+            <div style="flex:1;">
+              <div style="font-weight:700">Continue with Google</div>
+              <div class="muted" style="font-size:13px">Use your Google account</div>
+            </div>
+            <div style="width:160px;">
+              <button class="btn primary" id="btn-google">Sign in with Google</button>
+            </div>
+          </div>
+
+          <div class="muted">Or use Email / Phone from tabs.</div>
+        </div>
+
+        <!-- Email Signin -->
+        <div id="panel-email" class="panel" style="display:none;">
+          <form id="form-email">
+            <div>
+              <label for="email">Email</label>
+              <input id="email" type="email" placeholder="you@company.com" required />
+            </div>
+            <div>
+              <label for="password">Password</label>
+              <input id="password" type="password" placeholder="Enter password" required />
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:6px;">
+              <button type="button" class="btn primary" id="btn-email-login">Login</button>
+              <button type="button" class="btn ghost" id="btn-email-signup">Sign up</button>
+              <button type="button" class="btn ghost" id="btn-forgot">Forgot</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Phone Signin -->
+        <div id="panel-phone" class="panel" style="display:none;">
+          <form id="form-phone">
+            <div>
+              <label for="phone">Phone (E.164 format)</label>
+              <input id="phone" type="tel" placeholder="+91 70000 00000" />
+            </div>
+
+            <div id="recaptcha-container" style="margin-top:8px;"></div>
+
+            <div style="display:flex; gap:10px; margin-top:10px;">
+              <button type="button" class="btn primary" id="btn-send-otp">Send OTP</button>
+              <button type="button" class="btn ghost" id="btn-clear-otp" style="display:none;">Clear</button>
+            </div>
+
+            <div id="otp-section" style="display:none; margin-top:12px;">
+              <label for="otp">Enter OTP</label>
+              <input id="otp" type="text" placeholder="123456" />
+              <div style="display:flex; gap:10px; margin-top:8px;">
+                <button type="button" class="btn primary" id="btn-verify-otp">Verify</button>
+                <button type="button" class="btn ghost" id="btn-resend-otp">Resend</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <hr style="margin:14px 0; border:none; border-top:1px solid #eef2f6;" />
+
+        <div style="display:flex; gap:12px; align-items:center; justify-content:space-between;">
+          <div class="muted">Logged-in user: <span id="user-email" style="font-weight:700">—</span></div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn ghost" id="btn-signout">Sign out</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <div style="font-weight:700; margin-bottom:8px;">Developer logs</div>
+        <pre id="dev-log" style="height:140px; overflow:auto; background:#fcfcfe; padding:10px; border-radius:8px; border:1px solid #eef2f6;"></pre>
+      </div>
+
+      <div class="footer">
+        © NJ Mart — All rights reserved.
+      </div>
+
+    </div>
   </div>
 
-  <!-- ===== Firebase v8 (compat) CDNs ===== -->
-  <!-- Using v8 for simpler direct usage in plain HTML (no bundler) -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-<!-- ===== Part B: Full JS logic (expanded) ===== -->
+  <!-- Begin Firebase configuration and app logic -->
   <script>
-    /**
-     * NJ Mart — login (Part B)
-     * - Expanded JS handling for: Google / Email / Signup / Reset / Phone OTP
-     * - Local storage profile save
-     * - Optional backend call (Apps Script) to append customer rows
+    /*************************************************************************
+     * Firebase Configuration
      *
-     * IMPORTANT:
-     * - Replace API_BACKEND_URL variable below with your deployed Apps Script web app URL if you want server-side save.
-     * - Ensure firebaseConfig matches your Firebase project (already set below).
-     */
+     * NOTE: This is the "config" snippet. If you host your app with bundlers
+     * or NPM toolchain you might choose a different method. This file uses
+     * the CDN "compat" approach for simplicity.
+     *
+     * Replace or verify values are correct in Firebase console (Project settings)
+     *************************************************************************/
 
-    (function(){
-      // --------------------------
-      // 1) Firebase config (use your provided values)
-      // --------------------------
-      const firebaseConfig = {
-        apiKey: "AIzaSyCbf19k8pLFh-9UQz8sQRim2rPYT1qaEL8",
-        authDomain: "njmartonline.firebaseapp.com",
-        projectId: "njmartonline",
-        storageBucket: "njmartonline.firebasestorage.app",
-        messagingSenderId: "594505763627",
-        appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
-      };
+    const firebaseConfig = {
+      apiKey: "AIzaSyCbf19k8pLFh-9Uq28s0Rim2rPYT1qaEL8",
+      authDomain: "njmartonline.firebaseapp.com",
+      projectId: "njmartonline",
+      storageBucket: "njmartonline.firebasestorage.app",
+      messagingSenderId: "594505763627",
+      appId: "1:594505763627:web:a13b0da3ef40e620f9b936e"
+    };
 
-      // initialize
-      if(!firebase || !firebase.initializeApp){
-        console.error("Firebase SDK not loaded.");
-        document.getElementById('statusBox').textContent = "Firebase SDK not loaded — check CDN.";
-        return;
-      }
-      firebase.initializeApp(firebaseConfig);
-      const auth = firebase.auth();
-      const db = firebase.firestore ? firebase.firestore() : null;
-      console.log("[NJ] Firebase initialized:", firebaseConfig.projectId);
+    // Initialize Firebase
+    let app, auth;
+    try {
+      app = firebase.initializeApp(firebaseConfig);
+      auth = firebase.auth();
+      consoleLog("[NJ] Firebase initialized: " + (app.name || "default"));
+    } catch (err) {
+      consoleLog("[NJ][ERROR] Firebase init failed: " + err);
+    }
 
-      // --------------------------
-      // 2) Optional backend (Apps Script) — set your deployed URL here
-      // --------------------------
-      const API_BACKEND_URL = ""; // <-- paste your script web app URL here if you want auto-saving
+    // Utility for dev log
+    function consoleLog(msg) {
+      const d = new Date().toISOString();
+      const el = document.getElementById('dev-log');
+      el.textContent = d + "  " + msg + "\n" + el.textContent;
+      // Also print to browser console for convenience
+      console.log(msg);
+    }
 
-      // --------------------------
-      // 3) DOM references
-      // --------------------------
-      const $ = id => document.getElementById(id);
-      const btnGoogle = $('btnGoogle');
-      const btnEmailLogin = $('btnEmailLogin');
-      const btnShowSignup = $('btnShowSignup');
-      const btnSignupCreate = $('btnSignupCreate');
-      const btnSignupCancel = $('btnSignupCancel');
-      const linkForgot = $('linkForgot');
-      const btnResetSend = $('btnResetSend');
-      const btnResetCancel = $('btnResetCancel');
-      const btnSendOtp = $('btnSendOtp');
-      const btnVerifyOtp = $('btnVerifyOtp');
-      const btnResendOtp = $('btnResendOtp');
-      const btnClearPhone = $('btnClearPhone');
-      const btnSignOut = $('btnSignOut');
-      const statusBox = $('statusBox');
+    // Status line update
+    function updateStatus(text) {
+      const s = document.getElementById('status-line');
+      s.textContent = text;
+      consoleLog("[STATUS] " + text);
+    }
 
-      // inputs
-      const inputEmail = $('email');
-      const inputPassword = $('password');
-      const signupEmail = $('signupEmail');
-      const signupPassword = $('signupPassword');
-      const resetEmail = $('resetEmail');
-      const inputPhone = $('phone');
-      const inputOtp = $('otp');
+    updateStatus("Initializing login UI...");
 
-      // helper: show status
-      function setStatus(msg, isError){
-        statusBox.textContent = msg;
-        statusBox.style.color = isError ? 'var(--danger)' : 'var(--accent-dark)';
-        console.log("[NJ] STATUS:", msg);
-      }
-
-      // --------------------------
-      // 4) local storage helpers
-      // --------------------------
-      const LS_KEY = 'njmart_profile_v1';
-      function saveLocalProfile(profile){
-        try{
-          localStorage.setItem(LS_KEY, JSON.stringify(profile || {}));
-          setStatus("Profile saved locally");
-        }catch(e){ console.warn("saveLocalProfile error", e); }
-      }
-      function loadLocalProfile(){
-        try{ return JSON.parse(localStorage.getItem(LS_KEY) || 'null'); }catch(e){return null;}
-      }
-      function clearLocal(){
-        localStorage.removeItem(LS_KEY);
-        setStatus("Local data cleared");
-      }
-
-      // show local profile (button)
-      $('btnShowLocal').addEventListener('click', ()=>{
-        const p = loadLocalProfile();
-        if(!p) return alert("No local profile found.");
-        alert("Local profile:\n\n" + JSON.stringify(p, null, 2));
-      });
-      $('btnClearLocal').addEventListener('click', ()=>{
-        clearLocal();
-        alert("Local cleared.");
+    /*************************************************************************
+     * UI & Tabs
+     *************************************************************************/
+    (function setupTabs(){
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(t => {
+        t.addEventListener('click', () => {
+          tabs.forEach(x => x.classList.remove('active'));
+          t.classList.add('active');
+          showPanel(t.getAttribute('data-tab'));
+        });
       });
 
-      // --------------------------
-      // 5) UI toggles (signup/reset)
-      // --------------------------
-      btnShowSignup.addEventListener('click', ()=>{
-        $('signupBlock').style.display = $('signupBlock').style.display === 'none' ? 'block' : 'none';
-        $('resetBlock').style.display = 'none';
-      });
-      btnSignupCancel.addEventListener('click', ()=> $('signupBlock').style.display = 'none');
+      function showPanel(name) {
+        document.getElementById('panel-google').style.display = name==='google' ? 'block' : 'none';
+        document.getElementById('panel-email').style.display = name==='email' ? 'block' : 'none';
+        document.getElementById('panel-phone').style.display = name==='phone' ? 'block' : 'none';
+      }
 
-      linkForgot.addEventListener('click', (e)=>{
-        e.preventDefault();
-        $('resetBlock').style.display = $('resetBlock').style.display === 'none' ? 'block' : 'none';
-        $('signupBlock').style.display = 'none';
-      });
-      btnResetCancel.addEventListener('click', ()=> $('resetBlock').style.display = 'none');
+      // default: google
+      showPanel('google');
+    })();
 
-      // --------------------------
-      // 6) Auth state listener
-      // --------------------------
-      auth.onAuthStateChanged(function(user){
-        if(user){
-          // user signed in
-          const who = user.displayName || user.email || user.phoneNumber || user.uid;
-          setStatus("Signed in: " + who);
-          btnSignOut.style.display = 'inline-block';
-
-          // save local profile for later pages
-          const profile = {
-            uid: user.uid || '',
-            name: user.displayName || '',
-            email: user.email || '',
-            phone: user.phoneNumber || '',
-            photoURL: user.photoURL || ''
-          };
-          saveLocalProfile(profile);
-
-          // Optionally post to backend (best-effort)
-          if(API_BACKEND_URL && API_BACKEND_URL.length > 10){
-            try{
-              fetch(API_BACKEND_URL, {
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({
-                  action:'addcustomer',
-                  Name: profile.name || '(no name)',
-                  Phone: profile.phone || '',
-                  Email: profile.email || '',
-                  Address: ''
-                })
-              }).then(r=>r.json()).then(resp=>{ console.log("backend addcustomer resp", resp); }).catch(err => console.warn(err));
-            }catch(e){ console.warn("backend call failed", e); }
-          }
-
-          // If you want to redirect after login, uncomment below:
-          // window.location.href = "index.html";
+    /*************************************************************************
+     * Auth State Listener
+     *************************************************************************/
+    let currentUser = null;
+    if (auth) {
+      auth.onAuthStateChanged((user) => {
+        currentUser = user;
+        if (user) {
+          document.getElementById('user-email').textContent = user.email || user.phoneNumber || user.displayName || user.uid;
+          updateStatus("User signed in");
+          consoleLog("[NJ] Signed in: " + (user.email || user.phoneNumber || user.uid));
         } else {
-          // signed out
-          setStatus("Not signed in");
-          btnSignOut.style.display = 'none';
+          document.getElementById('user-email').textContent = "No user logged in";
+          updateStatus("Ready. Use Google / Email / Phone to login.");
+          consoleLog("[NJ] No user logged in");
         }
       });
+    } else {
+      updateStatus("Firebase not initialized");
+      consoleLog("[NJ] Auth object not initialized.");
+    }
 
-      // --------------------------
-      // 7) Google Sign-in
-      // --------------------------
-      btnGoogle.addEventListener('click', async ()=>{
-        setStatus("Opening Google sign-in...");
+    /*************************************************************************
+     * Google Sign-in (Popup)
+     *************************************************************************/
+    document.getElementById('btn-google').addEventListener('click', async function() {
+      updateStatus("Opening Google sign-in...");
+      try {
         const provider = new firebase.auth.GoogleAuthProvider();
-        try{
-          const res = await auth.signInWithPopup(provider);
-          setStatus("Google sign-in success: " + (res.user.email || res.user.uid));
-          console.log("Google result:", res);
-        }catch(err){
-          console.error("Google error:", err);
-          setStatus("Google sign-in failed: " + (err && err.message ? err.message : err), true);
-        }
-      });
+        provider.addScope('profile');
+        provider.addScope('email');
 
-      // --------------------------
-      // 8) Email login
-      // --------------------------
-      $('emailForm').addEventListener('submit', async function(e){
-        e.preventDefault();
-        const em = (inputEmail.value || '').trim();
-        const pw = (inputPassword.value || '').trim();
-        if(!em || !pw){ setStatus("Enter email and password", true); return; }
-        setStatus("Signing in...");
-        try{
-          const cred = await auth.signInWithEmailAndPassword(em, pw);
-          setStatus("Signed in: " + (cred.user.email || cred.user.uid));
-          console.log("Email login:", cred);
-        }catch(err){
-          console.error("Email login error:", err);
-          setStatus("Email login failed: " + (err && err.message ? err.message : err), true);
-        }
-      });
-
-      // --------------------------
-      // 9) Signup create
-      // --------------------------
-      btnSignupCreate.addEventListener('click', async ()=>{
-        const em = (signupEmail.value || '').trim();
-        const pw = (signupPassword.value || '').trim();
-        if(!em || !pw){ setStatus("Enter signup email & password", true); return; }
-        if(pw.length < 6){ setStatus("Password must be 6+ characters", true); return; }
-        setStatus("Creating account...");
-        try{
-          const res = await auth.createUserWithEmailAndPassword(em, pw);
-          setStatus("Account created: " + (res.user.email || res.user.uid));
-          // Optionally send email verification:
-          try{ await res.user.sendEmailVerification(); setStatus("Verification email sent."); }catch(e){ console.warn("sendEmailVerification err", e); }
-        }catch(err){
-          console.error("Signup error:", err);
-          setStatus("Signup failed: " + (err && err.message ? err.message : err), true);
-        }
-      });
-
-      // --------------------------
-      // 10) Reset password
-      // --------------------------
-      btnResetSend.addEventListener('click', async ()=>{
-        const em = (resetEmail.value || '').trim();
-        if(!em){ setStatus("Enter email for reset", true); return; }
-        setStatus("Sending reset email...");
-        try{
-          await auth.sendPasswordResetEmail(em);
-          setStatus("Reset email sent to " + em);
-        }catch(err){
-          console.error("Reset error:", err);
-          setStatus("Reset failed: " + (err && err.message ? err.message : err), true);
-        }
-      });
-
-      // --------------------------
-      // 11) Phone OTP — reCAPTCHA setup
-      // --------------------------
-      // We'll use firebase.auth.RecaptchaVerifier (v8)
-      let recaptchaVerifier = null;
-      let confirmationResult = null;
-
-      function ensureRecaptcha(){
-        try{
-          if(recaptchaVerifier) return recaptchaVerifier;
-          recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-            size: 'invisible',
-            callback: function(response){
-              console.log("reCAPTCHA solved");
-            },
-            'expired-callback': function(){ console.warn("reCAPTCHA expired"); }
-          });
-          // render widget (optional)
-          recaptchaVerifier.render().then(function(widgetId){
-            console.log("reCAPTCHA widgetId:", widgetId);
-          }).catch(err => console.warn("recaptcha render err", err));
-          return recaptchaVerifier;
-        }catch(e){
-          console.error("ensureRecaptcha error", e);
-          return null;
-        }
+        // popup sign-in
+        const result = await auth.signInWithPopup(provider);
+        consoleLog('[NJ] Google signin success: ' + JSON.stringify({ user: result.user && result.user.email }));
+        updateStatus("Google sign-in success");
+      } catch (err) {
+        consoleLog("[NJ][Google Signin Error] " + err);
+        updateStatus("Google sign-in failed (see console)");
       }
+    });
 
-      btnSendOtp.addEventListener('click', async ()=>{
-        const phoneVal = (inputPhone.value || '').trim();
-        if(!phoneVal){ setStatus("Enter phone number in E.164 format like +919876543210", true); return; }
-        if(!/^\+\d{8,15}$/.test(phoneVal)){ setStatus("Phone must be in E.164 format (+countryphone)", true); return; }
-        setStatus("Sending OTP to " + phoneVal + " ...");
-        try{
-          ensureRecaptcha();
-          confirmationResult = await auth.signInWithPhoneNumber(phoneVal, recaptchaVerifier);
-          setStatus("OTP sent. Enter the code and click Verify.");
-          $('otpArea').style.display = 'block';
-        }catch(err){
-          console.error("sendOtp error:", err);
-          // clear recaptcha for next attempt
-          try{ recaptchaVerifier && recaptchaVerifier.clear(); recaptchaVerifier = null; }catch(e){}
-          setStatus("Send OTP failed: " + (err && err.message ? err.message : err), true);
-        }
-      });
+    /*************************************************************************
+     * Email/Password Login & Signup
+     *************************************************************************/
+    document.getElementById('btn-email-login').addEventListener('click', async function() {
+      const email = document.getElementById('email').value.trim();
+      const pwd = document.getElementById('password').value;
+      if (!email || !pwd) { updateStatus("Email & password required"); return; }
+      updateStatus("Signing in with email...");
+      try {
+        const res = await auth.signInWithEmailAndPassword(email, pwd);
+        consoleLog("[NJ] Email login success: " + (res.user && res.user.email));
+        updateStatus("Email login successful");
+      } catch (err) {
+        consoleLog("[NJ][EmailLoginError] " + err);
+        updateStatus("Email login failed. " + (err && err.message));
+      }
+    });
 
-      btnVerifyOtp.addEventListener('click', async ()=>{
-        const code = (inputOtp.value || '').trim();
-        if(!code){ setStatus("Enter OTP code", true); return; }
-        if(!confirmationResult){ setStatus("No OTP requested — click Send OTP first", true); return; }
-        setStatus("Verifying OTP...");
-        try{
-          const res = await confirmationResult.confirm(code);
-          setStatus("Phone sign-in success: " + (res.user.phoneNumber || res.user.uid));
-          console.log("Phone auth result:", res);
-          $('otpArea').style.display = 'none';
-        }catch(err){
-          console.error("verifyOtp error:", err);
-          setStatus("OTP verification failed: " + (err && err.message ? err.message : err), true);
-        }
-      });
+    document.getElementById('btn-email-signup').addEventListener('click', async function() {
+      const email = document.getElementById('email').value.trim();
+      const pwd = document.getElementById('password').value;
+      if (!email || !pwd) { updateStatus("Email & password required for signup"); return; }
+      updateStatus("Creating account...");
+      try {
+        const res = await auth.createUserWithEmailAndPassword(email, pwd);
+        consoleLog("[NJ] Signup success: " + (res.user && res.user.email));
+        updateStatus("Account created and signed in");
+      } catch (err) {
+        consoleLog("[NJ][SignupError] " + err);
+        updateStatus("Signup failed: " + (err && err.message));
+      }
+    });
 
-      btnResendOtp.addEventListener('click', ()=>{
-        // re-run send flow (simple approach)
-        try{
-          recaptchaVerifier && recaptchaVerifier.clear();
-          recaptchaVerifier = null;
-        }catch(e){}
-        btnSendOtp.click();
-      });
+    document.getElementById('btn-forgot').addEventListener('click', async function() {
+      const email = document.getElementById('email').value.trim();
+      if (!email) { updateStatus("Enter your email to reset password"); return; }
+      updateStatus("Sending reset email...");
+      try {
+        await auth.sendPasswordResetEmail(email);
+        updateStatus("Reset email sent (check inbox).");
+        consoleLog("[NJ] Password reset email sent to " + email);
+      } catch (err) {
+        consoleLog("[NJ][ResetError] " + err);
+        updateStatus("Reset failed: " + (err && err.message));
+      }
+    });
 
-      btnClearPhone.addEventListener('click', ()=>{
-        inputPhone.value = '';
-        inputOtp.value = '';
-        $('otpArea').style.display = 'none';
-        setStatus("Phone fields cleared");
-      });
+    /*************************************************************************
+     * Sign out
+     *************************************************************************/
+    document.getElementById('btn-signout').addEventListener('click', async function() {
+      if (!auth) return;
+      try {
+        await auth.signOut();
+        updateStatus("Signed out");
+        consoleLog("[NJ] User signed out");
+      } catch (err) {
+        consoleLog("[NJ][SignoutErr] " + err);
+        updateStatus("Sign out failed");
+      }
+    });
 
-      // --------------------------
-      // 12) Sign out
-      // --------------------------
-      btnSignOut.addEventListener('click', async ()=>{
-        try{
-          await auth.signOut();
-          clearLocal();
-          setStatus("Signed out");
-        }catch(err){
-          console.error("sign out err", err);
-          setStatus("Sign out failed: " + (err && err.message ? err.message : err), true);
-        }
-      });
+    /*************************************************************************
+     * Phone authentication (OTP) using reCAPTCHA verifier
+     *************************************************************************/
+    // We will create a global recaptchaVerifier and confirmationResult on send
+    let recaptchaVerifier = null;
+    let confirmationResult = null;
 
-      // --------------------------
-      // 13) Small helpers: keyboard, validation
-      // --------------------------
-      // Enter on password triggers login
-      inputPassword.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter'){ btnEmailLogin.click(); } });
+    function setupRecaptchaOnce() {
+      // if already setup, return
+      if (recaptchaVerifier) return;
+      try {
+        // render invisible container if not present
+        const container = document.getElementById('recaptcha-container');
+        if (!container) return;
 
-      // --------------------------
-      // 14) Optional: expose debug utils on window
-      // --------------------------
-      window.NJAuthDebug = {
-        firebaseConfig,
-        API_BACKEND_URL,
-        saveLocalProfile,
-        loadLocalProfile
-      };
+        // Use Firebase reCAPTCHA verifier (visible or invisible)
+        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+          size: 'invisible', // invisible, can be changed to 'normal' to show a visible widget
+          callback: (response) => {
+            consoleLog("[NJ] reCAPTCHA solved");
+          },
+          'expired-callback': () => {
+            consoleLog("[NJ] reCAPTCHA expired - reset required");
+          }
+        });
 
-      // initial message
-      setStatus("Ready. Use Google / Email / Phone to login.");
-      console.log("[NJ] Login logic loaded.");
+        recaptchaVerifier.render().then(widgetId => {
+          consoleLog("[NJ] reCAPTCHA rendered (widgetId=" + widgetId + ")");
+        }).catch(err => {
+          consoleLog("[NJ][reCAPTCHA render error] " + err);
+        });
 
-    })(); // IIFE end
+      } catch (err) {
+        consoleLog("[NJ][reCAPTCHA setup failed] " + err);
+      }
+    }
+
+    document.getElementById('btn-send-otp').addEventListener('click', async function() {
+      const phoneNumber = document.getElementById('phone').value.trim();
+      if (!phoneNumber) { updateStatus("Enter phone number in E.164 (e.g. +917000000000)"); return; }
+      setupRecaptchaOnce();
+      updateStatus("Sending SMS OTP...");
+      try {
+        // ensure recaptchaVerifier available
+        if (!recaptchaVerifier) throw new Error("reCAPTCHA not initialized");
+
+        // clear any previous
+        confirmationResult = null;
+
+        confirmationResult = await auth.signInWithPhoneNumber(phoneNumber, recaptchaVerifier);
+        consoleLog("[NJ] OTP sent (confirmationResult available)");
+        updateStatus("OTP sent — enter the code below");
+        document.getElementById('otp-section').style.display = 'block';
+        document.getElementById('btn-clear-otp').style.display = 'inline-flex';
+      } catch (err) {
+        consoleLog("[NJ][PhoneSendError] " + err);
+        updateStatus("Sending OTP failed: " + (err && err.message));
+        // If failed due to recaptcha, reset recaptcha
+        try { recaptchaVerifier && recaptchaVerifier.clear(); recaptchaVerifier = null; } catch(e){}
+      }
+    });
+
+    document.getElementById('btn-verify-otp').addEventListener('click', async function() {
+      const otp = document.getElementById('otp').value.trim();
+      if (!otp) { updateStatus("Enter OTP"); return; }
+      if (!confirmationResult) { updateStatus("No OTP request found; request OTP first"); return; }
+      updateStatus("Verifying OTP...");
+      try {
+        const credentialResult = await confirmationResult.confirm(otp);
+        consoleLog("[NJ] Phone sign-in success: " + (credentialResult.user && credentialResult.user.phoneNumber));
+        updateStatus("Phone sign-in success");
+        // hide OTP input on success
+        document.getElementById('otp-section').style.display = 'none';
+      } catch (err) {
+        consoleLog("[NJ][VerifyOTPError] " + err);
+        updateStatus("OTP verification failed: " + (err && err.message));
+      }
+    });
+
+    document.getElementById('btn-clear-otp').addEventListener('click', function(){
+      document.getElementById('otp').value = '';
+      document.getElementById('otp-section').style.display = 'none';
+      document.getElementById('btn-clear-otp').style.display = 'none';
+      try { recaptchaVerifier && recaptchaVerifier.clear(); recaptchaVerifier = null; } catch(e) {}
+      updateStatus("OTP cleared");
+    });
+
+    // Resend OTP = re-trigger the send flow (with recaptcha reset)
+    document.getElementById('btn-resend-otp').addEventListener('click', async function() {
+      try { recaptchaVerifier && recaptchaVerifier.clear(); recaptchaVerifier = null; } catch(e){}
+      document.getElementById('otp').value = '';
+      updateStatus("Resending OTP...");
+      document.getElementById('btn-send-otp').click();
+    });
+
+    /*************************************************************************
+     * End of Part 1
+     *
+     * Copy Part 2 below and paste immediately after this script tag in the same file
+     *************************************************************************/
   </script>
+  <script>
+    /*************************************************************************
+     * Part 2: additional helpers, diagnostics, and final bits
+     *************************************************************************/
 
-  <!-- ===== End of Part B content ===== -->
+    // Small helper to show alerts within page (non-intrusive)
+    function showInlineMsg(msg, type='info') {
+      // Adds a single-line toast like message in developer logs top
+      const d = new Date().toISOString();
+      const el = document.getElementById('dev-log');
+      const prefix = (type === 'error') ? '[ERROR]' : (type==='warn' ? '[WARN]' : '[INFO]');
+      el.textContent = d + " " + prefix + " " + msg + "\n" + el.textContent;
+    }
 
+    // Diagnostics & troubleshooting check (run on load)
+    function runDiagnostics() {
+      try {
+        if (!firebase || !auth) {
+          updateStatus("Firebase missing or auth not ready");
+          consoleLog("[NJ][Diag] Firebase or auth missing");
+          return;
+        }
+        consoleLog("[NJ][Diag] Firebase SDK loaded, auth present.");
+        // check API key visible
+        if (firebaseConfig && firebaseConfig.apiKey) {
+          consoleLog("[NJ][Diag] API key present (length: " + firebaseConfig.apiKey.length + ")");
+        } else {
+          consoleLog("[NJ][Diag] API key missing - configure project settings");
+        }
+
+        // authorized domains message
+        consoleLog("[NJ][Diag] If Google sign-in fails with 'API key not valid', ensure:");
+        consoleLog("  - The API key in project settings is unrestricted OR allowed for IdentityToolkit APIs");
+        consoleLog("  - Authorized domains contains your domain (e.g., njmart.netlify.app or localhost)");
+        consoleLog("  - OAuth client for web is configured (if using redirect flows)");
+      } catch (err) {
+        consoleLog("[NJ][DiagError] " + err);
+      }
+    }
+
+    // Run diagnostics shortly after init
+    setTimeout(()=> {
+      runDiagnostics();
+      updateStatus("Ready. Select Google / Email / Phone to login.");
+    }, 600);
+
+    /*************************************************************************
+     * Extra UI polish (keyboard shortcuts)
+     *************************************************************************/
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') {
+        // clear OTP section on Escape
+        document.getElementById('otp').value = '';
+      }
+    });
+
+    /*************************************************************************
+     * Helpful debug: display current auth info in console
+     *************************************************************************/
+    window.NJDebug = {
+      getUser: () => currentUser,
+      signOut: () => auth && auth.signOut()
+    };
+
+    /*************************************************************************
+     * Helpful notes for deployment / troubleshooting:
+     *
+     * 1) API key errors (auth/api-key-not-valid) usually mean:
+     *    - The API key is restricted or disabled OR
+     *    - Authorized domains list does not contain the domain you are using
+     *
+     *    -> Go to Firebase Console > Project Settings > General > Web SDK Config
+     *       and check the apiKey and other values.
+     *
+     *    -> Go to Firebase Console > Authentication > Sign-in method
+     *       and ensure Google / Phone providers are enabled.
+     *
+     *    -> Phone auth requires a working reCAPTCHA; ensure Authorized domains and
+     *       also check reCAPTCHA site settings in Google Cloud Console if necessary.
+     *
+     * 2) If reCAPTCHA fails to render:
+     *    - Check console for network errors to gstatic.googleapis.com
+     *    - Check allowed origins / authorized domains in Firebase
+     *
+     * 3) If using Netlify / Vercel / Cloudflare:
+     *    - Ensure there are no extra content security policies blocking gstatic or googleapis
+     *
+     *************************************************************************/
+
+    // final friendly log
+    consoleLog("[NJ] Login UI fully loaded. Use Google / Email / Phone to sign in.");
+
+    // Ensure the dev-log has some initial text for easier reading
+    document.getElementById('dev-log').textContent = "Developer log (newest at top)\n\n" + document.getElementById('dev-log').textContent;
+
+  </script>
 </body>
 </html>
+  
