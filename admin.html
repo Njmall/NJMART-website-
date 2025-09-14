@@ -1,167 +1,1057 @@
-import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { User, Lock, Eye, EyeOff, ShoppingCart } from "lucide-react";
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NJ Mart — Admin Panel (Final Expanded)</title>
 
-export default function GroceryStoreLogin() {
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  <!-- Fonts + icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  // Add Google Sign-In script to head
-  React.useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
-
-    return () => {
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
-      }
-    };
-  }, []);
-
-  const handleGoogleSignIn = async () => {
-    setLoading(true);
-    setMessage('');
-
-    try {
-      // Initialize Google Sign-In
-      if (!window.google) {
-        setMessage('Google Sign-In not available. Please check your connection.');
-        setLoading(false);
-        return;
-      }
-
-      window.google.accounts.id.initialize({
-        client_id: 'YOUR_GOOGLE_CLIENT_ID', // Replace with your Google Client ID
-        callback: handleGoogleResponse,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      });
-
-      window.google.accounts.id.prompt();
-    } catch (error) {
-      setMessage('Google Sign-In failed. Please try again.');
-      console.error('Google Sign-In error:', error);
-      setLoading(false);
+  <!-- Minimal embedded styles for admin layout (major styling should be in style.css) -->
+  <style>
+    :root{
+      --bg:#f6fbf8;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent:#2db34a;
+      --accent-dark:#1f8a34;
+      --danger:#ef4444;
+      --shadow: 0 8px 30px rgba(12,30,40,0.06);
+      --max-width:1200px;
+      --radius:12px;
+      --mono: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
-  };
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--mono);background:var(--bg);color:#111;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
 
-  const handleGoogleResponse = async (response: any) => {
-    try {
-      // Decode the JWT token to get user info
-      const payload = JSON.parse(atob(response.credential.split('.')[1]));
-      
-      const userData = {
-        name: payload.name,
-        email: payload.email,
-        picture: payload.picture,
-        googleId: payload.sub,
-      };
+    .wrap{max-width:var(--max-width);margin:18px auto;padding:14px}
+    .topbar{display:flex;align-items:center;gap:16px;justify-content:space-between;margin-bottom:12px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
+    h1{font-size:20px;margin:0}
 
-      // Store user data in localStorage
-      localStorage.setItem('njmart_user', JSON.stringify(userData));
-      
-      setMessage('Login successful!');
-      
-      // Redirect to admin panel or store
-      setTimeout(() => {
-        if (payload.email === 'admin@njmart.com' || payload.email.includes('njmart')) {
-          window.location.href = '/admin.html';
-        } else {
-          window.location.href = '/store.html';
-        }
-      }, 1500);
-      
-    } catch (error) {
-      setMessage('Failed to process Google Sign-In. Please try again.');
-      console.error('Google response error:', error);
-    } finally {
-      setLoading(false);
+    .controls{display:flex;gap:8px;align-items:center}
+    .btn{border:0;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer}
+    .btn.primary{background:var(--accent);color:#fff}
+    .btn.ghost{background:#fff;border:1px solid #e6eef0}
+    .btn.danger{background:var(--danger);color:#fff}
+    .btn.small{padding:6px 8px;font-size:13px;border-radius:8px}
+
+    .layout{display:grid;grid-template-columns:260px 1fr;gap:16px}
+    @media(max-width:980px){ .layout{grid-template-columns:1fr} }
+
+    .sidebar{background:var(--card);padding:12px;border-radius:var(--radius);box-shadow:var(--shadow)}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;cursor:pointer;color:#111}
+    .nav-item.active{background:#f3fff6;border-left:4px solid var(--accent)}
+    .nav-item i{width:18px;text-align:center;color:var(--muted)}
+
+    .panel{background:var(--card);padding:14px;border-radius:var(--radius);box-shadow:var(--shadow)}
+    .panel h2{margin:0 0 12px 0;font-size:18px}
+
+    .grid-2{display:grid;grid-template-columns:1fr 380px;gap:12px}
+    @media(max-width:980px){ .grid-2{grid-template-columns:1fr} }
+
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    th,td{padding:10px;border-bottom:1px solid #f1f3f4;text-align:left;vertical-align:middle}
+    th{background:#fafafa;font-weight:700}
+    .muted{color:var(--muted)}
+    .small{font-size:13px;color:var(--muted)}
+
+    form.row{display:flex;gap:8px;flex-wrap:wrap}
+    form.row .field{flex:1;min-width:120px}
+    input[type="text"], input[type="number"], input[type="url"], select, textarea{
+      width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef0;background:#fff;font-size:14px;
     }
-  };
+    textarea{min-height:80px;resize:vertical}
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center items-center mb-4">
-            <div className="bg-green-600 p-3 rounded-full">
-              <ShoppingCart className="h-8 w-8 text-white" />
-            </div>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">NJ Mart</h1>
-          <p className="text-gray-600">Fresh Groceries Delivered</p>
-        </div>
+    .toolbar{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+    .search{flex:1;display:flex;gap:8px;align-items:center}
+    .badge{background:#fff;padding:6px 10px;border-radius:999px;border:1px solid #e9f3ee;font-weight:700}
 
-        {/* Login/Register Form */}
-        <Card className="shadow-lg border-0">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">
-              Welcome to NJ Mart
-            </CardTitle>
-            <CardDescription className="text-center">
-              Sign in with Google to access your account and start shopping
-            </CardDescription>
-          </CardHeader>
-          
-          <CardContent className="space-y-6">
-            {/* Google Sign-In Button */}
-            <div className="space-y-4">
-              <Button 
-                onClick={handleGoogleSignIn}
-                className="w-full bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 shadow-sm"
-                disabled={loading}
-              >
-                <div className="flex items-center justify-center gap-3">
-                  <svg className="w-5 h-5" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                  </svg>
-                  {loading ? 'Signing in...' : 'Continue with Google'}
-                </div>
-              </Button>
-              
-              <div className="text-center text-sm text-gray-500">
-                Sign in with your Google account to access NJ Mart
-              </div>
-            </div>
+    .status{padding:8px 12px;border-radius:8px;margin-bottom:10px}
+    .status.ok{background:#edf7ee;color:#1b7a2f}
+    .status.warn{background:#fff4e5;color:#b76b00}
+    .status.err{background:#fdecea;color:#8a1f1f}
 
-            {/* Message Display */}
-            {message && (
-              <div className={`text-center text-sm p-3 rounded-md ${
-                message.includes('successful') 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-red-100 text-red-800'
-              }`}>
-                {message}
-              </div>
-            )}
-          </CardContent>
+    .modal{position:fixed;left:0;top:0;width:100%;height:100%;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);z-index:1000}
+    .modal.active{display:flex}
+    .modal .dialog{width:820px;max-width:96%;background:#fff;padding:18px;border-radius:12px;box-shadow:0 14px 40px rgba(0,0,0,0.18)}
+    .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
 
-          <CardFooter className="flex flex-col space-y-4">
-            <div className="text-center text-xs text-gray-500">
-              By continuing, you agree to NJ Mart's Terms of Service and Privacy Policy
-            </div>
-            
-            <div className="text-center text-sm text-gray-600">
-              For admin access, use your NJ Mart Google account
-            </div>
-          </CardFooter>
-        </Card>
+    .tiny{font-size:12px;color:var(--muted)}
+    .pill{display:inline-block;padding:6px 8px;border-radius:999px;background:#f3fff6;color:var(--accent);font-weight:700}
 
-        {/* Footer */}
-        <div className="text-center mt-8 text-sm text-gray-500">
-          <p>© 2024 NJ Mart. Fresh groceries delivered to your door.</p>
+    .footer-note{text-align:center;padding:8px;color:var(--muted);font-size:13px;margin-top:12px}
+
+    /* helpers */
+    .hide{display:none}
+    .flex{display:flex;gap:8px;align-items:center}
+    .vtop{vertical-align:top}
+    .nowrap{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">NJ</div>
+        <div>
+          <h1>NJ Mart — Admin</h1>
+          <div class="small muted">Manage products, orders, customers, staff and reports</div>
         </div>
       </div>
+
+      <div class="controls">
+        <div class="tiny muted">Signed in as <strong id="adminEmail">admin@example.com</strong></div>
+        <button id="signOutBtn" class="btn small ghost"><i class="fa fa-sign-out-alt"></i> Sign out</button>
+      </div>
     </div>
-  );
-}
+
+    <div class="layout">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="muted small">Navigation</div>
+        <div id="navProducts" class="nav-item active" data-tab="products"><i class="fa fa-box"></i> Products</div>
+        <div id="navOrders" class="nav-item" data-tab="orders"><i class="fa fa-receipt"></i> Orders</div>
+        <div id="navCustomers" class="nav-item" data-tab="customers"><i class="fa fa-users"></i> Customers</div>
+        <div id="navCoupons" class="nav-item" data-tab="coupons"><i class="fa fa-ticket"></i> Coupons</div>
+        <div id="navStaff" class="nav-item" data-tab="staff"><i class="fa fa-user-tie"></i> Staff</div>
+        <div id="navReports" class="nav-item" data-tab="reports"><i class="fa fa-chart-line"></i> Reports</div>
+        <div id="navSettings" class="nav-item" data-tab="settings"><i class="fa fa-cogs"></i> Settings</div>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid #f1f3f4">
+
+        <div class="small muted">Quick actions</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          <button id="btnExportCSV" class="btn ghost small"><i class="fa fa-file-csv"></i> Export orders (CSV)</button>
+          <button id="btnClearCache" class="btn ghost small"><i class="fa fa-sync-alt"></i> Refresh data</button>
+        </div>
+
+        <div class="footer-note">NJ Mart • Admin panel</div>
+      </aside>
+
+      <!-- MAIN PANEL -->
+      <main>
+
+        <!-- PRODUCTS SECTION -->
+        <section id="products" class="panel" data-section>
+          <h2>Products</h2>
+
+          <div class="toolbar">
+            <div class="search">
+              <input id="productSearch" placeholder="Search products by name or ID..." type="text" style="padding:8px;border-radius:8px;border:1px solid #e6eef0;flex:1">
+              <select id="categoryFilter" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
+                <option value="">All categories</option>
+              </select>
+            </div>
+
+            <div class="flex">
+              <button id="btnOpenAddProduct" class="btn primary"><i class="fa fa-plus"></i> Add product</button>
+              <button id="btnImportProducts" class="btn ghost"><i class="fa fa-file-import"></i> Import</button>
+              <button id="btnSyncProducts" class="btn ghost"><i class="fa fa-sync"></i> Sync</button>
+            </div>
+          </div>
+
+          <!-- Add product quick form -->
+          <div style="margin-top:8px" id="addProductArea">
+            <form id="addProductForm" class="row" onsubmit="return false;">
+              <div class="field"><input name="ProductID" placeholder="Product ID (optional)"></div>
+              <div class="field"><input name="Name" placeholder="Product name" required></div>
+              <div class="field"><input name="Price" type="number" placeholder="Price (₹)" required></div>
+              <div class="field"><input name="Stock" type="number" placeholder="Stock" required></div>
+              <div class="field"><input name="Category" placeholder="Category"></div>
+              <div class="field"><input name="ImageURL" placeholder="Image URL (public link)"></div>
+              <div style="min-width:140px;display:flex;align-items:center">
+                <button id="addProductBtn" class="btn primary" style="width:100%">Add product</button>
+              </div>
+            </form>
+            <div id="productMsg" class="tiny muted" style="margin-top:8px">Products are stored in the Products sheet. Use Import for bulk upload.</div>
+          </div>
+
+          <!-- products table -->
+          <div style="margin-top:12px" class="panel">
+            <table id="productsTable" aria-live="polite">
+              <thead>
+                <tr>
+                  <th style="width:80px">ProductID</th>
+                  <th>Name</th>
+                  <th style="width:120px">Price</th>
+                  <th style="width:100px">Stock</th>
+                  <th style="width:160px">Category</th>
+                  <th style="width:180px">Image</th>
+                  <th style="width:160px">Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ORDERS SECTION -->
+        <section id="orders" class="panel hide" data-section>
+          <h2>Orders</h2>
+
+          <div class="toolbar">
+            <div class="search">
+              <input id="orderSearch" placeholder="Search by Order ID, Customer or phone..." type="text" style="padding:8px;border-radius:8px;border:1px solid #e6eef0;flex:1">
+              <select id="orderStatusFilter" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
+                <option value="">All status</option>
+                <option value="placed">Placed</option>
+                <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+
+            <div class="flex">
+              <button id="btnRefreshOrders" class="btn ghost small"><i class="fa fa-sync-alt"></i> Refresh</button>
+              <button id="btnAssignDelivery" class="btn small primary"><i class="fa fa-truck"></i> Assign</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="panel">
+            <table id="ordersTable">
+              <thead>
+                <tr>
+                  <th style="width:120px">OrderID</th>
+                  <th>Customer</th>
+                  <th style="width:120px">Amount</th>
+                  <th style="width:120px">Payment</th>
+                  <th style="width:120px">Status</th>
+                  <th style="width:160px">Date</th>
+                  <th style="width:180px">Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- CUSTOMERS SECTION -->
+        <section id="customers" class="panel hide" data-section>
+          <h2>Customers</h2>
+
+          <div class="toolbar">
+            <div class="search" style="flex:1">
+              <input id="customerSearch" placeholder="Search customers by name, phone or email..." type="text" style="padding:8px;border-radius:8px;border:1px solid #e6eef0;flex:1">
+            </div>
+            <div class="flex">
+              <button id="btnExportCustomers" class="btn ghost small"><i class="fa fa-file-export"></i> Export</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="panel">
+            <table id="customersTable">
+              <thead>
+                <tr>
+                  <th>CustomerID</th>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Email</th>
+                  <th style="width:120px">Total orders</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- COUPONS SECTION -->
+        <section id="coupons" class="panel hide" data-section>
+          <h2>Coupons</h2>
+
+          <div class="toolbar">
+            <div class="search">
+              <input id="couponSearch" placeholder="Coupon code..." type="text" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
+            </div>
+            <div class="flex">
+              <button id="btnAddCouponOpen" class="btn primary small"><i class="fa fa-plus"></i> Add coupon</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="panel">
+            <table id="couponsTable">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Discount</th>
+                  <th>Status</th>
+                  <th style="width:160px">Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- STAFF SECTION -->
+        <section id="staff" class="panel hide" data-section>
+          <h2>Staff</h2>
+
+          <div class="toolbar">
+            <div class="search">
+              <input id="staffSearch" placeholder="Search staff by name or phone..." type="text" style="padding:8px;border-radius:8px;border:1px solid #e6eef0;flex:1">
+            </div>
+            <div class="flex">
+              <button id="btnAddStaffOpen" class="btn primary small"><i class="fa fa-plus"></i> Add staff</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="panel">
+            <table id="staffTable">
+              <thead>
+                <tr>
+                  <th>StaffID</th>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Phone</th>
+                  <th style="width:160px">Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- REPORTS SECTION -->
+        <section id="reports" class="panel hide" data-section>
+          <h2>Reports</h2>
+
+          <div class="toolbar">
+            <div class="search">
+              <input id="reportFrom" type="date" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
+              <input id="reportTo" type="date" style="padding:8px;border-radius:8px;border:1px solid #e6eef0">
+            </div>
+            <div class="flex">
+              <button id="btnGenerateReport" class="btn primary small"><i class="fa fa-chart-bar"></i> Generate</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="panel">
+            <table id="reportsTable">
+              <thead>
+                <tr>
+                  <th>Report ID</th>
+                  <th>Type</th>
+                  <th>Value</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- SETTINGS SECTION -->
+        <section id="settings" class="panel hide" data-section>
+          <h2>Settings</h2>
+
+          <div class="panel">
+            <form id="settingsForm" onsubmit="return false;" class="row">
+              <div class="field"><input name="Key" placeholder="Key (e.g. min_order)" required></div>
+              <div class="field"><input name="Value" placeholder="Value" required></div>
+              <div style="min-width:160px"><button id="saveSettingBtn" class="btn primary" style="width:100%">Save setting</button></div>
+            </form>
+            <div class="small muted" style="margin-top:8px">Settings are stored in the Settings sheet. Use keys like <code>delivery_charge</code>, <code>min_order</code>.</div>
+          </div>
+
+          <div style="margin-top:12px" class="panel">
+            <table id="settingsTable">
+              <thead><tr><th>Key</th><th>Value</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- MODALS: Edit Product / Assign Order / Add Coupon / Add Staff -->
+  <div id="modalEditProduct" class="modal" aria-hidden="true">
+    <div class="dialog">
+      <h3>Edit product</h3>
+      <form id="editProductForm" onsubmit="return false;">
+        <div class="row">
+          <div class="field"><label>ProductID</label><input name="ProductID" readonly></div>
+          <div class="field"><label>Name</label><input name="Name" required></div>
+          <div class="field"><label>Price</label><input name="Price" type="number" required></div>
+          <div class="field"><label>Stock</label><input name="Stock" type="number" required></div>
+          <div class="field"><label>Category</label><input name="Category"></div>
+          <div class="field"><label>Image URL</label><input name="ImageURL" type="url"></div>
+        </div>
+        <div class="form-actions">
+          <button id="saveProductBtn" class="btn primary">Save</button>
+          <button onclick="closeModal('modalEditProduct')" class="btn ghost">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalAssignOrder" class="modal" aria-hidden="true">
+    <div class="dialog">
+      <h3>Assign order to staff</h3>
+      <form id="assignOrderForm" onsubmit="return false;">
+        <div class="row">
+          <div class="field"><label>OrderID</label><input name="OrderID" readonly></div>
+          <div class="field"><label>Assign to (StaffID)</label><select name="StaffID" id="assignStaffSelect"></select></div>
+          <div class="field"><label>Update status</label><select name="Status"><option value="processing">Processing</option><option value="shipped">Shipped</option><option value="delivered">Delivered</option></select></div>
+        </div>
+        <div class="form-actions">
+          <button id="assignOrderBtn" class="btn primary">Assign</button>
+          <button onclick="closeModal('modalAssignOrder')" class="btn ghost">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalAddCoupon" class="modal" aria-hidden="true">
+    <div class="dialog">
+      <h3>Add coupon</h3>
+      <form id="addCouponFormModal" onsubmit="return false;">
+        <div class="row">
+          <div class="field"><input name="Code" placeholder="Code (e.g. SAVE50)" required></div>
+          <div class="field"><input name="Discount" type="number" placeholder="Discount (₹ or %)" required></div>
+          <div class="field"><select name="Type"><option value="flat">Flat</option><option value="percent">Percent</option></select></div>
+          <div class="field"><input name="Expiry" type="date" placeholder="Expiry"></div>
+        </div>
+        <div class="form-actions">
+          <button id="addCouponModalBtn" class="btn primary">Add coupon</button>
+          <button onclick="closeModal('modalAddCoupon')" class="btn ghost">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalAddStaff" class="modal" aria-hidden="true">
+    <div class="dialog">
+      <h3>Add staff member</h3>
+      <form id="addStaffFormModal" onsubmit="return false;">
+        <div class="row">
+          <div class="field"><input name="Name" placeholder="Full name" required></div>
+          <div class="field"><input name="Role" placeholder="Role (delivery/inventory/support)" required></div>
+          <div class="field"><input name="Phone" placeholder="Phone"></div>
+          <div class="field"><input name="Email" placeholder="Email (optional)"></div>
+        </div>
+        <div class="form-actions">
+          <button id="addStaffModalBtn" class="btn primary">Add staff</button>
+          <button onclick="closeModal('modalAddStaff')" class="btn ghost">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase + Config + App (ensure these files exist in repo and are final versions) -->
+  <!-- We intentionally load firebase libs first, then firebase-config.js (your project), then script-config.js (API_BASE, helpers), then app.js -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="script-config.js"></script>
+  <script src="app.js"></script>
+
+  <!-- Admin behavior JS (expanded, final) -->
+  <script>
+  /**************************************************************************
+   * NJ Mart — Admin (final expanded)
+   * - This file provides admin UI interactions and calls the backend API.
+   * - script-config.js is expected to provide API_BASE, apiGet, apiPost helpers.
+   * - firebase-config.js handles Firebase init and auth (admin sign-in).
+   *
+   * NOTE: This admin HTML is "final expanded" version — copy/paste into repo.
+   **************************************************************************/
+
+  // ---------- Utilities ----------
+  const $ = id => document.getElementById(id);
+  const q = sel => document.querySelector(sel);
+  const qa = sel => Array.from(document.querySelectorAll(sel));
+
+  function showStatus(type, text, timeout=3500){
+    // type: ok, warn, err
+    const el = document.createElement('div');
+    el.className = 'status ' + (type === 'ok' ? 'ok' : (type === 'warn' ? 'warn' : 'err'));
+    el.textContent = text;
+    document.querySelector('.wrap').insertBefore(el, document.querySelector('.wrap').firstChild);
+    setTimeout(()=>el.remove(), timeout);
+  }
+
+  function openModal(id){
+    const m = $(id);
+    if(!m) return;
+    m.classList.add('active');
+    m.setAttribute('aria-hidden','false');
+  }
+  function closeModal(id){
+    const m = $(id);
+    if(!m) return;
+    m.classList.remove('active');
+    m.setAttribute('aria-hidden','true');
+  }
+
+  function clearTable(selector){
+    const tb = document.querySelector(selector + ' tbody');
+    if(tb) tb.innerHTML = '';
+  }
+
+  // safe wrapper to use apiGet/apiPost from script-config.js if available
+  async function backendGet(params = {}){
+    try{
+      if(typeof apiGet === 'function') return await apiGet(params);
+      // fallback if script-config.js didn't define apiGet: use API_BASE global
+      const url = new URL(window.API_BASE || '/');
+      Object.keys(params).forEach(k => url.searchParams.set(k, params[k]));
+      const res = await fetch(url.toString(), { cache: 'no-store' });
+      return await res.json();
+    }catch(err){
+      return { ok: false, error: String(err) };
+    }
+  }
+  async function backendPost(body = {}){
+    try{
+      if(typeof apiPost === 'function') return await apiPost(body);
+      const res = await fetch(window.API_BASE || '/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      return await res.json();
+    }catch(err){
+      return { ok: false, error: String(err) };
+    }
+  }
+
+  // ---------- Navigation ----------
+  qa('aside .nav-item').forEach(node=>{
+    node.addEventListener('click', ()=>{
+      qa('[data-section]').forEach(s => s.classList.add('hide'));
+      qa('aside .nav-item').forEach(n => n.classList.remove('active'));
+      node.classList.add('active');
+      const tab = node.dataset.tab;
+      const section = $('#' + tab);
+      if(section) section.classList.remove('hide');
+    });
+  });
+
+  // ---------- Product management ----------
+  const productsTableBody = document.querySelector('#productsTable tbody');
+
+  async function loadCategories(){
+    // load categories from products list and fill filter
+    const r = await backendGet({ action: 'products' });
+    const set = new Set();
+    if(r.ok && Array.isArray(r.products)){
+      r.products.forEach(p => { if(p.Category) set.add(p.Category); });
+    }
+    const sel = $('#categoryFilter');
+    sel.innerHTML = '<option value="">All categories</option>';
+    Array.from(set).sort().forEach(c => {
+      const opt = document.createElement('option'); opt.value = c; opt.textContent = c;
+      sel.appendChild(opt);
+    });
+  }
+
+  function renderProducts(rows){
+    productsTableBody.innerHTML = '';
+    if(!rows || rows.length === 0){
+      productsTableBody.innerHTML = '<tr><td colspan="7" class="muted">No products found</td></tr>';
+      return;
+    }
+    rows.forEach(p=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="nowrap">${p.ProductID || ''}</td>
+        <td class="nowrap">${escapeHtml(p.Name || '')}</td>
+        <td>₹${Number(p.Price||0).toFixed(0)}</td>
+        <td>${Number(p.Stock||0)}</td>
+        <td>${escapeHtml(p.Category || '')}</td>
+        <td class="nowrap vtop"><img src="${escapeAttr(p['Image URL'] || p.ImageURL || '')}" alt="" style="width:80px;height:50px;object-fit:cover;border-radius:6px"></td>
+        <td class="nowrap">
+          <button class="btn small ghost" data-act="edit" data-id="${p.ProductID || ''}"><i class="fa fa-edit"></i> Edit</button>
+          <button class="btn small danger" data-act="delete" data-id="${p.ProductID || ''}"><i class="fa fa-trash"></i> Delete</button>
+        </td>
+      `;
+      productsTableBody.appendChild(tr);
+    });
+  }
+
+  // simple helpers to escape
+  function escapeHtml(s){ if(!s) return ''; return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+  function escapeAttr(s){ if(!s) return ''; return s.replaceAll('"','%22').replaceAll("'","%27"); }
+
+  // load all products from backend and render
+  async function loadProducts(){
+    try{
+      $('#addProductBtn').disabled = true;
+      const r = await backendGet({ action: 'products' });
+      $('#addProductBtn').disabled = false;
+      if(!r.ok){ showStatus('err','Failed to load products: ' + (r.error || 'unknown')); renderProducts([]); return; }
+      const list = r.products || [];
+      window.NJ_PRODUCTS = list; // cache
+      renderProducts(list);
+      await loadCategories();
+    }catch(err){
+      showStatus('err','Error loading products: ' + String(err));
+    }
+  }
+
+  // add product
+  q('#addProductBtn').addEventListener('click', async ()=>{
+    const form = document.querySelector('#addProductForm');
+    const data = Object.fromEntries(new FormData(form).entries());
+    // normalize keys that backend expects
+    const payload = {
+      action: 'addproduct',
+      ProductID: data.ProductID || undefined,
+      Name: data.Name || '',
+      Price: Number(data.Price||0),
+      Stock: Number(data.Stock||0),
+      Category: data.Category || '',
+      'Image URL': data.ImageURL || data.ImageURL || ''
+    };
+    q('#addProductBtn').disabled = true;
+    const res = await backendPost(payload);
+    q('#addProductBtn').disabled = false;
+    if(!res || !res.ok){ showStatus('err', 'Add product failed: ' + (res && res.error ? res.error : 'unknown')); return; }
+    showStatus('ok','Product added');
+    form.reset();
+    await loadProducts();
+  });
+
+  // listen for edit/delete buttons
+  productsTableBody.addEventListener('click', (e)=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    const act = btn.dataset.act;
+    const id = btn.dataset.id;
+    if(act === 'edit') openEditProduct(id);
+    if(act === 'delete') deleteProduct(id);
+  });
+
+  function findProductById(id){
+    return (window.NJ_PRODUCTS || []).find(p=> (p.ProductID||'') == id);
+  }
+
+  function openEditProduct(id){
+    const p = findProductById(id);
+    if(!p){ showStatus('err','Product not found'); return; }
+    const form = document.querySelector('#editProductForm');
+    form.ProductID.value = p.ProductID || '';
+    form.Name.value = p.Name || '';
+    form.Price.value = p.Price || 0;
+    form.Stock.value = p.Stock || 0;
+    form.Category.value = p.Category || '';
+    form.ImageURL.value = p['Image URL'] || p.ImageURL || '';
+    openModal('modalEditProduct');
+  }
+
+  q('#saveProductBtn').addEventListener('click', async ()=>{
+    const form = document.querySelector('#editProductForm');
+    const payload = {
+      action: 'addproduct', // reuse addproduct for create/update; backend can upsert by ProductID
+      ProductID: form.ProductID.value,
+      Name: form.Name.value,
+      Price: Number(form.Price.value||0),
+      Stock: Number(form.Stock.value||0),
+      Category: form.Category.value,
+      'Image URL': form.ImageURL.value
+    };
+    q('#saveProductBtn').disabled = true;
+    const res = await backendPost(payload);
+    q('#saveProductBtn').disabled = false;
+    if(!res || !res.ok){ showStatus('err', 'Save failed: ' + (res && res.error ? res.error : 'unknown')); return; }
+    showStatus('ok','Product saved');
+    closeModal('modalEditProduct');
+    await loadProducts();
+  });
+
+  async function deleteProduct(id){
+    if(!confirm('Delete product ' + id + ' ?')) return;
+    const res = await backendPost({ action: 'deleteproduct', ProductID: id });
+    if(!res || !res.ok){ showStatus('err','Delete failed: ' + (res && res.error ? res.error : 'unknown')); return; }
+    showStatus('ok','Product deleted');
+    await loadProducts();
+  }
+
+  // ---------- Orders management ----------
+  const ordersTableBody = document.querySelector('#ordersTable tbody');
+
+  async function renderOrders(rows){
+    ordersTableBody.innerHTML = '';
+    if(!rows || rows.length === 0){
+      ordersTableBody.innerHTML = '<tr><td colspan="7" class="muted">No orders found</td></tr>';
+      return;
+    }
+    rows.forEach(o=>{
+      const id = o.OrderID || o.orderId || '—';
+      const cust = (o.CustomerID || o.Customer || o.Phone || '—');
+      const amount = Number(o['Final Amount']||o['Total Amount']||0);
+      const status = o.Status || 'placed';
+      const date = o['Order Date'] || o.Date || '';
+      const payment = o['Payment Method'] || o.Payment || '';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="nowrap">${id}</td>
+        <td class="nowrap">${escapeHtml(cust)}</td>
+        <td>₹${amount.toFixed(0)}</td>
+        <td class="nowrap">${escapeHtml(payment)}</td>
+        <td class="nowrap"><span class="pill">${escapeHtml(status)}</span></td>
+        <td class="nowrap">${escapeHtml(date)}</td>
+        <td class="nowrap">
+          <button class="btn small ghost" data-act="view" data-id="${id}"><i class="fa fa-eye"></i> View</button>
+          <button class="btn small primary" data-act="assign" data-id="${id}"><i class="fa fa-user-plus"></i> Assign</button>
+          <button class="btn small danger" data-act="cancel" data-id="${id}">Cancel</button>
+        </td>
+      `;
+      ordersTableBody.appendChild(tr);
+    });
+  }
+
+  ordersTableBody.addEventListener('click', async (e)=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    const act = btn.dataset.act;
+    const id  = btn.dataset.id;
+    if(act === 'view') viewOrder(id);
+    if(act === 'assign') openAssignOrderModal(id);
+    if(act === 'cancel') await updateOrderStatus(id, 'cancelled');
+  });
+
+  async function loadOrders(){
+    try{
+      $('#btnRefreshOrders').disabled = true;
+      const r = await backendGet({ action: 'orders' });
+      $('#btnRefreshOrders').disabled = false;
+      if(!r.ok){ showStatus('err', 'Load orders failed'); renderOrders([]); return; }
+      window.NJ_ORDERS = r.orders || [];
+      renderOrders(window.NJ_ORDERS);
+    }catch(err){
+      showStatus('err','Error loading orders: ' + String(err));
+    }
+  }
+
+  function viewOrder(id){
+    const o = (window.NJ_ORDERS || []).find(x => (x.OrderID||x.orderId||'') == id);
+    if(!o){ showStatus('err','Order not found'); return; }
+    // open a modal or alert with details (simple)
+    const items = o.Item || o.Items || '[]';
+    let itemsStr = '';
+    try{ const parsed = typeof items === 'string' ? JSON.parse(items) : items; itemsStr = JSON.stringify(parsed, null, 2); }catch(e){ itemsStr = ''+items; }
+    alert('Order: ' + id + '\nCustomer: ' + (o.CustomerID||'') + '\nAmount: ₹' + (o['Final Amount']||o['Total Amount']||0) + '\nItems:\n' + itemsStr);
+  }
+
+  async function openAssignOrderModal(id){
+    // populate staff select
+    await loadStaff(); // ensure staff loaded
+    const sel = $('#assignStaffSelect');
+    sel.innerHTML = '';
+    (window.NJ_STAFF || []).forEach(s=>{
+      const opt = document.createElement('option'); opt.value = s.StaffID || s.ID || s.phone || s.Phone; opt.textContent = (s.Name || s.name) + ' — ' + (s.Role || s.role || '');
+      sel.appendChild(opt);
+    });
+    const form = document.querySelector('#assignOrderForm');
+    form.OrderID.value = id;
+    openModal('modalAssignOrder');
+  }
+
+  q('#assignOrderBtn').addEventListener('click', async ()=>{
+    const form = document.querySelector('#assignOrderForm');
+    const payload = {
+      action: 'updateorder',
+      OrderID: form.OrderID.value,
+      StaffID: form.StaffID.value,
+      Status: form.Status.value
+    };
+    q('#assignOrderBtn').disabled = true;
+    const res = await backendPost(payload);
+    q('#assignOrderBtn').disabled = false;
+    if(!res || !res.ok){ showStatus('err','Assign failed: ' + (res && res.error ? res.error : 'unknown')); return; }
+    showStatus('ok','Order assigned');
+    closeModal('modalAssignOrder');
+    await loadOrders();
+  });
+
+  async function updateOrderStatus(id, status){
+    const res = await backendPost({ action: 'updateorder', OrderID: id, Status: status });
+    if(!res || !res.ok){ showStatus('err','Update failed'); return; }
+    showStatus('ok','Order status updated');
+    await loadOrders();
+  }
+
+  // ---------- Customers ----------
+  const customersTableBody = document.querySelector('#customersTable tbody');
+
+  function renderCustomers(list){
+    customersTableBody.innerHTML = '';
+    if(!list || list.length === 0){ customersTableBody.innerHTML = '<tr><td colspan="5" class="muted">No customers</td></tr>'; return; }
+    list.forEach(c=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${c.CustomerID || c.ID || ''}</td>
+        <td class="nowrap">${escapeHtml(c.Name || '')}</td>
+        <td>${escapeHtml(c.Phone || '')}</td>
+        <td>${escapeHtml(c.Email || '')}</td>
+        <td>${escapeHtml(c['Total order'] || c.total || 0)}</td>
+      `;
+      customersTableBody.appendChild(tr);
+    });
+  }
+
+  async function loadCustomers(){
+    const r = await backendGet({ action: 'customers' });
+    if(!r.ok){ renderCustomers([]); showStatus('err','Failed to load customers'); return; }
+    window.NJ_CUSTOMERS = r.customers || [];
+    renderCustomers(window.NJ_CUSTOMERS);
+  }
+
+  // ---------- Coupons ----------
+  const couponsTableBody = document.querySelector('#couponsTable tbody');
+
+  function renderCoupons(list){
+    couponsTableBody.innerHTML = '';
+    if(!list || list.length === 0){ couponsTableBody.innerHTML = '<tr><td colspan="4" class="muted">No coupons</td></tr>'; return; }
+    list.forEach(c=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${escapeHtml(c.Code||'')}</td><td>${escapeHtml(c.Discount||'')}</td><td>${escapeHtml(c.Status||'active')}</td>
+        <td><button class="btn small ghost" data-act="toggle" data-code="${c.Code||''}">Toggle</button> <button class="btn small danger" data-act="del" data-code="${c.Code||''}">Delete</button></td>`;
+      couponsTableBody.appendChild(tr);
+    });
+  }
+
+  couponsTableBody.addEventListener('click', async (e)=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    const act = btn.dataset.act; const code = btn.dataset.code;
+    if(act === 'toggle'){
+      const res = await backendPost({ action: 'togglecoupon', Code: code });
+      if(!res || !res.ok) { showStatus('err','Toggle failed'); return; }
+      showStatus('ok','Coupon toggled');
+      await loadCoupons();
+    }
+    if(act === 'del'){
+      if(!confirm('Delete coupon '+code+'?')) return;
+      const res = await backendPost({ action: 'deletecoupon', Code: code });
+      if(!res || !res.ok){ showStatus('err','Delete failed'); return; }
+      showStatus('ok','Coupon deleted');
+      await loadCoupons();
+    }
+  });
+
+  async function loadCoupons(){
+    const r = await backendGet({ action: 'coupons' });
+    if(!r.ok){ renderCoupons([]); return; }
+    window.NJ_COUPONS = r.coupons || [];
+    renderCoupons(window.NJ_COUPONS);
+  }
+
+  q('#btnAddCouponOpen').addEventListener('click', ()=> openModal('modalAddCoupon'));
+  q('#addCouponModalBtn').addEventListener('click', async ()=>{
+    const form = document.querySelector('#addCouponFormModal');
+    const data = Object.fromEntries(new FormData(form).entries());
+    const payload = { action: 'addcoupon', Code: data.Code, Discount: data.Discount, Type: data.Type, Expiry: data.Expiry };
+    q('#addCouponModalBtn').disabled = true;
+    const res = await backendPost(payload);
+    q('#addCouponModalBtn').disabled = false;
+    if(!res || !res.ok){ showStatus('err','Add coupon failed'); return; }
+    showStatus('ok','Coupon added');
+    closeModal('modalAddCoupon');
+    await loadCoupons();
+  });
+
+  // ---------- Staff ----------
+  const staffTableBody = document.querySelector('#staffTable tbody');
+
+  function renderStaff(list){
+    staffTableBody.innerHTML = '';
+    if(!list || list.length === 0){ staffTableBody.innerHTML = '<tr><td colspan="5" class="muted">No staff</td></tr>'; return; }
+    list.forEach(s=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${escapeHtml(s.StaffID || s.ID || '')}</td><td>${escapeHtml(s.Name || '')}</td><td>${escapeHtml(s.Role || '')}</td><td>${escapeHtml(s.Phone || s.phone || '')}</td>
+        <td><button class="btn small ghost" data-act="edit" data-id="${s.StaffID || s.ID || ''}">Edit</button> <button class="btn small danger" data-act="del" data-id="${s.StaffID || s.ID || ''}">Delete</button></td>`;
+      staffTableBody.appendChild(tr);
+    });
+  }
+
+  staffTableBody.addEventListener('click', async (e)=>{
+    const btn = e.target.closest('button'); if(!btn) return;
+    const act = btn.dataset.act; const id = btn.dataset.id;
+    if(act === 'edit'){ alert('Edit staff not implemented in UI — use sheet or future update'); }
+    if(act === 'del'){
+      if(!confirm('Delete staff ' + id + '?')) return;
+      const res = await backendPost({ action: 'deletestaff', StaffID: id });
+      if(!res || !res.ok){ showStatus('err','Delete staff failed'); return; }
+      showStatus('ok','Staff deleted');
+      await loadStaff();
+    }
+  });
+
+  q('#btnAddStaffOpen').addEventListener('click', ()=> openModal('modalAddStaff'));
+  q('#addStaffModalBtn').addEventListener('click', async ()=>{
+    const form = document.querySelector('#addStaffFormModal');
+    const data = Object.fromEntries(new FormData(form).entries());
+    const payload = { action: 'addstaff', Name: data.Name, Role: data.Role, Phone: data.Phone, Email: data.Email };
+    q('#addStaffModalBtn').disabled = true;
+    const res = await backendPost(payload);
+    q('#addStaffModalBtn').disabled = false;
+    if(!res || !res.ok){ showStatus('err','Add staff failed'); return; }
+    showStatus('ok','Staff added');
+    closeModal('modalAddStaff');
+    await loadStaff();
+  });
+
+  async function loadStaff(){
+    const r = await backendGet({ action: 'staff' });
+    if(!r.ok){ renderStaff([]); return; }
+    window.NJ_STAFF = r.staff || r.staffs || r.staffs || r.data || [];
+    renderStaff(window.NJ_STAFF);
+  }
+
+  // ---------- Reports ----------
+  const reportsTableBody = document.querySelector('#reportsTable tbody');
+
+  function renderReports(list){
+    reportsTableBody.innerHTML = '';
+    if(!list || list.length === 0){ reportsTableBody.innerHTML = '<tr><td colspan="4" class="muted">No reports</td></tr>'; return; }
+    list.forEach(r=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${escapeHtml(r['Report ID'] || r.ID || '')}</td><td>${escapeHtml(r.Type || r.type || '')}</td><td>₹${Number(r.Value||0).toFixed(0)}</td><td>${escapeHtml(r.Date || r.date || '')}</td>`;
+      reportsTableBody.appendChild(tr);
+    });
+  }
+
+  async function loadReports(){
+    const r = await backendGet({ action: 'reports' });
+    if(!r.ok){ renderReports([]); return; }
+    window.NJ_REPORTS = r.reports || [];
+    renderReports(window.NJ_REPORTS);
+  }
+
+  // ---------- Settings ----------
+  const settingsTableBody = document.querySelector('#settingsTable tbody');
+
+  function renderSettings(obj){
+    settingsTableBody.innerHTML = '';
+    if(!obj || Object.keys(obj).length === 0){ settingsTableBody.innerHTML = '<tr><td colspan="2" class="muted">No settings</td></tr>'; return; }
+    Object.keys(obj).forEach(k=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${escapeHtml(k)}</td><td>${escapeHtml(obj[k])}</td>`;
+      settingsTableBody.appendChild(tr);
+    });
+  }
+
+  q('#saveSettingBtn').addEventListener('click', async ()=>{
+    const form = document.querySelector('#settingsForm');
+    const data = Object.fromEntries(new FormData(form).entries());
+    if(!data.Key){ showStatus('warn','Key is required'); return; }
+    const res = await backendPost({ action: 'addsetting', Key: data.Key, Value: data.Value });
+    if(!res || !res.ok){ showStatus('err','Save setting failed'); return; }
+    showStatus('ok','Setting saved');
+    form.reset();
+    await loadSettings();
+  });
+
+  async function loadSettings(){
+    const r = await backendGet({ action: 'settings' });
+    if(!r.ok){ renderSettings({}); return; }
+    renderSettings(r.settings || {});
+  }
+
+  // ---------- Misc: Export CSV ----------
+  function arrayToCSV(rows){
+    if(!rows || rows.length===0) return '';
+    const keys = Object.keys(rows[0]);
+    const lines = [keys.join(',')];
+    rows.forEach(r=>{
+      const vals = keys.map(k => {
+        let v = r[k] === undefined || r[k] === null ? '' : (''+r[k]).replace(/"/g,'""');
+        if(v.includes(',') || v.includes('\n')) v = `"${v}"`;
+        return v;
+      });
+      lines.push(vals.join(','));
+    });
+    return lines.join('\n');
+  }
+
+  q('#btnExportCSV').addEventListener('click', async ()=>{
+    const r = await backendGet({ action: 'orders' });
+    if(!r.ok || !r.orders){ showStatus('err','No orders to export'); return; }
+    const csv = arrayToCSV(r.orders);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'orders.csv'; a.click();
+    URL.revokeObjectURL(url);
+    showStatus('ok','CSV exported');
+  });
+
+  // ---------- Initialization ----------
+  async function initAdmin(){
+    // Show admin email from firebase if available
+    try{
+      if(window.firebase && firebase.auth){
+        firebase.auth().onAuthStateChanged(user=>{
+          if(user) $('#adminEmail').textContent = user.email || user.phoneNumber || user.displayName || 'admin';
+          else $('#adminEmail').textContent = 'not-signed-in';
+        });
+      }
+    }catch(e){}
+    await Promise.all([ loadProducts(), loadOrders(), loadCustomers(), loadCoupons(), loadStaff(), loadReports(), loadSettings() ]);
+    showStatus('ok','Data loaded');
+  }
+
+  // Safety: expose reload for CLI
+  window.NJAdminReload = async ()=> {
+    await initAdmin();
+  };
+
+  document.addEventListener('DOMContentLoaded', initAdmin);
+
+  // simple search handlers (client-side)
+  $('#productSearch').addEventListener('input', (e)=>{
+    const q = e.target.value.trim().toLowerCase();
+    const list = (window.NJ_PRODUCTS || []).filter(p => ((p.Name||'')+''+ (p.ProductID||'') + (p.Category||'')).toLowerCase().includes(q));
+    renderProducts(list);
+  });
+  $('#categoryFilter').addEventListener('change', (e)=>{
+    const v = e.target.value;
+    const list = v ? (window.NJ_PRODUCTS || []).filter(p => p.Category === v) : (window.NJ_PRODUCTS || []);
+    renderProducts(list);
+  });
+
+  $('#orderSearch').addEventListener('input', (e)=>{
+    const qv = e.target.value.trim().toLowerCase();
+    const list = (window.NJ_ORDERS || []).filter(o => (''+Object.values(o).join(' ')).toLowerCase().includes(qv));
+    renderOrders(list);
+  });
+
+  $('#customerSearch').addEventListener('input', (e)=>{
+    const qv = e.target.value.trim().toLowerCase();
+    const list = (window.NJ_CUSTOMERS || []).filter(c => (''+Object.values(c).join(' ')).toLowerCase().includes(qv));
+    renderCustomers(list);
+  });
+
+  $('#staffSearch').addEventListener('input', (e)=>{
+    const qv = e.target.value.trim().toLowerCase();
+    const list = (window.NJ_STAFF || []).filter(s => (''+Object.values(s).join(' ')).toLowerCase().includes(qv));
+    renderStaff(list);
+  });
+
+  // quick hooks
+  $('#btnRefreshOrders').addEventListener('click', loadOrders);
+  $('#btnClearCache').addEventListener('click', async ()=>{ await initAdmin(); showStatus('ok','Refreshed'); });
+
+  // sign out
+  $('#signOutBtn').addEventListener('click', async ()=>{
+    try{ if(window.firebase && firebase.auth){ await firebase.auth().signOut(); showStatus('ok','Signed out'); } }catch(e){}
+    location.href = 'login.html';
+  });
+
+  </script>
+
+</body>
+</html>
