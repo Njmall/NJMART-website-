@@ -1,792 +1,167 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NJ Mart — Secure Login</title>
+import React, { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { User, Lock, Eye, EyeOff, ShoppingCart } from "lucide-react";
 
-  <!-- ===== FONT & ICONS ===== -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="" crossorigin="anonymous">
+export default function GroceryStoreLogin() {
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
-  <!-- ===== BASIC STYLES (expanded & readable) ===== -->
-  <style>
-    /* Root variables (colors, spacing) */
-    :root{
-      --bg: #f4f8f6;
-      --card: #ffffff;
-      --accent: #2db34a;
-      --accent-dark: #16802a;
-      --muted: #6b7280;
-      --danger: #ef4444;
-      --shadow: 0 10px 30px rgba(12,30,40,0.06);
-      --max-w: 980px;
-      --radius: 12px;
+  // Add Google Sign-In script to head
+  React.useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+
+    return () => {
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+    };
+  }, []);
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setMessage('');
+
+    try {
+      // Initialize Google Sign-In
+      if (!window.google) {
+        setMessage('Google Sign-In not available. Please check your connection.');
+        setLoading(false);
+        return;
+      }
+
+      window.google.accounts.id.initialize({
+        client_id: 'YOUR_GOOGLE_CLIENT_ID', // Replace with your Google Client ID
+        callback: handleGoogleResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
+
+      window.google.accounts.id.prompt();
+    } catch (error) {
+      setMessage('Google Sign-In failed. Please try again.');
+      console.error('Google Sign-In error:', error);
+      setLoading(false);
     }
+  };
 
-    /* Reset / base */
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg,#f6fbf8 0%, #eef6f2 100%);
-      color:#111;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      -webkit-tap-highlight-color: transparent;
-      line-height:1.35;
+  const handleGoogleResponse = async (response: any) => {
+    try {
+      // Decode the JWT token to get user info
+      const payload = JSON.parse(atob(response.credential.split('.')[1]));
+      
+      const userData = {
+        name: payload.name,
+        email: payload.email,
+        picture: payload.picture,
+        googleId: payload.sub,
+      };
+
+      // Store user data in localStorage
+      localStorage.setItem('njmart_user', JSON.stringify(userData));
+      
+      setMessage('Login successful!');
+      
+      // Redirect to admin panel or store
+      setTimeout(() => {
+        if (payload.email === 'admin@njmart.com' || payload.email.includes('njmart')) {
+          window.location.href = '/admin.html';
+        } else {
+          window.location.href = '/store.html';
+        }
+      }, 1500);
+      
+    } catch (error) {
+      setMessage('Failed to process Google Sign-In. Please try again.');
+      console.error('Google response error:', error);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    /* Container */
-    .wrap{
-      max-width:var(--max-w);
-      margin:24px auto;
-      padding:16px;
-    }
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center items-center mb-4">
+            <div className="bg-green-600 p-3 rounded-full">
+              <ShoppingCart className="h-8 w-8 text-white" />
+            </div>
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">NJ Mart</h1>
+          <p className="text-gray-600">Fresh Groceries Delivered</p>
+        </div>
 
-    /* Card */
-    .card{
-      background:var(--card);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:22px;
-      border: 1px solid rgba(0,0,0,0.03);
-    }
+        {/* Login/Register Form */}
+        <Card className="shadow-lg border-0">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl text-center">
+              Welcome to NJ Mart
+            </CardTitle>
+            <CardDescription className="text-center">
+              Sign in with Google to access your account and start shopping
+            </CardDescription>
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            {/* Google Sign-In Button */}
+            <div className="space-y-4">
+              <Button 
+                onClick={handleGoogleSignIn}
+                className="w-full bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 shadow-sm"
+                disabled={loading}
+              >
+                <div className="flex items-center justify-center gap-3">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                  </svg>
+                  {loading ? 'Signing in...' : 'Continue with Google'}
+                </div>
+              </Button>
+              
+              <div className="text-center text-sm text-gray-500">
+                Sign in with your Google account to access NJ Mart
+              </div>
+            </div>
 
-    /* Header / Branding */
-    header.app-header{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      margin-bottom:16px;
-    }
-    .logo{
-      width:64px;height:64px;border-radius:12px;
-      background:linear-gradient(135deg,var(--accent),var(--accent-dark));
-      display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;
-      box-shadow:0 8px 24px rgba(16,185,129,0.12);
-    }
-    .brand-title{font-size:20px;margin:0}
-    .brand-sub{color:var(--muted);font-size:13px;margin-top:4px}
+            {/* Message Display */}
+            {message && (
+              <div className={`text-center text-sm p-3 rounded-md ${
+                message.includes('successful') 
+                  ? 'bg-green-100 text-green-800' 
+                  : 'bg-red-100 text-red-800'
+              }`}>
+                {message}
+              </div>
+            )}
+          </CardContent>
 
-    /* Layout: two-column on wider screens */
-    .grid{
-      display:grid;
-      grid-template-columns:380px 1fr;
-      gap:18px;
-      align-items:start;
-    }
-    @media(max-width:920px){
-      .grid{grid-template-columns:1fr}
-    }
+          <CardFooter className="flex flex-col space-y-4">
+            <div className="text-center text-xs text-gray-500">
+              By continuing, you agree to NJ Mart's Terms of Service and Privacy Policy
+            </div>
+            
+            <div className="text-center text-sm text-gray-600">
+              For admin access, use your NJ Mart Google account
+            </div>
+          </CardFooter>
+        </Card>
 
-    /* Left column: forms */
-    .auth-card{
-      padding:20px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-    }
-
-    /* Section headings */
-    h1.section-title{font-size:18px;margin:0 0 6px 0}
-    p.section-sub{margin:0;color:var(--muted);font-size:13px}
-
-    /* Input */
-    .field{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
-    input[type="text"], input[type="email"], input[type="password"], input[type="tel"], textarea, select{
-      padding:12px 14px;border-radius:10px;border:1px solid #e6eef0;background:#fff;font-size:15px;
-    }
-
-    /* Buttons */
-    .btn{display:inline-flex;align-items:center;gap:8px;justify-content:center;padding:10px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
-    .btn-primary{background:var(--accent);color:#fff}
-    .btn-ghost{background:#fff;border:1px solid #e6eef0;color:#333}
-    .btn-google{background:#fff;border:1px solid #e2e8f0;color:#111}
-    .btn-block{width:100%}
-
-    /* Small helper text */
-    .muted{color:var(--muted);font-size:13px}
-    .error{color:var(--danger);font-size:13px}
-    .ok{color:var(--accent-dark);font-size:13px}
-    
-    /* Right column: info / debug / tips */
-    .info-card{padding:18px;display:flex;flex-direction:column;gap:10px}
-    .info-card h3{margin:0}
-    .info-list{font-size:13px;color:var(--muted);line-height:1.4}
-
-    /* Footer small */
-    .small{font-size:12px;color:var(--muted)}
-
-    /* tiny responsive tweaks */
-    @media(max-width:420px){
-      .logo{width:56px;height:56px}
-      .grid{gap:12px}
-      .card{padding:12px}
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <!-- ===== Header / Branding ===== -->
-    <header class="app-header">
-      <div class="logo">NJ</div>
-      <div>
-        <h2 class="brand-title">NJ Mart</h2>
-        <div class="brand-sub">Grocery & home delivery — secure admin login</div>
+        {/* Footer */}
+        <div className="text-center mt-8 text-sm text-gray-500">
+          <p>© 2024 NJ Mart. Fresh groceries delivered to your door.</p>
+        </div>
       </div>
-    </header>
-
-    <div class="grid">
-      <!-- ===== LEFT: AUTH UI (card) ===== -->
-      <section class="card auth-card" aria-labelledby="auth-heading">
-
-        <!-- heading -->
-        <div>
-          <h1 id="auth-heading" class="section-title">Sign in to NJ Mart</h1>
-          <div class="section-sub">Use Google, Phone (OTP), or Email sign-in — all supported.</div>
-        </div>
-
-        <!-- ===== GOOGLE SIGN-IN (popup) ===== -->
-        <div class="card" style="padding:12px">
-          <div style="display:flex;align-items:center;gap:12px;justify-content:space-between">
-            <div>
-              <div style="font-weight:800">Continue with Google</div>
-              <div class="muted" style="margin-top:6px">Fast sign-in using your Google account</div>
-            </div>
-            <div>
-              <button id="btnGoogle" class="btn btn-google btn-block"><i class="fa fa-google"></i> &nbsp; Sign in</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- ===== EMAIL / PASSWORD LOGIN + SIGNUP + FORGOT ===== -->
-        <div class="card" style="padding:14px">
-          <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
-            <div>
-              <h3 class="section-title">Email login / Sign up</h3>
-              <div class="muted">Use email & password or create account</div>
-            </div>
-            <div class="small">Need help? <a href="#" id="helpLink">Contact</a></div>
-          </div>
-
-          <!-- Email login form -->
-          <div style="margin-top:12px">
-            <div class="field">
-              <label class="muted small">Email</label>
-              <input id="inputEmail" type="email" placeholder="you@example.com" autocomplete="email"/>
-            </div>
-            <div class="field">
-              <label class="muted small">Password</label>
-              <input id="inputPassword" type="password" placeholder="Your password" autocomplete="current-password"/>
-            </div>
-
-            <div style="display:flex;gap:10px;margin-top:6px">
-              <button id="btnLoginEmail" class="btn btn-primary btn-block">Login</button>
-              <button id="btnToSignup" class="btn btn-ghost">Sign up</button>
-            </div>
-
-            <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
-              <a href="#" id="forgotToggle" class="muted small">Forgot password?</a>
-              <div id="emailLoginNote" class="small muted">We will never share your credentials.</div>
-            </div>
-          </div>
-
-          <!-- Signup area (hidden by default) -->
-          <div id="signupArea" style="margin-top:14px;display:none;border-top:1px dashed #eef6ef;padding-top:12px">
-            <div class="muted small" style="margin-bottom:8px">Create a new account</div>
-            <div class="field">
-              <label class="muted small">Email</label>
-              <input id="inputSignupEmail" type="email" placeholder="your@email.com" autocomplete="email"/>
-            </div>
-            <div class="field">
-              <label class="muted small">Password (min 6 chars)</label>
-              <input id="inputSignupPassword" type="password" placeholder="Choose a password" autocomplete="new-password"/>
-            </div>
-            <div style="display:flex;gap:10px">
-              <button id="btnSignup" class="btn btn-primary btn-block">Create Account</button>
-              <button id="btnCancelSignup" class="btn btn-ghost">Cancel</button>
-            </div>
-            <div id="signupNote" class="small muted" style="margin-top:8px">After sign-up, we store the profile locally and optionally post to your backend (Apps Script).</div>
-          </div>
-
-          <!-- Forgot password area (hidden by default) -->
-          <div id="resetArea" style="margin-top:12px;display:none;border-top:1px dashed #fffbeb;padding-top:12px">
-            <div class="muted small">Reset password — we will send a reset email</div>
-            <div class="field" style="margin-top:8px">
-              <input id="inputResetEmail" type="email" placeholder="Enter email for reset"/>
-            </div>
-            <div style="display:flex;gap:10px">
-              <button id="btnReset" class="btn btn-primary btn-block">Send reset email</button>
-              <button id="btnCancelReset" class="btn btn-ghost">Cancel</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- ===== PHONE (OTP) LOGIN ===== -->
-        <div class="card" style="padding:14px">
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <div>
-              <h3 class="section-title">Phone (OTP) login</h3>
-              <div class="muted">Enter phone in E.164 format (example: +919876543210)</div>
-            </div>
-            <div class="small muted">Secure via reCAPTCHA</div>
-          </div>
-
-          <div style="margin-top:12px">
-            <div class="field">
-              <input id="inputPhone" type="tel" placeholder="+91xxxxxxxxxx"/>
-            </div>
-
-            <!-- reCAPTCHA container required by Firebase phone auth -->
-            <div id="recaptcha-container" style="margin-bottom:8px"></div>
-
-            <div style="display:flex;gap:10px">
-              <button id="btnSendOtp" class="btn btn-primary btn-block">Send OTP</button>
-              <button id="btnClearPhone" class="btn btn-ghost">Clear</button>
-            </div>
-
-            <!-- OTP verification area (hidden until code sent) -->
-            <div id="otpArea" style="margin-top:12px;display:none">
-              <div class="field">
-                <input id="inputOtp" type="text" placeholder="Enter OTP code"/>
-              </div>
-              <div style="display:flex;gap:10px">
-                <button id="btnVerifyOtp" class="btn btn-primary btn-block">Verify OTP</button>
-                <button id="btnResendOtp" class="btn btn-ghost">Resend</button>
-              </div>
-            </div>
-            <div id="phoneNote" class="small muted" style="margin-top:8px">If testing, you can add test phone numbers inside Firebase console (Authentication → Sign-in method → Phone → Phone numbers for testing).</div>
-          </div>
-        </div>
-                <!-- ===== Status area & local debug buttons ===== -->
-        <div class="card" style="padding:12px">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div style="font-weight:800">Status</div>
-              <div id="statusText" class="muted small">Not signed in</div>
-            </div>
-            <div>
-              <button id="btnSignOut" class="btn btn-ghost" style="display:none">Sign out</button>
-            </div>
-          </div>
-
-          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-            <button id="btnProfileLocal" class="btn btn-ghost">Show local profile</button>
-            <button id="btnClearLocal" class="btn btn-ghost">Clear local data</button>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- ===== RIGHT: INFO / INSTRUCTIONS / BACKEND LINK ===== -->
-      <aside class="card info-card">
-        <h3>Deployment & backend</h3>
-        <div class="info-list">
-          <div>1. Make sure your Firebase config (apiKey etc.) is correct — this page already contains your config values.</div>
-          <div style="margin-top:8px">2. Authorized domains: add your Netlify domain (e.g. <code>njmart.netlify.app</code>) under Firebase Authentication settings.</div>
-          <div style="margin-top:8px">3. If you want user profiles in Google Sheets: set your Apps Script Web App URL in the <strong>API_BACKEND_URL</strong> variable inside script (below).</div>
-        </div>
-
-        <h3 style="margin-top:14px">Helpful tips</h3>
-        <div class="info-list">
-          <div>- Phone OTP often requires reCAPTCHA and authorized domain.</div>
-          <div style="margin-top:6px">- Use Firebase console → Authentication → Templates to customize email templates (reset password).</div>
-          <div style="margin-top:6px">- For testing, use <strong>test phone numbers</strong> from Firebase (no SMS cost).</div>
-        </div>
-
-        <h3 style="margin-top:14px">Apps Script backend</h3>
-        <div class="info-list">
-          <div>If you published an Apps Script web app that writes to Google Sheets (your 'backend'), paste its URL here in the code variable <code>API_BACKEND_URL</code>. This UI will call the backend to append customer rows after sign-in (optional).</div>
-        </div>
-
-      </aside>
-    </div> <!-- end grid -->
-
-  </div> <!-- end wrap -->
-
-  <!-- ===== FIREBASE (v8) CDN =====
-       Using Firebase v8 compatibility style for easier direct use in plain HTML.
-       This approach works reliably for classic pages without a build step.
-  -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-  <!-- ===== MAIN JAVASCRIPT (big & expanded) ===== -->
-  <script>
-  /***********************************************************************
-   * NJ Mart - login.html (single-file)
-   * - Email/Password, Google, Phone (OTP) login
-   * - Extensive inline comments for clarity
-   * - Uses Firebase v8 (compat) CDN
-   *
-   * NOTE: Before deploying, verify in Firebase Console:
-   *  - Authentication -> Sign-in method (enable Google, Email/Password, Phone)
-   *  - Authentication -> Authorized domains (add your domain: njmart.netlify.app)
-   *  - For Phone Auth testing, add test numbers under Authentication -> Sign-in method -> Phone -> Phone numbers for testing
-   ***********************************************************************/
-
-  (function(){
-    // -------------------------
-    // 1) Firebase Config (you provided these values)
-    // -------------------------
-    const firebaseConfig = {
-      apiKey: "AIzaSyCbf19k8pLFh-9UQz8sQRim2rPYT1qaEL8",
-      authDomain: "njmartonline.firebaseapp.com",
-      projectId: "njmartonline",
-      storageBucket: "njmartonline.firebasestorage.app",
-      messagingSenderId: "594505763627",
-      appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
-    };
-
-    // -------------------------
-    // 2) Initialize Firebase app & services
-    // -------------------------
-    if(!firebase || !firebase.initializeApp){
-      console.error("Firebase SDK not loaded. Check the CDN links.");
-      document.getElementById('statusText').textContent = "Firebase SDK not loaded. Open console.";
-      return;
-    }
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore ? firebase.firestore() : null; // optional if needed
-    console.log("[NJ] Firebase initialized with project:", firebaseConfig.projectId);
-
-    // -------------------------
-    // 3) Backend (Apps Script) - OPTIONAL
-    //    Replace the URL with your published Apps Script web app URL if you want auto-saving to Google Sheets.
-    // -------------------------
-    const API_BACKEND_URL = "https://script.google.com/macros/s/AKfycbwsG5H7er3nqwGjEbrtokssc5LeGFc9Zog2bG1s0C5bQ-P2b_1S1kisSLpOmdESH7FB/exec";
-    // If you don't want backend calls, leave as empty string: ""
-    // Example usage below is guarded by a check.
-
-    // -------------------------
-    // 4) DOM elements - selectors
-    // -------------------------
-    const el = id => document.getElementById(id);
-    const statusText = el('statusText');
-
-    // Email login
-    const inputEmail = el('inputEmail');
-    const inputPassword = el('inputPassword');
-    const btnLoginEmail = el('btnLoginEmail');
-
-    // Signup
-    const btnToSignup = el('btnToSignup');
-    const signupArea = el('signupArea');
-    const inputSignupEmail = el('inputSignupEmail');
-    const inputSignupPassword = el('inputSignupPassword');
-    const btnSignup = el('btnSignup');
-    const btnCancelSignup = el('btnCancelSignup');
-
-    // Reset
-    const forgotToggle = el('forgotToggle');
-    const resetArea = el('resetArea');
-    const inputResetEmail = el('inputResetEmail');
-    const btnReset = el('btnReset');
-    const btnCancelReset = el('btnCancelReset');
-
-    // Google
-    const btnGoogle = el('btnGoogle');
-
-    // Phone / OTP
-    const inputPhone = el('inputPhone');
-    const btnSendOtp = el('btnSendOtp');
-    const btnClearPhone = el('btnClearPhone');
-    const otpArea = el('otpArea');
-    const inputOtp = el('inputOtp');
-    const btnVerifyOtp = el('btnVerifyOtp');
-    const btnResendOtp = el('btnResendOtp');
-
-    // Local / debug
-    const btnProfileLocal = el('btnProfileLocal');
-    const btnClearLocal = el('btnClearLocal');
-    const btnSignOut = el('btnSignOut');
-
-    // Small helpers
-    function setStatus(msg, isError=false){
-      console.log("[NJ] " + msg);
-      statusText.textContent = msg;
-      statusText.style.color = isError ? 'var(--danger)' : 'var(--accent-dark)';
-    }
-
-    // -------------------------
-    // 5) Local storage helpers (profile)
-    // -------------------------
-    const LOCAL_KEY = 'njmart_profile_v1';
-    function saveLocalProfile(profile){
-      try{
-        localStorage.setItem(LOCAL_KEY, JSON.stringify(profile || {}));
-        setStatus("Saved profile locally");
-      }catch(e){
-        console.warn("saveLocalProfile error", e);
-      }
-    }
-    function loadLocalProfile(){
-      try{
-        const raw = localStorage.getItem(LOCAL_KEY);
-        if(!raw) return null;
-        return JSON.parse(raw);
-      }catch(e){ return null; }
-    }
-    function clearLocalProfile(){
-      localStorage.removeItem(LOCAL_KEY);
-      setStatus("Local profile cleared");
-    }
-
-    // -------------------------
-    // 6) UI helper toggles
-    // -------------------------
-    btnToSignup.addEventListener('click', (e)=>{
-      signupArea.style.display = 'block';
-      resetArea.style.display = 'none';
-    });
-    btnCancelSignup.addEventListener('click', (e)=>{
-      signupArea.style.display = 'none';
-    });
-
-    forgotToggle.addEventListener('click', (e)=>{
-      e.preventDefault();
-      resetArea.style.display = 'block';
-      signupArea.style.display = 'none';
-    });
-    btnCancelReset.addEventListener('click', (e)=>{
-      resetArea.style.display = 'none';
-    });
-
-    // -------------------------
-    // 7) Auth state change listener
-    // -------------------------
-    auth.onAuthStateChanged(function(user){
-      if(user){
-        // user is signed in
-        const display = user.displayName || user.email || user.phoneNumber || user.uid;
-        setStatus("Signed in: " + display);
-        btnSignOut.style.display = 'inline-block';
-        // Save basic profile to localStorage
-        const profile = {
-          uid: user.uid || '',
-          name: user.displayName || '',
-          email: user.email || '',
-          phone: user.phoneNumber || '',
-          photoURL: user.photoURL || ''
-        };
-        saveLocalProfile(profile);
-
-        // Optionally POST to Apps Script backend to append customer
-        if(API_BACKEND_URL && API_BACKEND_URL.length > 10){
-          try{
-            // call backend to append customer row (best-effort)
-            fetch(API_BACKEND_URL, {
-              method: 'POST',
-              headers: {'Content-Type':'application/json'},
-              body: JSON.stringify({
-                action: 'addcustomer',
-                Name: profile.name || '(no name)',
-                Phone: profile.phone || '',
-                Email: profile.email || '',
-                Address: '' // Address can be asked later in profile page
-              })
-            }).then(r => r.json()).then(resp => {
-              console.log("backend addcustomer resp", resp);
-            }).catch(err => {
-              console.warn("backend addcustomer error", err);
-            });
-          }catch(e){ console.warn("backend call error", e); }
-        }
-
-        // Redirect to home/dashboard if desired:
-        // window.location.href = "index.html";
-      } else {
-        // signed out
-        setStatus("Not signed in");
-        btnSignOut.style.display = 'none';
-      }
-    });
-
-    // -------------------------
-    // 8) EMAIL LOGIN handler
-    // -------------------------
-    btnLoginEmail.addEventListener('click', async function(e){
-      e.preventDefault();
-      const email = (inputEmail.value || '').trim();
-      const pwd = (inputPassword.value || '').trim();
-      if(!email || !pwd){
-        setStatus("Please enter email and password", true);
-        return;
-      }
-      setStatus("Signing in...");
-      try{
-        const result = await auth.signInWithEmailAndPassword(email, pwd);
-        setStatus("Welcome back, " + (result.user.email || result.user.uid));
-      }catch(err){
-        console.error("Email login error", err);
-        let msg = err && err.message ? err.message : String(err);
-        setStatus("Login failed: " + msg, true);
-      }
-    });
-
-    // -------------------------
-    // 9) SIGNUP handler (email + password)
-    // -------------------------
-    btnSignup.addEventListener('click', async function(e){
-      e.preventDefault();
-      const email = (inputSignupEmail.value || '').trim();
-      const pwd = (inputSignupPassword.value || '').trim();
-      if(!email || !pwd){
-        setStatus("Enter email & password to sign up", true);
-        return;
-      }
-      if(pwd.length < 6){
-        setStatus("Password must be at least 6 characters", true);
-        return;
-      }
-      setStatus("Creating account...");
-      try{
-        const cred = await auth.createUserWithEmailAndPassword(email, pwd);
-        setStatus("Account created: " + (cred.user.email || cred.user.uid));
-        // Optionally update displayName, or ask for name on profile page later
-        // Optionally call backend to add customer row
-      }catch(err){
-        console.error("Signup error", err);
-        setStatus("Signup failed: " + (err && err.message ? err.message : err), true);
-      }
-    });
-
-    // -------------------------
-    // 10) FORGOT / RESET password
-    // -------------------------
-    btnReset.addEventListener('click', async function(e){
-      e.preventDefault();
-      const email = (inputResetEmail.value || '').trim();
-      if(!email){
-        setStatus("Enter email to send reset link", true);
-        return;
-      }
-      setStatus("Sending password reset email...");
-      try{
-        await auth.sendPasswordResetEmail(email);
-        setStatus("Reset email sent to " + email);
-      }catch(err){
-        console.error("Reset error", err);
-        setStatus("Reset failed: " + (err && err.message ? err.message : err), true);
-      }
-    });
-
-    // -------------------------
-    // 11) Google sign-in (popup)
-    // -------------------------
-    btnGoogle.addEventListener('click', async function(e){
-      e.preventDefault();
-      setStatus("Opening Google sign-in...");
-      const provider = new firebase.auth.GoogleAuthProvider();
-      try{
-        const res = await auth.signInWithPopup(provider);
-        setStatus("Google login success: " + (res.user.email || res.user.uid));
-      }catch(err){
-        console.error("Google sign-in error", err);
-        setStatus("Google sign-in failed: " + (err && err.message ? err.message : err), true);
-      }
-    });
-
-    // -------------------------
-    // 12) PHONE AUTH (OTP) — reCAPTCHA + send + verify
-    // -------------------------
-    // Prepare reCAPTCHA verifier (invisible)
-    let recaptchaVerifier = null;
-    let confirmationResult = null;
-    function initRecaptcha(){
-      try{
-        if(recaptchaVerifier) {
-          // already initialized
-          return;
-        }
-        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-          'size': 'invisible',
-          'callback': function(response){
-            console.log("reCAPTCHA solved:", response);
-          }
-        });
-        // render immediately (for debug, widgetId returned)
-        recaptchaVerifier.render().then(widgetId => {
-          console.log("reCAPTCHA widget rendered:", widgetId);
-        }).catch(err => {
-          console.warn("reCAPTCHA render error:", err);
-        });
-      }catch(err){
-        console.error("initRecaptcha error", err);
-      }
-    }
-
-    // Ensure recaptcha is initialized on load (so Send OTP works)
-    initRecaptcha();
-
-    // Send OTP
-    btnSendOtp.addEventListener('click', async function(e){
-      e.preventDefault();
-      const phone = (inputPhone.value || '').trim();
-      if(!phone || phone.length < 8){
-        setStatus("Enter phone in E.164 format e.g. +919876543210", true);
-        return;
-      }
-      // Basic pattern check
-      if(!/^\+\d{8,15}$/.test(phone)){
-        setStatus("Phone must be in E.164 format (start with + and country code)", true);
-        return;
-      }
-      setStatus("Sending OTP to " + phone + " ...");
-      try{
-        // ensure recaptcha ready
-        initRecaptcha();
-        confirmationResult = await auth.signInWithPhoneNumber(phone, recaptchaVerifier);
-        console.log("Confirmation result:", confirmationResult);
-        setStatus("OTP sent. Please enter the code and click Verify.");
-        otpArea.style.display = 'block';
-      }catch(err){
-        console.error("sendOtp error", err);
-        // If recaptcha error, clear it so user can try again
-        try{ recaptchaVerifier.clear(); recaptchaVerifier = null; } catch(e){/*ignore*/}
-        setStatus("Send OTP failed: " + (err && err.message ? err.message : err), true);
-      }
-    });
-       // Verify OTP
-    btnVerifyOtp.addEventListener('click', async function(e){
-      e.preventDefault();
-      const code = (inputOtp.value || '').trim();
-      if(!code){
-        setStatus("Enter OTP code", true);
-        return;
-      }
-      if(!confirmationResult){
-        setStatus("No OTP request active. Click Send OTP first.", true);
-        return;
-      }
-      setStatus("Verifying OTP...");
-      try{
-        const res = await confirmationResult.confirm(code);
-        setStatus("Phone sign-in success: " + (res.user.phoneNumber || res.user.uid));
-        console.log("Phone auth success:", res);
-        otpArea.style.display = 'none';
-      }catch(err){
-        console.error("verifyOtp error", err);
-        setStatus("OTP verification failed: " + (err && err.message ? err.message : err), true);
-      }
-    });
-
-    // Resend OTP (attempts to re-run send OTP; keep recaptcha fresh)
-    btnResendOtp.addEventListener('click', async function(e){
-      e.preventDefault();
-      // Reset recaptcha and request again
-      try{
-        if(recaptchaVerifier) { try{ recaptchaVerifier.clear(); }catch(e){} recaptchaVerifier = null; }
-      }catch(e){}
-      initRecaptcha();
-      btnSendOtp.click(); // reuse send click
-    });
-
-    btnClearPhone.addEventListener('click', function(e){
-      e.preventDefault();
-      inputPhone.value = '';
-      otpArea.style.display = 'none';
-      inputOtp.value = '';
-      setStatus("Phone input cleared");
-    });
-
-    // -------------------------
-    // 13) Sign out
-    // -------------------------
-    btnSignOut.addEventListener('click', async function(e){
-      e.preventDefault();
-      try{
-        await auth.signOut();
-        setStatus("Signed out");
-        clearLocalProfile();
-      }catch(err){
-        console.error("signOut error", err);
-        setStatus("Sign out failed: " + (err && err.message ? err.message : err), true);
-      }
-    });
-
-    // -------------------------
-    // 14) Local profile utilities for debug display
-    // -------------------------
-    btnProfileLocal.addEventListener('click', function(e){
-      e.preventDefault();
-      const p = loadLocalProfile();
-      if(!p) return alert("No local profile saved.");
-      alert("Local profile:\n\n" + JSON.stringify(p, null, 2));
-    });
-    btnClearLocal.addEventListener('click', function(e){
-      e.preventDefault();
-      clearLocalProfile();
-      alert("Local storage cleared.");
-    });
-
-    // -------------------------
-    // 15) On load: restore UI states if possible
-    // -------------------------
-    (function onInit(){
-      // show/hide based on local profile
-      const p = loadLocalProfile();
-      if(p){
-        setStatus("Found local profile: " + (p.email || p.phone || p.uid));
-      }else{
-        setStatus("Ready. Please sign in.");
-      }
-
-      // Attach small keyboard handlers: Enter triggers login
-      [inputEmail, inputPassword].forEach(inp => {
-        if(inp) inp.addEventListener('keydown', function(ev){
-          if(ev.key === 'Enter') { btnLoginEmail.click(); }
-        });
-      });
-      // Signup enter
-      [inputSignupEmail, inputSignupPassword].forEach(inp => {
-        if(inp) inp.addEventListener('keydown', function(ev){
-          if(ev.key === 'Enter') { btnSignup.click(); }
-        });
-      });
-      // Reset enter
-      if(inputResetEmail) inputResetEmail.addEventListener('keydown', function(ev){
-        if(ev.key === 'Enter') btnReset.click();
-      });
-
-      // Inline helpful console hint
-      console.log("NJ Mart login page initialized. Firebase project:", firebaseConfig.projectId);
-    })();
-
-    // -------------------------
-    // 16) Extra: helper to post to backend (if used)
-    // -------------------------
-    async function postToBackend(action, payload){
-      if(!API_BACKEND_URL) return null;
-      try{
-        const res = await fetch(API_BACKEND_URL, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(Object.assign({action: action}, payload || {}))
-        });
-        return await res.json();
-      }catch(err){
-        console.warn("postToBackend error", err);
-        return null;
-      }
-    }
-
-    // Expose a small debug object
-    window.NJLoginDebug = {
-      firebaseConfig,
-      API_BACKEND_URL,
-      saveLocalProfile,
-      loadLocalProfile,
-      postToBackend
-    };
-
-  })();
-  </script>
-
-  <!-- ===== END OF FILE ===== -->
-</body>
-</html>
+    </div>
+  );
+}
