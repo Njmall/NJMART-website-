@@ -82,6 +82,14 @@
       .hero{flex-direction:column;align-items:flex-start}
       .features{grid-template-columns:1fr}
     }
+
+    /* small utility */
+    .center { text-align:center; }
+    .mt-8 { margin-top: 8px; }
+    .mb-8 { margin-bottom: 8px; }
+
+    /* accessibility focus outlines */
+    button:focus, input:focus, select:focus { outline: 3px solid rgba(45,179,74,0.15); outline-offset: 2px; }
   </style>
 </head>
 <body>
@@ -110,7 +118,7 @@
           <div class="hero" aria-hidden="true">
             <div class="hero-illustration" aria-hidden="true">
               <!-- simple svg -->
-              <svg width="80" height="80" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="80" height="80" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="shopping illustration">
                 <rect x="0" y="0" width="120" height="120" rx="18" fill="white" opacity="0.04"/>
                 <g transform="translate(10,10)">
                   <path d="M18 50 L32 18 H86 L100 50 Z" fill="#d9f7db"/>
@@ -195,7 +203,8 @@
           <div style="display:flex;flex-direction:column;gap:12px">
             <button id="btn-google" class="btn google" style="padding:12px 14px;font-weight:800">Continue with Google</button>
             <div id="google-msg" class="msg" aria-live="polite"></div>
-                        <div class="card-box" aria-hidden="true">
+
+            <div class="card-box" aria-hidden="true">
               <div style="font-weight:800">Why Google?</div>
               <div class="muted small-note" style="margin-top:6px">Faster login, automatic account recovery and secure token-based access.</div>
             </div>
@@ -264,14 +273,13 @@
   <script>
   /************************************************************************
    * NJ Mart — Login (Google + Phone OTP)
-   * Single-file final expanded implementation
+   * Final expanded implementation (merged with full UI)
    *
-   * Notes:
-   *  - Firebase (compat) libs are loaded in <head>
-   *  - Replace firebaseConfig values only if you want to change project
-   *  - Ensure Firebase Console -> Authentication -> Sign-in methods has
-   *    Google and Phone enabled. Also add your domain to Authorized domains.
-   *
+   * - Firebase (compat) libs are loaded in <head>
+   * - Config below is already filled for your NJ Mart project
+   * - Make sure your Firebase Console -> Authentication -> Sign-in methods
+   *   has Google and Phone enabled and your domain (njmart.netlify.app)
+   *   is added to Authorized domains.
    ************************************************************************/
 
   // ---------------- Firebase config (your provided values) ----------------
@@ -292,7 +300,7 @@
   }
 
   const auth = firebase.auth();
-  const db = firebase.firestore ? firebase.firestore() : null; // optional
+  const db = (firebase.firestore) ? firebase.firestore() : null; // optional Firestore handle
 
   // ----------------- Element helpers -----------------
   const $ = id => document.getElementById(id);
@@ -300,6 +308,7 @@
     const el = $(id);
     if(!el) return;
     el.textContent = text || '';
+    // ensure the base class remains 'msg'
     el.className = 'msg' + (type ? ' ' + type : '');
   }
   function clearMsg(id){ showMsg(id,''); }
@@ -349,6 +358,7 @@
 
   function initRecaptcha(){
     try{
+      // clear previous if exists
       if(recaptchaVerifier && typeof recaptchaVerifier.clear === 'function'){
         try{ recaptchaVerifier.clear(); }catch(e){/*ignore*/ }
       }
@@ -377,7 +387,7 @@
     }
   }
 
-  // initial recaptcha init
+  // initial recaptcha init (safe: wrapped)
   try{ initRecaptcha(); }catch(e){ console.warn('recaptcha init error', e); }
 
   // normalize phone: accept +91 or 10-digit etc.
@@ -449,7 +459,8 @@
       showMsg('phone-msg', msg, 'error');
     }
   });
-      $('btn-cancel-otp').addEventListener('click', function(e){
+
+  $('btn-cancel-otp').addEventListener('click', function(e){
     e.preventDefault && e.preventDefault();
     $('phone').value = '';
     $('otp').value = '';
@@ -534,11 +545,15 @@
   }
 
   // ----------------- Auto redirect if already signed in -----------------
+  // IMPORTANT: only redirect when user is on login page to avoid loops
   auth.onAuthStateChanged(function(user){
-    if(user){
+    if(user && window.location.pathname.includes("login.html")){
       console.log('Already signed in', user);
-      // Directly call afterSignIn but prevent infinite loops
+      // call afterSignIn but in a safe way
       afterSignIn(user,'auto');
+    } else {
+      // if logged in elsewhere, do nothing here
+      if(user) console.log('User already authenticated (not on login page).');
     }
   });
 
@@ -566,9 +581,11 @@
     }
   });
 
+  // Small: when user comes to login page and is already signed in, we redirect only once.
+  // The onAuthStateChanged handler above will call afterSignIn which uses localStorage and redirects.
+
   // ----------------- Final notes to user (console message) -----------------
   console.log('NJ Mart login loaded. Make sure: Firebase Auth -> Google & Phone enabled, Authorized domains updated.');
-
   </script>
 </body>
 </html>
