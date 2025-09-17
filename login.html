@@ -506,7 +506,7 @@
       // Uncomment + set YOUR_APPS_SCRIPT_URL to push user record to Google Sheets
       /*
       try{
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYED_ID/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsG5H7er3nqwGjEbrtokssc5LeGFc9Zog2bG1s0C5bQ-P2b_1S1kisSLpOmdESH7FB/exec';
         await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -544,19 +544,19 @@
     setTimeout(()=>{ t.style.transition='opacity .3s'; t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, ms);
   }
 
-  // ----------------- Auto redirect if already signed in -----------------
-  // IMPORTANT: only redirect when user is on login page to avoid loops
-  auth.onAuthStateChanged(function(user){
-    if(user && window.location.pathname.includes("login.html")){
-      console.log('Already signed in', user);
-      // call afterSignIn but in a safe way
-      afterSignIn(user,'auto');
-    } else {
-      // if logged in elsewhere, do nothing here
-      if(user) console.log('User already authenticated (not on login page).');
+// ----------------- Auto redirect if already signed in -----------------
+auth.onAuthStateChanged(function(user){
+  if(user){
+    console.log('User already signed in', user);
+    // Agar login.html par aaye aur user pehle se logged in hai
+    // to sirf redirect karo, dobara "Signed in" toast show mat karo
+    if(window.location.pathname.includes("login.html")){
+      window.location.href = "index.html";
     }
-  });
+  }
+});
 
+    
   // ----------------- Developer helpers -----------------
   // Parse common firebase auth error codes to friendly messages
   function firebaseErrorMessage(err){
