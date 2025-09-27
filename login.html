@@ -1,1021 +1,452 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - NJ Mart | Fresh Grocery Fast Delivery</title>
-    <meta name="description" content="Login to NJ Mart with Google for fresh groceries and fast delivery">
+import React, { useState, useEffect } from 'react';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  picture: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  pincode?: string;
+  location?: any;
+}
+
+const NJMartLogin: React.FC = () => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [googleUser, setGoogleUser] = useState<User | null>(null);
+  const [userLocation, setUserLocation] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<{ text: string; type: string } | null>(null);
+  const [formData, setFormData] = useState({
+    phone: '',
+    address: '',
+    city: '',
+    pincode: '',
+    location: ''
+  });
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const existingUser = localStorage.getItem('njmart-user');
+    if (existingUser) {
+      window.location.href = '/';
+    }
+  }, []);
+
+  const showMessage = (text: string, type: string) => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage(null), 5000);
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    showMessage('Connecting to Google...', 'info');
+
+    // Simulate Google login
+    setTimeout(() => {
+      const mockGoogleUser: User = {
+        id: 'google_' + Date.now(),
+        name: 'Rajesh Kumar',
+        email: 'rajesh.kumar@gmail.com',
+        picture: 'https://placeholder-image-service.onrender.com/image/80x80?prompt=Professional headshot of Indian man in business attire smiling confidently&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
+      };
+
+      setGoogleUser(mockGoogleUser);
+      showMessage('Google login successful! Please complete your profile.', 'success');
+      
+      setTimeout(() => {
+        setCurrentStep(2);
+        getCurrentLocation();
+      }, 1500);
+
+      setIsLoading(false);
+    }, 2000);
+  };
+
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      showMessage('Geolocation is not supported by this browser', 'error');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        
+        const locationData = {
+          latitude: lat,
+          longitude: lng,
+          accuracy: position.coords.accuracy,
+          timestamp: new Date().toISOString()
+        };
+
+        setUserLocation(locationData);
+        
+        // Generate mock address
+        const mockAddress = `Near Bandra West, Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}, Mumbai, Maharashtra, India`;
+        
+        setFormData(prev => ({
+          ...prev,
+          location: mockAddress,
+          city: prev.city || 'Mumbai',
+          pincode: prev.pincode || '400050'
+        }));
+
+        showMessage('Location detected successfully!', 'success');
+      },
+      (error) => {
+        showMessage('Unable to get location. Please enter manually.', 'error');
+      }
+    );
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="https://placeholder-image-service.onrender.com/image/32x32?prompt=Modern green shopping cart logo with NJ letters in fresh grocery style&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8">
-    
-    <!-- External CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Google Identity Services -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    
-    <style>
-        :root {
-            --primary-color: #22c55e;
-            --primary-hover: #16a34a;
-            --secondary-color: #34d399;
-            --accent-color: #059669;
-            --danger-color: #ef4444;
-            --background-color: #ffffff;
-            --surface-color: #f8fafc;
-            --border-color: #e2e8f0;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --text-light: #94a3b8;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --border-radius: 0.5rem;
-            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    if (!formData.phone || !formData.address || !formData.city || !formData.pincode) {
+      showMessage('Please fill in all required fields', 'error');
+      return;
+    }
+
+    if (!/^[6-9]\d{9}$/.test(formData.phone.replace(/\D/g, ''))) {
+      showMessage('Please enter a valid 10-digit Indian mobile number', 'error');
+      return;
+    }
+
+    if (!/^[0-9]{6}$/.test(formData.pincode)) {
+      showMessage('Please enter a valid 6-digit PIN code', 'error');
+      return;
+    }
+
+    setIsLoading(true);
+    showMessage('Saving your details...', 'info');
+
+    setTimeout(() => {
+      const customerData = {
+        ...googleUser,
+        ...formData,
+        location: userLocation || formData.location,
+        registrationDate: new Date().toISOString(),
+        accountType: 'google',
+        isProfileComplete: true,
+        preferences: {
+          notifications: true,
+          offers: true,
+          deliveryUpdates: true
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.6;
-            color: var(--text-primary);
-            background: linear-gradient(135deg, #ffffff 0%, #f9fffe 50%, #f0fdf4 100%);
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        /* Header */
-        .header {
-            background: var(--background-color);
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 4rem;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-
-        .logo img {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 0.5rem;
-        }
-
-        .back-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-            transition: var(--transition);
-            font-size: 1rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .back-btn:hover {
-            color: var(--primary-color);
-            background: var(--surface-color);
-        }
-
-        /* Main Layout */
-        .main-content {
-            padding: 2rem 0;
-            min-height: calc(100vh - 4rem);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .auth-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-            width: 100%;
-            max-width: 1000px;
-        }
-
-        /* Login Section */
-        .login-section {
-            background: var(--background-color);
-            border-radius: 1rem;
-            padding: 2.5rem;
-            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.15);
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .login-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .login-subtitle {
-            color: var(--text-secondary);
-            font-size: 1rem;
-        }
-
-        /* Google Login Button */
-        .google-login-btn {
-            width: 100%;
-            background: #4285f4;
-            color: white;
-            border: none;
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
-        }
-
-        .google-login-btn:hover {
-            background: #3367d6;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4);
-        }
-
-        .google-login-btn:disabled {
-            background: var(--text-light);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .google-icon {
-            width: 1.5rem;
-            height: 1.5rem;
-            background: white;
-            border-radius: 3px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Customer Details Form */
-        .details-section {
-            display: none;
-        }
-
-        .details-section.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius);
-            font-size: 0.875rem;
-            transition: var(--transition);
-            background: var(--surface-color);
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgb(34 197 94 / 0.1);
-            background: var(--background-color);
-        }
-
-        .location-group {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 0.5rem;
-            align-items: end;
-        }
-
-        .location-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.75rem 1rem;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .location-btn:hover {
-            background: var(--primary-hover);
-        }
-
-        .submit-btn {
-            width: 100%;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            border: none;
-            padding: 0.875rem;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .submit-btn:hover {
-            background: linear-gradient(135deg, var(--primary-hover) 0%, var(--accent-color) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
-        }
-
-        .submit-btn:disabled {
-            background: var(--text-light);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* Hero Section */
-        .hero-section {
-            text-align: center;
-        }
-
-        .hero-image {
-            margin-bottom: 2rem;
-        }
-
-        .hero-image img {
-            width: 100%;
-            max-width: 500px;
-            height: auto;
-            border-radius: 1rem;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .hero-content h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .hero-content p {
-            font-size: 1.125rem;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-
-        .features-list {
-            display: grid;
-            gap: 1rem;
-            text-align: left;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem;
-            background: linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%);
-            border-radius: var(--border-radius);
-            border: 1px solid rgba(34, 197, 94, 0.15);
-        }
-
-        .feature-icon {
-            width: 3rem;
-            height: 3rem;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.25rem;
-            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
-        }
-
-        .feature-text h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .feature-text p {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        /* Messages */
-        .message {
-            padding: 0.75rem 1rem;
-            border-radius: var(--border-radius);
-            margin-bottom: 1rem;
-            font-weight: 500;
-            display: none;
-        }
-
-        .message.show {
-            display: block;
-            animation: slideIn 0.3s ease;
-        }
-
-        .message.error {
-            background: #fef2f2;
-            color: #b91c1c;
-            border: 1px solid #fecaca;
-        }
-
-        .message.success {
-            background: #f0fdf4;
-            color: #15803d;
-            border: 1px solid #bbf7d0;
-        }
-
-        .message.info {
-            background: #eff6ff;
-            color: #1d4ed8;
-            border: 1px solid #dbeafe;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .loading {
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid transparent;
-            border-top: 2px solid currentColor;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .user-avatar {
-            width: 3rem;
-            height: 3rem;
-            border-radius: 50%;
-            margin: 0 auto 1rem;
-            display: block;
-            box-shadow: var(--shadow-md);
-        }
-
-        .user-info {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background: var(--surface-color);
-            border-radius: var(--border-radius);
-        }
-
-        .user-name {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .user-email {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .auth-wrapper {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .hero-section {
-                order: 2;
-            }
-
-            .login-section {
-                order: 1;
-            }
-
-            .hero-content h1 {
-                font-size: 2rem;
-            }
-
-            .main-content {
-                padding: 1rem 0;
-            }
-
-            .login-section {
-                padding: 1.5rem;
-            }
-        }
-
-        .step-indicator {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .step {
-            width: 2rem;
-            height: 2rem;
-            border-radius: 50%;
-            background: var(--border-color);
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.875rem;
-        }
-
-        .step.active {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .step.completed {
-            background: var(--accent-color);
-            color: white;
-        }
-
-        .step-line {
-            width: 2rem;
-            height: 2px;
-            background: var(--border-color);
-        }
-
-        .step-line.completed {
-            background: var(--accent-color);
-        }
-    </style>
-</head>
-
-<body>
-    <!-- Header -->
-    <header class="header">
-        <nav class="nav-container">
-            <a href="index.html" class="logo">
-                <img src="https://placeholder-image-service.onrender.com/image/50x50?prompt=Modern green shopping cart logo with fresh groceries and NJ letters in circular design&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" alt="NJ Mart logo with fresh green shopping cart design">
-                <div>
-                    <div style="font-size: 1.5rem; line-height: 1;">NJ Mart</div>
-                    <div style="font-size: 0.75rem; font-weight: 400; color: var(--text-secondary);">Fresh Grocery • Fast Delivery</div>
-                </div>
-            </a>
-
-            <a href="index.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-                Back to Home
-            </a>
-        </nav>
-    </header>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="container">
-            <div class="auth-wrapper">
-                <!-- Hero Section -->
-                <div class="hero-section">
-                    <div class="hero-image">
-                        <img src="https://placeholder-image-service.onrender.com/image/500x400?prompt=Fresh grocery shopping illustration with vegetables fruits and happy customers using mobile app&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" alt="Fresh grocery shopping with mobile app and happy customers">
-                    </div>
-                    <div class="hero-content">
-                        <h1>Welcome to NJ Mart</h1>
-                        <p>Your trusted partner for fresh groceries and fast delivery</p>
-                        
-                        <div class="features-list">
-                            <div class="feature-item">
-                                <div class="feature-icon">
-                                    <i class="fas fa-truck"></i>
-                                </div>
-                                <div class="feature-text">
-                                    <h3>Free Delivery</h3>
-                                    <p>Free delivery on orders above ₹499</p>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-icon">
-                                    <i class="fas fa-leaf"></i>
-                                </div>
-                                <div class="feature-text">
-                                    <h3>Fresh & Organic</h3>
-                                    <p>100% fresh products from farms</p>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-icon">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="feature-text">
-                                    <h3>Quick Delivery</h3>
-                                    <p>Same day delivery in 2-4 hours</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Login Section -->
-                <div class="login-section">
-                    <!-- Step Indicator -->
-                    <div class="step-indicator" id="stepIndicator">
-                        <div class="step active" id="step1">1</div>
-                        <div class="step-line" id="line1"></div>
-                        <div class="step" id="step2">2</div>
-                        <div class="step-line" id="line2"></div>
-                        <div class="step" id="step3">3</div>
-                    </div>
-
-                    <div class="login-header">
-                        <h2 class="login-title" id="sectionTitle">Sign In with Google</h2>
-                        <p class="login-subtitle" id="sectionSubtitle">Quick and secure login with your Google account</p>
-                    </div>
-
-                    <!-- Message Display -->
-                    <div id="messageContainer"></div>
-
-                    <!-- Step 1: Google Login -->
-                    <div class="auth-step" id="googleLoginStep">
-                        <button class="google-login-btn" id="googleLoginBtn">
-                            <div class="google-icon">
-                                <svg width="18" height="18" viewBox="0 0 18 18">
-                                    <path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18Z"/>
-                                    <path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2.04a4.8 4.8 0 0 1-7.18-2.53H1.83v2.07A8 8 0 0 0 8.98 17Z"/>
-                                    <path fill="#FBBC05" d="M4.5 10.49a4.8 4.8 0 0 1 0-3.07V5.35H1.83a8 8 0 0 0 0 7.28l2.67-2.14Z"/>
-                                    <path fill="#EA4335" d="M8.98 4.72c1.16 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.35L4.5 7.42a4.77 4.77 0 0 1 4.48-2.7Z"/>
-                                </svg>
-                            </div>
-                            <span id="googleBtnText">Continue with Google</span>
-                            <span id="googleLoading" class="loading" style="display: none;"></span>
-                        </button>
-                        
-                        <div style="text-align: center; margin-top: 1rem;">
-                            <p style="font-size: 0.875rem; color: var(--text-secondary);">
-                                Secure login with your Google account<br>
-                                We'll collect basic info to personalize your experience
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Step 2: Customer Details -->
-                    <div class="details-section" id="customerDetailsStep">
-                        <div class="user-info" id="userInfo" style="display: none;">
-                            <img id="userAvatar" class="user-avatar" alt="User Avatar">
-                            <div class="user-name" id="userName"></div>
-                            <div class="user-email" id="userEmail"></div>
-                        </div>
-
-                        <form id="customerDetailsForm">
-                            <div class="form-group">
-                                <label for="customerPhone" class="form-label">Phone Number *</label>
-                                <input type="tel" id="customerPhone" class="form-input" placeholder="Enter your phone number" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="customerAddress" class="form-label">Address *</label>
-                                <textarea id="customerAddress" class="form-input" rows="3" placeholder="Enter your full address" required style="resize: vertical;"></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="customerCity" class="form-label">City *</label>
-                                <input type="text" id="customerCity" class="form-input" placeholder="Enter your city" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="customerPincode" class="form-label">PIN Code *</label>
-                                <input type="text" id="customerPincode" class="form-input" placeholder="Enter PIN code" required pattern="[0-9]{6}">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="customerLocation" class="form-label">Current Location</label>
-                                <div class="location-group">
-                                    <input type="text" id="customerLocation" class="form-input" placeholder="We'll detect your location" readonly>
-                                    <button type="button" class="location-btn" id="getLocationBtn">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        Get Location
-                                    </button>
-                                </div>
-                                <small style="color: var(--text-secondary); font-size: 0.75rem;">
-                                    We use your location for better delivery experience
-                                </small>
-                            </div>
-
-                            <button type="submit" class="submit-btn" id="detailsSubmitBtn">
-                                <span id="detailsText">Complete Profile</span>
-                                <span id="detailsLoading" class="loading" style="display: none;"></span>
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- Step 3: Success -->
-                    <div class="details-section" id="successStep">
-                        <div style="text-align: center;">
-                            <div style="width: 4rem; height: 4rem; background: var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: white; font-size: 2rem;">
-                                <i class="fas fa-check"></i>
-                            </div>
-                            <h3 style="margin-bottom: 0.5rem;">Welcome to NJ Mart!</h3>
-                            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Your account has been set up successfully</p>
-                            <button class="submit-btn" id="continueBtn">
-                                <i class="fas fa-shopping-bag"></i>
-                                Start Shopping
-                            </button>
-                        </div>
-                    </div>
-                </div>
+      };
+
+      localStorage.setItem('njmart-user', JSON.stringify(customerData));
+      
+      const users = JSON.parse(localStorage.getItem('njmart-users') || '[]');
+      users.push(customerData);
+      localStorage.setItem('njmart-users', JSON.stringify(users));
+
+      showMessage('Profile completed successfully!', 'success');
+      setIsLoading(false);
+      
+      setTimeout(() => {
+        setCurrentStep(3);
+      }, 1000);
+    }, 2000);
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-white via-green-50 to-green-100">
+      {/* Header */}
+      <header className="bg-white border-b border-green-200 shadow-sm backdrop-blur-md">
+        <nav className="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
+          <a href="/" className="flex items-center gap-3 text-xl font-bold text-green-600 no-underline">
+            <img 
+              src="https://placeholder-image-service.onrender.com/image/50x50?prompt=Modern green shopping cart logo with fresh groceries and NJ letters in circular design&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" 
+              alt="NJ Mart logo with fresh green shopping cart design"
+              className="w-10 h-10 rounded-lg"
+            />
+            <div>
+              <div className="text-xl leading-none">NJ Mart</div>
+              <div className="text-xs font-normal text-gray-600">Fresh Grocery • Fast Delivery</div>
             </div>
-        </div>
-    </div>
+          </a>
 
-    <script>
-        // Global variables
-        let currentStep = 1;
-        let googleUser = null;
-        let userLocation = null;
+          <a href="/" className="flex items-center gap-2 text-gray-600 hover:text-green-600 hover:bg-gray-50 px-2 py-1 rounded-md transition-all no-underline">
+            <i className="fas fa-arrow-left"></i>
+            Back to Home
+          </a>
+        </nav>
+      </header>
 
-        // Initialize authentication functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeAuth();
-            initializeGoogleSignIn();
-        });
-
-        function initializeAuth() {
-            const googleLoginBtn = document.getElementById('googleLoginBtn');
-            const customerDetailsForm = document.getElementById('customerDetailsForm');
-            const getLocationBtn = document.getElementById('getLocationBtn');
-            const continueBtn = document.getElementById('continueBtn');
-
-            // Google login button
-            if (googleLoginBtn) {
-                googleLoginBtn.addEventListener('click', handleGoogleLogin);
-            }
-
-            // Customer details form
-            if (customerDetailsForm) {
-                customerDetailsForm.addEventListener('submit', handleCustomerDetails);
-            }
-
-            // Get location button
-            if (getLocationBtn) {
-                getLocationBtn.addEventListener('click', getCurrentLocation);
-            }
-
-            // Continue button
-            if (continueBtn) {
-                continueBtn.addEventListener('click', () => {
-                    window.location.href = 'index.html';
-                });
-            }
-
-            // Auto-detect location on page load
-            setTimeout(() => {
-                getCurrentLocation();
-            }, 1000);
-        }
-
-        function initializeGoogleSignIn() {
-            // Initialize Google Sign-In (demo mode for this example)
-            // In production, you would use actual Google Sign-In SDK
-            window.handleGoogleSignIn = function(response) {
-                // This would be called by actual Google Sign-In
-                console.log('Google Sign-In response:', response);
-            };
-        }
-
-        function handleGoogleLogin() {
-            const googleBtn = document.getElementById('googleLoginBtn');
-            const googleBtnText = document.getElementById('googleBtnText');
-            const googleLoading = document.getElementById('googleLoading');
-
-            // Show loading state
-            setLoadingState(googleBtn, googleBtnText, googleLoading, true);
-            showMessage('Connecting to Google...', 'info');
-
-            // Simulate Google login (in production, use actual Google Sign-In)
-            setTimeout(() => {
-                // Simulate successful Google login
-                const mockGoogleUser = {
-                    id: 'google_' + Date.now(),
-                    name: 'John Doe',
-                    email: 'john.doe@gmail.com',
-                    picture: 'https://placeholder-image-service.onrender.com/image/80x80?prompt=Professional headshot of smiling person in business attire&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8',
-                    given_name: 'John',
-                    family_name: 'Doe'
-                };
-
-                googleUser = mockGoogleUser;
-                showMessage('Google login successful!', 'success');
-                
-                setTimeout(() => {
-                    moveToStep(2);
-                    displayUserInfo(mockGoogleUser);
-                }, 1000);
-
-                setLoadingState(googleBtn, googleBtnText, googleLoading, false);
-            }, 2000);
-        }
-
-        function displayUserInfo(user) {
-            const userInfo = document.getElementById('userInfo');
-            const userAvatar = document.getElementById('userAvatar');
-            const userName = document.getElementById('userName');
-            const userEmail = document.getElementById('userEmail');
-
-            userAvatar.src = user.picture;
-            userName.textContent = user.name;
-            userEmail.textContent = user.email;
-            userInfo.style.display = 'block';
-        }
-
-        function handleCustomerDetails(e) {
-            e.preventDefault();
-
-            const phone = document.getElementById('customerPhone').value;
-            const address = document.getElementById('customerAddress').value;
-            const city = document.getElementById('customerCity').value;
-            const pincode = document.getElementById('customerPincode').value;
-            const location = document.getElementById('customerLocation').value;
-            
-            const detailsBtn = document.getElementById('detailsSubmitBtn');
-            const detailsText = document.getElementById('detailsText');
-            const detailsLoading = document.getElementById('detailsLoading');
-
-            // Validate inputs
-            if (!phone || !address || !city || !pincode) {
-                showMessage('Please fill in all required fields', 'error');
-                return;
-            }
-
-            if (!/^[0-9]{6}$/.test(pincode)) {
-                showMessage('Please enter a valid 6-digit PIN code', 'error');
-                return;
-            }
-
-            if (!/^[0-9]{10}$/.test(phone.replace(/\D/g, ''))) {
-                showMessage('Please enter a valid 10-digit phone number', 'error');
-                return;
-            }
-
-            // Show loading state
-            setLoadingState(detailsBtn, detailsText, detailsLoading, true);
-            showMessage('Saving your details...', 'info');
-
-            // Save customer details
-            setTimeout(() => {
-                const customerData = {
-                    ...googleUser,
-                    phone: phone,
-                    address: address,
-                    city: city,
-                    pincode: pincode,
-                    location: userLocation || location,
-                    registrationDate: new Date().toISOString(),
-                    preferences: {
-                        notifications: true,
-                        offers: true,
-                        deliveryUpdates: true
-                    }
-                };
-
-                // Store user data
-                localStorage.setItem('njmart-user', JSON.stringify(customerData));
-                
-                // Store in users database
-                const users = JSON.parse(localStorage.getItem('njmart-users')) || [];
-                const existingUserIndex = users.findIndex(u => u.email === googleUser.email);
-                
-                if (existingUserIndex >= 0) {
-                    users[existingUserIndex] = customerData;
-                } else {
-                    users.push(customerData);
-                }
-                
-                localStorage.setItem('njmart-users', JSON.stringify(users));
-
-                showMessage('Profile completed successfully!', 'success');
-                setLoadingState(detailsBtn, detailsText, detailsLoading, false);
-                
-                setTimeout(() => {
-                    moveToStep(3);
-                }, 1000);
-            }, 2000);
-        }
-
-        function getCurrentLocation() {
-            const locationInput = document.getElementById('customerLocation');
-            const getLocationBtn = document.getElementById('getLocationBtn');
-
-            if (!navigator.geolocation) {
-                showMessage('Geolocation is not supported by this browser', 'error');
-                return;
-            }
-
-            // Show loading state
-            getLocationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Getting...';
-            getLocationBtn.disabled = true;
-
-            navigator.geolocation.getCurrentPosition(
-                async function(position) {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    
-                    userLocation = {
-                        latitude: lat,
-                        longitude: lng,
-                        accuracy: position.coords.accuracy
-                    };
-
-                    try {
-                        // Simulate reverse geocoding (in production, use actual geocoding service)
-                        const mockAddress = `${lat.toFixed(4)}, ${lng.toFixed(4)} (Mumbai, Maharashtra, India)`;
-                        locationInput.value = mockAddress;
-                        
-                        showMessage('Location detected successfully!', 'success');
-                    } catch (error) {
-                        locationInput.value = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
-                        showMessage('Location detected, but address lookup failed', 'info');
-                    }
-
-                    // Reset button
-                    getLocationBtn.innerHTML = '<i class="fas fa-check"></i> Located';
-                    getLocationBtn.disabled = false;
-                },
-                function(error) {
-                    let errorMessage = 'Unable to get location: ';
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            errorMessage += 'Permission denied by user';
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            errorMessage += 'Location information unavailable';
-                            break;
-                        case error.TIMEOUT:
-                            errorMessage += 'Location request timed out';
-                            break;
-                        default:
-                            errorMessage += 'Unknown error occurred';
-                            break;
-                    }
-                    
-                    showMessage(errorMessage, 'error');
-                    
-                    // Reset button
-                    getLocationBtn.innerHTML = '<i class="fas fa-map-marker-alt"></i> Try Again';
-                    getLocationBtn.disabled = false;
-                }
-            );
-        }
-
-        function moveToStep(step) {
-            currentStep = step;
-            updateStepIndicator();
-            
-            // Hide all steps
-            document.querySelectorAll('.auth-step, .details-section').forEach(el => {
-                el.style.display = 'none';
-                el.classList.remove('active');
-            });
-
-            // Show current step
-            if (step === 1) {
-                document.getElementById('googleLoginStep').style.display = 'block';
-                updateSectionHeaders('Sign In with Google', 'Quick and secure login with your Google account');
-            } else if (step === 2) {
-                document.getElementById('customerDetailsStep').classList.add('active');
-                updateSectionHeaders('Complete Your Profile', 'Help us provide better service with your details');
-            } else if (step === 3) {
-                document.getElementById('successStep').classList.add('active');
-                updateSectionHeaders('Welcome to NJ Mart!', 'Your account is ready. Start shopping now!');
-            }
-        }
-
-        function updateStepIndicator() {
-            for (let i = 1; i <= 3; i++) {
-                const step = document.getElementById(`step${i}`);
-                const line = document.getElementById(`line${i}`);
-                
-                if (i < currentStep) {
-                    step.classList.add('completed');
-                    step.classList.remove('active');
-                    if (line) line.classList.add('completed');
-                } else if (i === currentStep) {
-                    step.classList.add('active');
-                    step.classList.remove('completed');
-                } else {
-                    step.classList.remove('active', 'completed');
-                    if (line) line.classList.remove('completed');
-                }
-            }
-        }
-
-        function updateSectionHeaders(title, subtitle) {
-            document.getElementById('sectionTitle').textContent = title;
-            document.getElementById('sectionSubtitle').textContent = subtitle;
-        }
-
-        function setLoadingState(btn, textElement, loadingElement, isLoading) {
-            btn.disabled = isLoading;
-            textElement.style.display = isLoading ? 'none' : 'inline';
-            loadingElement.style.display = isLoading ? 'inline-block' : 'none';
-        }
-
-        function showMessage(message, type) {
-            const messageContainer = document.getElementById('messageContainer');
-            messageContainer.innerHTML = `
-                <div class="message ${type} show">
-                    <i class="fas ${type === 'error' ? 'fa-exclamation-triangle' : type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i>
-                    ${message}
+      {/* Main Content */}
+      <div className="flex items-center justify-center py-8 px-4 min-h-[calc(100vh-4rem)]">
+        <div className="w-full max-w-5xl grid md:grid-cols-2 gap-16 items-center">
+          {/* Hero Section */}
+          <div className="text-center">
+            <div className="mb-8">
+              <img 
+                src="https://placeholder-image-service.onrender.com/image/500x400?prompt=Fresh grocery shopping illustration with vegetables fruits and happy customers using mobile app&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" 
+                alt="Fresh grocery shopping with mobile app and happy customers"
+                className="w-full max-w-md mx-auto rounded-2xl shadow-lg"
+              />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold mb-4 text-gray-900">Welcome to NJ Mart</h1>
+              <p className="text-lg text-gray-600 mb-6">Your trusted partner for fresh groceries and fast delivery</p>
+              
+              <div className="grid gap-4 text-left max-w-md mx-auto">
+                <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-white to-green-50 rounded-lg border border-green-200">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-400 rounded-full flex items-center justify-center text-white shadow-lg">
+                    <i className="fas fa-truck text-lg"></i>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Free Delivery</h3>
+                    <p className="text-sm text-gray-600">Free delivery on orders above ₹499</p>
+                  </div>
                 </div>
-            `;
+                <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-white to-green-50 rounded-lg border border-green-200">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-400 rounded-full flex items-center justify-center text-white shadow-lg">
+                    <i className="fas fa-leaf text-lg"></i>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Fresh & Organic</h3>
+                    <p className="text-sm text-gray-600">100% fresh products from farms</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-white to-green-50 rounded-lg border border-green-200">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-400 rounded-full flex items-center justify-center text-white shadow-lg">
+                    <i className="fas fa-clock text-lg"></i>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Quick Delivery</h3>
+                    <p className="text-sm text-gray-600">Same day delivery in 2-4 hours</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-            // Auto hide message after 5 seconds
-            setTimeout(() => {
-                const messageElement = messageContainer.querySelector('.message');
-                if (messageElement) {
-                    messageElement.classList.remove('show');
-                    setTimeout(() => {
-                        messageContainer.innerHTML = '';
-                    }, 300);
-                }
-            }, 5000);
-        }
+          {/* Login Section */}
+          <div className="bg-white rounded-2xl p-10 shadow-2xl border border-green-200 w-full max-w-md mx-auto">
+            {/* Step Indicator */}
+            <div className="flex justify-center items-center gap-4 mb-8">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
+                currentStep >= 1 ? 'bg-green-500 text-white shadow-lg' : 'bg-gray-300 text-gray-600'
+              }`}>
+                {currentStep > 1 ? <i className="fas fa-check"></i> : '1'}
+              </div>
+              <div className={`w-8 h-0.5 transition-all ${currentStep > 1 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
+                currentStep >= 2 ? 'bg-green-500 text-white shadow-lg' : 'bg-gray-300 text-gray-600'
+              }`}>
+                {currentStep > 2 ? <i className="fas fa-check"></i> : '2'}
+              </div>
+              <div className={`w-8 h-0.5 transition-all ${currentStep > 2 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
+                currentStep >= 3 ? 'bg-green-500 text-white shadow-lg' : 'bg-gray-300 text-gray-600'
+              }`}>
+                {currentStep > 3 ? <i className="fas fa-check"></i> : '3'}
+              </div>
+            </div>
 
-        // Check if user is already logged in
-        function checkAuthStatus() {
-            const user = localStorage.getItem('njmart-user');
-            if (user) {
-                // User is already logged in, redirect to homepage
-                window.location.href = 'index.html';
-            }
-        }
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold mb-2 text-gray-900">
+                {currentStep === 1 && 'Sign In with Google'}
+                {currentStep === 2 && 'Complete Your Profile'}
+                {currentStep === 3 && 'Welcome to NJ Mart!'}
+              </h2>
+              <p className="text-gray-600">
+                {currentStep === 1 && 'Quick and secure login with your Google account'}
+                {currentStep === 2 && 'Help us provide better delivery service'}
+                {currentStep === 3 && 'Your account is ready. Start shopping!'}
+              </p>
+            </div>
 
-        // Check auth status on page load
-        checkAuthStatus();
-    </script>
-</body>
-</html>
+            {/* Message Display */}
+            {message && (
+              <div className={`p-3 rounded-lg mb-6 flex items-center gap-2 ${
+                message.type === 'error' ? 'bg-red-50 text-red-700 border border-red-200' :
+                message.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' :
+                'bg-blue-50 text-blue-700 border border-blue-200'
+              }`}>
+                <i className={`fas ${
+                  message.type === 'error' ? 'fa-exclamation-triangle' :
+                  message.type === 'success' ? 'fa-check-circle' : 'fa-info-circle'
+                }`}></i>
+                {message.text}
+              </div>
+            )}
+
+            {/* Step 1: Google Login */}
+            {currentStep === 1 && (
+              <div>
+                <button
+                  onClick={handleGoogleLogin}
+                  disabled={isLoading}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                  <div className="w-6 h-6 bg-white rounded flex items-center justify-center">
+                    <svg width="18" height="18" viewBox="0 0 18 18">
+                      <path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18Z"/>
+                      <path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2.04a4.8 4.8 0 0 1-7.18-2.53H1.83v2.07A8 8 0 0 0 8.98 17Z"/>
+                      <path fill="#FBBC05" d="M4.5 10.49a4.8 4.8 0 0 1 0-3.07V5.35H1.83a8 8 0 0 0 0 7.28l2.67-2.14Z"/>
+                      <path fill="#EA4335" d="M8.98 4.72c1.16 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.35L4.5 7.42a4.77 4.77 0 0 1 4.48-2.7Z"/>
+                    </svg>
+                  </div>
+                  {isLoading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Connecting...
+                    </>
+                  ) : (
+                    'Continue with Google'
+                  )}
+                </button>
+                
+                <div className="text-center mt-4">
+                  <p className="text-sm text-gray-600">
+                    Secure login with your Google account<br/>
+                    We'll collect basic info to personalize your experience
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Customer Details */}
+            {currentStep === 2 && googleUser && (
+              <div>
+                {/* User Info */}
+                <div className="text-center mb-8 p-4 bg-gray-50 rounded-lg">
+                  <img 
+                    src={googleUser.picture} 
+                    alt="User Avatar"
+                    className="w-16 h-16 rounded-full mx-auto mb-4 shadow-md"
+                  />
+                  <div className="font-semibold text-lg">{googleUser.name}</div>
+                  <div className="text-gray-600 text-sm">{googleUser.email}</div>
+                </div>
+
+                <form onSubmit={handleFormSubmit} className="space-y-6">
+                  <div>
+                    <label className="block font-semibold mb-2 text-gray-900">Phone Number *</label>
+                    <input
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-200 bg-gray-50 focus:bg-white transition-all"
+                      placeholder="Enter your phone number"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold mb-2 text-gray-900">Delivery Address *</label>
+                    <textarea
+                      value={formData.address}
+                      onChange={(e) => handleInputChange('address', e.target.value)}
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-200 bg-gray-50 focus:bg-white transition-all resize-none"
+                      rows={3}
+                      placeholder="Enter your full delivery address"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold mb-2 text-gray-900">City *</label>
+                    <input
+                      type="text"
+                      value={formData.city}
+                      onChange={(e) => handleInputChange('city', e.target.value)}
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-200 bg-gray-50 focus:bg-white transition-all"
+                      placeholder="Enter your city"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold mb-2 text-gray-900">PIN Code *</label>
+                    <input
+                      type="text"
+                      value={formData.pincode}
+                      onChange={(e) => handleInputChange('pincode', e.target.value)}
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-200 bg-gray-50 focus:bg-white transition-all"
+                      placeholder="Enter PIN code"
+                      maxLength={6}
+                      pattern="[0-9]{6}"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold mb-2 text-gray-900">Current Location</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={formData.location}
+                        readOnly
+                        className="flex-1 p-3 border-2 border-gray-300 rounded-lg bg-gray-50"
+                        placeholder="We'll detect your location automatically"
+                      />
+                      <button
+                        type="button"
+                        onClick={getCurrentLocation}
+                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-semibold transition-all flex items-center gap-2"
+                      >
+                        <i className="fas fa-map-marker-alt"></i>
+                        Get Location
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">
+                      We use your location for accurate delivery time and nearby store recommendations
+                    </p>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-500 text-white p-4 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+                  >
+                    {isLoading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        Saving Details...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-user-check"></i>
+                        Complete Profile
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {/* Step 3: Success */}
+            {currentStep === 3 && (
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl shadow-lg">
+                  <i className="fas fa-check"></i>
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-gray-900">Welcome to NJ Mart!</h3>
+                <p className="text-gray-600 mb-8">Your account has been set up successfully. Start exploring fresh groceries!</p>
+                <button
+                  onClick={() => window.location.href = '/'}
+                  className="w-full bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-500 text-white p-4 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                >
+                  <i className="fas fa-shopping-bag"></i>
+                  Start Shopping
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default NJMartLogin;
