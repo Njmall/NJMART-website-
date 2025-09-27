@@ -1,414 +1,733 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>NJ Mart — Login</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --green: #2db34a;
-      --muted: #7b7f86;
-      --card: #ffffff;
-      --bg: #f3faf6;
-      --danger: #e04d4d;
-      --shadow: 0 8px 24px rgba(12,30,40,0.06);
-      --radius: 12px;
-    }
-    * { box-sizing: border-box; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
-    body { margin:0; background: var(--bg); color:#111; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-    .wrap { max-width: 920px; margin: 28px auto; padding: 18px; display: grid; gap:20px; grid-template-columns: 1fr 400px; align-items:start; }
-    @media (max-width:980px){ .wrap { grid-template-columns: 1fr; padding:12px } .right { order:2 } .left { order:1 } }
-    .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding:18px; }
-    h1 { margin: 0 0 6px; font-size:20px; }
-    p.lead { margin:0 0 12px; color:var(--muted) }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - NJ Mart | Fresh Grocery Fast Delivery</title>
+    <meta name="description" content="Login to your NJ Mart account for fresh groceries and fast delivery">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://placeholder-image-service.onrender.com/image/32x32?prompt=Modern green shopping cart logo with NJ letters in fresh grocery style&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8">
+    
+    <!-- External CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #22c55e;
+            --primary-hover: #16a34a;
+            --secondary-color: #34d399;
+            --accent-color: #059669;
+            --danger-color: #ef4444;
+            --background-color: #ffffff;
+            --surface-color: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-light: #94a3b8;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --border-radius: 0.5rem;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    /* Login box */
-    .login-box { max-width:100%; }
-    .btn { border:0; border-radius:10px; padding:12px 14px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:10px; }
-    .btn.google { background:#fff; border:1px solid #e6e9ec; color:#222; width:100%; justify-content:center; }
-    .btn.primary { background:var(--green); color:#fff; width:100%; justify-content:center; }
-    .btn.ghost { background:#fff; border:1px solid #e6e9ec; color:#222; width:100%; }
-    .field { margin-top:12px; }
-    input[type="tel"], input[type="text"], input[type="email"], textarea {
-      width:100%; padding:12px; border-radius:10px; border:1px solid #e6e9ec; font-size:14px;
-    }
-    .muted { color:var(--muted); font-size:13px; margin-top:10px; text-align:center; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* small message box */
-    .msg { margin-top:12px; padding:10px; border-radius:8px; background:#f1fff3; color:#1f6f2f; display:none; }
-    .msg.error { background:#fff6f6; color:var(--danger); }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #ffffff 0%, #f9fffe 50%, #f0fdf4 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
 
-    /* profile summary */
-    .profile-card { display:flex; flex-direction:column; gap:8px; }
-    .profile-row { display:flex; justify-content:space-between; align-items:center; gap:10px; }
-    .profile-row div { font-size:14px; color:#333; }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
 
-    .small { font-size:13px; color:var(--muted) }
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--background-color);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
+            backdrop-filter: blur(10px);
+        }
 
-    /* footer note */
-    .note { margin-top:12px; color:var(--muted); font-size:13px; text-align:center; }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 4rem;
+        }
 
-    /* recaptcha placeholder */
-    #recaptcha-container { margin-top:8px; }
-  </style>
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            transition: var(--transition);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            color: var(--primary-color);
+            background: var(--surface-color);
+        }
+
+        /* Login Section */
+        .login-section {
+            background: var(--background-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.15);
+            margin-top: 5rem;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 0.875rem;
+            transition: var(--transition);
+            background: var(--surface-color);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgb(34 197 94 / 0.1);
+            background: var(--background-color);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group input {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .forgot-password {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            padding: 0.875rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, var(--primary-hover) 0%, var(--accent-color) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+        }
+
+        .login-btn:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .divider {
+            margin: 1.5rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .divider span {
+            background: var(--background-color);
+            color: var(--text-secondary);
+            padding: 0 1rem;
+            font-size: 0.875rem;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background: var(--background-color);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .social-btn:hover {
+            border-color: var(--primary-color);
+            background: var(--surface-color);
+        }
+
+        .signup-link {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .signup-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+        }
+
+        .hero-image {
+            margin-bottom: 2rem;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .hero-content p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .features-list {
+            display: grid;
+            gap: 1rem;
+            text-align: left;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(34, 197, 94, 0.15);
+        }
+
+        .feature-icon {
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+        }
+
+        .feature-text h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-text p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Error/Success Messages */
+        .message {
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .message.error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .message.success {
+            background: #f0fdf4;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+                align-items: flex-start;
+            }
+
+            .container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 1rem;
+            }
+
+            .hero-section {
+                order: 2;
+            }
+
+            .login-section {
+                order: 1;
+                margin-top: 5rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
+
 <body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="https://placeholder-image-service.onrender.com/image/50x50?prompt=Modern green shopping cart logo with fresh groceries and NJ letters in circular design&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" alt="NJ Mart logo with fresh green shopping cart design">
+                <div>
+                    <div style="font-size: 1.5rem; line-height: 1;">NJ Mart</div>
+                    <div style="font-size: 0.75rem; font-weight: 400; color: var(--text-secondary);">Fresh Grocery • Fast Delivery</div>
+                </div>
+            </a>
 
-  <div class="wrap">
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+        </nav>
+    </header>
 
-    <!-- Left: content / hero -->
-    <div class="left">
-      <div class="card">
-        <h1>Welcome to NJ Mart</h1>
-        <p class="lead">Fast grocery delivery, easy checkout and secure login — sign in with Google or phone OTP. Your profile will be saved locally and you can continue shopping.</p>
-
-        <div style="margin-top:18px;">
-          <strong>Why sign in?</strong>
-          <ul style="margin:8px 0 0 18px; color:var(--muted)">
-            <li>Save address & phone</li>
-            <li>View orders & checkout quickly</li>
-            <li>Cart persistence across pages</li>
-          </ul>
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-image">
+                <img src="https://placeholder-image-service.onrender.com/image/500x400?prompt=Fresh grocery shopping illustration with vegetables fruits and happy customers using mobile app&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" alt="Fresh grocery shopping with mobile app and happy customers">
+            </div>
+            <div class="hero-content">
+                <h1>Welcome to NJ Mart</h1>
+                <p>Your trusted partner for fresh groceries and fast delivery</p>
+                
+                <div class="features-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h3>Free Delivery</h3>
+                            <p>Free delivery on orders above ₹499</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h3>Fresh & Organic</h3>
+                            <p>100% fresh products from farms</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h3>Quick Delivery</h3>
+                            <p>Same day delivery in 2-4 hours</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div style="margin-top:18px;">
-          <a href="index.html" style="color:var(--green); text-decoration:none;">← Back to shopping</a>
-        </div>
-      </div>
+        <!-- Login Section -->
+        <div class="login-section">
+            <div class="login-header">
+                <h2 class="login-title">Welcome Back!</h2>
+                <p class="login-subtitle">Sign in to your account to continue shopping</p>
+            </div>
 
-      <div class="card" style="margin-top:14px;">
-        <h3 style="margin:0 0 8px">Demo quick guide</h3>
-        <div class="small">
-          • Use Google sign-in or enter phone with +country code and send OTP. <br>
-          • After sign-in you will be able to save name, phone and address on the profile card and proceed to checkout. <br>
-          • If OTP/Google fails, check Firebase console (Auth), authorized domains and reCAPTCHA settings.
+            <!-- Message Display -->
+            <div id="messageContainer"></div>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="password-container">
+                        <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                        <button type="button" class="password-toggle" id="passwordToggle">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password" id="forgotPassword">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span id="loginText">Sign In</span>
+                    <span id="loginLoading" class="loading" style="display: none;"></span>
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+
+            <div class="social-login">
+                <button class="social-btn" id="googleLogin">
+                    <i class="fab fa-google"></i>
+                    Google
+                </button>
+                <button class="social-btn" id="facebookLogin">
+                    <i class="fab fa-facebook-f"></i>
+                    Facebook
+                </button>
+            </div>
+
+            <div class="signup-link">
+                <p>Don't have an account? <a href="#" id="signupLink">Create Account</a></p>
+            </div>
         </div>
-      </div>
     </div>
 
-    <!-- Right: login card -->
-    <aside class="right">
-      <div class="card login-box">
+    <script>
+        // Initialize login functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeLogin();
+        });
 
-        <h1>Sign in to NJ Mart</h1>
-        <p class="lead">Choose a quick sign-in method below</p>
+        function initializeLogin() {
+            const loginForm = document.getElementById('loginForm');
+            const passwordToggle = document.getElementById('passwordToggle');
+            const passwordInput = document.getElementById('password');
+            const forgotPassword = document.getElementById('forgotPassword');
+            const signupLink = document.getElementById('signupLink');
+            const googleLogin = document.getElementById('googleLogin');
+            const facebookLogin = document.getElementById('facebookLogin');
 
-        <!-- Google -->
-        <button id="googleBtn" class="btn google">
-          <svg width="18" height="18" viewBox="0 0 48 48" style="vertical-align:middle"><path fill="#4285F4" d="M24 9.5c3.5 0 6.5 1.2 8.7 2.9l6.4-6.5C34 2.7 29.6 1 24 1 14.9 1 6.9 6 3.2 13.9l7.8 6.1C12.2 13 17.6 9.5 24 9.5z"/><path fill="#34A853" d="M46.5 24.5c0-1.4-.1-2.8-.4-4.1H24v8.2h12.9c-.6 3.3-2.6 6-5.6 7.7l8.6 6.6C43.7 38.7 46.5 32 46.5 24.5z"/><path fill="#FBBC05" d="M10.9 29.9c-.9-2.4-1.4-4.9-1.4-7.4s.5-5 1.4-7.4L3.1 9.1C1.2 12.6 0 16.6 0 20.5s1.2 7.9 3.1 11.4l7.8-1.9z"/><path fill="#EA4335" d="M24 46.9c6 0 11.2-2 15-5.4l-8.6-6.6c-2.4 1.6-5.4 2.6-8.4 2.6-6.5 0-11.9-3.8-14.2-9.1L3.1 38.9C6.8 43.9 14.6 46.9 24 46.9z"/></svg>
-          <span style="font-size:15px">Sign in with Google</span>
-        </button>
+            // Password toggle functionality
+            if (passwordToggle && passwordInput) {
+                passwordToggle.addEventListener('click', () => {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    const icon = passwordToggle.querySelector('i');
+                    icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+                });
+            }
 
-        <div style="height:8px"></div>
+            // Login form submission
+            if (loginForm) {
+                loginForm.addEventListener('submit', handleLogin);
+            }
 
-        <div style="text-align:center; color:var(--muted); margin:8px 0">or</div>
+            // Forgot password
+            if (forgotPassword) {
+                forgotPassword.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showMessage('Password reset link sent to your email!', 'success');
+                });
+            }
 
-        <!-- Phone input -->
-        <div class="field">
-          <label class="small">Phone number</label>
-          <input id="phoneInput" type="tel" placeholder="+91 9876543210" />
-        </div>
+            // Signup link
+            if (signupLink) {
+                signupLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showMessage('Signup functionality coming soon!', 'success');
+                });
+            }
 
-        <div id="recaptcha-container"></div>
+            // Social login buttons
+            if (googleLogin) {
+                googleLogin.addEventListener('click', () => {
+                    showMessage('Google login functionality coming soon!', 'success');
+                });
+            }
 
-        <div style="display:flex; gap:10px; margin-top:12px;">
-          <button id="sendOtp" class="btn primary" style="flex:1">Send OTP</button>
-          <button id="clearSession" class="btn ghost" style="flex:1">Clear local session</button>
-        </div>
+            if (facebookLogin) {
+                facebookLogin.addEventListener('click', () => {
+                    showMessage('Facebook login functionality coming soon!', 'success');
+                });
+            }
+        }
 
-        <div class="field" style="margin-top:12px;">
-          <label class="small">Enter OTP</label>
-          <input id="otpInput" type="text" placeholder="123456" style="display:none" />
-          <button id="verifyOtp" class="btn primary" style="display:none; margin-top:8px">Verify OTP</button>
-        </div>
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const loginText = document.getElementById('loginText');
+            const loginLoading = document.getElementById('loginLoading');
 
-        <div id="message" class="msg"></div>
+            // Validate inputs
+            if (!email || !password) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
 
-        <div class="note">By signing in you agree to our Terms & Privacy.</div>
+            if (!isValidEmail(email)) {
+                showMessage('Please enter a valid email address', 'error');
+                return;
+            }
 
-        <!-- Signed-in info -->
-        <div id="signedBox" style="display:none; margin-top:12px">
-          <div class="profile-card">
-            <div class="profile-row"><div><strong id="signedLabel">Signed in as:</strong></div></div>
-            <div class="profile-row"><div id="signedEmail">email@example.com</div></div>
+            // Show loading state
+            loginBtn.disabled = true;
+            loginText.style.display = 'none';
+            loginLoading.style.display = 'inline-block';
 
-            <!-- profile form -->
-            <div style="margin-top:12px; padding:12px; border-radius:10px; background:#fbfffb;">
-              <label class="small">Name</label>
-              <input id="profileName" type="text" placeholder="Your name">
+            // Simulate login process
+            setTimeout(() => {
+                // For demo purposes, any email/password combination works
+                if (email && password) {
+                    // Store user session
+                    localStorage.setItem('njmart-user', JSON.stringify({
+                        email: email,
+                        name: email.split('@')[0],
+                        loginTime: new Date().toISOString()
+                    }));
 
-              <label class="small" style="margin-top:8px">Phone (with country code)</label>
-              <input id="profilePhone" type="tel" placeholder="+91 9876543210">
+                    showMessage('Login successful! Redirecting...', 'success');
+                    
+                    // Redirect to homepage after successful login
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else {
+                    showMessage('Invalid email or password', 'error');
+                    
+                    // Reset loading state
+                    loginBtn.disabled = false;
+                    loginText.style.display = 'inline';
+                    loginLoading.style.display = 'none';
+                }
+            }, 2000);
+        }
 
-              <label class="small" style="margin-top:8px">Address</label>
-              <textarea id="profileAddress" rows="3" placeholder="House, Street, Area"></textarea>
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.innerHTML = `
+                <div class="message ${type}">
+                    ${message}
+                </div>
+            `;
 
-              <div style="display:flex;gap:8px;margin-top:10px">
-                <button id="getLocation" class="btn ghost" style="flex:1">Get Current Location</button>
-                <button id="saveProfile" class="btn primary" style="flex:1">Save Profile</button>
-              </div>
+            // Auto hide message after 5 seconds
+            setTimeout(() => {
+                messageContainer.innerHTML = '';
+            }, 5000);
+        }
 
-              <div class="small" style="margin-top:8px">Latitude: <span id="latShow">—</span> Longitude: <span id="lngShow">—</span></div>
-            </div>
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
 
-            <div style="display:flex; gap:10px; margin-top:12px;">
-              <button id="gotoAccount" class="btn ghost" style="flex:1">Go to Account</button>
-              <button id="signout" class="btn" style="flex:1; background:var(--danger); color:#fff">Sign Out</button>
-            </div>
+        // Check if user is already logged in
+        function checkAuthStatus() {
+            const user = localStorage.getItem('njmart-user');
+            if (user) {
+                // User is already logged in, redirect to homepage
+                window.location.href = 'index.html';
+            }
+        }
 
-            <div class="small" style="margin-top:10px">Status: <span id="authStatus">Not signed in</span></div>
-          </div>
-        </div>
-
-      </div>
-    </aside>
-  </div>
-
-  <!-- Firebase SDK (v8 style) -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
-  <script>
-  /****************************************************************
-   * NJ Mart - login page
-   * Features:
-   *  - Google Sign-in (popup)
-   *  - Phone OTP sign-in (with reCAPTCHA invisible)
-   *  - Save basic profile locally (name, phone, address, lat/lng)
-   *  - Redirect to profile/checkout pages as needed
-   *
-   * Instructions:
-   *  - Replace firebaseConfig below with your project's config
-   *  - Ensure Auth providers enabled in Firebase console
-   *  - Add netlify domain/localhost to authorized domains
-   ****************************************************************/
-
-  // ---------- Replace with your real Firebase config ----------
-  const firebaseConfig = {
-    apiKey: "AIzaSyCbf19k8pLFh-9UQz8sQRim2rPYTlqaEL8",
-    authDomain: "njmartonline.firebaseapp.com",
-    projectId: "njmartonline",
-    storageBucket: "njmartonline.appspot.com",
-    messagingSenderId: "594505763627",
-    appId: "1:594505763627:web:a13b0d3ef40e620f9b936e"
-  };
-  // ------------------------------------------------------------
-
-  // init firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-
-  // UI elements
-  const googleBtn = document.getElementById('googleBtn');
-  const phoneInput = document.getElementById('phoneInput');
-  const sendOtpBtn = document.getElementById('sendOtp');
-  const otpInput = document.getElementById('otpInput');
-  const verifyOtpBtn = document.getElementById('verifyOtp');
-  const messageBox = document.getElementById('message');
-  const signedBox = document.getElementById('signedBox');
-  const signedEmail = document.getElementById('signedEmail');
-  const authStatus = document.getElementById('authStatus');
-  const profileName = document.getElementById('profileName');
-  const profilePhone = document.getElementById('profilePhone');
-  const profileAddress = document.getElementById('profileAddress');
-  const getLocationBtn = document.getElementById('getLocation');
-  const saveProfileBtn = document.getElementById('saveProfile');
-  const signoutBtn = document.getElementById('signout');
-  const clearSessionBtn = document.getElementById('clearSession');
-  const gotoAccountBtn = document.getElementById('gotoAccount');
-  const latShow = document.getElementById('latShow');
-  const lngShow = document.getElementById('lngShow');
-
-  // helper messages
-  function showMsg(text, type='ok'){
-    messageBox.style.display = 'block';
-    messageBox.className = 'msg' + (type==='error' ? ' error' : '');
-    messageBox.innerText = text;
-    setTimeout(()=>{ messageBox.style.display = 'none'; }, 8000);
-  }
-
-  // set up reCAPTCHA (invisible)
-  window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-    'size': 'invisible',
-    'callback': (response) => {
-      // grecaptcha callback (handled automatically)
-      console.log('reCAPTCHA resolved');
-    }
-  });
-
-  // --- Google sign in ---
-  googleBtn.addEventListener('click', ()=>{
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider)
-      .then(result => {
-        const user = result.user;
-        onSignedIn(user, 'Google');
-      })
-      .catch(err => {
-        console.error(err);
-        showMsg('Google Sign-in error: ' + (err.message||err), 'error');
-      });
-  });
-
-  // --- Phone OTP ---
-  sendOtpBtn.addEventListener('click', async ()=>{
-    const phone = phoneInput.value.trim();
-    if(!phone){ showMsg('Enter phone with country code e.g. +91 9876543210','error'); return; }
-
-    try {
-      // show recaptcha & send
-      const appVerifier = window.recaptchaVerifier;
-      const confirmationResult = await auth.signInWithPhoneNumber(phone, appVerifier);
-      window.confirmationResult = confirmationResult;
-      otpInput.style.display = 'block';
-      verifyOtpBtn.style.display = 'block';
-      showMsg('OTP sent to ' + phone);
-    } catch(err){
-      console.error(err);
-      showMsg('OTP send error: ' + (err.message||err), 'error');
-      // Usually billing or recaptcha error — check firebase console / authorized domains
-    }
-  });
-
-  verifyOtpBtn.addEventListener('click', async ()=>{
-    const code = otpInput.value.trim();
-    if(!code){ showMsg('Enter OTP', 'error'); return; }
-    try {
-      const result = await window.confirmationResult.confirm(code);
-      const user = result.user;
-      onSignedIn(user, 'Phone');
-      showMsg('Phone verified');
-      otpInput.style.display = 'none'; verifyOtpBtn.style.display = 'none';
-    } catch(err){
-      console.error(err);
-      showMsg('OTP verify failed: ' + (err.message||err), 'error');
-    }
-  });
-
-  // when signed in show profile panel
-  function onSignedIn(user, method){
-    signedBox.style.display = 'block';
-    signedEmail.innerText = user.email || user.phoneNumber || ('UID: ' + user.uid);
-    authStatus.innerText = 'Signed in via ' + method;
-    // prefill profile fields from localStorage or firebase
-    const saved = JSON.parse(localStorage.getItem('nj_profile') || '{}');
-    profileName.value = saved.name || user.displayName || '';
-    profilePhone.value = saved.phone || user.phoneNumber || phoneInput.value || '';
-    profileAddress.value = saved.address || '';
-    if(saved.lat) latShow.innerText = saved.lat;
-    if(saved.lng) lngShow.innerText = saved.lng;
-    // show success
-    showMsg('Signed in successfully');
-    // Save a small session flag
-    localStorage.setItem('nj_signed', JSON.stringify({ uid:user.uid, method:method, email:user.email||'', phone:user.phoneNumber||'' }));
-  }
-
-  // auth state change (persists across page loads)
-  auth.onAuthStateChanged(user=>{
-    if(user){
-      onSignedIn(user, 'existing');
-    } else {
-      // not signed in
-      // if you want to auto show previously saved profile -> you can populate fields too
-      const saved = JSON.parse(localStorage.getItem('nj_profile') || '{}');
-      if(saved && saved.name){
-        // show partial profile but not signed-in
-      }
-    }
-  });
-
-  // Save profile locally
-  saveProfileBtn.addEventListener('click', ()=>{
-    const data = {
-      name: profileName.value.trim(),
-      phone: profilePhone.value.trim(),
-      address: profileAddress.value.trim(),
-      lat: latShow.innerText === '—' ? '' : latShow.innerText,
-      lng: lngShow.innerText === '—' ? '' : lngShow.innerText,
-      savedAt: Date.now()
-    };
-    localStorage.setItem('nj_profile', JSON.stringify(data));
-    showMsg('Profile saved locally');
-  });
-
-  // Get current location
-  getLocationBtn.addEventListener('click', ()=>{
-    if(!navigator.geolocation){
-      showMsg('Geolocation not supported by your browser', 'error'); return;
-    }
-    getLocationBtn.innerText = 'Getting...';
-    navigator.geolocation.getCurrentPosition(pos=>{
-      const lat = pos.coords.latitude.toFixed(7);
-      const lng = pos.coords.longitude.toFixed(7);
-      latShow.innerText = lat;
-      lngShow.innerText = lng;
-      getLocationBtn.innerText = 'Get Current Location';
-      showMsg('Location obtained');
-    }, err=>{
-      console.error(err);
-      getLocationBtn.innerText = 'Get Current Location';
-      showMsg('Failed to get location: ' + (err.message||err), 'error');
-    }, { enableHighAccuracy:true, timeout:10000 });
-  });
-
-  // Sign out
-  signoutBtn.addEventListener('click', ()=>{
-    auth.signOut().then(()=>{
-      // clear session flag
-      localStorage.removeItem('nj_signed');
-      signedBox.style.display = 'none';
-      showMsg('Signed out');
-    }).catch(err=>{
-      console.error(err);
-      showMsg('Sign out failed: ' + (err.message||err), 'error');
-    });
-  });
-
-  // Clear local session button (logout locally, keep firebase)
-  clearSessionBtn.addEventListener('click', ()=>{
-    localStorage.removeItem('nj_signed');
-    localStorage.removeItem('nj_profile');
-    // keep firebase auth as-is or sign out as well? We'll just clear local state.
-    showMsg('Local session cleared');
-  });
-
-  // Go to account/profile page (profile.html)
-  gotoAccountBtn.addEventListener('click', ()=>{
-    // If you want ensure sign-in before allowing -> check auth.currentUser or nj_signed
-    const signed = localStorage.getItem('nj_signed');
-    if(!signed && !auth.currentUser){
-      showMsg('Please sign in first', 'error'); return;
-    }
-    // redirect to profile page (create profile.html separately)
-    location.href = 'profile.html';
-  });
-
-  // On page load check for existing local signed & populate UI
-  (function init(){
-    // load profile if present
-    const saved = JSON.parse(localStorage.getItem('nj_profile') || '{}');
-    if(saved && saved.name){
-      profileName.value = saved.name || '';
-      profilePhone.value = saved.phone || '';
-      profileAddress.value = saved.address || '';
-      if(saved.lat){ latShow.innerText = saved.lat; }
-      if(saved.lng){ lngShow.innerText = saved.lng; }
-    }
-    const signed = JSON.parse(localStorage.getItem('nj_signed') || 'null');
-    if(signed){
-      // show signed box with saved data in UI (but firebase might be expired)
-      signedBox.style.display = 'block';
-      signedEmail.innerText = signed.email || signed.phone || ('UID:' + signed.uid);
-      authStatus.innerText = 'Signed (local session)';
-    }
-  })();
-
-  // A tiny helper to show console hint for debugging
-  console.log('Login page initialized. Check Firebase config and Auth providers if sign-in fails.');
-  </script>
-
-  <!-- cache-bust comment -->
-  <!-- login.html v20250908 -->
+        // Check auth status on page load
+        checkAuthStatus();
+    </script>
 </body>
 </html>
