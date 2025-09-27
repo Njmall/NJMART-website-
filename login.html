@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Signup - NJ Mart | Fresh Grocery Fast Delivery</title>
-    <meta name="description" content="Login or create account at NJ Mart for fresh groceries and fast delivery">
+    <title>Login - NJ Mart | Fresh Grocery Fast Delivery</title>
+    <meta name="description" content="Login to NJ Mart with Google for fresh groceries and fast delivery">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="https://placeholder-image-service.onrender.com/image/32x32?prompt=Modern green shopping cart logo with NJ letters in fresh grocery style&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8">
@@ -12,6 +12,9 @@
     <!-- External CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <style>
         :root {
@@ -45,6 +48,12 @@
             color: var(--text-primary);
             background: linear-gradient(135deg, #ffffff 0%, #f9fffe 50%, #f0fdf4 100%);
             min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
         }
 
         /* Header */
@@ -101,71 +110,100 @@
             background: var(--surface-color);
         }
 
-        /* Main Container */
-        .main-container {
-            padding: 2rem 1rem;
-            max-width: 1200px;
-            margin: 0 auto;
+        /* Main Layout */
+        .main-content {
+            padding: 2rem 0;
+            min-height: calc(100vh - 4rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-wrapper {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 4rem;
             align-items: center;
-            min-height: calc(100vh - 4rem);
+            width: 100%;
+            max-width: 1000px;
         }
 
-        /* Auth Container */
-        .auth-container {
+        /* Login Section */
+        .login-section {
             background: var(--background-color);
             border-radius: 1rem;
-            padding: 2rem;
+            padding: 2.5rem;
             box-shadow: 0 8px 25px rgba(34, 197, 94, 0.1);
             border: 1px solid rgba(34, 197, 94, 0.15);
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
         }
 
-        .auth-header {
+        .login-header {
             text-align: center;
             margin-bottom: 2rem;
         }
 
-        .auth-title {
+        .login-title {
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
             color: var(--text-primary);
         }
 
-        .auth-subtitle {
+        .login-subtitle {
             color: var(--text-secondary);
             font-size: 1rem;
         }
 
-        .auth-tabs {
-            display: flex;
-            background: var(--surface-color);
-            border-radius: var(--border-radius);
-            margin-bottom: 2rem;
-            padding: 0.25rem;
-        }
-
-        .auth-tab {
-            flex: 1;
-            background: none;
+        /* Google Login Button */
+        .google-login-btn {
+            width: 100%;
+            background: #4285f4;
+            color: white;
             border: none;
-            padding: 0.75rem;
-            border-radius: calc(var(--border-radius) - 0.25rem);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
-            font-weight: 600;
-            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
         }
 
-        .auth-tab.active {
-            background: var(--background-color);
-            color: var(--primary-color);
-            box-shadow: var(--shadow-sm);
+        .google-login-btn:hover {
+            background: #3367d6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4);
+        }
+
+        .google-login-btn:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .google-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            background: white;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Customer Details Form */
+        .details-section {
+            display: none;
+        }
+
+        .details-section.active {
+            display: block;
         }
 
         .form-group {
@@ -196,59 +234,32 @@
             background: var(--background-color);
         }
 
-        .password-container {
-            position: relative;
+        .location-group {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0.5rem;
+            align-items: end;
         }
 
-        .password-toggle {
-            position: absolute;
-            right: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
+        .location-btn {
+            background: var(--primary-color);
+            color: white;
             border: none;
-            color: var(--text-secondary);
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius);
             cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .password-toggle:hover {
-            color: var(--primary-color);
-        }
-
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .checkbox-group {
+            transition: var(--transition);
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .checkbox-group input {
-            width: 1rem;
-            height: 1rem;
-            accent-color: var(--primary-color);
+        .location-btn:hover {
+            background: var(--primary-hover);
         }
 
-        .forgot-password {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .forgot-password:hover {
-            text-decoration: underline;
-        }
-
-        .auth-btn {
+        .submit-btn {
             width: 100%;
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
@@ -266,68 +277,17 @@
             gap: 0.5rem;
         }
 
-        .auth-btn:hover {
+        .submit-btn:hover {
             background: linear-gradient(135deg, var(--primary-hover) 0%, var(--accent-color) 100%);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
         }
 
-        .auth-btn:disabled {
+        .submit-btn:disabled {
             background: var(--text-light);
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
-        }
-
-        .divider {
-            margin: 1.5rem 0;
-            text-align: center;
-            position: relative;
-        }
-
-        .divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: var(--border-color);
-        }
-
-        .divider span {
-            background: var(--background-color);
-            color: var(--text-secondary);
-            padding: 0 1rem;
-            font-size: 0.875rem;
-        }
-
-        .social-login {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .social-btn {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.75rem;
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius);
-            background: var(--background-color);
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .social-btn:hover {
-            border-color: var(--primary-color);
-            background: var(--surface-color);
         }
 
         /* Hero Section */
@@ -411,6 +371,7 @@
 
         .message.show {
             display: block;
+            animation: slideIn 0.3s ease;
         }
 
         .message.error {
@@ -423,6 +384,23 @@
             background: #f0fdf4;
             color: #15803d;
             border: 1px solid #bbf7d0;
+        }
+
+        .message.info {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #dbeafe;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .loading {
@@ -440,27 +418,46 @@
             100% { transform: rotate(360deg); }
         }
 
-        .form-container {
-            display: none;
+        .user-avatar {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: block;
+            box-shadow: var(--shadow-md);
         }
 
-        .form-container.active {
-            display: block;
+        .user-info {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-radius: var(--border-radius);
+        }
+
+        .user-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-email {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
         }
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
-            .main-container {
+            .auth-wrapper {
                 grid-template-columns: 1fr;
                 gap: 2rem;
-                padding: 1rem;
             }
 
             .hero-section {
                 order: 2;
             }
 
-            .auth-container {
+            .login-section {
                 order: 1;
             }
 
@@ -468,14 +465,54 @@
                 font-size: 2rem;
             }
 
-            .social-login {
-                flex-direction: column;
+            .main-content {
+                padding: 1rem 0;
             }
 
-            .form-options {
-                flex-direction: column;
-                align-items: flex-start;
+            .login-section {
+                padding: 1.5rem;
             }
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: var(--border-color);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .step.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .step.completed {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .step-line {
+            width: 2rem;
+            height: 2px;
+            background: var(--border-color);
+        }
+
+        .step-line.completed {
+            background: var(--accent-color);
         }
     </style>
 </head>
@@ -500,393 +537,445 @@
     </header>
 
     <!-- Main Content -->
-    <div class="main-container">
-        <!-- Hero Section -->
-        <div class="hero-section">
-            <div class="hero-image">
-                <img src="https://placeholder-image-service.onrender.com/image/500x400?prompt=Fresh grocery shopping illustration with vegetables fruits and happy customers using mobile app&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" alt="Fresh grocery shopping with mobile app and happy customers">
-            </div>
-            <div class="hero-content">
-                <h1>Welcome to NJ Mart</h1>
-                <p>Your trusted partner for fresh groceries and fast delivery</p>
-                
-                <div class="features-list">
-                    <div class="feature-item">
-                        <div class="feature-icon">
-                            <i class="fas fa-truck"></i>
-                        </div>
-                        <div class="feature-text">
-                            <h3>Free Delivery</h3>
-                            <p>Free delivery on orders above ₹499</p>
+    <div class="main-content">
+        <div class="container">
+            <div class="auth-wrapper">
+                <!-- Hero Section -->
+                <div class="hero-section">
+                    <div class="hero-image">
+                        <img src="https://placeholder-image-service.onrender.com/image/500x400?prompt=Fresh grocery shopping illustration with vegetables fruits and happy customers using mobile app&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" alt="Fresh grocery shopping with mobile app and happy customers">
+                    </div>
+                    <div class="hero-content">
+                        <h1>Welcome to NJ Mart</h1>
+                        <p>Your trusted partner for fresh groceries and fast delivery</p>
+                        
+                        <div class="features-list">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-truck"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Free Delivery</h3>
+                                    <p>Free delivery on orders above ₹499</p>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-leaf"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Fresh & Organic</h3>
+                                    <p>100% fresh products from farms</p>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Quick Delivery</h3>
+                                    <p>Same day delivery in 2-4 hours</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">
-                            <i class="fas fa-leaf"></i>
-                        </div>
-                        <div class="feature-text">
-                            <h3>Fresh & Organic</h3>
-                            <p>100% fresh products from farms</p>
+                </div>
+
+                <!-- Login Section -->
+                <div class="login-section">
+                    <!-- Step Indicator -->
+                    <div class="step-indicator" id="stepIndicator">
+                        <div class="step active" id="step1">1</div>
+                        <div class="step-line" id="line1"></div>
+                        <div class="step" id="step2">2</div>
+                        <div class="step-line" id="line2"></div>
+                        <div class="step" id="step3">3</div>
+                    </div>
+
+                    <div class="login-header">
+                        <h2 class="login-title" id="sectionTitle">Sign In with Google</h2>
+                        <p class="login-subtitle" id="sectionSubtitle">Quick and secure login with your Google account</p>
+                    </div>
+
+                    <!-- Message Display -->
+                    <div id="messageContainer"></div>
+
+                    <!-- Step 1: Google Login -->
+                    <div class="auth-step" id="googleLoginStep">
+                        <button class="google-login-btn" id="googleLoginBtn">
+                            <div class="google-icon">
+                                <svg width="18" height="18" viewBox="0 0 18 18">
+                                    <path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18Z"/>
+                                    <path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2.04a4.8 4.8 0 0 1-7.18-2.53H1.83v2.07A8 8 0 0 0 8.98 17Z"/>
+                                    <path fill="#FBBC05" d="M4.5 10.49a4.8 4.8 0 0 1 0-3.07V5.35H1.83a8 8 0 0 0 0 7.28l2.67-2.14Z"/>
+                                    <path fill="#EA4335" d="M8.98 4.72c1.16 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.35L4.5 7.42a4.77 4.77 0 0 1 4.48-2.7Z"/>
+                                </svg>
+                            </div>
+                            <span id="googleBtnText">Continue with Google</span>
+                            <span id="googleLoading" class="loading" style="display: none;"></span>
+                        </button>
+                        
+                        <div style="text-align: center; margin-top: 1rem;">
+                            <p style="font-size: 0.875rem; color: var(--text-secondary);">
+                                Secure login with your Google account<br>
+                                We'll collect basic info to personalize your experience
+                            </p>
                         </div>
                     </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">
-                            <i class="fas fa-clock"></i>
+
+                    <!-- Step 2: Customer Details -->
+                    <div class="details-section" id="customerDetailsStep">
+                        <div class="user-info" id="userInfo" style="display: none;">
+                            <img id="userAvatar" class="user-avatar" alt="User Avatar">
+                            <div class="user-name" id="userName"></div>
+                            <div class="user-email" id="userEmail"></div>
                         </div>
-                        <div class="feature-text">
-                            <h3>Quick Delivery</h3>
-                            <p>Same day delivery in 2-4 hours</p>
+
+                        <form id="customerDetailsForm">
+                            <div class="form-group">
+                                <label for="customerPhone" class="form-label">Phone Number *</label>
+                                <input type="tel" id="customerPhone" class="form-input" placeholder="Enter your phone number" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="customerAddress" class="form-label">Address *</label>
+                                <textarea id="customerAddress" class="form-input" rows="3" placeholder="Enter your full address" required style="resize: vertical;"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="customerCity" class="form-label">City *</label>
+                                <input type="text" id="customerCity" class="form-input" placeholder="Enter your city" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="customerPincode" class="form-label">PIN Code *</label>
+                                <input type="text" id="customerPincode" class="form-input" placeholder="Enter PIN code" required pattern="[0-9]{6}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="customerLocation" class="form-label">Current Location</label>
+                                <div class="location-group">
+                                    <input type="text" id="customerLocation" class="form-input" placeholder="We'll detect your location" readonly>
+                                    <button type="button" class="location-btn" id="getLocationBtn">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        Get Location
+                                    </button>
+                                </div>
+                                <small style="color: var(--text-secondary); font-size: 0.75rem;">
+                                    We use your location for better delivery experience
+                                </small>
+                            </div>
+
+                            <button type="submit" class="submit-btn" id="detailsSubmitBtn">
+                                <span id="detailsText">Complete Profile</span>
+                                <span id="detailsLoading" class="loading" style="display: none;"></span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Step 3: Success -->
+                    <div class="details-section" id="successStep">
+                        <div style="text-align: center;">
+                            <div style="width: 4rem; height: 4rem; background: var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: white; font-size: 2rem;">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <h3 style="margin-bottom: 0.5rem;">Welcome to NJ Mart!</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Your account has been set up successfully</p>
+                            <button class="submit-btn" id="continueBtn">
+                                <i class="fas fa-shopping-bag"></i>
+                                Start Shopping
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Auth Section -->
-        <div class="auth-container">
-            <div class="auth-header">
-                <h2 class="auth-title">Welcome!</h2>
-                <p class="auth-subtitle">Sign in or create your account</p>
-            </div>
-
-            <!-- Auth Tabs -->
-            <div class="auth-tabs">
-                <button class="auth-tab active" data-tab="login">Login</button>
-                <button class="auth-tab" data-tab="signup">Create Account</button>
-            </div>
-
-            <!-- Message Display -->
-            <div id="messageContainer"></div>
-
-            <!-- Login Form -->
-            <div class="form-container active" id="loginContainer">
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label for="loginEmail" class="form-label">Email Address</label>
-                        <input type="email" id="loginEmail" class="form-input" placeholder="Enter your email" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="loginPassword" class="form-label">Password</label>
-                        <div class="password-container">
-                            <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
-                            <button type="button" class="password-toggle" data-target="loginPassword">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="form-options">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="rememberMe">
-                            <label for="rememberMe">Remember me</label>
-                        </div>
-                        <a href="#" class="forgot-password" id="forgotPassword">Forgot Password?</a>
-                    </div>
-
-                    <button type="submit" class="auth-btn" id="loginBtn">
-                        <span id="loginText">Sign In</span>
-                        <span id="loginLoading" class="loading" style="display: none;"></span>
-                    </button>
-                </form>
-            </div>
-
-            <!-- Signup Form -->
-            <div class="form-container" id="signupContainer">
-                <form id="signupForm">
-                    <div class="form-group">
-                        <label for="signupName" class="form-label">Full Name</label>
-                        <input type="text" id="signupName" class="form-input" placeholder="Enter your full name" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="signupEmail" class="form-label">Email Address</label>
-                        <input type="email" id="signupEmail" class="form-input" placeholder="Enter your email" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="signupPhone" class="form-label">Phone Number</label>
-                        <input type="tel" id="signupPhone" class="form-input" placeholder="Enter your phone number" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="signupPassword" class="form-label">Password</label>
-                        <div class="password-container">
-                            <input type="password" id="signupPassword" class="form-input" placeholder="Create a password" required minlength="6">
-                            <button type="button" class="password-toggle" data-target="signupPassword">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="confirmPassword" class="form-label">Confirm Password</label>
-                        <div class="password-container">
-                            <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm your password" required minlength="6">
-                            <button type="button" class="password-toggle" data-target="confirmPassword">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="form-options">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="agreeTerms" required>
-                            <label for="agreeTerms">I agree to Terms & Conditions</label>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="auth-btn" id="signupBtn">
-                        <span id="signupText">Create Account</span>
-                        <span id="signupLoading" class="loading" style="display: none;"></span>
-                    </button>
-                </form>
-            </div>
-
-            <div class="divider">
-                <span>or continue with</span>
-            </div>
-
-            <div class="social-login">
-                <button class="social-btn" id="googleLogin">
-                    <i class="fab fa-google"></i>
-                    Google
-                </button>
-                <button class="social-btn" id="facebookLogin">
-                    <i class="fab fa-facebook-f"></i>
-                    Facebook
-                </button>
-            </div>
-        </div>
     </div>
 
     <script>
+        // Global variables
+        let currentStep = 1;
+        let googleUser = null;
+        let userLocation = null;
+
         // Initialize authentication functionality
         document.addEventListener('DOMContentLoaded', function() {
             initializeAuth();
+            initializeGoogleSignIn();
         });
 
         function initializeAuth() {
-            const authTabs = document.querySelectorAll('.auth-tab');
-            const formContainers = document.querySelectorAll('.form-container');
-            const passwordToggles = document.querySelectorAll('.password-toggle');
-            const loginForm = document.getElementById('loginForm');
-            const signupForm = document.getElementById('signupForm');
-            const forgotPassword = document.getElementById('forgotPassword');
-            const googleLogin = document.getElementById('googleLogin');
-            const facebookLogin = document.getElementById('facebookLogin');
+            const googleLoginBtn = document.getElementById('googleLoginBtn');
+            const customerDetailsForm = document.getElementById('customerDetailsForm');
+            const getLocationBtn = document.getElementById('getLocationBtn');
+            const continueBtn = document.getElementById('continueBtn');
 
-            // Tab switching
-            authTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabType = tab.dataset.tab;
-                    
-                    // Update active tab
-                    authTabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    
-                    // Show/hide forms
-                    formContainers.forEach(container => {
-                        container.classList.remove('active');
-                    });
-                    
-                    document.getElementById(tabType + 'Container').classList.add('active');
-                    
-                    // Update header text
-                    const authTitle = document.querySelector('.auth-title');
-                    const authSubtitle = document.querySelector('.auth-subtitle');
-                    
-                    if (tabType === 'login') {
-                        authTitle.textContent = 'Welcome Back!';
-                        authSubtitle.textContent = 'Sign in to your account';
-                    } else {
-                        authTitle.textContent = 'Create Account';
-                        authSubtitle.textContent = 'Join NJ Mart family today';
-                    }
-                });
-            });
-
-            // Password toggle functionality
-            passwordToggles.forEach(toggle => {
-                toggle.addEventListener('click', () => {
-                    const targetId = toggle.dataset.target;
-                    const passwordInput = document.getElementById(targetId);
-                    
-                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordInput.setAttribute('type', type);
-                    
-                    const icon = toggle.querySelector('i');
-                    icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
-                });
-            });
-
-            // Login form submission
-            if (loginForm) {
-                loginForm.addEventListener('submit', handleLogin);
+            // Google login button
+            if (googleLoginBtn) {
+                googleLoginBtn.addEventListener('click', handleGoogleLogin);
             }
 
-            // Signup form submission
-            if (signupForm) {
-                signupForm.addEventListener('submit', handleSignup);
+            // Customer details form
+            if (customerDetailsForm) {
+                customerDetailsForm.addEventListener('submit', handleCustomerDetails);
             }
 
-            // Forgot password
-            if (forgotPassword) {
-                forgotPassword.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const email = document.getElementById('loginEmail').value;
-                    if (!email) {
-                        showMessage('Please enter your email first', 'error');
-                        return;
-                    }
-                    showMessage('Password reset link sent to ' + email, 'success');
+            // Get location button
+            if (getLocationBtn) {
+                getLocationBtn.addEventListener('click', getCurrentLocation);
+            }
+
+            // Continue button
+            if (continueBtn) {
+                continueBtn.addEventListener('click', () => {
+                    window.location.href = 'index.html';
                 });
             }
 
-            // Social login buttons
-            if (googleLogin) {
-                googleLogin.addEventListener('click', () => {
-                    showMessage('Google login successful! Redirecting...', 'success');
-                    setTimeout(() => {
-                        handleSuccessfulAuth('Google User', 'google.user@gmail.com');
-                    }, 1500);
-                });
-            }
-
-            if (facebookLogin) {
-                facebookLogin.addEventListener('click', () => {
-                    showMessage('Facebook login successful! Redirecting...', 'success');
-                    setTimeout(() => {
-                        handleSuccessfulAuth('Facebook User', 'facebook.user@fb.com');
-                    }, 1500);
-                });
-            }
+            // Auto-detect location on page load
+            setTimeout(() => {
+                getCurrentLocation();
+            }, 1000);
         }
 
-        function handleLogin(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const loginBtn = document.getElementById('loginBtn');
-            const loginText = document.getElementById('loginText');
-            const loginLoading = document.getElementById('loginLoading');
-
-            // Validate inputs
-            if (!email || !password) {
-                showMessage('Please fill in all fields', 'error');
-                return;
-            }
-
-            if (!isValidEmail(email)) {
-                showMessage('Please enter a valid email address', 'error');
-                return;
-            }
-
-            // Show loading state
-            setLoadingState(loginBtn, loginText, loginLoading, true);
-
-            // Simulate login process
-            setTimeout(() => {
-                // Check if user exists in localStorage
-                const users = JSON.parse(localStorage.getItem('njmart-users')) || [];
-                const user = users.find(u => u.email === email && u.password === password);
-
-                if (user) {
-                    showMessage('Login successful! Redirecting...', 'success');
-                    handleSuccessfulAuth(user.name, user.email);
-                } else {
-                    showMessage('Invalid email or password. Try demo@njmart.com / password123', 'error');
-                    setLoadingState(loginBtn, loginText, loginLoading, false);
-                }
-            }, 2000);
+        function initializeGoogleSignIn() {
+            // Initialize Google Sign-In (demo mode for this example)
+            // In production, you would use actual Google Sign-In SDK
+            window.handleGoogleSignIn = function(response) {
+                // This would be called by actual Google Sign-In
+                console.log('Google Sign-In response:', response);
+            };
         }
 
-        function handleSignup(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('signupName').value;
-            const email = document.getElementById('signupEmail').value;
-            const phone = document.getElementById('signupPhone').value;
-            const password = document.getElementById('signupPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const agreeTerms = document.getElementById('agreeTerms').checked;
-            const signupBtn = document.getElementById('signupBtn');
-            const signupText = document.getElementById('signupText');
-            const signupLoading = document.getElementById('signupLoading');
-
-            // Validate inputs
-            if (!name || !email || !phone || !password || !confirmPassword) {
-                showMessage('Please fill in all fields', 'error');
-                return;
-            }
-
-            if (!isValidEmail(email)) {
-                showMessage('Please enter a valid email address', 'error');
-                return;
-            }
-
-            if (password.length < 6) {
-                showMessage('Password must be at least 6 characters long', 'error');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showMessage('Passwords do not match', 'error');
-                return;
-            }
-
-            if (!agreeTerms) {
-                showMessage('Please agree to Terms & Conditions', 'error');
-                return;
-            }
+        function handleGoogleLogin() {
+            const googleBtn = document.getElementById('googleLoginBtn');
+            const googleBtnText = document.getElementById('googleBtnText');
+            const googleLoading = document.getElementById('googleLoading');
 
             // Show loading state
-            setLoadingState(signupBtn, signupText, signupLoading, true);
+            setLoadingState(googleBtn, googleBtnText, googleLoading, true);
+            showMessage('Connecting to Google...', 'info');
 
-            // Simulate signup process
+            // Simulate Google login (in production, use actual Google Sign-In)
             setTimeout(() => {
-                // Check if user already exists
-                const users = JSON.parse(localStorage.getItem('njmart-users')) || [];
-                const existingUser = users.find(u => u.email === email);
-
-                if (existingUser) {
-                    showMessage('User with this email already exists', 'error');
-                    setLoadingState(signupBtn, signupText, signupLoading, false);
-                    return;
-                }
-
-                // Create new user
-                const newUser = {
-                    id: Date.now(),
-                    name: name,
-                    email: email,
-                    phone: phone,
-                    password: password,
-                    createdAt: new Date().toISOString()
+                // Simulate successful Google login
+                const mockGoogleUser = {
+                    id: 'google_' + Date.now(),
+                    name: 'John Doe',
+                    email: 'john.doe@gmail.com',
+                    picture: 'https://placeholder-image-service.onrender.com/image/80x80?prompt=Professional headshot of smiling person in business attire&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8',
+                    given_name: 'John',
+                    family_name: 'Doe'
                 };
 
-                users.push(newUser);
-                localStorage.setItem('njmart-users', JSON.stringify(users));
-
-                showMessage('Account created successfully! Logging you in...', 'success');
+                googleUser = mockGoogleUser;
+                showMessage('Google login successful!', 'success');
                 
                 setTimeout(() => {
-                    handleSuccessfulAuth(newUser.name, newUser.email);
-                }, 1500);
+                    moveToStep(2);
+                    displayUserInfo(mockGoogleUser);
+                }, 1000);
+
+                setLoadingState(googleBtn, googleBtnText, googleLoading, false);
             }, 2000);
         }
 
-        function handleSuccessfulAuth(name, email) {
-            // Store user session
-            localStorage.setItem('njmart-user', JSON.stringify({
-                name: name,
-                email: email,
-                loginTime: new Date().toISOString()
-            }));
+        function displayUserInfo(user) {
+            const userInfo = document.getElementById('userInfo');
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            const userEmail = document.getElementById('userEmail');
 
-            // Redirect to homepage
-            window.location.href = 'index.html';
+            userAvatar.src = user.picture;
+            userName.textContent = user.name;
+            userEmail.textContent = user.email;
+            userInfo.style.display = 'block';
+        }
+
+        function handleCustomerDetails(e) {
+            e.preventDefault();
+
+            const phone = document.getElementById('customerPhone').value;
+            const address = document.getElementById('customerAddress').value;
+            const city = document.getElementById('customerCity').value;
+            const pincode = document.getElementById('customerPincode').value;
+            const location = document.getElementById('customerLocation').value;
+            
+            const detailsBtn = document.getElementById('detailsSubmitBtn');
+            const detailsText = document.getElementById('detailsText');
+            const detailsLoading = document.getElementById('detailsLoading');
+
+            // Validate inputs
+            if (!phone || !address || !city || !pincode) {
+                showMessage('Please fill in all required fields', 'error');
+                return;
+            }
+
+            if (!/^[0-9]{6}$/.test(pincode)) {
+                showMessage('Please enter a valid 6-digit PIN code', 'error');
+                return;
+            }
+
+            if (!/^[0-9]{10}$/.test(phone.replace(/\D/g, ''))) {
+                showMessage('Please enter a valid 10-digit phone number', 'error');
+                return;
+            }
+
+            // Show loading state
+            setLoadingState(detailsBtn, detailsText, detailsLoading, true);
+            showMessage('Saving your details...', 'info');
+
+            // Save customer details
+            setTimeout(() => {
+                const customerData = {
+                    ...googleUser,
+                    phone: phone,
+                    address: address,
+                    city: city,
+                    pincode: pincode,
+                    location: userLocation || location,
+                    registrationDate: new Date().toISOString(),
+                    preferences: {
+                        notifications: true,
+                        offers: true,
+                        deliveryUpdates: true
+                    }
+                };
+
+                // Store user data
+                localStorage.setItem('njmart-user', JSON.stringify(customerData));
+                
+                // Store in users database
+                const users = JSON.parse(localStorage.getItem('njmart-users')) || [];
+                const existingUserIndex = users.findIndex(u => u.email === googleUser.email);
+                
+                if (existingUserIndex >= 0) {
+                    users[existingUserIndex] = customerData;
+                } else {
+                    users.push(customerData);
+                }
+                
+                localStorage.setItem('njmart-users', JSON.stringify(users));
+
+                showMessage('Profile completed successfully!', 'success');
+                setLoadingState(detailsBtn, detailsText, detailsLoading, false);
+                
+                setTimeout(() => {
+                    moveToStep(3);
+                }, 1000);
+            }, 2000);
+        }
+
+        function getCurrentLocation() {
+            const locationInput = document.getElementById('customerLocation');
+            const getLocationBtn = document.getElementById('getLocationBtn');
+
+            if (!navigator.geolocation) {
+                showMessage('Geolocation is not supported by this browser', 'error');
+                return;
+            }
+
+            // Show loading state
+            getLocationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Getting...';
+            getLocationBtn.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(
+                async function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    userLocation = {
+                        latitude: lat,
+                        longitude: lng,
+                        accuracy: position.coords.accuracy
+                    };
+
+                    try {
+                        // Simulate reverse geocoding (in production, use actual geocoding service)
+                        const mockAddress = `${lat.toFixed(4)}, ${lng.toFixed(4)} (Mumbai, Maharashtra, India)`;
+                        locationInput.value = mockAddress;
+                        
+                        showMessage('Location detected successfully!', 'success');
+                    } catch (error) {
+                        locationInput.value = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+                        showMessage('Location detected, but address lookup failed', 'info');
+                    }
+
+                    // Reset button
+                    getLocationBtn.innerHTML = '<i class="fas fa-check"></i> Located';
+                    getLocationBtn.disabled = false;
+                },
+                function(error) {
+                    let errorMessage = 'Unable to get location: ';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage += 'Permission denied by user';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage += 'Location information unavailable';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage += 'Location request timed out';
+                            break;
+                        default:
+                            errorMessage += 'Unknown error occurred';
+                            break;
+                    }
+                    
+                    showMessage(errorMessage, 'error');
+                    
+                    // Reset button
+                    getLocationBtn.innerHTML = '<i class="fas fa-map-marker-alt"></i> Try Again';
+                    getLocationBtn.disabled = false;
+                }
+            );
+        }
+
+        function moveToStep(step) {
+            currentStep = step;
+            updateStepIndicator();
+            
+            // Hide all steps
+            document.querySelectorAll('.auth-step, .details-section').forEach(el => {
+                el.style.display = 'none';
+                el.classList.remove('active');
+            });
+
+            // Show current step
+            if (step === 1) {
+                document.getElementById('googleLoginStep').style.display = 'block';
+                updateSectionHeaders('Sign In with Google', 'Quick and secure login with your Google account');
+            } else if (step === 2) {
+                document.getElementById('customerDetailsStep').classList.add('active');
+                updateSectionHeaders('Complete Your Profile', 'Help us provide better service with your details');
+            } else if (step === 3) {
+                document.getElementById('successStep').classList.add('active');
+                updateSectionHeaders('Welcome to NJ Mart!', 'Your account is ready. Start shopping now!');
+            }
+        }
+
+        function updateStepIndicator() {
+            for (let i = 1; i <= 3; i++) {
+                const step = document.getElementById(`step${i}`);
+                const line = document.getElementById(`line${i}`);
+                
+                if (i < currentStep) {
+                    step.classList.add('completed');
+                    step.classList.remove('active');
+                    if (line) line.classList.add('completed');
+                } else if (i === currentStep) {
+                    step.classList.add('active');
+                    step.classList.remove('completed');
+                } else {
+                    step.classList.remove('active', 'completed');
+                    if (line) line.classList.remove('completed');
+                }
+            }
+        }
+
+        function updateSectionHeaders(title, subtitle) {
+            document.getElementById('sectionTitle').textContent = title;
+            document.getElementById('sectionSubtitle').textContent = subtitle;
         }
 
         function setLoadingState(btn, textElement, loadingElement, isLoading) {
@@ -899,6 +988,7 @@
             const messageContainer = document.getElementById('messageContainer');
             messageContainer.innerHTML = `
                 <div class="message ${type} show">
+                    <i class="fas ${type === 'error' ? 'fa-exclamation-triangle' : type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i>
                     ${message}
                 </div>
             `;
@@ -915,11 +1005,6 @@
             }, 5000);
         }
 
-        function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
-
         // Check if user is already logged in
         function checkAuthStatus() {
             const user = localStorage.getItem('njmart-user');
@@ -929,29 +1014,8 @@
             }
         }
 
-        // Initialize demo user for testing
-        function initializeDemoUser() {
-            const users = JSON.parse(localStorage.getItem('njmart-users')) || [];
-            const demoUser = users.find(u => u.email === 'demo@njmart.com');
-            
-            if (!demoUser) {
-                users.push({
-                    id: 1,
-                    name: 'Demo User',
-                    email: 'demo@njmart.com',
-                    phone: '9876543210',
-                    password: 'password123',
-                    createdAt: new Date().toISOString()
-                });
-                localStorage.setItem('njmart-users', JSON.stringify(users));
-            }
-        }
-
         // Check auth status on page load
         checkAuthStatus();
-        
-        // Initialize demo user
-        initializeDemoUser();
     </script>
 </body>
 </html>
