@@ -158,6 +158,24 @@
             background: var(--surface-color);
         }
 
+        /* Enhanced Login Button */
+        .login-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 0.875rem;
+            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+            transition: var(--transition);
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, var(--primary-hover) 0%, var(--accent-color) 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+        }
+
         .cart-badge {
             position: absolute;
             top: -0.25rem;
@@ -883,6 +901,72 @@
             background: var(--danger-color);
         }
 
+        /* Enhanced Login Access Section */
+        .login-access {
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+            padding: 3rem 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .login-access-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 1rem;
+        }
+
+        .login-access h2 {
+            color: var(--text-primary);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-access p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+        }
+
+        .login-access-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .login-access-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+            transition: var(--transition);
+        }
+
+        .login-access-btn:hover {
+            background: linear-gradient(135deg, var(--primary-hover) 0%, var(--accent-color) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+        }
+
+        .signup-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .signup-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .nav-container {
@@ -946,6 +1030,17 @@
                 width: 100vw;
                 right: -100vw;
             }
+
+            .login-access-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .login-access-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -977,8 +1072,10 @@
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-badge" id="cartBadge">0</span>
                 </button>
-                <a href="login.html" class="nav-btn" title="Account">
+                <!-- Enhanced Login Button -->
+                <a href="login.html" class="nav-btn login-btn" title="Login to your account">
                     <i class="fas fa-user"></i>
+                    Login
                 </a>
                 <button class="mobile-menu-btn" id="mobileMenuBtn">
                     <i class="fas fa-bars"></i>
@@ -998,9 +1095,9 @@
                         <i class="fas fa-shopping-bag"></i>
                         Shop Now
                     </a>
-                    <a href="#categories" class="btn btn-secondary">
-                        <i class="fas fa-list"></i>
-                        View Categories
+                    <a href="login.html" class="btn btn-secondary">
+                        <i class="fas fa-user"></i>
+                        Join NJ Mart
                     </a>
                 </div>
             </div>
@@ -1044,6 +1141,24 @@
             </div>
             <div style="text-align: center; margin-top: 2rem;">
                 <a href="products.html" class="btn btn-primary">View All Products</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Access Section -->
+    <section class="login-access">
+        <div class="login-access-container">
+            <h2>Join NJ Mart Family</h2>
+            <p>Create your account to enjoy exclusive offers, faster checkout, order tracking, and personalized shopping experience.</p>
+            <div class="login-access-buttons">
+                <a href="login.html" class="login-access-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login to Account
+                </a>
+                <a href="login.html" class="login-access-btn signup-btn">
+                    <i class="fas fa-user-plus"></i>
+                    Create New Account
+                </a>
             </div>
         </div>
     </section>
@@ -1141,13 +1256,13 @@
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h3>Policy</h3>
+                    <h3>Account</h3>
                     <ul>
+                        <li><a href="login.html">Login</a></li>
+                        <li><a href="login.html">Create Account</a></li>
+                        <li><a href="profile.html">My Profile</a></li>
+                        <li><a href="orders.html">My Orders</a></li>
                         <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Cookie Policy</a></li>
-                        <li><a href="#">Security</a></li>
-                        <li><a href="#">Sitemap</a></li>
                     </ul>
                 </div>
             </div>
@@ -1196,6 +1311,7 @@
             initializeNavigation();
             initializeSearch();
             initializeNewsletter();
+            initializeLoginFeatures();
         }
 
         // Categories Data
@@ -1403,7 +1519,7 @@
             
             updateCartStorage();
             updateCartUI();
-            showToast('Product added to cart!', 'success');
+            showToast('Product added to cart! Login to save your cart.', 'success');
         }
 
         function removeFromCart(productId) {
@@ -1448,7 +1564,10 @@
                         <div class="empty-cart">
                             <i class="fas fa-shopping-cart" style="font-size: 3rem; color: var(--text-light); margin-bottom: 1rem;"></i>
                             <p>Your cart is empty</p>
-                            <p style="font-size: 0.875rem; color: var(--text-secondary);">Add some fresh products!</p>
+                            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">Add some fresh products!</p>
+                            <a href="login.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
+                                <i class="fas fa-user"></i> Login to save items
+                            </a>
                         </div>
                     `;
                 } else {
@@ -1530,7 +1649,10 @@
             const wishlistBtn = document.getElementById('wishlistBtn');
             if (wishlistBtn) {
                 wishlistBtn.addEventListener('click', () => {
-                    showToast('Wishlist feature coming soon!', 'success');
+                    showToast('Login to save items to wishlist!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
                 });
             }
         }
@@ -1561,7 +1683,7 @@
                 return;
             }
             
-            showToast(`Searching for "${query}"...`, 'success');
+            showToast(`Searching for "${query}"... Login for personalized results!`, 'success');
             // Implement search functionality
         }
 
@@ -1578,6 +1700,45 @@
                         e.target.reset();
                     }
                 });
+            }
+        }
+
+        function initializeLoginFeatures() {
+            // Add click events for login-related elements
+            const loginButtons = document.querySelectorAll('.login-access-btn');
+            loginButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showToast('Redirecting to login page...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1000);
+                });
+            });
+
+            // Check if user is already logged in (you can implement this based on your auth system)
+            checkLoginStatus();
+        }
+
+        function checkLoginStatus() {
+            // This is a placeholder - implement your actual login check
+            const isLoggedIn = localStorage.getItem('njmart-user');
+            
+            if (isLoggedIn) {
+                // Update UI for logged in user
+                updateLoginUI(JSON.parse(isLoggedIn));
+            }
+        }
+
+        function updateLoginUI(user) {
+            // Update navigation for logged in user
+            const loginBtn = document.querySelector('.login-btn');
+            if (loginBtn) {
+                loginBtn.innerHTML = `
+                    <i class="fas fa-user"></i>
+                    ${user.name || 'Account'}
+                `;
+                loginBtn.href = 'profile.html';
             }
         }
 
@@ -1626,4 +1787,7 @@
         window.updateQuantity = updateQuantity;
     </script>
 </body>
-</html>
+
+🎨 **Generating images based on descriptions...**
+
+✅ **Images generated successfully! Here's your updated content:**
