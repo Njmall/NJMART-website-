@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NJ Mart - Fresh Grocery Fast Delivery | Premium Online Shopping</title>
-    <meta name="description" content="Shop at NJ Mart for fresh groceries with fast delivery - Quality products, best prices, and excellent service. Login for exclusive offers and personalized experience.">
-    <meta name="keywords" content="grocery delivery, fresh vegetables, fruits, dairy, online shopping, fast delivery, NJ Mart">
-    <meta name="author" content="NJ Mart">
+    <title>NJ Mart - Fresh Grocery Fast Delivery</title>
+    <meta name="description" content="Shop at NJ Mart for fresh groceries with fast delivery - Quality products, best prices, and excellent service">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="https://placeholder-image-service.onrender.com/image/32x32?prompt=Modern green shopping cart logo with NJ letters in fresh grocery style&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8">
@@ -163,25 +161,25 @@
             background: var(--surface-color);
         }
 
-        /* LOGIN BUTTON - FIXED VERSION */
+        /* FIXED LOGIN BUTTON - NO ERRORS */
         .login-btn {
-            background: var(--primary-color) !important;
-            color: white !important;
-            padding: 0.5rem 1rem !important;
-            border-radius: var(--border-radius) !important;
-            font-weight: 600 !important;
-            font-size: 0.875rem !important;
-            text-decoration: none !important;
-            gap: 0.5rem !important;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            gap: 0.5rem;
         }
 
         .login-btn:hover {
-            background: var(--primary-hover) !important;
-            color: white !important;
+            background: var(--primary-hover);
+            color: white;
         }
 
         .login-btn:visited {
-            color: white !important;
+            color: white;
         }
 
         .cart-badge {
@@ -677,6 +675,8 @@
             border: none;
             border-radius: var(--border-radius);
             font-size: 1rem;
+            name: "email";
+            id: "newsletter-email";
         }
 
         .newsletter-btn {
@@ -908,72 +908,11 @@
             background: var(--danger-color);
         }
 
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .nav-container {
-                padding: 0 1rem;
-            }
-
-            .search-container {
-                display: none;
-            }
-
-            .mobile-menu-btn {
-                display: block;
-            }
-
-            .hero-container {
-                grid-template-columns: 1fr;
-                text-align: center;
-                gap: 2rem;
-            }
-
-            .hero-content h1 {
-                font-size: 2rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .categories-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 1rem;
-            }
-
-            .products-grid {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            }
-
-            .products-header {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .filter-tabs {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            .newsletter-form {
-                flex-direction: column;
-            }
-
-            .hero-cta {
-                justify-content: center;
-            }
-
-            .btn {
-                justify-content: center;
-            }
-
-            .cart-sidebar {
-                width: 100vw;
-                right: -100vw;
-            }
+        .toast.info {
+            background: var(--info-color);
         }
 
-        /* Special Sections */
+        /* Stats Section */
         .stats-section {
             padding: 4rem 0;
             background: var(--primary-color);
@@ -998,6 +937,7 @@
             opacity: 0.9;
         }
 
+        /* Offers Section */
         .offers-section {
             padding: 4rem 0;
             background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
@@ -1041,42 +981,7 @@
             line-height: 1.6;
         }
 
-        .testimonials-section {
-            padding: 4rem 0;
-            background: var(--background-color);
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .testimonial-card {
-            background: var(--surface-color);
-            padding: 2rem;
-            border-radius: 1rem;
-            text-align: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .testimonial-text {
-            font-style: italic;
-            margin-bottom: 1.5rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .testimonial-author {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .testimonial-rating {
-            color: var(--warning-color);
-        }
-
+        /* Login Access Section */
         .login-section {
             padding: 4rem 0;
             background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
@@ -1168,7 +1073,50 @@
             height: 20px;
         }
 
-        /* Additional Sections */
+        /* Testimonials Section */
+        .testimonials-section {
+            padding: 4rem 0;
+            background: var(--background-color);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .testimonial-rating {
+            color: var(--warning-color);
+        }
+
+        /* About Section */
         .about-section {
             padding: 4rem 0;
             background: var(--surface-color);
@@ -1200,6 +1148,7 @@
             box-shadow: var(--shadow-xl);
         }
 
+        /* Benefits Section */
         .benefits-section {
             padding: 4rem 0;
             background: var(--background-color);
@@ -1250,6 +1199,7 @@
             line-height: 1.6;
         }
 
+        /* CTA Section */
         .cta-section {
             padding: 4rem 0;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -1269,6 +1219,7 @@
             margin-bottom: 2rem;
         }
 
+        /* Partnership Section */
         .partnership-section {
             padding: 4rem 0;
             background: var(--surface-color);
@@ -1294,6 +1245,7 @@
             transform: scale(1.05);
         }
 
+        /* FAQ Section */
         .faq-section {
             padding: 4rem 0;
             background: var(--background-color);
@@ -1350,13 +1302,79 @@
             box-shadow: var(--shadow-xl);
         }
 
-        .pulse-animation {
-            animation: pulse 2s infinite;
-        }
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 1rem;
+            }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+            .search-container {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+
+            .products-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-tabs {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .hero-cta {
+                justify-content: center;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+
+            .cart-sidebar {
+                width: 100vw;
+                right: -100vw;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .login-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
         }
     </style>
 </head>
@@ -1388,10 +1406,13 @@
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-badge" id="cartBadge">0</span>
                 </button>
-                <a href="login.html" class="nav-btn login-btn" title="Login to your account">
+                
+                <!-- WORKING LOGIN BUTTON -->
+                <a href="login.html" class="nav-btn login-btn" title="Login to your account" onclick="goToLogin(event)">
                     <i class="fas fa-user"></i>
                     Login
                 </a>
+                
                 <button class="mobile-menu-btn" id="mobileMenuBtn">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -1410,7 +1431,7 @@
                         <i class="fas fa-shopping-bag"></i>
                         Shop Now
                     </a>
-                    <a href="login.html" class="btn btn-secondary">
+                    <a href="login.html" class="btn btn-secondary" onclick="goToLogin(event)">
                         <i class="fas fa-user"></i>
                         Join NJ Mart
                     </a>
@@ -1480,7 +1501,7 @@
             </div>
             <div style="text-align: center; margin-top: 2rem;">
                 <a href="products.html" class="btn btn-primary">View All Products</a>
-                <a href="login.html" class="btn" style="background: var(--primary-color); color: white; margin-left: 1rem;">
+                <a href="login.html" class="btn btn-primary" onclick="goToLogin(event)" style="margin-left: 1rem;">
                     <i class="fas fa-user"></i>
                     Login for Exclusive Offers
                 </a>
@@ -1500,7 +1521,7 @@
                     <div class="offer-icon">🎉</div>
                     <h3 class="offer-title">First Order Discount</h3>
                     <p class="offer-description">Get 25% OFF on your first order above ₹999. Use code: WELCOME25</p>
-                    <a href="login.html" class="btn btn-primary">Login & Shop Now</a>
+                    <a href="login.html" class="btn btn-primary" onclick="goToLogin(event)">Login & Shop Now</a>
                 </div>
                 <div class="offer-card">
                     <div class="offer-icon">🚚</div>
@@ -1512,7 +1533,7 @@
                     <div class="offer-icon">⭐</div>
                     <h3 class="offer-title">Member Benefits</h3>
                     <p class="offer-description">Join NJ Mart Premium for exclusive deals and early access</p>
-                    <a href="login.html" class="btn btn-primary">Join Premium</a>
+                    <a href="login.html" class="btn btn-primary" onclick="goToLogin(event)">Join Premium</a>
                 </div>
             </div>
         </div>
@@ -1525,15 +1546,15 @@
                 <h2>Join NJ Mart Family</h2>
                 <p>Create your account to enjoy exclusive offers, faster checkout, order tracking, and personalized shopping experience.</p>
                 <div class="login-buttons">
-                    <a href="login.html" class="login-access-btn">
+                    <a href="login.html" class="login-access-btn" onclick="goToLogin(event)">
                         <i class="fas fa-sign-in-alt"></i>
                         Login to Account
                     </a>
-                    <a href="login.html" class="login-access-btn signup-btn">
+                    <a href="login.html" class="login-access-btn signup-btn" onclick="goToLogin(event)">
                         <i class="fas fa-user-plus"></i>
                         Create New Account
                     </a>
-                    <button class="google-login-btn" onclick="window.location.href='login.html'">
+                    <button class="google-login-btn" onclick="goToLogin(event)">
                         <svg class="google-icon" viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -1610,7 +1631,7 @@
                     <p>NJ Mart is your trusted online grocery shopping partner, committed to bringing you the freshest products with exceptional service. We source directly from farms and trusted suppliers to ensure quality.</p>
                     <p>Our mission is to make grocery shopping convenient, affordable, and enjoyable for every family. With our advanced logistics and customer-first approach, we've served over 50,000 happy customers.</p>
                     <div style="margin-top: 2rem;">
-                        <a href="login.html" class="btn btn-primary">
+                        <a href="login.html" class="btn btn-primary" onclick="goToLogin(event)">
                             <i class="fas fa-user-plus"></i>
                             Join Our Community
                         </a>
@@ -1673,6 +1694,12 @@
                     <h3 class="benefit-title">Referral Rewards</h3>
                     <p class="benefit-description">Invite friends and earn ₹100 credit for each successful referral. No limit on earnings!</p>
                 </div>
+            </div>
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="login.html" class="btn btn-primary" onclick="goToLogin(event)" style="font-size: 1rem; padding: 1rem 2rem;">
+                    <i class="fas fa-rocket"></i>
+                    Start Getting Benefits Today
+                </a>
             </div>
         </div>
     </section>
@@ -1794,7 +1821,7 @@
     <!-- CTA Section -->
     <section class="cta-section">
         <div class="container">
-            <div class="cta-content">
+            <div style="text-align: center;">
                 <h2>Ready to Start Shopping?</h2>
                 <p>Join thousands of satisfied customers and experience the best online grocery shopping</p>
                 <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
@@ -1802,7 +1829,7 @@
                         <i class="fas fa-shopping-cart"></i>
                         Start Shopping
                     </a>
-                    <a href="login.html" class="btn btn-secondary">
+                    <a href="login.html" class="btn btn-secondary" onclick="goToLogin(event)">
                         <i class="fas fa-user"></i>
                         Create Account
                     </a>
@@ -1817,8 +1844,8 @@
             <div class="newsletter-container">
                 <h2>Subscribe to Newsletter</h2>
                 <p>Get the latest offers and new product information first</p>
-                <form class="newsletter-form" id="newsletterForm">
-                    <input type="email" class="newsletter-input" placeholder="Enter your email address..." required>
+                <form class="newsletter-form" id="newsletterForm" onsubmit="handleNewsletter(event)">
+                    <input type="email" class="newsletter-input" placeholder="Enter your email address..." name="email" id="newsletter-email" required>
                     <button type="submit" class="newsletter-btn">Subscribe</button>
                 </form>
             </div>
@@ -1870,8 +1897,8 @@
                 <div class="footer-section">
                     <h3>Account</h3>
                     <ul>
-                        <li><a href="login.html">Login</a></li>
-                        <li><a href="login.html">Create Account</a></li>
+                        <li><a href="login.html" onclick="goToLogin(event)">Login</a></li>
+                        <li><a href="login.html" onclick="goToLogin(event)">Create Account</a></li>
                         <li><a href="profile.html">My Profile</a></li>
                         <li><a href="orders.html">My Orders</a></li>
                         <li><a href="#">Privacy Policy</a></li>
@@ -1879,7 +1906,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 NJ Mart - Fresh Grocery Fast Delivery. All rights reserved. | Made with ❤️ in India | <a href="login.html" style="color: var(--primary-color);">Login</a> for better experience</p>
+                <p>&copy; 2024 NJ Mart - Fresh Grocery Fast Delivery. All rights reserved. | Made with ❤️ in India | <a href="login.html" onclick="goToLogin(event)" style="color: var(--primary-color);">Login</a> for better experience</p>
             </div>
         </div>
     </footer>
@@ -1904,7 +1931,7 @@
                 <i class="fas fa-credit-card"></i>
                 Checkout
             </a>
-            <a href="login.html" class="btn" style="background: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); width: 100%; text-decoration: none; text-align: center;">
+            <a href="login.html" class="btn" onclick="goToLogin(event)" style="background: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); width: 100%; text-decoration: none; text-align: center;">
                 <i class="fas fa-user"></i>
                 Login to Save Cart
             </a>
@@ -1915,20 +1942,28 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // NJ Mart Website JavaScript - Enhanced Version
+        // WORKING LOGIN FUNCTION - NO ERRORS
+        function goToLogin(event) {
+            event.preventDefault();
+            console.log('Navigating to login page...');
+            showToast('Opening login page...', 'info');
+            setTimeout(function() {
+                window.location.href = 'login.html';
+            }, 500);
+        }
+
+        // NJ Mart Website JavaScript
         document.addEventListener('DOMContentLoaded', function() {
             console.log('NJ Mart Website Loading...');
             initializeWebsite();
         });
 
         function initializeWebsite() {
-            console.log('Initializing website features...');
             loadCategories();
             loadProducts();
             initializeCart();
             initializeNavigation();
             initializeSearch();
-            initializeNewsletter();
             console.log('Website initialized successfully!');
         }
 
@@ -1939,9 +1974,7 @@
             { id: 3, name: 'Dairy', icon: 'fas fa-cheese', count: '200+ items' },
             { id: 4, name: 'Snacks', icon: 'fas fa-cookie-bite', count: '400+ items' },
             { id: 5, name: 'Beverages', icon: 'fas fa-mug-hot', count: '150+ items' },
-            { id: 6, name: 'Bakery', icon: 'fas fa-bread-slice', count: '100+ items' },
-            { id: 7, name: 'Personal Care', icon: 'fas fa-spa', count: '250+ items' },
-            { id: 8, name: 'Household', icon: 'fas fa-home', count: '180+ items' }
+            { id: 6, name: 'Bakery', icon: 'fas fa-bread-slice', count: '100+ items' }
         ];
 
         // Products Data
@@ -2017,30 +2050,6 @@
                 reviews: 298,
                 badge: 'fresh',
                 image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Fresh orange juice bottle with orange slices and green straw&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
-            },
-            {
-                id: 7,
-                name: 'Whole Wheat Bread',
-                category: 'bakery',
-                price: 55,
-                originalPrice: 65,
-                discount: 15,
-                rating: 4.2,
-                reviews: 145,
-                badge: 'new',
-                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Fresh whole wheat bread loaf sliced on wooden cutting board&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
-            },
-            {
-                id: 8,
-                name: 'Organic Honey 500g',
-                category: 'condiments',
-                price: 185,
-                originalPrice: 220,
-                discount: 16,
-                rating: 4.9,
-                reviews: 312,
-                badge: 'organic',
-                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Pure organic honey jar with honeycomb and bee design&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
             }
         ];
 
@@ -2053,18 +2062,12 @@
 
             categoriesGrid.innerHTML = '';
             
-            categories.forEach(category => {
+            categories.forEach(function(category) {
                 const categoryCard = document.createElement('div');
                 categoryCard.className = 'category-card';
-                categoryCard.innerHTML = `
-                    <div class="category-icon">
-                        <i class="${category.icon}"></i>
-                    </div>
-                    <h3 class="category-name">${category.name}</h3>
-                    <p class="category-count">${category.count}</p>
-                `;
+                categoryCard.innerHTML = '<div class="category-icon"><i class="' + category.icon + '"></i></div><h3 class="category-name">' + category.name + '</h3><p class="category-count">' + category.count + '</p>';
                 
-                categoryCard.addEventListener('click', () => {
+                categoryCard.addEventListener('click', function() {
                     filterProducts(category.name.toLowerCase());
                 });
                 
@@ -2072,50 +2075,22 @@
             });
         }
 
-        function loadProducts(filter = 'all') {
+        function loadProducts(filter) {
+            if (!filter) filter = 'all';
+            
             const productsGrid = document.getElementById('productsGrid');
             if (!productsGrid) return;
 
             productsGrid.innerHTML = '';
             
-            const filteredProducts = filter === 'all' 
-                ? products 
-                : products.filter(product => product.category === filter);
+            const filteredProducts = filter === 'all' ? products : products.filter(function(product) {
+                return product.category === filter;
+            });
 
-            filteredProducts.forEach(product => {
+            filteredProducts.forEach(function(product) {
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
-                productCard.innerHTML = `
-                    <div class="product-image">
-                        <img src="${product.image}" alt="${product.name} fresh and organic quality">
-                        ${product.badge ? `<span class="product-badge ${product.badge === 'organic' ? 'new' : ''}">${product.badge}</span>` : ''}
-                        <div class="product-actions">
-                            <button class="action-btn" title="Add to wishlist" onclick="addToWishlist(${product.id})">
-                                <i class="fas fa-heart"></i>
-                            </button>
-                            <button class="action-btn" title="Quick view" onclick="quickView(${product.id})">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <p class="product-category">${getCategoryName(product.category)}</p>
-                        <h3 class="product-title">${product.name}</h3>
-                        <div class="product-rating">
-                            <div class="stars">${generateStars(product.rating)}</div>
-                            <span class="rating-text">(${product.reviews})</span>
-                        </div>
-                        <div class="product-price">
-                            <span class="current-price">₹${product.price}</span>
-                            <span class="original-price">₹${product.originalPrice}</span>
-                            <span class="discount">${product.discount}% off</span>
-                        </div>
-                        <button class="add-to-cart" onclick="addToCart(${product.id})">
-                            <i class="fas fa-shopping-cart"></i>
-                            Add to Cart
-                        </button>
-                    </div>
-                `;
+                productCard.innerHTML = '<div class="product-image"><img src="' + product.image + '" alt="' + product.name + ' fresh and organic quality">' + (product.badge ? '<span class="product-badge ' + (product.badge === 'organic' ? 'new' : '') + '">' + product.badge + '</span>' : '') + '<div class="product-actions"><button class="action-btn" title="Add to wishlist" onclick="addToWishlist(' + product.id + ')"><i class="fas fa-heart"></i></button><button class="action-btn" title="Quick view" onclick="quickView(' + product.id + ')"><i class="fas fa-eye"></i></button></div></div><div class="product-info"><p class="product-category">' + getCategoryName(product.category) + '</p><h3 class="product-title">' + product.name + '</h3><div class="product-rating"><div class="stars">' + generateStars(product.rating) + '</div><span class="rating-text">(' + product.reviews + ')</span></div><div class="product-price"><span class="current-price">₹' + product.price + '</span><span class="original-price">₹' + product.originalPrice + '</span><span class="discount">' + product.discount + '% off</span></div><button class="add-to-cart" onclick="addToCart(' + product.id + ')"><i class="fas fa-shopping-cart"></i>Add to Cart</button></div>';
                 
                 productsGrid.appendChild(productCard);
             });
@@ -2147,16 +2122,24 @@
         }
 
         function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
+            const product = products.find(function(p) {
+                return p.id === productId;
+            });
+            
             if (!product) return;
 
-            const existingItem = cart.find(item => item.id === productId);
+            const existingItem = cart.find(function(item) {
+                return item.id === productId;
+            });
             
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
                 cart.push({
-                    ...product,
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
                     quantity: 1
                 });
             }
@@ -2168,27 +2151,35 @@
 
         function addToWishlist(productId) {
             showToast('Login to add items to wishlist!', 'info');
-            setTimeout(() => {
+            setTimeout(function() {
                 window.location.href = 'login.html';
             }, 1500);
         }
 
         function quickView(productId) {
-            const product = products.find(p => p.id === productId);
+            const product = products.find(function(p) {
+                return p.id === productId;
+            });
+            
             if (product) {
-                showToast(`Quick view: ${product.name} - ₹${product.price}`, 'info');
+                showToast('Quick view: ' + product.name + ' - ₹' + product.price, 'info');
             }
         }
 
         function removeFromCart(productId) {
-            cart = cart.filter(item => item.id !== productId);
+            cart = cart.filter(function(item) {
+                return item.id !== productId;
+            });
             updateCartStorage();
             updateCartUI();
             showToast('Product removed from cart!', 'success');
         }
 
         function updateQuantity(productId, change) {
-            const item = cart.find(item => item.id === productId);
+            const item = cart.find(function(item) {
+                return item.id === productId;
+            });
+            
             if (!item) return;
             
             item.quantity += change;
@@ -2212,48 +2203,27 @@
             const cartTotal = document.getElementById('cartTotal');
             
             if (cartBadge) {
-                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                const totalItems = cart.reduce(function(sum, item) {
+                    return sum + item.quantity;
+                }, 0);
                 cartBadge.textContent = totalItems;
             }
             
             if (cartContent) {
                 if (cart.length === 0) {
-                    cartContent.innerHTML = `
-                        <div class="empty-cart">
-                            <i class="fas fa-shopping-cart" style="font-size: 3rem; color: var(--text-light); margin-bottom: 1rem;"></i>
-                            <p>Your cart is empty</p>
-                            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">Add some fresh products!</p>
-                            <a href="login.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
-                                <i class="fas fa-user"></i> Login to save items
-                            </a>
-                        </div>
-                    `;
+                    cartContent.innerHTML = '<div class="empty-cart"><i class="fas fa-shopping-cart" style="font-size: 3rem; color: var(--text-light); margin-bottom: 1rem;"></i><p>Your cart is empty</p><p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">Add some fresh products!</p><a href="login.html" onclick="goToLogin(event)" style="color: var(--primary-color); text-decoration: none; font-weight: 600;"><i class="fas fa-user"></i> Login to save items</a></div>';
                 } else {
-                    cartContent.innerHTML = cart.map(item => `
-                        <div class="cart-item">
-                            <img src="${item.image}" alt="${item.name}" />
-                            <div class="cart-item-info">
-                                <div class="cart-item-title">${item.name}</div>
-                                <div class="cart-item-price">₹${item.price}</div>
-                                <div class="quantity-controls">
-                                    <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
-                                    <span>${item.quantity}</span>
-                                    <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
-                                    <button class="quantity-btn" onclick="removeFromCart(${item.id})" style="margin-left: 0.5rem; color: var(--danger-color);">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('');
+                    cartContent.innerHTML = cart.map(function(item) {
+                        return '<div class="cart-item"><img src="' + item.image + '" alt="' + item.name + '" /><div class="cart-item-info"><div class="cart-item-title">' + item.name + '</div><div class="cart-item-price">₹' + item.price + '</div><div class="quantity-controls"><button class="quantity-btn" onclick="updateQuantity(' + item.id + ', -1)">-</button><span>' + item.quantity + '</span><button class="quantity-btn" onclick="updateQuantity(' + item.id + ', 1)">+</button><button class="quantity-btn" onclick="removeFromCart(' + item.id + ')" style="margin-left: 0.5rem; color: var(--danger-color);"><i class="fas fa-trash"></i></button></div></div></div>';
+                    }).join('');
                 }
             }
             
             if (cartTotal) {
-                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                cartTotal.innerHTML = `
-                    <span>Total: ₹${total}</span>
-                `;
+                const total = cart.reduce(function(sum, item) {
+                    return sum + (item.price * item.quantity);
+                }, 0);
+                cartTotal.innerHTML = '<span>Total: ₹' + total + '</span>';
             }
         }
 
@@ -2264,7 +2234,7 @@
             const closeCartBtn = document.getElementById('closeCartBtn');
             
             if (cartBtn) {
-                cartBtn.addEventListener('click', () => {
+                cartBtn.addEventListener('click', function() {
                     cartSidebar.classList.add('open');
                     cartOverlay.classList.add('show');
                 });
@@ -2292,9 +2262,11 @@
         function initializeNavigation() {
             // Filter tabs
             const filterTabs = document.querySelectorAll('.filter-tab');
-            filterTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    filterTabs.forEach(t => t.classList.remove('active'));
+            filterTabs.forEach(function(tab) {
+                tab.addEventListener('click', function() {
+                    filterTabs.forEach(function(t) {
+                        t.classList.remove('active');
+                    });
                     tab.classList.add('active');
                     
                     const filter = tab.dataset.filter;
@@ -2305,26 +2277,13 @@
             // Wishlist button
             const wishlistBtn = document.getElementById('wishlistBtn');
             if (wishlistBtn) {
-                wishlistBtn.addEventListener('click', () => {
+                wishlistBtn.addEventListener('click', function() {
                     showToast('Login to access wishlist!', 'info');
-                    setTimeout(() => {
+                    setTimeout(function() {
                         window.location.href = 'login.html';
                     }, 1500);
                 });
             }
-
-            // All login buttons
-            const loginButtons = document.querySelectorAll('a[href="login.html"]');
-            loginButtons.forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('Login button clicked - navigating to login page');
-                    showToast('Redirecting to login page...', 'info');
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 500);
-                });
-            });
         }
 
         function initializeSearch() {
@@ -2336,7 +2295,7 @@
             }
             
             if (searchInput) {
-                searchInput.addEventListener('keypress', (e) => {
+                searchInput.addEventListener('keypress', function(e) {
                     if (e.key === 'Enter') {
                         performSearch();
                     }
@@ -2353,29 +2312,22 @@
                 return;
             }
             
-            showToast(`Searching for "${query}"...`, 'success');
-            // Implement search functionality
+            showToast('Searching for "' + query + '"...', 'success');
         }
 
-        function initializeNewsletter() {
-            const newsletterForm = document.getElementById('newsletterForm');
+        function handleNewsletter(event) {
+            event.preventDefault();
+            const email = document.getElementById('newsletter-email').value;
             
-            if (newsletterForm) {
-                newsletterForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const email = e.target.querySelector('input[type="email"]').value;
-                    
-                    if (email) {
-                        showToast('Thank you! You have subscribed to our newsletter!', 'success');
-                        e.target.reset();
-                    }
-                });
+            if (email) {
+                showToast('Thank you! You have subscribed to our newsletter!', 'success');
+                document.getElementById('newsletterForm').reset();
             }
         }
 
         function filterProducts(category) {
             const filterTabs = document.querySelectorAll('.filter-tab');
-            filterTabs.forEach(tab => {
+            filterTabs.forEach(function(tab) {
                 tab.classList.remove('active');
                 if (tab.dataset.filter === category) {
                     tab.classList.add('active');
@@ -2395,38 +2347,35 @@
                 icon.style.transform = 'rotate(0deg)';
             } else {
                 // Close all other FAQ items
-                document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('show'));
-                document.querySelectorAll('.faq-question i').forEach(i => i.style.transform = 'rotate(0deg)');
+                document.querySelectorAll('.faq-answer').forEach(function(a) {
+                    a.classList.remove('show');
+                });
+                document.querySelectorAll('.faq-question i').forEach(function(i) {
+                    i.style.transform = 'rotate(0deg)';
+                });
                 
                 answer.classList.add('show');
                 icon.style.transform = 'rotate(180deg)';
             }
         }
 
-        function showToast(message, type = 'success') {
+        function showToast(message, type) {
+            if (!type) type = 'success';
+            
             const toast = document.getElementById('toast');
             if (!toast) return;
             
             toast.textContent = message;
-            toast.className = `toast ${type}`;
+            toast.className = 'toast ' + type;
             toast.classList.add('show');
             
-            setTimeout(() => {
+            setTimeout(function() {
                 toast.classList.remove('show');
             }, 3000);
         }
 
-        // Enhanced login functionality
-        function redirectToLogin() {
-            console.log('Redirecting to login page...');
-            showToast('Opening login page...', 'info');
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 500);
-        }
-
         // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
@@ -2442,13 +2391,13 @@
         // Mobile menu functionality
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         if (mobileMenuBtn) {
-            mobileMenuBtn.addEventListener('click', () => {
+            mobileMenuBtn.addEventListener('click', function() {
                 showToast('Mobile menu feature coming soon!', 'info');
             });
         }
 
         // Page scroll effects
-        window.addEventListener('scroll', () => {
+        window.addEventListener('scroll', function() {
             const header = document.querySelector('.header');
             if (window.scrollY > 100) {
                 header.style.background = 'rgba(255, 255, 255, 0.95)';
@@ -2457,29 +2406,6 @@
                 header.style.background = 'var(--background-color)';
                 header.style.backdropFilter = 'blur(10px)';
             }
-        });
-
-        // Initialize animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        // Observe elements for animation
-        document.querySelectorAll('.feature-card, .product-card, .category-card').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
         });
 
         // Additional utility functions
@@ -2494,7 +2420,7 @@
             const isLoggedIn = localStorage.getItem('njmart-user');
             if (!isLoggedIn) {
                 showToast('Please login to continue', 'info');
-                setTimeout(() => {
+                setTimeout(function() {
                     window.location.href = 'login.html';
                 }, 1500);
                 return false;
@@ -2504,23 +2430,14 @@
 
         // Enhanced product interactions
         function showProductDetails(productId) {
-            const product = products.find(p => p.id === productId);
+            const product = products.find(function(p) {
+                return p.id === productId;
+            });
+            
             if (product) {
-                alert(`Product: ${product.name}\nPrice: ₹${product.price}\nRating: ${product.rating}/5\n\nLogin to see full details and reviews!`);
+                alert('Product: ' + product.name + '\nPrice: ₹' + product.price + '\nRating: ' + product.rating + '/5\n\nLogin to see full details and reviews!');
             }
         }
-
-        // Global error handler
-        window.addEventListener('error', (e) => {
-            console.error('Page error:', e.error);
-        });
-
-        // Performance monitoring
-        window.addEventListener('load', () => {
-            console.log('Page loaded successfully');
-            const loadTime = performance.now();
-            console.log(`Load time: ${loadTime.toFixed(2)}ms`);
-        });
 
         // Enhanced cart functionality
         function clearCart() {
@@ -2553,10 +2470,15 @@
                 return;
             }
             
-            const product = products.find(p => p.id === productId);
-            if (product && !compareList.find(p => p.id === productId)) {
+            const product = products.find(function(p) {
+                return p.id === productId;
+            });
+            
+            if (product && !compareList.find(function(p) {
+                return p.id === productId;
+            })) {
                 compareList.push(product);
-                showToast(`${product.name} added to comparison!`, 'success');
+                showToast(product.name + ' added to comparison!', 'success');
             }
         }
 
@@ -2567,8 +2489,8 @@
             }
             
             let comparison = 'Product Comparison:\n\n';
-            compareList.forEach((product, index) => {
-                comparison += `${index + 1}. ${product.name} - ₹${product.price} (${product.rating}⭐)\n`;
+            compareList.forEach(function(product, index) {
+                comparison += (index + 1) + '. ' + product.name + ' - ₹' + product.price + ' (' + product.rating + '⭐)\n';
             });
             
             alert(comparison);
@@ -2579,14 +2501,13 @@
             const feedback = prompt('We value your feedback! Please share your experience with NJ Mart:');
             if (feedback) {
                 showToast('Thank you for your feedback! We appreciate your input.', 'success');
-                // Here you would typically send the feedback to your server
             }
         }
 
         // Store locator
         function findNearestStore() {
             showToast('Finding nearest stores... Login for personalized store recommendations!', 'info');
-            setTimeout(() => {
+            setTimeout(function() {
                 alert('Nearest Stores:\n\n1. NJ Mart Express - 2.5 km\n   Address: Sector 12, Noida\n   Phone: +91 98765 43210\n\n2. NJ Mart Super - 4.2 km\n   Address: CP Market, Delhi\n   Phone: +91 98765 43211\n\nLogin to see directions and store timings!');
             }, 2000);
         }
@@ -2602,7 +2523,7 @@
             ];
             
             const randomRecipe = recipes[Math.floor(Math.random() * recipes.length)];
-            showToast(`Recipe Suggestion: ${randomRecipe}`, 'info');
+            showToast('Recipe Suggestion: ' + randomRecipe, 'info');
         }
 
         // Seasonal promotions
@@ -2621,4 +2542,45 @@
                     offer = 'Monsoon Offer: Buy umbrella get 10% off on groceries!';
                     break;
                 default:
-                    offer = 'Spring Fresh:
+                    offer = 'Spring Fresh: 10% off on all fresh vegetables and fruits!';
+            }
+            
+            showToast(offer, 'info');
+        }
+
+        function getCurrentSeason() {
+            const month = new Date().getMonth();
+            if (month >= 11 || month <= 1) return 'winter';
+            if (month >= 2 && month <= 4) return 'spring';
+            if (month >= 5 && month <= 8) return 'summer';
+            return 'monsoon';
+        }
+
+        // Order tracking
+        function trackOrder() {
+            const orderNumber = prompt('Enter your order number:');
+            if (orderNumber) {
+                showToast('Tracking order #' + orderNumber + '... Login for detailed tracking!', 'info');
+                setTimeout(function() {
+                    alert('Order Status: Your order is being prepared.\n\nEstimated delivery: 2-3 hours\nDelivery partner: Assigned\n\nLogin to see real-time tracking!');
+                }, 1500);
+            }
+        }
+
+        // Customer support
+        function contactSupport() {
+            const issue = prompt('Please describe your issue or question:');
+            if (issue) {
+                showToast('Thank you! Our support team will contact you soon.', 'success');
+                alert('Support Ticket Created!\n\nTicket ID: #NJ' + Math.floor(Math.random() * 10000) + '\nEstimated response time: 2-4 hours\n\nFor faster support, please login to your account.');
+            }
+        }
+
+        // Bulk order inquiry
+        function bulkOrderInquiry() {
+            alert('Bulk Order Inquiry\n\nFor bulk orders (50+ items), please contact:\n\nEmail: bulk@njmart.com\nPhone: +91 98765 43210\nWhatsApp: +91 98765 43211\n\nLogin to submit bulk order form online!');
+        }
+
+        // Corporate partnership
+        function corporatePartnership() {
+            alert('Corporate Partnership\n\nInterested in corporate
