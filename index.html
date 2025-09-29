@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NJ Mart - Fresh Grocery Fast Delivery</title>
-    <meta name="description" content="Shop at NJ Mart for fresh groceries with fast delivery - Quality products, best prices, and excellent service">
+    <title>NJ Mart - Fresh Grocery Fast Delivery | Premium Online Shopping</title>
+    <meta name="description" content="Shop at NJ Mart for fresh groceries with fast delivery - Quality products, best prices, and excellent service. Login for exclusive offers and personalized experience.">
+    <meta name="keywords" content="grocery delivery, fresh vegetables, fruits, dairy, online shopping, fast delivery, NJ Mart">
+    <meta name="author" content="NJ Mart">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="https://placeholder-image-service.onrender.com/image/32x32?prompt=Modern green shopping cart logo with NJ letters in fresh grocery style&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8">
@@ -12,9 +14,6 @@
     <!-- External CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Google Sign-In API -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <style>
         :root {
@@ -37,8 +36,6 @@
             --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
             --border-radius: 0.5rem;
             --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         * {
@@ -53,7 +50,6 @@
             color: var(--text-primary);
             background: linear-gradient(135deg, #ffffff 0%, #f9fffe 50%, #f0fdf4 100%);
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
         .container {
@@ -62,7 +58,7 @@
             padding: 0 1rem;
         }
 
-        /* Enhanced Header Styles */
+        /* Header Styles */
         .header {
             background: var(--background-color);
             border-bottom: 1px solid var(--border-color);
@@ -71,13 +67,6 @@
             z-index: 100;
             box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
             backdrop-filter: blur(10px);
-            transition: var(--transition);
-        }
-
-        .header.scrolled {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.15);
         }
 
         .nav-container {
@@ -87,7 +76,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 4.5rem;
+            height: 4rem;
         }
 
         .logo {
@@ -98,43 +87,35 @@
             font-weight: 700;
             color: var(--primary-color);
             text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
         }
 
         .logo img {
             width: 2.5rem;
             height: 2.5rem;
             border-radius: 0.5rem;
-            box-shadow: var(--shadow-md);
         }
 
         .search-container {
             flex: 1;
-            max-width: 35rem;
+            max-width: 32rem;
             margin: 0 2rem;
             position: relative;
         }
 
         .search-input {
             width: 100%;
-            padding: 0.875rem 3.5rem 0.875rem 1.25rem;
+            padding: 0.75rem 3rem 0.75rem 1rem;
             border: 2px solid var(--border-color);
             border-radius: var(--border-radius);
             font-size: 0.875rem;
             transition: var(--transition);
             background: var(--surface-color);
-            box-shadow: var(--shadow-sm);
         }
 
         .search-input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgb(34 197 94 / 0.1);
-            background: var(--background-color);
         }
 
         .search-btn {
@@ -142,25 +123,23 @@
             right: 0.5rem;
             top: 50%;
             transform: translateY(-50%);
-            background: var(--gradient-primary);
+            background: var(--primary-color);
             border: none;
-            padding: 0.625rem;
-            border-radius: 0.375rem;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
             color: white;
             cursor: pointer;
             transition: var(--transition);
-            box-shadow: var(--shadow-sm);
         }
 
         .search-btn:hover {
             background: var(--primary-hover);
-            transform: translateY(-50%) scale(1.05);
         }
 
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1rem;
         }
 
         .nav-btn {
@@ -168,8 +147,8 @@
             border: none;
             color: var(--text-secondary);
             cursor: pointer;
-            padding: 0.625rem;
-            border-radius: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
             transition: var(--transition);
             position: relative;
             font-size: 1.25rem;
@@ -177,117 +156,32 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 2.75rem;
-            height: 2.75rem;
         }
 
         .nav-btn:hover {
             color: var(--primary-color);
             background: var(--surface-color);
-            transform: translateY(-1px);
         }
 
-        /* Enhanced Login Button */
+        /* LOGIN BUTTON - FIXED VERSION */
         .login-btn {
-            background: var(--gradient-primary);
-            color: white;
-            padding: 0.625rem 1.25rem;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            font-size: 0.875rem;
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
-            transition: var(--transition);
-            gap: 0.5rem;
-            min-width: auto;
+            background: var(--primary-color) !important;
+            color: white !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: var(--border-radius) !important;
+            font-weight: 600 !important;
+            font-size: 0.875rem !important;
+            text-decoration: none !important;
+            gap: 0.5rem !important;
         }
 
         .login-btn:hover {
-            background: linear-gradient(135deg, var(--primary-hover) 0%, var(--accent-color) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
+            background: var(--primary-hover) !important;
+            color: white !important;
         }
 
-        /* User Dropdown Styles */
-        .user-dropdown {
-            position: relative;
-        }
-
-        .user-profile-btn {
-            background: var(--gradient-primary);
-            color: white;
-            padding: 0.625rem 1rem;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            font-size: 0.875rem;
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
-            gap: 0.5rem;
-            min-width: auto;
-        }
-
-        .user-profile-btn:hover {
-            background: linear-gradient(135deg, var(--primary-hover) 0%, var(--accent-color) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            top: calc(100% + 0.5rem);
-            right: 0;
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-xl);
-            min-width: 220px;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-        }
-
-        .dropdown-menu.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.875rem 1rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            font-size: 0.875rem;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .dropdown-item:hover {
-            background: var(--surface-color);
-            color: var(--primary-color);
-        }
-
-        .dropdown-item:first-child {
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
-        }
-
-        .dropdown-item:last-child {
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
-        }
-
-        .logout-btn {
-            border-top: 1px solid var(--border-color);
-            color: var(--danger-color) !important;
-        }
-
-        .logout-btn:hover {
-            background: rgba(239, 68, 68, 0.1) !important;
+        .login-btn:visited {
+            color: white !important;
         }
 
         .cart-badge {
@@ -304,12 +198,6 @@
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
         }
 
         .mobile-menu-btn {
@@ -319,14 +207,13 @@
             font-size: 1.5rem;
             color: var(--text-primary);
             cursor: pointer;
-            padding: 0.5rem;
         }
 
-        /* Enhanced Hero Section */
+        /* Hero Section */
         .hero {
-            background: var(--gradient-hero);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
             color: white;
-            padding: 5rem 0;
+            padding: 4rem 0;
             position: relative;
             overflow: hidden;
             box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
@@ -349,31 +236,66 @@
             padding: 0 1rem;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+            gap: 3rem;
             align-items: center;
             position: relative;
             z-index: 1;
         }
 
         .hero-content h1 {
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             line-height: 1.1;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
         .hero-content p {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             opacity: 0.9;
-            margin-bottom: 2.5rem;
-            line-height: 1.6;
+            margin-bottom: 2rem;
         }
 
         .hero-cta {
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 0.875rem;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-hover) 0%, var(--accent-color) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .hero-image {
@@ -384,219 +306,74 @@
             width: 100%;
             height: auto;
             border-radius: 1rem;
-            box-shadow: var(--shadow-xl);
-            transition: var(--transition);
-        }
-
-        .hero-image:hover img {
-            transform: scale(1.02);
-        }
-
-        /* Enhanced Button Styles */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.875rem 1.75rem;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            text-decoration: none;
-            transition: var(--transition);
-            cursor: pointer;
-            border: none;
-            font-size: 0.875rem;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, var(--primary-hover) 0%, var(--accent-color) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
-        }
-
-        .btn-outline:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        /* Google Login Button */
-        .google-login-btn {
-            background: white;
-            color: var(--text-primary);
-            border: 2px solid var(--border-color);
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--border-radius);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 600;
-            transition: var(--transition);
-            text-decoration: none;
-            justify-content: center;
-            box-shadow: var(--shadow-md);
-        }
-
-        .google-login-btn:hover {
-            background: var(--surface-color);
-            border-color: var(--primary-color);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .google-icon {
-            width: 20px;
-            height: 20px;
+            box-shadow: var(--shadow-lg);
         }
 
         /* Section Headers */
-        .section {
-            padding: 5rem 0;
-        }
-
         .section-header {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
         }
 
         .section-title {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 1rem;
             color: var(--text-primary);
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -0.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4rem;
-            height: 0.25rem;
-            background: var(--gradient-primary);
-            border-radius: 0.125rem;
         }
 
         .section-subtitle {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
         }
 
-        /* Enhanced Categories Section */
+        /* Categories Section */
         .categories {
+            padding: 4rem 0;
             background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
         }
 
         .categories-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
         }
 
         .category-card {
             background: linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%);
-            border-radius: 1rem;
-            padding: 2.5rem 1.5rem;
+            border-radius: var(--border-radius);
+            padding: 2rem 1rem;
             text-align: center;
-            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.1);
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.1);
             transition: var(--transition);
             cursor: pointer;
             border: 1px solid rgba(34, 197, 94, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .category-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.1), transparent);
-            transition: left 0.6s;
-        }
-
-        .category-card:hover::before {
-            left: 100%;
         }
 
         .category-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(34, 197, 94, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.2);
             border-color: var(--primary-color);
-            background: linear-gradient(145deg, #ffffff 0%, #ecfdf5 100%);
         }
 
         .category-icon {
-            width: 4.5rem;
-            height: 4.5rem;
-            background: var(--gradient-primary);
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1.5rem;
-            font-size: 1.75rem;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
             color: white;
-            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
-            transition: var(--transition);
-        }
-
-        .category-card:hover .category-icon {
-            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
         }
 
         .category-name {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
-            color: var(--text-primary);
         }
 
         .category-count {
@@ -604,64 +381,64 @@
             font-size: 0.875rem;
         }
 
-        /* Enhanced Products Section */
+        /* Products Section */
+        .products {
+            padding: 4rem 0;
+        }
+
         .products-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             flex-wrap: wrap;
-            gap: 1.5rem;
+            gap: 1rem;
         }
 
         .filter-tabs {
             display: flex;
             gap: 0.5rem;
             background: var(--surface-color);
-            padding: 0.375rem;
+            padding: 0.25rem;
             border-radius: var(--border-radius);
-            box-shadow: var(--shadow-sm);
         }
 
         .filter-tab {
             background: none;
             border: none;
-            padding: 0.625rem 1.25rem;
-            border-radius: calc(var(--border-radius) - 0.375rem);
+            padding: 0.5rem 1rem;
+            border-radius: calc(var(--border-radius) - 0.25rem);
             cursor: pointer;
             transition: var(--transition);
             font-weight: 500;
-            white-space: nowrap;
         }
 
         .filter-tab.active,
         .filter-tab:hover {
             background: var(--background-color);
             color: var(--primary-color);
-            box-shadow: var(--shadow-md);
-            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
         }
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .product-card {
             background: linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%);
-            border-radius: 1rem;
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.08);
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.08);
             transition: var(--transition);
             border: 1px solid rgba(34, 197, 94, 0.15);
-            position: relative;
         }
 
         .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(34, 197, 94, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.15);
             border-color: var(--primary-color);
         }
 
@@ -672,7 +449,7 @@
 
         .product-image img {
             width: 100%;
-            height: 220px;
+            height: 200px;
             object-fit: cover;
             transition: var(--transition);
         }
@@ -683,34 +460,24 @@
 
         .product-badge {
             position: absolute;
-            top: 1rem;
-            left: 1rem;
+            top: 0.75rem;
+            left: 0.75rem;
             background: var(--danger-color);
             color: white;
-            padding: 0.375rem 0.875rem;
-            border-radius: 1.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
             font-size: 0.75rem;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
         }
 
         .product-badge.new {
             background: var(--accent-color);
         }
 
-        .product-badge.organic {
-            background: var(--warning-color);
-        }
-
-        .product-badge.popular {
-            background: var(--info-color);
-        }
-
         .product-actions {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 0.75rem;
+            right: 0.75rem;
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
@@ -723,9 +490,9 @@
         }
 
         .action-btn {
-            width: 2.75rem;
-            height: 2.75rem;
-            background: rgba(255, 255, 255, 0.95);
+            width: 2.5rem;
+            height: 2.5rem;
+            background: rgba(255, 255, 255, 0.9);
             border: none;
             border-radius: 50%;
             display: flex;
@@ -733,18 +500,16 @@
             justify-content: center;
             cursor: pointer;
             transition: var(--transition);
-            backdrop-filter: blur(10px);
-            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(4px);
         }
 
         .action-btn:hover {
             background: var(--primary-color);
             color: white;
-            transform: scale(1.1);
         }
 
         .product-info {
-            padding: 2rem;
+            padding: 1.5rem;
         }
 
         .product-category {
@@ -753,27 +518,24 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-bottom: 0.5rem;
-            font-weight: 600;
         }
 
         .product-title {
-            font-size: 1.125rem;
+            font-size: 1rem;
             font-weight: 600;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
             line-height: 1.4;
-            color: var(--text-primary);
         }
 
         .product-rating {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.25rem;
             margin-bottom: 1rem;
         }
 
         .stars {
-            color: var(--warning-color);
-            font-size: 0.875rem;
+            color: var(--secondary-color);
         }
 
         .rating-text {
@@ -784,13 +546,13 @@
         .product-price {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
             flex-wrap: wrap;
         }
 
         .current-price {
-            font-size: 1.375rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: var(--primary-color);
         }
@@ -798,184 +560,79 @@
         .original-price {
             color: var(--text-light);
             text-decoration: line-through;
-            font-size: 1rem;
         }
 
         .discount {
             background: var(--accent-color);
             color: white;
-            padding: 0.25rem 0.625rem;
-            border-radius: 0.375rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.25rem;
             font-size: 0.75rem;
-            font-weight: 600;
         }
 
         .add-to-cart {
             width: 100%;
-            background: var(--gradient-primary);
+            background: var(--primary-color);
             color: white;
             border: none;
-            padding: 0.875rem;
+            padding: 0.75rem;
             border-radius: var(--border-radius);
             cursor: pointer;
             transition: var(--transition);
             font-weight: 600;
-            font-size: 0.875rem;
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
         }
 
         .add-to-cart:hover {
             background: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
         }
 
-        /* Enhanced Features Section */
+        /* Features Section */
         .features {
+            padding: 4rem 0;
             background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
         }
 
         .feature-card {
             text-align: center;
-            padding: 2.5rem 1.5rem;
-            background: linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%);
-            border-radius: 1rem;
-            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.1);
-            transition: var(--transition);
-            border: 1px solid rgba(34, 197, 94, 0.2);
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(34, 197, 94, 0.2);
+            padding: 2rem 1rem;
         }
 
         .feature-icon {
-            width: 4.5rem;
-            height: 4.5rem;
-            background: var(--gradient-primary);
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1.5rem;
-            font-size: 1.75rem;
-            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.25);
-            transition: var(--transition);
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: scale(1.1) rotate(5deg);
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.25);
         }
 
         .feature-title {
-            font-size: 1.375rem;
+            font-size: 1.25rem;
             font-weight: 600;
-            margin-bottom: 0.75rem;
-            color: var(--text-primary);
+            margin-bottom: 0.5rem;
         }
 
         .feature-description {
             color: var(--text-secondary);
-            line-height: 1.6;
         }
 
-        /* Enhanced Login Access Section */
-        .login-access {
-            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
-            border-top: 1px solid var(--border-color);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .login-access::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><circle cx="20" cy="10" r="3" fill="rgba(34,197,94,0.1)"/><circle cx="80" cy="10" r="2" fill="rgba(34,197,94,0.05)"/></svg>') repeat;
-        }
-
-        .login-access-container {
-            max-width: 900px;
-            margin: 0 auto;
-            text-align: center;
-            padding: 0 1rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .login-access h2 {
-            color: var(--text-primary);
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-
-        .login-access p {
-            color: var(--text-secondary);
-            font-size: 1.25rem;
-            margin-bottom: 3rem;
-            line-height: 1.6;
-        }
-
-        .login-access-buttons {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .login-access-btn {
-            background: var(--gradient-primary);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            font-size: 1rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
-            transition: var(--transition);
-            min-width: 180px;
-            justify-content: center;
-        }
-
-        .login-access-btn:hover {
-            background: linear-gradient(135deg, var(--primary-hover) 0%, var(--accent-color) 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(34, 197, 94, 0.4);
-        }
-
-        .signup-btn {
-            background: rgba(255, 255, 255, 0.9);
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
-        }
-
-        .signup-btn:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        /* Enhanced Newsletter Section */
+        /* Newsletter Section */
         .newsletter {
-            background: var(--gradient-hero);
+            padding: 4rem 0;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
             color: white;
             position: relative;
-            overflow: hidden;
         }
 
         .newsletter::before {
@@ -989,7 +646,7 @@
         }
 
         .newsletter-container {
-            max-width: 700px;
+            max-width: 600px;
             margin: 0 auto;
             text-align: center;
             position: relative;
@@ -997,90 +654,63 @@
         }
 
         .newsletter h2 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             margin-bottom: 1rem;
-            font-weight: 700;
         }
 
         .newsletter p {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             opacity: 0.9;
-            margin-bottom: 2.5rem;
-            line-height: 1.6;
+            margin-bottom: 2rem;
         }
 
         .newsletter-form {
             display: flex;
             gap: 1rem;
-            max-width: 450px;
+            max-width: 400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.5rem;
-            border-radius: var(--border-radius);
-            backdrop-filter: blur(10px);
         }
 
         .newsletter-input {
             flex: 1;
-            padding: 0.875rem 1rem;
+            padding: 0.75rem;
             border: none;
-            border-radius: calc(var(--border-radius) - 0.5rem);
+            border-radius: var(--border-radius);
             font-size: 1rem;
-            background: white;
-        }
-
-        .newsletter-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
         }
 
         .newsletter-btn {
             background: var(--secondary-color);
             color: white;
             border: none;
-            padding: 0.875rem 1.5rem;
-            border-radius: calc(var(--border-radius) - 0.5rem);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
             cursor: pointer;
             font-weight: 600;
             transition: var(--transition);
-            white-space: nowrap;
         }
 
         .newsletter-btn:hover {
             background: #d97706;
-            transform: scale(1.05);
         }
 
-        /* Enhanced Footer */
+        /* Footer */
         .footer {
             background: var(--text-primary);
             color: white;
-            padding: 4rem 0 2rem;
-            position: relative;
-        }
-
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            padding: 3rem 0 1rem;
         }
 
         .footer-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            margin-bottom: 3rem;
+            gap: 2rem;
+            margin-bottom: 2rem;
         }
 
         .footer-section h3 {
-            font-size: 1.375rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary-color);
-            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
         }
 
         .footer-section ul {
@@ -1088,49 +718,38 @@
         }
 
         .footer-section li {
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }
 
         .footer-section a {
             color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
             transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .footer-section a:hover {
-            color: var(--primary-color);
-            transform: translateX(0.25rem);
-        }
-
-        .footer-section p {
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.8;
+            color: white;
         }
 
         .social-links {
             display: flex;
             gap: 1rem;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
         }
 
         .social-link {
-            width: 3rem;
-            height: 3rem;
+            width: 2.5rem;
+            height: 2.5rem;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: var(--transition);
-            backdrop-filter: blur(10px);
         }
 
         .social-link:hover {
             background: var(--primary-color);
-            transform: translateY(-2px);
         }
 
         .footer-bottom {
@@ -1140,15 +759,15 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
-        /* Enhanced Cart Sidebar */
+        /* Cart Sidebar */
         .cart-sidebar {
             position: fixed;
             top: 0;
-            right: -450px;
-            width: 450px;
+            right: -400px;
+            width: 400px;
             height: 100vh;
             background: var(--background-color);
-            box-shadow: var(--shadow-xl);
+            box-shadow: var(--shadow-lg);
             z-index: 1000;
             transition: var(--transition);
             display: flex;
@@ -1160,18 +779,11 @@
         }
 
         .cart-header {
-            padding: 2rem;
+            padding: 1.5rem;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--surface-color);
-        }
-
-        .cart-header h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
         }
 
         .cart-content {
@@ -1181,9 +793,8 @@
         }
 
         .cart-footer {
-            padding: 2rem;
+            padding: 1.5rem;
             border-top: 1px solid var(--border-color);
-            background: var(--surface-color);
         }
 
         .cart-overlay {
@@ -1197,7 +808,6 @@
             opacity: 0;
             visibility: hidden;
             transition: var(--transition);
-            backdrop-filter: blur(4px);
         }
 
         .cart-overlay.show {
@@ -1208,20 +818,15 @@
         .cart-item {
             display: flex;
             gap: 1rem;
-            padding: 1.5rem 0;
+            padding: 1rem 0;
             border-bottom: 1px solid var(--border-color);
         }
 
-        .cart-item:last-child {
-            border-bottom: none;
-        }
-
         .cart-item img {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             object-fit: cover;
-            border-radius: 0.5rem;
-            box-shadow: var(--shadow-sm);
+            border-radius: 0.375rem;
         }
 
         .cart-item-info {
@@ -1230,87 +835,65 @@
 
         .cart-item-title {
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
             font-size: 0.875rem;
-            color: var(--text-primary);
         }
 
         .cart-item-price {
             color: var(--primary-color);
             font-weight: 600;
-            font-size: 1rem;
         }
 
         .quantity-controls {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            margin-top: 0.75rem;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
         }
 
         .quantity-btn {
-            width: 2.25rem;
-            height: 2.25rem;
+            width: 2rem;
+            height: 2rem;
             border: 1px solid var(--border-color);
             background: var(--background-color);
-            border-radius: 0.375rem;
+            border-radius: 0.25rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            transition: var(--transition);
         }
 
         .quantity-btn:hover {
             background: var(--surface-color);
-            border-color: var(--primary-color);
-        }
-
-        .quantity-display {
-            font-weight: 600;
-            min-width: 2rem;
-            text-align: center;
         }
 
         .empty-cart {
             text-align: center;
             color: var(--text-secondary);
-            margin-top: 3rem;
-        }
-
-        .empty-cart i {
-            font-size: 4rem;
-            color: var(--text-light);
-            margin-bottom: 1rem;
+            margin-top: 2rem;
         }
 
         .cart-total {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            font-size: 1.125rem;
             font-weight: 600;
-            padding: 1rem;
-            background: rgba(34, 197, 94, 0.1);
-            border-radius: var(--border-radius);
         }
 
-        /* Enhanced Toast Notifications */
+        /* Toast Notifications */
         .toast {
             position: fixed;
-            top: 2rem;
-            right: 2rem;
+            top: 1rem;
+            right: 1rem;
             padding: 1rem 1.5rem;
             border-radius: var(--border-radius);
             color: white;
             font-weight: 600;
             z-index: 1000;
-            transform: translateX(120%);
+            transform: translateX(100%);
             transition: var(--transition);
-            box-shadow: var(--shadow-xl);
-            backdrop-filter: blur(10px);
         }
 
         .toast.show {
@@ -1325,186 +908,10 @@
             background: var(--danger-color);
         }
 
-        .toast.info {
-            background: var(--info-color);
-        }
-
-        /* Special Offers Section */
-        .special-offers {
-            background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
-        }
-
-        .offers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
-        .offer-card {
-            background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.15);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            position: relative;
-            overflow: hidden;
-            transition: var(--transition);
-        }
-
-        .offer-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.25);
-        }
-
-        .offer-badge {
-            position: absolute;
-            top: -0.5rem;
-            right: 1rem;
-            background: var(--warning-color);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0 0 0.5rem 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        /* Testimonials Section */
-        .testimonials {
-            background: var(--background-color);
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
-        .testimonial-card {
-            background: linear-gradient(145deg, #f8fafc 0%, #ffffff 100%);
-            padding: 2.5rem;
-            border-radius: 1rem;
-            text-align: center;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-color);
-            transition: var(--transition);
-        }
-
-        .testimonial-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        }
-
-        .testimonial-text {
-            font-style: italic;
-            margin-bottom: 1.5rem;
-            font-size: 1.125rem;
-            line-height: 1.6;
-            color: var(--text-secondary);
-        }
-
-        .testimonial-author {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .testimonial-rating {
-            color: var(--warning-color);
-            font-size: 1.125rem;
-        }
-
-        /* Quick Actions Section */
-        .quick-actions {
-            background: var(--surface-color);
-            border-top: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .actions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .action-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            text-align: center;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
-            cursor: pointer;
-            border: 1px solid var(--border-color);
-        }
-
-        .action-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-color);
-        }
-
-        .action-icon {
-            width: 3.5rem;
-            height: 3.5rem;
-            background: var(--gradient-primary);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 1.5rem;
-        }
-
-        .action-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .action-description {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        /* Stats Section */
-        .stats {
-            background: var(--gradient-primary);
-            color: white;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-        }
-
-        .stat-card {
-            text-align: center;
-            padding: 2rem 1rem;
-        }
-
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            opacity: 0.9;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .nav-container {
                 padding: 0 1rem;
-                height: 4rem;
             }
 
             .search-container {
@@ -1519,15 +926,10 @@
                 grid-template-columns: 1fr;
                 text-align: center;
                 gap: 2rem;
-                padding: 0 1rem;
             }
 
             .hero-content h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero-content p {
-                font-size: 1.125rem;
+                font-size: 2rem;
             }
 
             .section-title {
@@ -1535,12 +937,12 @@
             }
 
             .categories-grid {
-                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-                gap: 1.5rem;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
             }
 
             .products-grid {
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             }
 
             .products-header {
@@ -1569,194 +971,399 @@
                 width: 100vw;
                 right: -100vw;
             }
-
-            .login-access-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .login-access-btn {
-                width: 100%;
-                max-width: 300px;
-                justify-content: center;
-            }
-
-            .offers-grid,
-            .testimonials-grid,
-            .actions-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
         }
 
-        @media (max-width: 480px) {
-            .hero {
-                padding: 3rem 0;
-            }
-            
-            .hero-content h1 {
-                font-size: 2rem;
-            }
-            
-            .section-title {
-                font-size: 1.75rem;
-            }
-            
-            .container {
-                padding: 0 1rem;
-            }
-
-            .nav-actions {
-                gap: 0.5rem;
-            }
-
-            .nav-btn {
-                min-width: 2.5rem;
-                height: 2.5rem;
-                font-size: 1.125rem;
-            }
-
-            .login-btn {
-                padding: 0.5rem 0.875rem;
-                font-size: 0.8rem;
-            }
+        /* Special Sections */
+        .stats-section {
+            padding: 4rem 0;
+            background: var(--primary-color);
+            color: white;
         }
 
-        /* Animation Classes */
-        .fade-in {
-            opacity: 0;
-            animation: fadeIn 0.8s ease-in forwards;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
         }
 
-        @keyframes fadeIn {
-            to { opacity: 1; }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
         }
 
-        .slide-up {
-            transform: translateY(30px);
-            opacity: 0;
-            animation: slideUp 0.8s ease-out forwards;
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
         }
 
-        @keyframes slideUp {
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        .offers-section {
+            padding: 4rem 0;
+            background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
         }
 
-        .bounce-in {
-            animation: bounceIn 0.6s ease-out forwards;
+        .offers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
         }
 
-        @keyframes bounceIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); opacity: 1; }
+        .offer-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.15);
+            text-align: center;
+            transition: var(--transition);
         }
 
-        /* Loading States */
-        .loading {
-            position: relative;
+        .offer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.25);
+        }
+
+        .offer-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .offer-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .offer-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .testimonials-section {
+            padding: 4rem 0;
+            background: var(--background-color);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .testimonial-rating {
+            color: var(--warning-color);
+        }
+
+        .login-section {
+            padding: 4rem 0;
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+        }
+
+        .login-container-main {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .login-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .login-section p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .login-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .login-access-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+            transition: var(--transition);
+        }
+
+        .login-access-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+        }
+
+        .signup-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .signup-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .google-login-btn {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            transition: var(--transition);
+            text-decoration: none;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        .google-login-btn:hover {
+            background: var(--surface-color);
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Additional Sections */
+        .about-section {
+            padding: 4rem 0;
+            background: var(--surface-color);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .about-text p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-image img {
+            width: 100%;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .benefits-section {
+            padding: 4rem 0;
+            background: var(--background-color);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .benefit-card {
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .benefit-icon {
+            background: var(--primary-color);
+            color: white;
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .benefit-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .benefit-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .cta-section {
+            padding: 4rem 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-content p {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .partnership-section {
+            padding: 4rem 0;
+            background: var(--surface-color);
+        }
+
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .partner-logo {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .partner-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .faq-section {
+            padding: 4rem 0;
+            background: var(--background-color);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--surface-color);
+            margin-bottom: 1rem;
+            border-radius: var(--border-radius);
             overflow: hidden;
         }
 
-        .loading::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            animation: loading 1.5s infinite;
-        }
-
-        @keyframes loading {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        /* Enhanced Mobile Navigation */
-        .mobile-nav {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100vh;
-            background: var(--background-color);
-            z-index: 999;
-            transition: var(--transition);
-            padding: 6rem 2rem 2rem;
-            overflow-y: auto;
-        }
-
-        .mobile-nav.open {
-            left: 0;
-        }
-
-        .mobile-nav-item {
-            display: block;
-            padding: 1rem 0;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 1.125rem;
-            font-weight: 500;
-            border-bottom: 1px solid var(--border-color);
-            transition: var(--transition);
-        }
-
-        .mobile-nav-item:hover {
-            color: var(--primary-color);
-            padding-left: 1rem;
-        }
-
-        /* Floating Action Button */
-        .fab {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 3.5rem;
-            height: 3.5rem;
-            background: var(--gradient-primary);
-            color: white;
+        .faq-question {
+            background: none;
             border: none;
-            border-radius: 50%;
-            font-size: 1.25rem;
+            width: 100%;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            padding: 0 1rem 1rem;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        .faq-answer.show {
+            display: block;
+        }
+
+        /* Additional Enhancement Classes */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hover-lift {
             transition: var(--transition);
-            z-index: 50;
         }
 
-        .fab:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 35px rgba(34, 197, 94, 0.4);
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
         }
 
-        /* Scroll Progress Bar */
-        .scroll-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 3px;
-            background: var(--gradient-primary);
-            z-index: 101;
-            transition: width 0.1s ease;
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
     </style>
 </head>
 
 <body>
-    <!-- Scroll Progress Bar -->
-    <div class="scroll-progress" id="scrollProgress"></div>
-
     <!-- Header -->
-    <header class="header" id="header">
+    <header class="header">
         <nav class="nav-container">
             <a href="index.html" class="logo">
                 <img src="https://placeholder-image-service.onrender.com/image/50x50?prompt=Modern green shopping cart logo with fresh groceries and NJ letters in circular design&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" alt="NJ Mart logo with fresh green shopping cart design">
@@ -1781,39 +1388,10 @@
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-badge" id="cartBadge">0</span>
                 </button>
-                
-                <!-- Login Button (shown when not logged in) -->
-                <a href="login.html" class="nav-btn login-btn" id="loginButton" title="Login to your account">
+                <a href="login.html" class="nav-btn login-btn" title="Login to your account">
                     <i class="fas fa-user"></i>
                     Login
                 </a>
-                
-                <!-- User Dropdown (shown when logged in) -->
-                <div class="user-dropdown" id="userDropdown" style="display: none;">
-                    <button class="nav-btn user-profile-btn" id="userProfileBtn">
-                        <i class="fas fa-user-circle"></i>
-                        <span id="userName">User</span>
-                    </button>
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <a href="profile.html" class="dropdown-item">
-                            <i class="fas fa-user"></i>
-                            My Profile
-                        </a>
-                        <a href="orders.html" class="dropdown-item">
-                            <i class="fas fa-box"></i>
-                            My Orders
-                        </a>
-                        <a href="setting.html" class="dropdown-item">
-                            <i class="fas fa-cog"></i>
-                            Settings
-                        </a>
-                        <button class="dropdown-item logout-btn" onclick="logout()">
-                            <i class="fas fa-sign-out-alt"></i>
-                            Logout
-                        </button>
-                    </div>
-                </div>
-                
                 <button class="mobile-menu-btn" id="mobileMenuBtn">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -1821,19 +1399,8 @@
         </nav>
     </header>
 
-    <!-- Mobile Navigation -->
-    <div class="mobile-nav" id="mobileNav">
-        <a href="index.html" class="mobile-nav-item">🏠 Home</a>
-        <a href="products.html" class="mobile-nav-item">📦 Products</a>
-        <a href="cart.html" class="mobile-nav-item">🛒 Cart</a>
-        <a href="orders.html" class="mobile-nav-item">📋 Orders</a>
-        <a href="profile.html" class="mobile-nav-item">👤 Profile</a>
-        <a href="login.html" class="mobile-nav-item">🔐 Login</a>
-        <a href="admin.html" class="mobile-nav-item">⚙️ Admin</a>
-    </div>
-
     <!-- Hero Section -->
-    <section class="hero fade-in">
+    <section class="hero">
         <div class="hero-container">
             <div class="hero-content">
                 <h1>Fresh Groceries Delivered Fast!</h1>
@@ -1856,35 +1423,35 @@
     </section>
 
     <!-- Stats Section -->
-    <section class="stats section slide-up">
+    <section class="stats-section">
         <div class="container">
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" data-count="50000">0</div>
+                <div>
+                    <div class="stat-number">50K+</div>
                     <div class="stat-label">Happy Customers</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number" data-count="1500">0</div>
+                <div>
+                    <div class="stat-number">1500+</div>
                     <div class="stat-label">Products Available</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number" data-count="24">0</div>
-                    <div class="stat-label">Hours Service</div>
+                <div>
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Customer Support</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number" data-count="99">0</div>
-                    <div class="stat-label">Delivery Success Rate</div>
+                <div>
+                    <div class="stat-number">99%</div>
+                    <div class="stat-label">Delivery Success</div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Categories Section -->
-    <section class="categories section slide-up" id="categories">
+    <section class="categories" id="categories">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Shop by Category</h2>
-                <p class="section-subtitle">Choose from your favorite categories and discover fresh, quality products</p>
+                <p class="section-subtitle">Choose from your favorite categories</p>
             </div>
             <div class="categories-grid" id="categoriesGrid">
                 <!-- Categories will be loaded by JavaScript -->
@@ -1893,12 +1460,12 @@
     </section>
 
     <!-- Products Section -->
-    <section class="products section slide-up" id="products">
+    <section class="products" id="products">
         <div class="container">
             <div class="products-header">
                 <div>
                     <h2 class="section-title">Featured Products</h2>
-                    <p class="section-subtitle">Best Selling & Fresh Products</p>
+                    <p class="section-subtitle">Best Selling Products</p>
                 </div>
                 <div class="filter-tabs">
                     <button class="filter-tab active" data-filter="all">All</button>
@@ -1906,125 +1473,86 @@
                     <button class="filter-tab" data-filter="fruits">Fruits</button>
                     <button class="filter-tab" data-filter="dairy">Dairy</button>
                     <button class="filter-tab" data-filter="snacks">Snacks</button>
-                    <button class="filter-tab" data-filter="beverages">Beverages</button>
                 </div>
             </div>
             <div class="products-grid" id="productsGrid">
                 <!-- Products will be loaded by JavaScript -->
             </div>
-            <div style="text-align: center; margin-top: 3rem;">
-                <a href="products.html" class="btn btn-primary">
-                    <i class="fas fa-arrow-right"></i>
-                    View All Products
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="products.html" class="btn btn-primary">View All Products</a>
+                <a href="login.html" class="btn" style="background: var(--primary-color); color: white; margin-left: 1rem;">
+                    <i class="fas fa-user"></i>
+                    Login for Exclusive Offers
                 </a>
             </div>
         </div>
     </section>
 
     <!-- Special Offers Section -->
-    <section class="special-offers section slide-up">
+    <section class="offers-section">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Special Offers</h2>
-                <p class="section-subtitle">Don't miss out on these amazing deals and exclusive offers</p>
+                <p class="section-subtitle">Don't miss these amazing deals</p>
             </div>
             <div class="offers-grid">
                 <div class="offer-card">
-                    <div class="offer-badge">Limited Time</div>
-                    <h3 style="color: var(--warning-color); margin-bottom: 1rem;">🎉 First Order Discount</h3>
-                    <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Get 25% OFF on your first order above ₹999. Use code: WELCOME25</p>
-                    <a href="products.html" class="btn btn-primary">Shop Now</a>
+                    <div class="offer-icon">🎉</div>
+                    <h3 class="offer-title">First Order Discount</h3>
+                    <p class="offer-description">Get 25% OFF on your first order above ₹999. Use code: WELCOME25</p>
+                    <a href="login.html" class="btn btn-primary">Login & Shop Now</a>
                 </div>
                 <div class="offer-card">
-                    <div class="offer-badge">Popular</div>
-                    <h3 style="color: var(--info-color); margin-bottom: 1rem;">🚚 Free Delivery</h3>
-                    <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Free home delivery on all orders above ₹499. No hidden charges!</p>
+                    <div class="offer-icon">🚚</div>
+                    <h3 class="offer-title">Free Delivery</h3>
+                    <p class="offer-description">Free home delivery on all orders above ₹499. No hidden charges!</p>
                     <a href="products.html" class="btn btn-primary">Order Now</a>
                 </div>
                 <div class="offer-card">
-                    <div class="offer-badge">Premium</div>
-                    <h3 style="color: var(--accent-color); margin-bottom: 1rem;">⭐ Member Benefits</h3>
-                    <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Join NJ Mart Premium for exclusive deals, early access, and premium support</p>
+                    <div class="offer-icon">⭐</div>
+                    <h3 class="offer-title">Member Benefits</h3>
+                    <p class="offer-description">Join NJ Mart Premium for exclusive deals and early access</p>
                     <a href="login.html" class="btn btn-primary">Join Premium</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Login Access Section -->
-    <section class="login-access section slide-up">
-        <div class="login-access-container">
-            <h2>Join NJ Mart Family</h2>
-            <p>Create your account to enjoy exclusive offers, faster checkout, order tracking, and personalized shopping experience with premium benefits.</p>
-            <div class="login-access-buttons">
-                <a href="login.html" class="login-access-btn">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Login to Account
-                </a>
-                <a href="login.html" class="login-access-btn signup-btn">
-                    <i class="fas fa-user-plus"></i>
-                    Create New Account
-                </a>
-                <!-- Google Login Button -->
-                <button class="google-login-btn" onclick="loginWithGoogle()">
-                    <svg class="google-icon" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                    </svg>
-                    Continue with Google
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Quick Actions Section -->
-    <section class="quick-actions section slide-up">
+    <!-- Login Section -->
+    <section class="login-section">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Quick Actions</h2>
-                <p class="section-subtitle">Easy access to your favorite features and services</p>
-            </div>
-            <div class="actions-grid">
-                <div class="action-card" onclick="window.location.href='orders.html'">
-                    <div class="action-icon">
-                        <i class="fas fa-truck"></i>
-                    </div>
-                    <h3 class="action-title">Track Orders</h3>
-                    <p class="action-description">Monitor your delivery status in real-time</p>
-                </div>
-                <div class="action-card" onclick="window.location.href='coupons.html'">
-                    <div class="action-icon">
-                        <i class="fas fa-tags"></i>
-                    </div>
-                    <h3 class="action-title">Coupons & Offers</h3>
-                    <p class="action-description">Discover amazing deals and discounts</p>
-                </div>
-                <div class="action-card" onclick="window.location.href='profile.html'">
-                    <div class="action-icon">
-                        <i class="fas fa-user-cog"></i>
-                    </div>
-                    <h3 class="action-title">Account Settings</h3>
-                    <p class="action-description">Manage your profile and preferences</p>
-                </div>
-                <div class="action-card" onclick="showToast('Customer support available 24/7!', 'info')">
-                    <div class="action-icon">
-                        <i class="fas fa-headset"></i>
-                    </div>
-                    <h3 class="action-title">Customer Support</h3>
-                    <p class="action-description">Get help when you need it</p>
+            <div class="login-container-main">
+                <h2>Join NJ Mart Family</h2>
+                <p>Create your account to enjoy exclusive offers, faster checkout, order tracking, and personalized shopping experience.</p>
+                <div class="login-buttons">
+                    <a href="login.html" class="login-access-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login to Account
+                    </a>
+                    <a href="login.html" class="login-access-btn signup-btn">
+                        <i class="fas fa-user-plus"></i>
+                        Create New Account
+                    </a>
+                    <button class="google-login-btn" onclick="window.location.href='login.html'">
+                        <svg class="google-icon" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        Continue with Google
+                    </button>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section class="features section slide-up">
+    <section class="features">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Why Choose NJ Mart?</h2>
-                <p class="section-subtitle">Experience the best in online grocery shopping with our premium services</p>
+                <p class="section-subtitle">Experience the best in online grocery shopping</p>
             </div>
             <div class="features-grid">
                 <div class="feature-card">
@@ -2032,67 +1560,143 @@
                         <i class="fas fa-truck"></i>
                     </div>
                     <h3 class="feature-title">Free Delivery</h3>
-                    <p class="feature-description">Free home delivery on orders above ₹499. Fast, reliable, and secure delivery to your doorstep.</p>
+                    <p class="feature-description">Free home delivery on orders above ₹499</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-leaf"></i>
                     </div>
                     <h3 class="feature-title">Fresh & Organic</h3>
-                    <p class="feature-description">100% fresh and organic products directly from farms. Quality guaranteed with freshness promise.</p>
+                    <p class="feature-description">100% fresh and organic products directly from farms</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-clock"></i>
                     </div>
                     <h3 class="feature-title">Quick Delivery</h3>
-                    <p class="feature-description">Same day delivery within 2-4 hours. Express delivery available for urgent orders.</p>
+                    <p class="feature-description">Same day delivery within 2-4 hours</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-headset"></i>
                     </div>
                     <h3 class="feature-title">24/7 Support</h3>
-                    <p class="feature-description">Our customer support team is available 24/7 to help you with any queries or issues.</p>
+                    <p class="feature-description">Our team is available 24/7 to help you</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
                     <h3 class="feature-title">Secure Shopping</h3>
-                    <p class="feature-description">Safe and secure payment options. Your data is protected with advanced encryption.</p>
+                    <p class="feature-description">Safe and secure payment options with data protection</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-undo"></i>
                     </div>
                     <h3 class="feature-title">Easy Returns</h3>
-                    <p class="feature-description">Hassle-free return policy. Return products within 7 days if not satisfied.</p>
+                    <p class="feature-description">Hassle-free return policy within 7 days</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>About <span class="gradient-text">NJ Mart</span></h2>
+                    <p>NJ Mart is your trusted online grocery shopping partner, committed to bringing you the freshest products with exceptional service. We source directly from farms and trusted suppliers to ensure quality.</p>
+                    <p>Our mission is to make grocery shopping convenient, affordable, and enjoyable for every family. With our advanced logistics and customer-first approach, we've served over 50,000 happy customers.</p>
+                    <div style="margin-top: 2rem;">
+                        <a href="login.html" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i>
+                            Join Our Community
+                        </a>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <img src="https://placeholder-image-service.onrender.com/image/500x400?prompt=Modern grocery warehouse with fresh vegetables fruits and efficient delivery system&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" alt="Modern grocery warehouse with fresh vegetables and fruits">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Member Benefits Section -->
+    <section class="benefits-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Member <span class="gradient-text">Exclusive</span> Benefits</h2>
+                <p class="section-subtitle">Join NJ Mart and unlock amazing benefits</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-percent"></i>
+                    </div>
+                    <h3 class="benefit-title">Exclusive Discounts</h3>
+                    <p class="benefit-description">Get up to 20% extra discount on all orders as a registered member with special seasonal offers.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <h3 class="benefit-title">Priority Access</h3>
+                    <p class="benefit-description">Early access to new products, flash sales, and limited-time offers before general customers.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h3 class="benefit-title">Birthday Rewards</h3>
+                    <p class="benefit-description">Special birthday discounts, free delivery coupons, and surprise gifts on your special day.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3 class="benefit-title">Loyalty Points</h3>
+                    <p class="benefit-description">Earn points on every purchase and redeem them for discounts on future orders.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h3 class="benefit-title">Free Express Delivery</h3>
+                    <p class="benefit-description">Members get free express delivery on orders above ₹299 instead of regular ₹499 limit.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <h3 class="benefit-title">Referral Rewards</h3>
+                    <p class="benefit-description">Invite friends and earn ₹100 credit for each successful referral. No limit on earnings!</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Testimonials Section -->
-    <section class="testimonials section slide-up">
+    <section class="testimonials-section">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">What Our Customers Say</h2>
-                <p class="section-subtitle">Read testimonials from our satisfied customers across the country</p>
+                <p class="section-subtitle">Read testimonials from our satisfied customers</p>
             </div>
             <div class="testimonials-grid">
                 <div class="testimonial-card">
-                    <p class="testimonial-text">"NJ Mart has completely changed my grocery shopping experience. Fresh products, quick delivery, and excellent customer service. Highly recommended!"</p>
+                    <p class="testimonial-text">"NJ Mart has completely changed my grocery shopping experience. Fresh products, quick delivery, and excellent customer service. The login process is smooth and saves all my preferences!"</p>
                     <h4 class="testimonial-author">Rahul Sharma</h4>
                     <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
                 </div>
                 <div class="testimonial-card">
-                    <p class="testimonial-text">"The quality of products is outstanding and delivery is always on time. The app is user-friendly and the customer support is very helpful."</p>
+                    <p class="testimonial-text">"The quality is outstanding and delivery is always on time. The mobile app is user-friendly and customer support is very helpful. Love the member benefits!"</p>
                     <h4 class="testimonial-author">Priya Gupta</h4>
                     <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
                 </div>
                 <div class="testimonial-card">
-                    <p class="testimonial-text">"Best online grocery platform! Fresh vegetables, competitive prices, and the convenience of home delivery makes it perfect for busy families."</p>
+                    <p class="testimonial-text">"Best online grocery platform! Fresh vegetables, competitive prices, and the convenience of home delivery. The login saves my cart across devices!"</p>
                     <h4 class="testimonial-author">Amit Kumar</h4>
                     <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
                 </div>
@@ -2100,18 +1704,122 @@
         </div>
     </section>
 
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <p class="section-subtitle">Find answers to common questions about our service</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        How do I create an account?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Simply click on the "Login" button and then select "Create New Account". Fill in your details including email, password, and basic information. You can also use Google login for quick registration.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        What are the delivery charges?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We offer free delivery on orders above ₹499. For orders below this amount, delivery charges are ₹40. Members get free delivery on orders above ₹299.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        How fast is the delivery?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We offer same-day delivery within 2-4 hours for most locations. Express delivery is available within 1-2 hours for urgent orders with additional charges.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        What payment methods do you accept?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We accept all major credit/debit cards, UPI payments, net banking, mobile wallets, and cash on delivery. All payments are 100% secure and encrypted.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        How do I track my order?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>After logging in, you can track your orders in real-time from the "My Orders" section. You'll also receive SMS and email updates about your delivery status.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partnership Section -->
+    <section class="partnership-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our <span class="gradient-text">Trusted</span> Partners</h2>
+                <p class="section-subtitle">We work with the best to bring you quality products</p>
+            </div>
+            <div class="partners-grid">
+                <div class="partner-logo">
+                    <img src="https://placeholder-image-service.onrender.com/image/120x60?prompt=Organic farm logo with green leaves and natural elements&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" alt="Organic farm partner logo with green leaves">
+                </div>
+                <div class="partner-logo">
+                    <img src="https://placeholder-image-service.onrender.com/image/120x60?prompt=Fresh dairy company logo with milk bottle design&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" alt="Fresh dairy company logo with milk bottle">
+                </div>
+                <div class="partner-logo">
+                    <img src="https://placeholder-image-service.onrender.com/image/120x60?prompt=Local bakery logo with bread and wheat elements&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" alt="Local bakery logo with bread and wheat">
+                </div>
+                <div class="partner-logo">
+                    <img src="https://placeholder-image-service.onrender.com/image/120x60?prompt=Healthy snacks brand logo with nuts and fruits&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" alt="Healthy snacks brand logo with nuts and fruits">
+                </div>
+                <div class="partner-logo">
+                    <img src="https://placeholder-image-service.onrender.com/image/120x60?prompt=Beverage company logo with juice and drinks theme&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" alt="Beverage company logo with juice theme">
+                </div>
+                <div class="partner-logo">
+                    <img src="https://placeholder-image-service.onrender.com/image/120x60?prompt=Personal care brand logo with natural ingredients&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8" alt="Personal care brand logo with natural ingredients">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Start Shopping?</h2>
+                <p>Join thousands of satisfied customers and experience the best online grocery shopping</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+                    <a href="products.html" class="btn btn-primary">
+                        <i class="fas fa-shopping-cart"></i>
+                        Start Shopping
+                    </a>
+                    <a href="login.html" class="btn btn-secondary">
+                        <i class="fas fa-user"></i>
+                        Create Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Newsletter Section -->
-    <section class="newsletter section slide-up">
+    <section class="newsletter">
         <div class="container">
             <div class="newsletter-container">
                 <h2>Subscribe to Newsletter</h2>
-                <p>Get the latest offers, new product information, and exclusive deals delivered to your inbox first</p>
+                <p>Get the latest offers and new product information first</p>
                 <form class="newsletter-form" id="newsletterForm">
                     <input type="email" class="newsletter-input" placeholder="Enter your email address..." required>
-                    <button type="submit" class="newsletter-btn">
-                        <i class="fas fa-paper-plane"></i>
-                        Subscribe
-                    </button>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
                 </form>
             </div>
         </div>
@@ -2123,56 +1831,50 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>NJ Mart</h3>
-                    <p>Your trusted online grocery shopping partner. Fresh quality products with exceptional service and lightning-fast delivery. We're committed to bringing you the best shopping experience.</p>
+                    <p>Your trusted online grocery shopping partner. Fresh quality products with exceptional service and fast delivery.</p>
                     <div class="social-links">
-                        <a href="#" class="social-link" title="Facebook">
+                        <a href="#" class="social-link">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="#" class="social-link" title="Instagram">
+                        <a href="#" class="social-link">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="#" class="social-link" title="Twitter">
+                        <a href="#" class="social-link">
                             <i class="fab fa-twitter"></i>
                         </a>
-                        <a href="#" class="social-link" title="YouTube">
+                        <a href="#" class="social-link">
                             <i class="fab fa-youtube"></i>
-                        </a>
-                        <a href="#" class="social-link" title="LinkedIn">
-                            <i class="fab fa-linkedin-in"></i>
                         </a>
                     </div>
                 </div>
                 <div class="footer-section">
                     <h3>Customer Care</h3>
                     <ul>
-                        <li><a href="#"><i class="fas fa-question-circle"></i> Help Center</a></li>
-                        <li><a href="#"><i class="fas fa-shipping-fast"></i> Shipping Info</a></li>
-                        <li><a href="#"><i class="fas fa-undo-alt"></i> Return Policy</a></li>
-                        <li><a href="orders.html"><i class="fas fa-search"></i> Track Order</a></li>
-                        <li><a href="#"><i class="fas fa-comments"></i> FAQs</a></li>
-                        <li><a href="#"><i class="fas fa-phone"></i> Contact Support</a></li>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Return Policy</a></li>
+                        <li><a href="orders.html">Track Order</a></li>
+                        <li><a href="#">FAQs</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h3>Company</h3>
+                    <h3>About</h3>
                     <ul>
-                        <li><a href="#"><i class="fas fa-info-circle"></i> About Us</a></li>
-                        <li><a href="#"><i class="fas fa-briefcase"></i> Careers</a></li>
-                        <li><a href="#"><i class="fas fa-newspaper"></i> Press</a></li>
-                        <li><a href="#"><i class="fas fa-handshake"></i> Partners</a></li>
-                        <li><a href="#"><i class="fas fa-envelope"></i> Contact Us</a></li>
-                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Store Locator</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Partners</a></li>
+                        <li><a href="#">Contact Us</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h3>Account & Legal</h3>
+                    <h3>Account</h3>
                     <ul>
-                        <li><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                        <li><a href="login.html"><i class="fas fa-user-plus"></i> Create Account</a></li>
-                        <li><a href="profile.html"><i class="fas fa-user"></i> My Profile</a></li>
-                        <li><a href="orders.html"><i class="fas fa-box"></i> My Orders</a></li>
-                        <li><a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
-                        <li><a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a></li>
+                        <li><a href="login.html">Login</a></li>
+                        <li><a href="login.html">Create Account</a></li>
+                        <li><a href="profile.html">My Profile</a></li>
+                        <li><a href="orders.html">My Orders</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
                     </ul>
                 </div>
             </div>
@@ -2200,19 +1902,14 @@
             </div>
             <a href="checkout.html" class="btn btn-primary" style="width: 100%; text-decoration: none; text-align: center; margin-bottom: 1rem;" id="checkoutBtn">
                 <i class="fas fa-credit-card"></i>
-                Proceed to Checkout
+                Checkout
             </a>
-            <a href="login.html" class="btn btn-outline" style="width: 100%; text-decoration: none; text-align: center;">
+            <a href="login.html" class="btn" style="background: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); width: 100%; text-decoration: none; text-align: center;">
                 <i class="fas fa-user"></i>
                 Login to Save Cart
             </a>
         </div>
     </div>
-
-    <!-- Floating Action Button -->
-    <button class="fab" onclick="scrollToTop()" title="Back to top">
-        <i class="fas fa-arrow-up"></i>
-    </button>
 
     <!-- Toast Notifications -->
     <div class="toast" id="toast"></div>
@@ -2220,36 +1917,34 @@
     <script>
         // NJ Mart Website JavaScript - Enhanced Version
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('NJ Mart Website Loading...');
             initializeWebsite();
-            initializeScrollEffects();
-            initializeCounterAnimation();
         });
 
         function initializeWebsite() {
+            console.log('Initializing website features...');
             loadCategories();
             loadProducts();
             initializeCart();
             initializeNavigation();
             initializeSearch();
             initializeNewsletter();
-            initializeLoginFeatures();
-            initializeGoogleLogin();
-            initializeMobileMenu();
+            console.log('Website initialized successfully!');
         }
 
-        // Categories Data - Enhanced
+        // Categories Data
         const categories = [
-            { id: 1, name: 'Vegetables', icon: 'fas fa-carrot', count: '500+ items', color: '#22c55e' },
-            { id: 2, name: 'Fruits', icon: 'fas fa-apple-alt', count: '300+ items', color: '#ef4444' },
-            { id: 3, name: 'Dairy', icon: 'fas fa-cheese', count: '200+ items', color: '#3b82f6' },
-            { id: 4, name: 'Snacks', icon: 'fas fa-cookie-bite', count: '400+ items', color: '#f59e0b' },
-            { id: 5, name: 'Beverages', icon: 'fas fa-mug-hot', count: '150+ items', color: '#8b5cf6' },
-            { id: 6, name: 'Bakery', icon: 'fas fa-bread-slice', count: '100+ items', color: '#f97316' },
-            { id: 7, name: 'Meat & Fish', icon: 'fas fa-fish', count: '80+ items', color: '#dc2626' },
-            { id: 8, name: 'Personal Care', icon: 'fas fa-spa', count: '250+ items', color: '#06b6d4' }
+            { id: 1, name: 'Vegetables', icon: 'fas fa-carrot', count: '500+ items' },
+            { id: 2, name: 'Fruits', icon: 'fas fa-apple-alt', count: '300+ items' },
+            { id: 3, name: 'Dairy', icon: 'fas fa-cheese', count: '200+ items' },
+            { id: 4, name: 'Snacks', icon: 'fas fa-cookie-bite', count: '400+ items' },
+            { id: 5, name: 'Beverages', icon: 'fas fa-mug-hot', count: '150+ items' },
+            { id: 6, name: 'Bakery', icon: 'fas fa-bread-slice', count: '100+ items' },
+            { id: 7, name: 'Personal Care', icon: 'fas fa-spa', count: '250+ items' },
+            { id: 8, name: 'Household', icon: 'fas fa-home', count: '180+ items' }
         ];
 
-        // Products Data - Enhanced
+        // Products Data
         const products = [
             {
                 id: 1,
@@ -2261,7 +1956,7 @@
                 rating: 4.5,
                 reviews: 234,
                 badge: 'fresh',
-                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Fresh red organic tomatoes in basket with green leaves on wooden background&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
+                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Fresh red organic tomatoes in basket with green leaves&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
             },
             {
                 id: 2,
@@ -2273,7 +1968,7 @@
                 rating: 4.7,
                 reviews: 189,
                 badge: 'popular',
-                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Fresh red apples arranged beautifully with green leaves and natural lighting&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
+                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Fresh red apples arranged beautifully with green leaves&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
             },
             {
                 id: 3,
@@ -2285,7 +1980,7 @@
                 rating: 4.8,
                 reviews: 456,
                 badge: 'fresh',
-                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Fresh milk bottle with cow milk label and green cap on kitchen counter&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
+                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Fresh milk bottle with cow milk label and green cap&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
             },
             {
                 id: 4,
@@ -2297,7 +1992,7 @@
                 rating: 4.4,
                 reviews: 123,
                 badge: 'sale',
-                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Mixed nuts almonds cashews walnuts in wooden bowl with natural background&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
+                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Mixed nuts almonds cashews walnuts in bowl with natural background&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
             },
             {
                 id: 5,
@@ -2309,7 +2004,7 @@
                 rating: 4.3,
                 reviews: 167,
                 badge: 'organic',
-                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Fresh green spinach leaves bundle with water drops and organic label&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
+                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Fresh green spinach leaves bundle with water drops&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
             },
             {
                 id: 6,
@@ -2321,7 +2016,7 @@
                 rating: 4.6,
                 reviews: 298,
                 badge: 'fresh',
-                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Fresh orange juice bottle with orange slices and green straw on bright background&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
+                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Fresh orange juice bottle with orange slices and green straw&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
             },
             {
                 id: 7,
@@ -2333,4 +2028,597 @@
                 rating: 4.2,
                 reviews: 145,
                 badge: 'new',
-                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Fresh whole wheat bread loaf sliced on wooden cutting board with wheat grains&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8
+                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Fresh whole wheat bread loaf sliced on wooden cutting board&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
+            },
+            {
+                id: 8,
+                name: 'Organic Honey 500g',
+                category: 'condiments',
+                price: 185,
+                originalPrice: 220,
+                discount: 16,
+                rating: 4.9,
+                reviews: 312,
+                badge: 'organic',
+                image: 'https://placeholder-image-service.onrender.com/image/280x200?prompt=Pure organic honey jar with honeycomb and bee design&id=c3e7256b-b941-4260-81b3-4b41f1b62334&customer_id=cus_T3Gb8yaRTHWMX8'
+            }
+        ];
+
+        // Cart functionality
+        let cart = JSON.parse(localStorage.getItem('njmart-cart')) || [];
+
+        function loadCategories() {
+            const categoriesGrid = document.getElementById('categoriesGrid');
+            if (!categoriesGrid) return;
+
+            categoriesGrid.innerHTML = '';
+            
+            categories.forEach(category => {
+                const categoryCard = document.createElement('div');
+                categoryCard.className = 'category-card';
+                categoryCard.innerHTML = `
+                    <div class="category-icon">
+                        <i class="${category.icon}"></i>
+                    </div>
+                    <h3 class="category-name">${category.name}</h3>
+                    <p class="category-count">${category.count}</p>
+                `;
+                
+                categoryCard.addEventListener('click', () => {
+                    filterProducts(category.name.toLowerCase());
+                });
+                
+                categoriesGrid.appendChild(categoryCard);
+            });
+        }
+
+        function loadProducts(filter = 'all') {
+            const productsGrid = document.getElementById('productsGrid');
+            if (!productsGrid) return;
+
+            productsGrid.innerHTML = '';
+            
+            const filteredProducts = filter === 'all' 
+                ? products 
+                : products.filter(product => product.category === filter);
+
+            filteredProducts.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name} fresh and organic quality">
+                        ${product.badge ? `<span class="product-badge ${product.badge === 'organic' ? 'new' : ''}">${product.badge}</span>` : ''}
+                        <div class="product-actions">
+                            <button class="action-btn" title="Add to wishlist" onclick="addToWishlist(${product.id})">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            <button class="action-btn" title="Quick view" onclick="quickView(${product.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <p class="product-category">${getCategoryName(product.category)}</p>
+                        <h3 class="product-title">${product.name}</h3>
+                        <div class="product-rating">
+                            <div class="stars">${generateStars(product.rating)}</div>
+                            <span class="rating-text">(${product.reviews})</span>
+                        </div>
+                        <div class="product-price">
+                            <span class="current-price">₹${product.price}</span>
+                            <span class="original-price">₹${product.originalPrice}</span>
+                            <span class="discount">${product.discount}% off</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart(${product.id})">
+                            <i class="fas fa-shopping-cart"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+                
+                productsGrid.appendChild(productCard);
+            });
+        }
+
+        function getCategoryName(category) {
+            return category.charAt(0).toUpperCase() + category.slice(1);
+        }
+
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            let stars = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            
+            if (halfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+            }
+            
+            const emptyStars = 5 - Math.ceil(rating);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star"></i>';
+            }
+            
+            return stars;
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    ...product,
+                    quantity: 1
+                });
+            }
+            
+            updateCartStorage();
+            updateCartUI();
+            showToast('Product added to cart! Login to save permanently.', 'success');
+        }
+
+        function addToWishlist(productId) {
+            showToast('Login to add items to wishlist!', 'info');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+        }
+
+        function quickView(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                showToast(`Quick view: ${product.name} - ₹${product.price}`, 'info');
+            }
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartStorage();
+            updateCartUI();
+            showToast('Product removed from cart!', 'success');
+        }
+
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (!item) return;
+            
+            item.quantity += change;
+            
+            if (item.quantity <= 0) {
+                removeFromCart(productId);
+                return;
+            }
+            
+            updateCartStorage();
+            updateCartUI();
+        }
+
+        function updateCartStorage() {
+            localStorage.setItem('njmart-cart', JSON.stringify(cart));
+        }
+
+        function updateCartUI() {
+            const cartBadge = document.getElementById('cartBadge');
+            const cartContent = document.getElementById('cartContent');
+            const cartTotal = document.getElementById('cartTotal');
+            
+            if (cartBadge) {
+                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                cartBadge.textContent = totalItems;
+            }
+            
+            if (cartContent) {
+                if (cart.length === 0) {
+                    cartContent.innerHTML = `
+                        <div class="empty-cart">
+                            <i class="fas fa-shopping-cart" style="font-size: 3rem; color: var(--text-light); margin-bottom: 1rem;"></i>
+                            <p>Your cart is empty</p>
+                            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">Add some fresh products!</p>
+                            <a href="login.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
+                                <i class="fas fa-user"></i> Login to save items
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    cartContent.innerHTML = cart.map(item => `
+                        <div class="cart-item">
+                            <img src="${item.image}" alt="${item.name}" />
+                            <div class="cart-item-info">
+                                <div class="cart-item-title">${item.name}</div>
+                                <div class="cart-item-price">₹${item.price}</div>
+                                <div class="quantity-controls">
+                                    <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                                    <span>${item.quantity}</span>
+                                    <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                                    <button class="quantity-btn" onclick="removeFromCart(${item.id})" style="margin-left: 0.5rem; color: var(--danger-color);">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+            
+            if (cartTotal) {
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                cartTotal.innerHTML = `
+                    <span>Total: ₹${total}</span>
+                `;
+            }
+        }
+
+        function initializeCart() {
+            const cartBtn = document.getElementById('cartBtn');
+            const cartSidebar = document.getElementById('cartSidebar');
+            const cartOverlay = document.getElementById('cartOverlay');
+            const closeCartBtn = document.getElementById('closeCartBtn');
+            
+            if (cartBtn) {
+                cartBtn.addEventListener('click', () => {
+                    cartSidebar.classList.add('open');
+                    cartOverlay.classList.add('show');
+                });
+            }
+            
+            if (closeCartBtn) {
+                closeCartBtn.addEventListener('click', closeCart);
+            }
+            
+            if (cartOverlay) {
+                cartOverlay.addEventListener('click', closeCart);
+            }
+            
+            updateCartUI();
+        }
+
+        function closeCart() {
+            const cartSidebar = document.getElementById('cartSidebar');
+            const cartOverlay = document.getElementById('cartOverlay');
+            
+            cartSidebar.classList.remove('open');
+            cartOverlay.classList.remove('show');
+        }
+
+        function initializeNavigation() {
+            // Filter tabs
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    const filter = tab.dataset.filter;
+                    loadProducts(filter);
+                });
+            });
+            
+            // Wishlist button
+            const wishlistBtn = document.getElementById('wishlistBtn');
+            if (wishlistBtn) {
+                wishlistBtn.addEventListener('click', () => {
+                    showToast('Login to access wishlist!', 'info');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                });
+            }
+
+            // All login buttons
+            const loginButtons = document.querySelectorAll('a[href="login.html"]');
+            loginButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    console.log('Login button clicked - navigating to login page');
+                    showToast('Redirecting to login page...', 'info');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 500);
+                });
+            });
+        }
+
+        function initializeSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            
+            if (searchBtn) {
+                searchBtn.addEventListener('click', performSearch);
+            }
+            
+            if (searchInput) {
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        performSearch();
+                    }
+                });
+            }
+        }
+
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const query = searchInput.value.trim();
+            
+            if (query === '') {
+                showToast('Please enter something to search!', 'error');
+                return;
+            }
+            
+            showToast(`Searching for "${query}"...`, 'success');
+            // Implement search functionality
+        }
+
+        function initializeNewsletter() {
+            const newsletterForm = document.getElementById('newsletterForm');
+            
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const email = e.target.querySelector('input[type="email"]').value;
+                    
+                    if (email) {
+                        showToast('Thank you! You have subscribed to our newsletter!', 'success');
+                        e.target.reset();
+                    }
+                });
+            }
+        }
+
+        function filterProducts(category) {
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            filterTabs.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.filter === category) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            loadProducts(category);
+        }
+
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            const answer = faqItem.querySelector('.faq-answer');
+            const icon = element.querySelector('i');
+            
+            if (answer.classList.contains('show')) {
+                answer.classList.remove('show');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                // Close all other FAQ items
+                document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('show'));
+                document.querySelectorAll('.faq-question i').forEach(i => i.style.transform = 'rotate(0deg)');
+                
+                answer.classList.add('show');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Enhanced login functionality
+        function redirectToLogin() {
+            console.log('Redirecting to login page...');
+            showToast('Opening login page...', 'info');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 500);
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                showToast('Mobile menu feature coming soon!', 'info');
+            });
+        }
+
+        // Page scroll effects
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'blur(20px)';
+            } else {
+                header.style.background = 'var(--background-color)';
+                header.style.backdropFilter = 'blur(10px)';
+            }
+        });
+
+        // Initialize animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.feature-card, .product-card, .category-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Additional utility functions
+        function showLoginPrompt() {
+            const shouldLogin = confirm('Login to access exclusive features and save your preferences. Would you like to login now?');
+            if (shouldLogin) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        function handleLoginRequired(action) {
+            const isLoggedIn = localStorage.getItem('njmart-user');
+            if (!isLoggedIn) {
+                showToast('Please login to continue', 'info');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+                return false;
+            }
+            return true;
+        }
+
+        // Enhanced product interactions
+        function showProductDetails(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                alert(`Product: ${product.name}\nPrice: ₹${product.price}\nRating: ${product.rating}/5\n\nLogin to see full details and reviews!`);
+            }
+        }
+
+        // Global error handler
+        window.addEventListener('error', (e) => {
+            console.error('Page error:', e.error);
+        });
+
+        // Performance monitoring
+        window.addEventListener('load', () => {
+            console.log('Page loaded successfully');
+            const loadTime = performance.now();
+            console.log(`Load time: ${loadTime.toFixed(2)}ms`);
+        });
+
+        // Enhanced cart functionality
+        function clearCart() {
+            if (confirm('Are you sure you want to clear your cart?')) {
+                cart = [];
+                updateCartStorage();
+                updateCartUI();
+                showToast('Cart cleared successfully!', 'success');
+            }
+        }
+
+        function saveCartForLater() {
+            if (cart.length === 0) {
+                showToast('Your cart is empty!', 'error');
+                return;
+            }
+            
+            const shouldLogin = confirm('Login to save your cart permanently across devices. Continue?');
+            if (shouldLogin) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Product comparison
+        let compareList = [];
+
+        function addToCompare(productId) {
+            if (compareList.length >= 3) {
+                showToast('You can compare maximum 3 products!', 'warning');
+                return;
+            }
+            
+            const product = products.find(p => p.id === productId);
+            if (product && !compareList.find(p => p.id === productId)) {
+                compareList.push(product);
+                showToast(`${product.name} added to comparison!`, 'success');
+            }
+        }
+
+        function viewComparison() {
+            if (compareList.length === 0) {
+                showToast('Add products to compare first!', 'info');
+                return;
+            }
+            
+            let comparison = 'Product Comparison:\n\n';
+            compareList.forEach((product, index) => {
+                comparison += `${index + 1}. ${product.name} - ₹${product.price} (${product.rating}⭐)\n`;
+            });
+            
+            alert(comparison);
+        }
+
+        // Customer feedback
+        function submitFeedback() {
+            const feedback = prompt('We value your feedback! Please share your experience with NJ Mart:');
+            if (feedback) {
+                showToast('Thank you for your feedback! We appreciate your input.', 'success');
+                // Here you would typically send the feedback to your server
+            }
+        }
+
+        // Store locator
+        function findNearestStore() {
+            showToast('Finding nearest stores... Login for personalized store recommendations!', 'info');
+            setTimeout(() => {
+                alert('Nearest Stores:\n\n1. NJ Mart Express - 2.5 km\n   Address: Sector 12, Noida\n   Phone: +91 98765 43210\n\n2. NJ Mart Super - 4.2 km\n   Address: CP Market, Delhi\n   Phone: +91 98765 43211\n\nLogin to see directions and store timings!');
+            }, 2000);
+        }
+
+        // Recipe suggestions
+        function getRecipeSuggestions() {
+            const recipes = [
+                'Aloo Gobi with Fresh Cauliflower',
+                'Mixed Vegetable Curry',
+                'Fresh Fruit Salad',
+                'Homemade Paneer Curry',
+                'Seasonal Vegetable Stir Fry'
+            ];
+            
+            const randomRecipe = recipes[Math.floor(Math.random() * recipes.length)];
+            showToast(`Recipe Suggestion: ${randomRecipe}`, 'info');
+        }
+
+        // Seasonal promotions
+        function checkSeasonalOffers() {
+            const season = getCurrentSeason();
+            let offer = '';
+            
+            switch(season) {
+                case 'winter':
+                    offer = 'Winter Special: 15% off on all hot beverages and dry fruits!';
+                    break;
+                case 'summer':
+                    offer = 'Summer Sale: 20% off on fresh fruits and cold beverages!';
+                    break;
+                case 'monsoon':
+                    offer = 'Monsoon Offer: Buy umbrella get 10% off on groceries!';
+                    break;
+                default:
+                    offer = 'Spring Fresh:
