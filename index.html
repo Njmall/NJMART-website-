@@ -48,6 +48,7 @@
             color: var(--text-primary);
             background: linear-gradient(135deg, #ffffff 0%, #f9fffe 50%, #f0fdf4 100%);
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .container {
@@ -65,6 +66,7 @@
             z-index: 100;
             box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
             backdrop-filter: blur(10px);
+            transition: var(--transition);
         }
 
         .nav-container {
@@ -161,7 +163,7 @@
             background: var(--surface-color);
         }
 
-        /* FIXED LOGIN BUTTON - NO ERRORS */
+        /* FIXED LOGIN BUTTON */
         .login-btn {
             background: var(--primary-color);
             color: white;
@@ -669,14 +671,13 @@
             margin: 0 auto;
         }
 
+        /* FIXED NEWSLETTER INPUT - NO MORE ERRORS */
         .newsletter-input {
             flex: 1;
             padding: 0.75rem;
             border: none;
             border-radius: var(--border-radius);
             font-size: 1rem;
-            name: "email";
-            id: "newsletter-email";
         }
 
         .newsletter-btn {
@@ -912,76 +913,7 @@
             background: var(--info-color);
         }
 
-        /* Stats Section */
-        .stats-section {
-            padding: 4rem 0;
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-
-        /* Offers Section */
-        .offers-section {
-            padding: 4rem 0;
-            background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
-        }
-
-        .offers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .offer-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.15);
-            text-align: center;
-            transition: var(--transition);
-        }
-
-        .offer-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.25);
-        }
-
-        .offer-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .offer-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .offer-description {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-
-        /* Login Access Section */
+        /* Login Section */
         .login-section {
             padding: 4rem 0;
             background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
@@ -1071,6 +1003,75 @@
         .google-icon {
             width: 20px;
             height: 20px;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 4rem 0;
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Offers Section */
+        .offers-section {
+            padding: 4rem 0;
+            background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
+        }
+
+        .offers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .offer-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.15);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .offer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.25);
+        }
+
+        .offer-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .offer-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .offer-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
         }
 
         /* Testimonials Section */
@@ -1392,7 +1393,7 @@
             </a>
 
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Search for products, brands or categories..." id="searchInput">
+                <input type="text" class="search-input" placeholder="Search for products, brands or categories..." id="searchInput" name="search" autocomplete="off">
                 <button class="search-btn" id="searchBtn">
                     <i class="fas fa-search"></i>
                 </button>
@@ -1408,7 +1409,7 @@
                 </button>
                 
                 <!-- WORKING LOGIN BUTTON -->
-                <a href="login.html" class="nav-btn login-btn" title="Login to your account" onclick="goToLogin(event)">
+                <a href="login.html" class="nav-btn login-btn" title="Login to your account">
                     <i class="fas fa-user"></i>
                     Login
                 </a>
@@ -1431,7 +1432,7 @@
                         <i class="fas fa-shopping-bag"></i>
                         Shop Now
                     </a>
-                    <a href="login.html" class="btn btn-secondary" onclick="goToLogin(event)">
+                    <a href="login.html" class="btn btn-secondary">
                         <i class="fas fa-user"></i>
                         Join NJ Mart
                     </a>
@@ -1501,7 +1502,7 @@
             </div>
             <div style="text-align: center; margin-top: 2rem;">
                 <a href="products.html" class="btn btn-primary">View All Products</a>
-                <a href="login.html" class="btn btn-primary" onclick="goToLogin(event)" style="margin-left: 1rem;">
+                <a href="login.html" class="btn btn-primary" style="margin-left: 1rem;">
                     <i class="fas fa-user"></i>
                     Login for Exclusive Offers
                 </a>
@@ -1521,7 +1522,7 @@
                     <div class="offer-icon">🎉</div>
                     <h3 class="offer-title">First Order Discount</h3>
                     <p class="offer-description">Get 25% OFF on your first order above ₹999. Use code: WELCOME25</p>
-                    <a href="login.html" class="btn btn-primary" onclick="goToLogin(event)">Login & Shop Now</a>
+                    <a href="login.html" class="btn btn-primary">Login & Shop Now</a>
                 </div>
                 <div class="offer-card">
                     <div class="offer-icon">🚚</div>
@@ -1533,7 +1534,7 @@
                     <div class="offer-icon">⭐</div>
                     <h3 class="offer-title">Member Benefits</h3>
                     <p class="offer-description">Join NJ Mart Premium for exclusive deals and early access</p>
-                    <a href="login.html" class="btn btn-primary" onclick="goToLogin(event)">Join Premium</a>
+                    <a href="login.html" class="btn btn-primary">Join Premium</a>
                 </div>
             </div>
         </div>
@@ -1546,15 +1547,15 @@
                 <h2>Join NJ Mart Family</h2>
                 <p>Create your account to enjoy exclusive offers, faster checkout, order tracking, and personalized shopping experience.</p>
                 <div class="login-buttons">
-                    <a href="login.html" class="login-access-btn" onclick="goToLogin(event)">
+                    <a href="login.html" class="login-access-btn">
                         <i class="fas fa-sign-in-alt"></i>
                         Login to Account
                     </a>
-                    <a href="login.html" class="login-access-btn signup-btn" onclick="goToLogin(event)">
+                    <a href="login.html" class="login-access-btn signup-btn">
                         <i class="fas fa-user-plus"></i>
                         Create New Account
                     </a>
-                    <button class="google-login-btn" onclick="goToLogin(event)">
+                    <button class="google-login-btn" onclick="window.location.href='login.html'">
                         <svg class="google-icon" viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -1631,7 +1632,7 @@
                     <p>NJ Mart is your trusted online grocery shopping partner, committed to bringing you the freshest products with exceptional service. We source directly from farms and trusted suppliers to ensure quality.</p>
                     <p>Our mission is to make grocery shopping convenient, affordable, and enjoyable for every family. With our advanced logistics and customer-first approach, we've served over 50,000 happy customers.</p>
                     <div style="margin-top: 2rem;">
-                        <a href="login.html" class="btn btn-primary" onclick="goToLogin(event)">
+                        <a href="login.html" class="btn btn-primary">
                             <i class="fas fa-user-plus"></i>
                             Join Our Community
                         </a>
@@ -1696,7 +1697,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 3rem;">
-                <a href="login.html" class="btn btn-primary" onclick="goToLogin(event)" style="font-size: 1rem; padding: 1rem 2rem;">
+                <a href="login.html" class="btn btn-primary" style="font-size: 1rem; padding: 1rem 2rem;">
                     <i class="fas fa-rocket"></i>
                     Start Getting Benefits Today
                 </a>
@@ -1829,7 +1830,7 @@
                         <i class="fas fa-shopping-cart"></i>
                         Start Shopping
                     </a>
-                    <a href="login.html" class="btn btn-secondary" onclick="goToLogin(event)">
+                    <a href="login.html" class="btn btn-secondary">
                         <i class="fas fa-user"></i>
                         Create Account
                     </a>
@@ -1844,8 +1845,9 @@
             <div class="newsletter-container">
                 <h2>Subscribe to Newsletter</h2>
                 <p>Get the latest offers and new product information first</p>
-                <form class="newsletter-form" id="newsletterForm" onsubmit="handleNewsletter(event)">
-                    <input type="email" class="newsletter-input" placeholder="Enter your email address..." name="email" id="newsletter-email" required>
+                <!-- FIXED FORM WITH PROPER IDs - NO ERRORS -->
+                <form class="newsletter-form" id="newsletterForm">
+                    <input type="email" class="newsletter-input" placeholder="Enter your email address..." id="newsletter-email" name="newsletter-email" required autocomplete="email">
                     <button type="submit" class="newsletter-btn">Subscribe</button>
                 </form>
             </div>
@@ -1897,8 +1899,8 @@
                 <div class="footer-section">
                     <h3>Account</h3>
                     <ul>
-                        <li><a href="login.html" onclick="goToLogin(event)">Login</a></li>
-                        <li><a href="login.html" onclick="goToLogin(event)">Create Account</a></li>
+                        <li><a href="login.html">Login</a></li>
+                        <li><a href="login.html">Create Account</a></li>
                         <li><a href="profile.html">My Profile</a></li>
                         <li><a href="orders.html">My Orders</a></li>
                         <li><a href="#">Privacy Policy</a></li>
@@ -1906,7 +1908,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 NJ Mart - Fresh Grocery Fast Delivery. All rights reserved. | Made with ❤️ in India | <a href="login.html" onclick="goToLogin(event)" style="color: var(--primary-color);">Login</a> for better experience</p>
+                <p>&copy; 2024 NJ Mart - Fresh Grocery Fast Delivery. All rights reserved. | Made with ❤️ in India | <a href="login.html" style="color: var(--primary-color);">Login</a> for better experience</p>
             </div>
         </div>
     </footer>
@@ -1931,7 +1933,7 @@
                 <i class="fas fa-credit-card"></i>
                 Checkout
             </a>
-            <a href="login.html" class="btn" onclick="goToLogin(event)" style="background: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); width: 100%; text-decoration: none; text-align: center;">
+            <a href="login.html" class="btn" style="background: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); width: 100%; text-decoration: none; text-align: center;">
                 <i class="fas fa-user"></i>
                 Login to Save Cart
             </a>
@@ -1942,17 +1944,7 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // WORKING LOGIN FUNCTION - NO ERRORS
-        function goToLogin(event) {
-            event.preventDefault();
-            console.log('Navigating to login page...');
-            showToast('Opening login page...', 'info');
-            setTimeout(function() {
-                window.location.href = 'login.html';
-            }, 500);
-        }
-
-        // NJ Mart Website JavaScript
+        // FIXED JAVASCRIPT - NO FORM ERRORS
         document.addEventListener('DOMContentLoaded', function() {
             console.log('NJ Mart Website Loading...');
             initializeWebsite();
@@ -1964,6 +1956,7 @@
             initializeCart();
             initializeNavigation();
             initializeSearch();
+            initializeNewsletter();
             console.log('Website initialized successfully!');
         }
 
@@ -2065,7 +2058,12 @@
             categories.forEach(function(category) {
                 const categoryCard = document.createElement('div');
                 categoryCard.className = 'category-card';
-                categoryCard.innerHTML = '<div class="category-icon"><i class="' + category.icon + '"></i></div><h3 class="category-name">' + category.name + '</h3><p class="category-count">' + category.count + '</p>';
+                categoryCard.innerHTML = 
+                    '<div class="category-icon">' +
+                        '<i class="' + category.icon + '"></i>' +
+                    '</div>' +
+                    '<h3 class="category-name">' + category.name + '</h3>' +
+                    '<p class="category-count">' + category.count + '</p>';
                 
                 categoryCard.addEventListener('click', function() {
                     filterProducts(category.name.toLowerCase());
@@ -2090,7 +2088,36 @@
             filteredProducts.forEach(function(product) {
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
-                productCard.innerHTML = '<div class="product-image"><img src="' + product.image + '" alt="' + product.name + ' fresh and organic quality">' + (product.badge ? '<span class="product-badge ' + (product.badge === 'organic' ? 'new' : '') + '">' + product.badge + '</span>' : '') + '<div class="product-actions"><button class="action-btn" title="Add to wishlist" onclick="addToWishlist(' + product.id + ')"><i class="fas fa-heart"></i></button><button class="action-btn" title="Quick view" onclick="quickView(' + product.id + ')"><i class="fas fa-eye"></i></button></div></div><div class="product-info"><p class="product-category">' + getCategoryName(product.category) + '</p><h3 class="product-title">' + product.name + '</h3><div class="product-rating"><div class="stars">' + generateStars(product.rating) + '</div><span class="rating-text">(' + product.reviews + ')</span></div><div class="product-price"><span class="current-price">₹' + product.price + '</span><span class="original-price">₹' + product.originalPrice + '</span><span class="discount">' + product.discount + '% off</span></div><button class="add-to-cart" onclick="addToCart(' + product.id + ')"><i class="fas fa-shopping-cart"></i>Add to Cart</button></div>';
+                productCard.innerHTML = 
+                    '<div class="product-image">' +
+                        '<img src="' + product.image + '" alt="' + product.name + ' fresh and organic quality">' +
+                        (product.badge ? '<span class="product-badge ' + (product.badge === 'organic' ? 'new' : '') + '">' + product.badge + '</span>' : '') +
+                        '<div class="product-actions">' +
+                            '<button class="action-btn" title="Add to wishlist" onclick="addToWishlist(' + product.id + ')">' +
+                                '<i class="fas fa-heart"></i>' +
+                            '</button>' +
+                            '<button class="action-btn" title="Quick view" onclick="quickView(' + product.id + ')">' +
+                                '<i class="fas fa-eye"></i>' +
+                            '</button>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="product-info">' +
+                        '<p class="product-category">' + getCategoryName(product.category) + '</p>' +
+                        '<h3 class="product-title">' + product.name + '</h3>' +
+                        '<div class="product-rating">' +
+                            '<div class="stars">' + generateStars(product.rating) + '</div>' +
+                            '<span class="rating-text">(' + product.reviews + ')</span>' +
+                        '</div>' +
+                        '<div class="product-price">' +
+                            '<span class="current-price">₹' + product.price + '</span>' +
+                            '<span class="original-price">₹' + product.originalPrice + '</span>' +
+                            '<span class="discount">' + product.discount + '% off</span>' +
+                        '</div>' +
+                        '<button class="add-to-cart" onclick="addToCart(' + product.id + ')">' +
+                            '<i class="fas fa-shopping-cart"></i>' +
+                            'Add to Cart' +
+                        '</button>' +
+                    '</div>';
                 
                 productsGrid.appendChild(productCard);
             });
@@ -2211,10 +2238,32 @@
             
             if (cartContent) {
                 if (cart.length === 0) {
-                    cartContent.innerHTML = '<div class="empty-cart"><i class="fas fa-shopping-cart" style="font-size: 3rem; color: var(--text-light); margin-bottom: 1rem;"></i><p>Your cart is empty</p><p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">Add some fresh products!</p><a href="login.html" onclick="goToLogin(event)" style="color: var(--primary-color); text-decoration: none; font-weight: 600;"><i class="fas fa-user"></i> Login to save items</a></div>';
+                    cartContent.innerHTML = 
+                        '<div class="empty-cart">' +
+                            '<i class="fas fa-shopping-cart" style="font-size: 3rem; color: var(--text-light); margin-bottom: 1rem;"></i>' +
+                            '<p>Your cart is empty</p>' +
+                            '<p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">Add some fresh products!</p>' +
+                            '<a href="login.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">' +
+                                '<i class="fas fa-user"></i> Login to save items' +
+                            '</a>' +
+                        '</div>';
                 } else {
                     cartContent.innerHTML = cart.map(function(item) {
-                        return '<div class="cart-item"><img src="' + item.image + '" alt="' + item.name + '" /><div class="cart-item-info"><div class="cart-item-title">' + item.name + '</div><div class="cart-item-price">₹' + item.price + '</div><div class="quantity-controls"><button class="quantity-btn" onclick="updateQuantity(' + item.id + ', -1)">-</button><span>' + item.quantity + '</span><button class="quantity-btn" onclick="updateQuantity(' + item.id + ', 1)">+</button><button class="quantity-btn" onclick="removeFromCart(' + item.id + ')" style="margin-left: 0.5rem; color: var(--danger-color);"><i class="fas fa-trash"></i></button></div></div></div>';
+                        return '<div class="cart-item">' +
+                            '<img src="' + item.image + '" alt="' + item.name + '" />' +
+                            '<div class="cart-item-info">' +
+                                '<div class="cart-item-title">' + item.name + '</div>' +
+                                '<div class="cart-item-price">₹' + item.price + '</div>' +
+                                '<div class="quantity-controls">' +
+                                    '<button class="quantity-btn" onclick="updateQuantity(' + item.id + ', -1)">-</button>' +
+                                    '<span>' + item.quantity + '</span>' +
+                                    '<button class="quantity-btn" onclick="updateQuantity(' + item.id + ', 1)">+</button>' +
+                                    '<button class="quantity-btn" onclick="removeFromCart(' + item.id + ')" style="margin-left: 0.5rem; color: var(--danger-color);">' +
+                                        '<i class="fas fa-trash"></i>' +
+                                    '</button>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>';
                     }).join('');
                 }
             }
@@ -2315,13 +2364,19 @@
             showToast('Searching for "' + query + '"...', 'success');
         }
 
-        function handleNewsletter(event) {
-            event.preventDefault();
-            const email = document.getElementById('newsletter-email').value;
+        function initializeNewsletter() {
+            const newsletterForm = document.getElementById('newsletterForm');
             
-            if (email) {
-                showToast('Thank you! You have subscribed to our newsletter!', 'success');
-                document.getElementById('newsletterForm').reset();
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = document.getElementById('newsletter-email').value;
+                    
+                    if (email) {
+                        showToast('Thank you! You have subscribed to our newsletter!', 'success');
+                        newsletterForm.reset();
+                    }
+                });
             }
         }
 
@@ -2408,7 +2463,15 @@
             }
         });
 
-        // Additional utility functions
+        // Global functions for inline onclick handlers
+        window.addToCart = addToCart;
+        window.removeFromCart = removeFromCart;
+        window.updateQuantity = updateQuantity;
+        window.addToWishlist = addToWishlist;
+        window.quickView = quickView;
+        window.toggleFAQ = toggleFAQ;
+
+        // Additional utility functions for enhanced experience
         function showLoginPrompt() {
             const shouldLogin = confirm('Login to access exclusive features and save your preferences. Would you like to login now?');
             if (shouldLogin) {
@@ -2461,41 +2524,6 @@
             }
         }
 
-        // Product comparison
-        let compareList = [];
-
-        function addToCompare(productId) {
-            if (compareList.length >= 3) {
-                showToast('You can compare maximum 3 products!', 'warning');
-                return;
-            }
-            
-            const product = products.find(function(p) {
-                return p.id === productId;
-            });
-            
-            if (product && !compareList.find(function(p) {
-                return p.id === productId;
-            })) {
-                compareList.push(product);
-                showToast(product.name + ' added to comparison!', 'success');
-            }
-        }
-
-        function viewComparison() {
-            if (compareList.length === 0) {
-                showToast('Add products to compare first!', 'info');
-                return;
-            }
-            
-            let comparison = 'Product Comparison:\n\n';
-            compareList.forEach(function(product, index) {
-                comparison += (index + 1) + '. ' + product.name + ' - ₹' + product.price + ' (' + product.rating + '⭐)\n';
-            });
-            
-            alert(comparison);
-        }
-
         // Customer feedback
         function submitFeedback() {
             const feedback = prompt('We value your feedback! Please share your experience with NJ Mart:');
@@ -2526,61 +2554,10 @@
             showToast('Recipe Suggestion: ' + randomRecipe, 'info');
         }
 
-        // Seasonal promotions
-        function checkSeasonalOffers() {
-            const season = getCurrentSeason();
-            let offer = '';
-            
-            switch(season) {
-                case 'winter':
-                    offer = 'Winter Special: 15% off on all hot beverages and dry fruits!';
-                    break;
-                case 'summer':
-                    offer = 'Summer Sale: 20% off on fresh fruits and cold beverages!';
-                    break;
-                case 'monsoon':
-                    offer = 'Monsoon Offer: Buy umbrella get 10% off on groceries!';
-                    break;
-                default:
-                    offer = 'Spring Fresh: 10% off on all fresh vegetables and fruits!';
-            }
-            
-            showToast(offer, 'info');
-        }
-
-        function getCurrentSeason() {
-            const month = new Date().getMonth();
-            if (month >= 11 || month <= 1) return 'winter';
-            if (month >= 2 && month <= 4) return 'spring';
-            if (month >= 5 && month <= 8) return 'summer';
-            return 'monsoon';
-        }
-
         // Order tracking
         function trackOrder() {
             const orderNumber = prompt('Enter your order number:');
             if (orderNumber) {
                 showToast('Tracking order #' + orderNumber + '... Login for detailed tracking!', 'info');
                 setTimeout(function() {
-                    alert('Order Status: Your order is being prepared.\n\nEstimated delivery: 2-3 hours\nDelivery partner: Assigned\n\nLogin to see real-time tracking!');
-                }, 1500);
-            }
-        }
-
-        // Customer support
-        function contactSupport() {
-            const issue = prompt('Please describe your issue or question:');
-            if (issue) {
-                showToast('Thank you! Our support team will contact you soon.', 'success');
-                alert('Support Ticket Created!\n\nTicket ID: #NJ' + Math.floor(Math.random() * 10000) + '\nEstimated response time: 2-4 hours\n\nFor faster support, please login to your account.');
-            }
-        }
-
-        // Bulk order inquiry
-        function bulkOrderInquiry() {
-            alert('Bulk Order Inquiry\n\nFor bulk orders (50+ items), please contact:\n\nEmail: bulk@njmart.com\nPhone: +91 98765 43210\nWhatsApp: +91 98765 43211\n\nLogin to submit bulk order form online!');
-        }
-
-        // Corporate partnership
-        function corporatePartnership() {
-            alert('Corporate Partnership\n\nInterested in corporate
+                    alert('Order Status: Your order is being prepared.\n
